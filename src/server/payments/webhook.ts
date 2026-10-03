@@ -2,6 +2,11 @@ import { db } from "@/lib/db";
 import { verifyRazorpayWebhookSignature } from "@/server/payments/razorpay";
 import { signQrPayload, generateQrCodeDataUrl } from "@/server/events/registration";
 import { sendRegistrationConfirmationEmail } from "@/server/email/confirmation";
+import {
+  queuePaymentFailedEmail,
+  queueRefundProcessedEmail,
+  queueEventReminderEmail,
+} from "@/server/email";
 
 export interface WebhookProcessResult {
   status: number;
@@ -162,6 +167,25 @@ export async function processRazorpayWebhook({
         registrationCode: existingPayment.registration.registrationCode,
         qrCodeDataUrl: qrDataUrl,
       }).catch((err) => console.error("Webhook email send failed:", err));
+
+      // Schedule 24h event reminder if event starts in the future
+      const eventStartDate = existingPayment.registration.event.startDate;
+      const reminderTime = new Date(new Date(eventStartDate).getTime() - 24 * 60 * 60 * 1000);
+      if (reminderTime.getTime() > Date.now()) {
+        queueEventReminderEmail(
+          existingPayment.registration.email,
+          {
+            name: existingPayment.registration.name,
+            eventTitle: existingPayment.registration.event.title,
+            eventSlug: existingPayment.registration.event.slug,
+            eventDate: eventStartDate,
+            venue: existingPayment.registration.event.venue,
+            cityName: existingPayment.registration.event.city?.name,
+            registrationCode: existingPayment.registration.registrationCode,
+          },
+          { scheduledFor: reminderTime, immediate: false }
+        ).catch((err) => console.error("Webhook reminder schedule error:", err));
+      }
     });
 
     return {
@@ -181,6 +205,11 @@ export async function processRazorpayWebhook({
     if (paymentId) {
       const payment = await db.payment.findUnique({
         where: { razorpayPaymentId: paymentId },
+        include: {
+          registration: {
+            include: { event: true },
+          },
+        },
       });
 
       if (payment) {
@@ -214,10 +243,62 @@ export async function processRazorpayWebhook({
             });
           }
         });
+
+        // Queue refund processed email
+        queueRefundProcessedEmail(payment.registration.email, {
+          name: payment.registration.name,
+          eventTitle: payment.registration.event.title,
+          amount: Math.round(Number(refundAmount ?? payment.amount) * 100),
+          refundId: refundEntity?.id || "refund_webhook",
+          paymentId: payment.razorpayPaymentId,
+          registrationCode: payment.registration.registrationCode,
+        }).catch((err) => console.error("Webhook refund email error:", err));
       }
     }
 
     return { status: 200, message: "Refund processed via webhook", processed: true };
+  }
+
+  // 3. Payment Failed
+  if (eventType === "payment.failed") {
+    const paymentEntity = event.payload?.payment?.entity;
+    const orderId = paymentEntity?.order_id || event.payload?.order?.entity?.id;
+    if (orderId) {
+      const payment = await db.payment.findUnique({
+        where: { razorpayOrderId: orderId },
+        include: {
+          registration: {
+            include: { event: true },
+          },
+        },
+      });
+
+      if (payment) {
+        await db.payment.update({
+          where: { id: payment.id },
+          data: { status: "FAILED" },
+        });
+
+        queuePaymentFailedEmail(payment.registration.email, {
+          name: payment.registration.name,
+          eventTitle: payment.registration.event.title,
+          eventSlug: payment.registration.event.slug,
+          amount: Math.round(Number(payment.amount) * 100),
+          orderId: payment.razorpayOrderId,
+          failureReason:
+            ((paymentEntity as Record<string, unknown> | undefined)?.error_description as
+              string | undefined) || "Card or UPI transaction declined by issuing bank.",
+        }).catch((err) => console.error("Webhook payment failed email error:", err));
+
+        return {
+          status: 200,
+          message: "Payment failure recorded and email queued",
+          processed: true,
+        };
+      }
+    }
+
+    return { status: 200, message: "Payment failure logged", processed: true };
   }
 
   return { status: 200, message: "Event ignored", processed: false };

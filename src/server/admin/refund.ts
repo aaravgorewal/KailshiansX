@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/server/auth/require-role";
 import { writeAudit } from "@/server/auth/audit";
 import { refundRazorpayPayment } from "@/server/payments/razorpay";
+import { queueRefundProcessedEmail } from "@/server/email";
 import { Prisma } from "@prisma/client";
 
 export interface RefundInput {
@@ -148,6 +149,17 @@ export async function processAdminRefund({
         registrationCancelled: isFullRefund,
       },
     });
+
+    // 4. Queue refund processed email notification
+    await queueRefundProcessedEmail(payment.registration.email, {
+      name: payment.registration.name,
+      eventTitle: payment.registration.event.title,
+      amount: refundAmount * 100,
+      refundId: razorpayRefund.id,
+      paymentId: payment.razorpayPaymentId,
+      registrationCode: payment.registration.registrationCode,
+      reason: reason || undefined,
+    }).catch((err) => console.error("Refund email queue error:", err));
 
     return {
       success: true,

@@ -6,6 +6,7 @@ import { reserveTicketSeat, RegistrationError } from "./quota";
 import { generateRegistrationCode, signQrPayload, generateQrCodeDataUrl } from "./registration";
 import { createRazorpayOrder, verifyRazorpayPaymentSignature } from "../payments/razorpay";
 import { sendRegistrationConfirmationEmail } from "../email/confirmation";
+import { queueEventReminderEmail } from "../email";
 
 export interface InitiateRegistrationResult {
   success: boolean;
@@ -133,6 +134,24 @@ export async function initiateRegistration(
           registrationCode,
           qrCodeDataUrl: qrDataUrl,
         }).catch((err) => console.error("Email send failed:", err));
+
+        // Schedule 24h event reminder if event starts in the future
+        const reminderTime = new Date(new Date(event.startDate).getTime() - 24 * 60 * 60 * 1000);
+        if (reminderTime.getTime() > Date.now()) {
+          queueEventReminderEmail(
+            registration.email,
+            {
+              name: registration.name,
+              eventTitle: event.title,
+              eventSlug: event.slug,
+              eventDate: event.startDate,
+              venue: event.venue,
+              cityName: event.city?.name,
+              registrationCode,
+            },
+            { scheduledFor: reminderTime, immediate: false }
+          ).catch((err) => console.error("Reminder queue error:", err));
+        }
 
         return {
           success: true,
@@ -298,6 +317,25 @@ export async function verifyPaymentAndComplete({
         registrationCode: updatedReg.registrationCode,
         qrCodeDataUrl: qrDataUrl,
       }).catch((err) => console.error("Email send failed:", err));
+
+      // Schedule 24h event reminder if event starts in the future
+      const eventStartDate = updatedReg.event.startDate;
+      const reminderTime = new Date(new Date(eventStartDate).getTime() - 24 * 60 * 60 * 1000);
+      if (reminderTime.getTime() > Date.now()) {
+        queueEventReminderEmail(
+          updatedReg.email,
+          {
+            name: updatedReg.name,
+            eventTitle: updatedReg.event.title,
+            eventSlug: updatedReg.event.slug,
+            eventDate: eventStartDate,
+            venue: updatedReg.event.venue,
+            cityName: updatedReg.event.city?.name,
+            registrationCode: updatedReg.registrationCode,
+          },
+          { scheduledFor: reminderTime, immediate: false }
+        ).catch((err) => console.error("Reminder queue error:", err));
+      }
 
       return updatedReg;
     });

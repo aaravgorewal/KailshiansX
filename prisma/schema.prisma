@@ -1019,3 +1019,49 @@ model AuditLog {
   @@index([entityType, entityId])
   @@index([createdAt])
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EMAIL JOB QUEUE & AUDIT LOG
+// ═══════════════════════════════════════════════════════════════════════════════
+
+enum EmailJobStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+}
+
+enum EmailTemplate {
+  REGISTRATION_CONFIRMATION
+  PAYMENT_FAILED
+  REFUND_PROCESSED
+  APPLICATION_RECEIVED
+  STATUS_CHANGE
+  COLLABORATION_ACK
+  EVENT_REMINDER_24H
+}
+
+model EmailLog {
+  id           String         @id @default(cuid())
+  template     EmailTemplate
+  recipient    String
+  subject      String
+  status       EmailJobStatus @default(PENDING)
+  attempts     Int            @default(0)
+  maxAttempts  Int            @default(3)
+  payload      Json
+  html         String?        @db.Text
+  error        String?
+  messageId    String?
+  scheduledFor DateTime       @default(now())
+  sentAt       DateTime?
+  failedAt     DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([status, scheduledFor])
+  @@index([recipient])
+  @@index([template])
+  @@index([createdAt])
+}
+

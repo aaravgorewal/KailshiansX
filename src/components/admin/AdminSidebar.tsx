@@ -28,6 +28,7 @@ import {
   Award,
   QrCode,
   ShieldCheck,
+  Mail,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -97,6 +98,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Operations & Security",
     items: [
       { label: "Live QR Check-in", href: "/admin/checkin", icon: QrCode },
+      { label: "Email Logs", href: "/admin/email-logs", icon: Mail },
       { label: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck },
     ],
   },

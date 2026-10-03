@@ -9,6 +9,7 @@ import {
   UpdateApplicationStatusData,
 } from "@/lib/validations/team-application";
 import { requireAdmin } from "@/server/auth/require-role";
+import { queueApplicationReceivedEmail, queueStatusChangeEmail } from "@/server/email";
 import type { TeamApplicationStatus } from "@prisma/client";
 
 export async function submitTeamApplication(data: unknown) {
@@ -71,6 +72,14 @@ export async function submitTeamApplication(data: unknown) {
       status: "NEW",
     },
   });
+
+  // Queue application received email
+  await queueApplicationReceivedEmail(application.email, {
+    name: application.name,
+    applicationType: "TEAM",
+    referenceId: application.id,
+    roleOrJurisdiction: `${application.roleApplied} (${application.area})`,
+  }).catch((err) => console.error("Team application email error:", err));
 
   return {
     success: true,
@@ -190,6 +199,18 @@ export async function updateTeamApplicationStatus(
         after: { status: updated.status, adminNotes: updated.adminNotes },
       },
     });
+  }
+
+  // Queue status change email notification
+  if (current.status !== updated.status) {
+    await queueStatusChangeEmail(updated.email, {
+      name: updated.name,
+      applicationType: "TEAM",
+      referenceId: updated.id,
+      roleOrJurisdiction: `${updated.roleApplied} (${updated.area})`,
+      newStatus: updated.status,
+      reviewNotes: adminNotes || updated.adminNotes,
+    }).catch((err) => console.error("Team status change email error:", err));
   }
 
   return { success: true, application: updated };

@@ -22,6 +22,7 @@ import {
   UserRole,
   SeriesKind,
 } from "@prisma/client";
+import { queueStatusChangeEmail, retryEmailJob, processEmailQueue } from "@/server/email";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 1. EVENT ACTIONS (CRUD, Duplicate, Publish Toggle)
@@ -757,6 +758,18 @@ export async function updateCampusLeadStatus(
     after: { status: updated.status, notes: updated.adminNotes },
   });
 
+  // Queue status change update email
+  if (original.status !== updated.status) {
+    await queueStatusChangeEmail(updated.email, {
+      name: updated.name,
+      applicationType: "CAMPUS_LEAD",
+      referenceId: updated.id,
+      roleOrJurisdiction: `${updated.college} (${updated.city})`,
+      newStatus: updated.status,
+      reviewNotes: adminNotes || updated.adminNotes,
+    }).catch((err) => console.error("Campus lead status email error:", err));
+  }
+
   revalidatePath("/admin/campus-leads");
   return { success: true, status: updated.status };
 }
@@ -789,6 +802,18 @@ export async function updateStateLeadStatus(
     before: { status: original.status, notes: original.adminNotes },
     after: { status: updated.status, notes: updated.adminNotes },
   });
+
+  // Queue status change update email
+  if (original.status !== updated.status) {
+    await queueStatusChangeEmail(updated.email, {
+      name: updated.name,
+      applicationType: "STATE_LEAD",
+      referenceId: updated.id,
+      roleOrJurisdiction: `${updated.state} (${updated.city})`,
+      newStatus: updated.status,
+      reviewNotes: adminNotes || updated.adminNotes,
+    }).catch((err) => console.error("State lead status email error:", err));
+  }
 
   revalidatePath("/admin/state-leads");
   return { success: true, status: updated.status };
@@ -1311,4 +1336,32 @@ export async function deleteAlbum(id: string) {
   revalidatePath("/admin/gallery");
   revalidatePath("/gallery");
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 10. EMAIL LOG & QUEUE ADMIN ACTIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export async function retryAdminEmailLog(id: string) {
+  const session = await requireAdmin();
+  const res = await retryEmailJob(id);
+
+  await writeAudit({
+    userId: session.user.id,
+    action: "UPDATE",
+    entityType: "EmailLog",
+    entityId: id,
+    before: { action: "MANUAL_RETRY_INITIATED" },
+    after: { success: res.success, error: res.error },
+  });
+
+  revalidatePath("/admin/email-logs");
+  return res;
+}
+
+export async function processAdminEmailQueue() {
+  await requireAdmin();
+  const res = await processEmailQueue({ batchSize: 50 });
+  revalidatePath("/admin/email-logs");
+  return res;
 }
