@@ -33,6 +33,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
     "@aws-sdk/client-s3": "^3.1145.0",
+    "@aws-sdk/s3-request-presigner": "^3.1146.0",
     "@hookform/resolvers": "^5.9.1",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
@@ -52,6 +53,7 @@
     "dotenv": "^18.0.5",
     "framer-motion": "^14.0.0",
     "jsqr": "^1.4.0",
+    "jszip": "^3.10.2",
     "lucide-react": "^1.50.0",
     "next": "16.3.8",
     "next-auth": "^5.0.0-beta.32",
@@ -71,6 +73,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jszip": "^3.4.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

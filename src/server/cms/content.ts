@@ -428,7 +428,7 @@ export async function updateWhoWeAreContent(data: WhoWeAreContent) {
     await db.contentBlock.update({
       where: { id: existingBlock.id },
       data: {
-        data: data as Prisma.InputJsonValue,
+        data: data as unknown as Prisma.InputJsonValue,
         isVisible: true,
       },
     });
@@ -437,7 +437,7 @@ export async function updateWhoWeAreContent(data: WhoWeAreContent) {
       data: {
         pageId: page.id,
         type: "TEXT",
-        data: data as Prisma.InputJsonValue,
+        data: data as unknown as Prisma.InputJsonValue,
         sortOrder: 0,
         isVisible: true,
       },
@@ -450,7 +450,7 @@ export async function updateWhoWeAreContent(data: WhoWeAreContent) {
       action: "UPDATE",
       entityType: "ContentPage",
       entityId: page.id,
-      after: data as Prisma.InputJsonValue,
+      after: data as unknown as Prisma.InputJsonValue,
     },
   });
 
