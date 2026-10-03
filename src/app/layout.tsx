@@ -1,17 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Geist_Mono, Geist } from "next/font/google";
+import { Geist_Mono, Geist } from "next/font/google";
 import { NavbarWrapper } from "@/components/layout/NavbarWrapper";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
@@ -98,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={cn("dark", "font-sans", geist.variable)} suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${geistMono.variable} bg-surface-950 text-surface-100 flex min-h-screen flex-col font-sans antialiased`}
+        className={`${geistMono.variable} bg-surface-950 text-surface-100 flex min-h-screen flex-col font-sans antialiased`}
       >
         <NavbarWrapper />
         <main className="flex-1 pt-16">{children}</main>

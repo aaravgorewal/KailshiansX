@@ -362,14 +362,6 @@ export default async function HomePage() {
             className="bg-grid pointer-events-none absolute inset-0 opacity-40"
             aria-hidden="true"
           />
-          <div
-            className="pointer-events-none absolute top-1/4 left-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-25 blur-3xl"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(61,97,252,0.45) 0%, rgba(139,61,255,0.25) 50%, transparent 80%)",
-            }}
-            aria-hidden="true"
-          />
 
           <div className="container-page relative z-10 text-center">
             {/* Tagline Badge */}
@@ -380,7 +372,7 @@ export default async function HomePage() {
 
             {/* Exact Required Headline */}
             <h1 className="text-surface-50 mx-auto max-w-4xl text-4xl leading-[1.1] font-extrabold tracking-tight sm:text-6xl sm:leading-[1.12] md:text-7xl">
-              Developer Events. <span className="gradient-text">Builder Communities.</span> Real
+              Developer Events. <span className="text-brand-300">Builder Communities.</span> Real
               Connections.
             </h1>
 
@@ -848,7 +840,7 @@ export default async function HomePage() {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {/* Campus Leads */}
-              <div className="border-surface-800 bg-surface-900/80 hover:border-brand-500/50 flex flex-col justify-between rounded-2xl border p-7 transition-all duration-300 hover:shadow-lg">
+              <div className="border-surface-800 bg-surface-900/80 hover:border-brand-500/50 flex flex-col justify-between rounded-2xl border p-7 transition-[border-color,transform] duration-200 hover:-translate-y-px">
                 <div>
                   <div className="bg-brand-500/10 border-brand-500/30 text-brand-400 mb-5 flex size-12 items-center justify-center rounded-xl border">
                     <GraduationCap className="size-6" aria-hidden="true" />
@@ -896,7 +888,7 @@ export default async function HomePage() {
               </div>
 
               {/* State Leads */}
-              <div className="border-surface-800 bg-surface-900/80 hover:border-accent-500/50 flex flex-col justify-between rounded-2xl border p-7 transition-all duration-300 hover:shadow-lg">
+              <div className="border-surface-800 bg-surface-900/80 hover:border-accent-500/50 flex flex-col justify-between rounded-2xl border p-7 transition-[border-color,transform] duration-200 hover:-translate-y-px">
                 <div>
                   <div className="bg-accent-500/10 border-accent-500/30 text-accent-400 mb-5 flex size-12 items-center justify-center rounded-xl border">
                     <Compass className="size-6" aria-hidden="true" />
@@ -938,7 +930,7 @@ export default async function HomePage() {
               </div>
 
               {/* Core Team & Collaborations */}
-              <div className="border-surface-800 bg-surface-900/80 hover:border-surface-600 flex flex-col justify-between rounded-2xl border p-7 transition-all duration-300 hover:shadow-lg">
+              <div className="border-surface-800 bg-surface-900/80 hover:border-surface-600 flex flex-col justify-between rounded-2xl border p-7 transition-[border-color,transform] duration-200 hover:-translate-y-px">
                 <div>
                   <div className="bg-surface-800 border-surface-700 text-surface-200 mb-5 flex size-12 items-center justify-center rounded-xl border">
                     <Users className="size-6" aria-hidden="true" />
@@ -1088,23 +1080,13 @@ export default async function HomePage() {
           aria-labelledby="section-final-cta"
           className="from-surface-900 via-surface-950 to-surface-950 border-surface-800 relative overflow-hidden border-t bg-gradient-to-b py-24 sm:py-32"
         >
-          {/* Ambient Glow */}
-          <div
-            className="pointer-events-none absolute bottom-0 left-1/2 h-[450px] w-[900px] -translate-x-1/2 translate-y-1/3 rounded-full opacity-30 blur-3xl"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(61,97,252,0.5) 0%, rgba(139,61,255,0.3) 50%, transparent 80%)",
-            }}
-            aria-hidden="true"
-          />
-
           <div className="container-page relative z-10 mx-auto max-w-4xl text-center">
             <Badge variant="gradient" size="default" dot className="mb-6">
               The KailshiansX Mission
             </Badge>
 
             <h2 className="text-surface-50 text-3xl leading-tight font-black tracking-tight sm:text-5xl md:text-6xl">
-              Ready to Build, Lead &amp; <span className="gradient-text">Shape the Future?</span>
+              Ready to Build, Lead &amp; <span className="text-brand-300">Shape the Future?</span>
             </h2>
 
             <p className="text-surface-300 mx-auto mt-6 max-w-2xl text-base leading-relaxed sm:text-lg md:text-xl">
