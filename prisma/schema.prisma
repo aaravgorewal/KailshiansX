@@ -391,6 +391,7 @@ model Event {
   eligibility          String?       @db.Text
   maxCapacity          Int?
   isFeatured           Boolean       @default(false)
+  category             String?       // MERN, Backend, System Design, DevOps, Cloud, AI, Blockchain, Open Source, Career
   metaTitle            String?
   metaDescription      String?
   deletedAt            DateTime?
@@ -414,6 +415,7 @@ model Event {
 
   @@index([status])
   @@index([type])
+  @@index([category])
   @@index([startDate])
   @@index([cityId])
   @@index([slug])
