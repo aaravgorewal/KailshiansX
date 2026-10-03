@@ -5,18 +5,18 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-200 select-none outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-950 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-[background-color,border-color,transform,box-shadow] duration-200 select-none outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-950 focus-visible:transition-none disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
   {
     variants: {
       variant: {
         default:
           "bg-brand-600 text-white hover:bg-brand-500 shadow-sm shadow-brand-950 hover:shadow-brand-500/20 hover:shadow-md",
+        // Alias — identical to `default`; kept for backward compat with existing callers
         primary:
           "bg-brand-600 text-white hover:bg-brand-500 shadow-sm shadow-brand-950 hover:shadow-brand-500/20 hover:shadow-md",
         secondary:
           "bg-surface-800 text-surface-100 hover:bg-surface-700 border border-surface-700 hover:border-surface-600",
-        accent:
-          "bg-gradient-to-r from-brand-600 to-accent-600 text-white hover:from-brand-500 hover:to-accent-500 shadow-md shadow-accent-950/40 hover:shadow-accent-500/25",
+        accent: "bg-accent-600 text-white hover:bg-accent-500 shadow-sm shadow-accent-950",
         outline:
           "border border-surface-700 bg-surface-900/50 text-surface-200 hover:bg-surface-800 hover:text-white hover:border-surface-600",
         ghost: "text-surface-300 hover:bg-surface-800/80 hover:text-white",

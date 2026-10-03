@@ -10,13 +10,13 @@ const cardVariants = cva(
         default: "bg-surface-900/90 border-surface-700/80 backdrop-blur-sm",
         elevated: "bg-surface-800/90 border-surface-700 shadow-xl shadow-black/50 backdrop-blur-sm",
         outline: "bg-surface-950/40 border-surface-700/80",
-        glow: "bg-surface-900/90 border-surface-700/80 hover:border-brand-500/50 hover:shadow-[0_0_24px_rgba(61,97,252,0.18)]",
+        glow: "bg-surface-900/90 border-surface-700/80 hover:border-brand-500/40 hover:-translate-y-0.5",
         accentGlow:
-          "bg-surface-900/90 border-surface-700/80 hover:border-accent-500/50 hover:shadow-[0_0_24px_rgba(139,61,255,0.18)]",
+          "bg-surface-900/90 border-surface-700/80 hover:border-accent-500/40 hover:-translate-y-0.5",
         glass: "bg-surface-900/60 border-surface-700/60 backdrop-blur-md",
       },
       interactive: {
-        true: "hover:-translate-y-1 hover:shadow-lg cursor-pointer",
+        true: "hover:-translate-y-0.5 hover:border-brand-500/40 cursor-pointer",
         false: "",
       },
     },

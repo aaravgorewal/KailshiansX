@@ -38,7 +38,7 @@ export function SeriesCard({
   return (
     <div
       className={cn(
-        "group border-surface-800 bg-surface-900/80 hover:border-accent-500/50 relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_28px_rgba(139,61,255,0.18)] sm:p-7",
+        "group border-surface-800 bg-surface-900/80 hover:border-accent-500/50 relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 backdrop-blur-sm transition-[border-color,transform] duration-200 hover:-translate-y-1 sm:p-7",
         className
       )}
     >
@@ -128,7 +128,7 @@ export function SeriesCard({
         <Link
           href={href}
           aria-label={`Explore ${name} series`}
-          className="bg-surface-800/80 text-surface-200 border-surface-700 hover:bg-brand-600 hover:border-brand-500 focus-visible:ring-brand-500 inline-flex size-9 items-center justify-center rounded-xl border transition-all hover:text-white focus-visible:ring-2"
+          className="bg-surface-800/80 text-surface-200 border-surface-700 hover:bg-brand-600 hover:border-brand-500 focus-visible:ring-brand-500 inline-flex size-9 items-center justify-center rounded-xl border transition-[background-color,border-color] duration-200 hover:text-white focus-visible:ring-2"
         >
           <ArrowRight className="size-4" aria-hidden="true" />
         </Link>

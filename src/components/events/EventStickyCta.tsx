@@ -9,8 +9,8 @@ import {
   Download,
   Users,
   Clock,
-  Sparkles,
   ArrowRight,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -249,11 +249,11 @@ export function EventStickyCta({
         {/* Perks Micro-list */}
         <div className="border-surface-800/80 text-surface-400 space-y-2 border-t pt-4 text-xs">
           <div className="flex items-center gap-2">
-            <Sparkles className="text-brand-400 size-3.5 shrink-0" />
+            <CheckCircle2 className="text-brand-400 size-3.5 shrink-0" />
             <span>Verifiable digital completion certificate</span>
           </div>
           <div className="flex items-center gap-2">
-            <Sparkles className="text-accent-400 size-3.5 shrink-0" />
+            <CheckCircle2 className="text-accent-400 size-3.5 shrink-0" />
             <span>Direct access to mentor &amp; speaker discussions</span>
           </div>
         </div>

@@ -46,18 +46,14 @@ export function SectionHeader({
     }
     const parts = title.split(highlight);
     if (parts.length <= 1) {
-      return (
-        <>
-          {title} <span className="gradient-text">{highlight}</span>
-        </>
-      );
+      return title;
     }
     return (
       <>
         {parts.map((part, index) => (
           <React.Fragment key={index}>
             {part}
-            {index < parts.length - 1 && <span className="gradient-text">{highlight}</span>}
+            {index < parts.length - 1 && <span className="text-brand-300">{highlight}</span>}
           </React.Fragment>
         ))}
       </>

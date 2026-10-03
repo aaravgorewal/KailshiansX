@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import Link from "next/link";
-import { Calendar, MapPin, Users, ArrowRight, Clock, Sparkles } from "lucide-react";
+import { Calendar, MapPin, Users, ArrowRight, Clock, Mic } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -85,19 +85,14 @@ export function EventCard({
   return (
     <article
       className={cn(
-        "group border-surface-800 bg-surface-900/70 hover:border-brand-500/50 relative flex flex-col justify-between overflow-hidden rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(61,97,252,0.18)]",
+        "group border-surface-800 bg-surface-900/70 hover:border-brand-500/40 relative flex flex-col justify-between overflow-hidden rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5",
         className
       )}
     >
       {/* Cover Media Container */}
       <div className="bg-surface-950 relative aspect-[16/9] w-full overflow-hidden">
         {coverUrl ? (
-          <img
-            src={coverUrl}
-            alt={title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
+          <img src={coverUrl} alt={title} className="h-full w-full object-cover" loading="lazy" />
         ) : (
           <div className="from-surface-900 via-surface-950 to-brand-950/40 relative flex h-full w-full items-center justify-center bg-gradient-to-br p-6">
             <div className="bg-grid absolute inset-0 opacity-30" />
@@ -175,7 +170,7 @@ export function EventCard({
               )}
               {speakerCount && (
                 <div className="flex items-center gap-1.5">
-                  <Sparkles className="text-surface-500 size-3.5" aria-hidden="true" />
+                  <Mic className="text-surface-500 size-3.5" aria-hidden="true" />
                   <span>{speakerCount} speakers</span>
                 </div>
               )}

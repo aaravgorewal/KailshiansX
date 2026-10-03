@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export interface TestimonialItem {
@@ -34,6 +34,7 @@ export function TestimonialCarousel({
   const [direction, setDirection] = React.useState<number>(0);
   const [isPaused, setIsPaused] = React.useState(false);
   const touchStartX = React.useRef<number | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const length = testimonials.length;
 
@@ -98,7 +99,7 @@ export function TestimonialCarousel({
 
   const slideVariants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 80 : -80,
+      x: prefersReducedMotion ? 0 : direction > 0 ? 80 : -80,
       opacity: 0,
     }),
     center: {
@@ -106,7 +107,7 @@ export function TestimonialCarousel({
       opacity: 1,
     },
     exit: (direction: number) => ({
-      x: direction < 0 ? 80 : -80,
+      x: prefersReducedMotion ? 0 : direction < 0 ? 80 : -80,
       opacity: 0,
     }),
   };
@@ -217,9 +218,9 @@ export function TestimonialCarousel({
               aria-label={`Go to slide ${idx + 1}`}
               onClick={() => goToSlide(idx)}
               className={cn(
-                "focus-visible:ring-brand-500 h-2 rounded-full transition-all duration-300 outline-none focus-visible:ring-2",
+                "focus-visible:ring-brand-500 h-2 rounded-full transition-[width,background-color] duration-250 outline-none focus-visible:ring-2",
                 idx === currentIndex
-                  ? "bg-brand-500 w-8 shadow-[0_0_8px_rgba(61,97,252,0.6)]"
+                  ? "bg-brand-500 w-8"
                   : "bg-surface-700 hover:bg-surface-600 w-2"
               )}
             />
