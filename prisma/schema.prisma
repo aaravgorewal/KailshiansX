@@ -340,7 +340,9 @@ model Series {
   tagline     String?
   description String?    @db.Text
   coverImage  String?
+  logo        String?
   city        String?
+  region      String?
   purpose     String?    @db.Text
   deletedAt   DateTime?
   createdAt   DateTime   @default(now())
@@ -398,20 +400,21 @@ model Event {
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
 
-  city            City?           @relation(fields: [cityId], references: [id])
-  seriesEdition   SeriesEdition?
-  scheduleItems   EventScheduleItem[]
-  tracks          EventTrack[]
-  speakers        EventSpeaker[]
-  partners        EventPartner[]
-  ticketTypes     TicketType[]
-  registrations   Registration[]
-  galleryAlbums   GalleryAlbum[]
-  faqs            EventFaq[]
-  revenueItems    EventRevenueItem[]
-  expenseItems    EventExpenseItem[]
-  certificates    Certificate[]
+  city             City?               @relation(fields: [cityId], references: [id])
+  seriesEdition    SeriesEdition?
+  scheduleItems    EventScheduleItem[]
+  tracks           EventTrack[]
+  speakers         EventSpeaker[]
+  partners         EventPartner[]
+  ticketTypes      TicketType[]
+  registrations    Registration[]
+  galleryAlbums    GalleryAlbum[]
+  faqs             EventFaq[]
+  revenueItems     EventRevenueItem[]
+  expenseItems     EventExpenseItem[]
+  certificates     Certificate[]
   techTalkResource TechTalkResource?
+  hackathonDetail  HackathonDetail?
 
   @@index([status])
   @@index([type])
@@ -419,6 +422,24 @@ model Event {
   @@index([startDate])
   @@index([cityId])
   @@index([slug])
+}
+
+model HackathonDetail {
+  id                 String    @id @default(cuid())
+  eventId            String    @unique
+  event              Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  minTeamSize        Int       @default(1)
+  maxTeamSize        Int       @default(4)
+  rules              String?   @db.Text
+  submissionUrl      String?
+  submissionDeadline DateTime?
+  prizes             Json?     // Array of { title, amount, perks: string[], track?: string }
+  problemStatements  Json?     // Array of { id, title, description, track, criteria?: string[] }
+  results            Json?     // Array of { rank: number, title: string, teamName: string, projectName: string, description?: string, repoUrl?: string, demoUrl?: string, track?: string }
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([eventId])
 }
 
 model EventFaq {
