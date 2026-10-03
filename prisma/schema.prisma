@@ -1,4 +1,6 @@
 // prisma/schema.prisma
+// KailshiansX — Full data model v1.0
+// Run: npx prisma migrate dev --name init
 
 generator client {
   provider = "prisma-client-js"
@@ -8,7 +10,9 @@ datasource db {
   provider = "postgresql"
 }
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 enum UserRole {
   SUPER_ADMIN
@@ -31,35 +35,89 @@ enum EventType {
 enum EventStatus {
   DRAFT
   PUBLISHED
-  CANCELLED
-  COMPLETED
+  ARCHIVED
+}
+
+enum SeriesKind {
+  MEETUP
+  HACKATHON
+}
+
+enum SpeakerRole {
+  SPEAKER
+  JUDGE
+  MENTOR
+}
+
+enum PartnerTier {
+  TITLE
+  GOLD
+  SILVER
+  BRONZE
+  COMMUNITY
+  MEDIA
 }
 
 enum RegistrationStatus {
   PENDING
   CONFIRMED
   CANCELLED
-  ATTENDED
+  WAITLISTED
 }
 
 enum PaymentStatus {
-  UNPAID
-  PAID
-  REFUNDED
+  PENDING
+  CAPTURED
   FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
 }
 
-enum ApplicationStatus {
-  NEW
-  REVIEWING
+enum RefundStatus {
+  NONE
+  REQUESTED
+  PROCESSED
+  REJECTED
+}
+
+enum AttendanceMode {
+  IN_PERSON
+  VIRTUAL
+  HYBRID
+}
+
+// PRD §11 — Campus Lead workflow
+enum CampusLeadStatus {
+  APPLIED
+  SCREENING
   INTERVIEW
   SELECTED
-  REJECTED
   ACTIVE
   ALUMNI
   INACTIVE
 }
 
+// PRD §12 — State Lead workflow
+enum StateLeadStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW
+  SELECTED
+  ACTIVE
+  ALUMNI
+  INACTIVE
+}
+
+// PRD §14 — Join Team workflow
+enum TeamApplicationStatus {
+  NEW
+  REVIEWING
+  INTERVIEW
+  SELECTED
+  REJECTED
+}
+
+// PRD §13 — Collaboration pipeline
 enum CollaborationType {
   COLLEGE
   COMMUNITY
@@ -67,7 +125,62 @@ enum CollaborationType {
   SPONSOR
 }
 
-// ─── Auth.js required tables ──────────────────────────────────────────────────
+enum CollaborationStage {
+  LEAD
+  CONTACTED
+  NEGOTIATING
+  CONFIRMED
+  DECLINED
+  COMPLETED
+}
+
+enum RevenueCategory {
+  TICKET
+  SPONSORSHIP
+  MERCH
+  OTHER
+}
+
+enum ExpenseCategory {
+  VENUE
+  TRAVEL
+  FOOD
+  SWAG
+  MARKETING
+  PRINTING
+  OPERATIONS
+  LOGISTICS
+  OTHER
+}
+
+enum ContentBlockType {
+  HERO
+  TEXT
+  IMAGE
+  VIDEO
+  FAQ
+  CTA
+  TESTIMONIAL
+  STATS
+  TEAM_GRID
+  EVENT_LIST
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  PUBLISH
+  ARCHIVE
+  APPROVE
+  REJECT
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AUTH.JS TABLES
+// ═══════════════════════════════════════════════════════════════════════════════
 
 model Account {
   id                String  @id @default(cuid())
@@ -86,6 +199,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -94,6 +208,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -104,7 +220,9 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ─── User ─────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// USER
+// ═══════════════════════════════════════════════════════════════════════════════
 
 model User {
   id            String    @id @default(cuid())
@@ -112,267 +230,754 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
+  phone         String?
   role          UserRole  @default(VIEWER)
+  deletedAt     DateTime? // soft delete
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   accounts               Account[]
   sessions               Session[]
   registrations          Registration[]
+  payments               Payment[]
   teamApplications       TeamApplication[]
   campusLeadApplications CampusLeadApplication[]
   stateLeadApplications  StateLeadApplication[]
+  campusLead             CampusLead?
+  stateLead              StateLead?
+  auditLogs              AuditLog[]
+
+  @@index([email])
+  @@index([role])
 }
 
-// ─── Events ───────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// GEOGRAPHY — City, College
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model City {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  state     String
+  country   String   @default("India")
+  createdAt DateTime @default(now())
+
+  events         Event[]
+  campusLeads    CampusLead[]
+  stateLeads     StateLead[]
+  colleges       College[]
+  collaborations CollaborationLead[]
+
+  @@index([state])
+}
+
+model College {
+  id        String   @id @default(cuid())
+  name      String
+  cityId    String
+  state     String
+  website   String?
+  createdAt DateTime @default(now())
+
+  city        City         @relation(fields: [cityId], references: [id])
+  campusLeads CampusLead[]
+
+  @@unique([name, cityId])
+  @@index([cityId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SPEAKERS (global pool, reused across events)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model Speaker {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  bio          String?  @db.Text
+  photo        String?
+  designation  String?
+  organisation String?
+  linkedin     String?
+  twitter      String?
+  github       String?
+  website      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  eventSpeakers    EventSpeaker[]
+  techTalkResources TechTalkResource[]
+
+  @@index([name])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PARTNERS (global pool, reused across events)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  logo      String?
+  website   String?
+  category  String? // brand, college, community, media, venue
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  eventPartners EventPartner[]
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SERIES (Meetup & Hackathon)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model Series {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  kind        SeriesKind
+  tagline     String?
+  description String?    @db.Text
+  coverImage  String?
+  city        String?
+  purpose     String?    @db.Text
+  deletedAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  editions SeriesEdition[]
+
+  @@index([kind])
+  @@index([slug])
+}
+
+// Links a Series to a specific Event edition
+model SeriesEdition {
+  id          String   @id @default(cuid())
+  seriesId    String
+  eventId     String   @unique // one event per edition
+  editionNo   Int // 1, 2, 3…
+  theme       String?
+  createdAt   DateTime @default(now())
+
+  series Series @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([seriesId, editionNo])
+  @@index([seriesId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EVENTS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 model Event {
-  id                   String      @id @default(cuid())
-  slug                 String      @unique
+  id                   String        @id @default(cuid())
+  slug                 String        @unique
   title                String
   type                 EventType
-  status               EventStatus @default(DRAFT)
-  description          String?     @db.Text
+  status               EventStatus   @default(DRAFT)
+  overview             String?       @db.Text
   coverImage           String?
-  city                 String?
+  cityId               String?
   venue                String?
   venueAddress         String?
+  venueMapUrl          String?
+  attendanceMode       AttendanceMode @default(IN_PERSON)
   startDate            DateTime
   endDate              DateTime?
   registrationDeadline DateTime?
-  isFree               Boolean     @default(true)
-  ticketPrice          Decimal?    @db.Decimal(10, 2)
+  eligibility          String?       @db.Text
   maxCapacity          Int?
-  eligibility          String?     @db.Text
-  schedule             Json? // Array of { time, title, speaker }
-  faqs                 Json? // Array of { question, answer }
-  meetupSeriesId       String?
-  hackathonSeriesId    String?
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
+  isFeatured           Boolean       @default(false)
+  metaTitle            String?
+  metaDescription      String?
+  deletedAt            DateTime?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
 
-  registrations   Registration[]
+  city            City?           @relation(fields: [cityId], references: [id])
+  seriesEdition   SeriesEdition?
+  scheduleItems   EventScheduleItem[]
+  tracks          EventTrack[]
   speakers        EventSpeaker[]
   partners        EventPartner[]
-  galleryMedia    GalleryMedia[]
-  meetupSeries    MeetupSeries?    @relation(fields: [meetupSeriesId], references: [id])
-  hackathonSeries HackathonSeries? @relation(fields: [hackathonSeriesId], references: [id])
-  eventPnL        EventPnL?
+  ticketTypes     TicketType[]
+  registrations   Registration[]
+  galleryAlbums   GalleryAlbum[]
+  faqs            EventFaq[]
+  revenueItems    EventRevenueItem[]
+  expenseItems    EventExpenseItem[]
+  certificates    Certificate[]
+  techTalkResource TechTalkResource?
+
+  @@index([status])
+  @@index([type])
+  @@index([startDate])
+  @@index([cityId])
+  @@index([slug])
+}
+
+model EventFaq {
+  id        String @id @default(cuid())
+  eventId   String
+  question  String
+  answer    String @db.Text
+  sortOrder Int    @default(0)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+model EventScheduleItem {
+  id          String   @id @default(cuid())
+  eventId     String
+  startTime   DateTime
+  endTime     DateTime?
+  title       String
+  description String?
+  speakerId   String?
+  trackId     String?
+  sortOrder   Int      @default(0)
+
+  event Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+model EventTrack {
+  id          String @id @default(cuid())
+  eventId     String
+  name        String
+  description String?
+  color       String?
+  sortOrder   Int    @default(0)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
 }
 
 model EventSpeaker {
-  id      String  @id @default(cuid())
-  eventId String
-  name    String
-  role    String?
-  bio     String? @db.Text
-  photo   String?
-  linkedin String?
-  twitter String?
+  id        String      @id @default(cuid())
+  eventId   String
+  speakerId String
+  role      SpeakerRole @default(SPEAKER)
+  sortOrder Int         @default(0)
+
   event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  speaker Speaker @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, speakerId, role])
+  @@index([eventId])
+  @@index([speakerId])
 }
 
 model EventPartner {
-  id      String  @id @default(cuid())
-  eventId String
-  name    String
-  logo    String?
-  website String?
-  tier    String?
+  id        String      @id @default(cuid())
+  eventId   String
+  partnerId String
+  tier      PartnerTier @default(COMMUNITY)
+  sortOrder Int         @default(0)
+
   event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, partnerId])
+  @@index([eventId])
 }
 
-// ─── Meetup Series ────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// TICKETS & REGISTRATIONS
+// ═══════════════════════════════════════════════════════════════════════════════
 
-model MeetupSeries {
+model TicketType {
   id          String   @id @default(cuid())
-  slug        String   @unique
-  name        String
-  city        String?
-  description String?  @db.Text
-  coverImage  String?
+  eventId     String
+  name        String // "General Admission", "Student", "VIP"
+  description String?
+  price       Decimal  @default(0) @db.Decimal(10, 2)
+  quota       Int // max seats for this tier
+  saleStart   DateTime?
+  saleEnd     DateTime?
+  isFree      Boolean  @default(false)
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  events Event[]
+  event         Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  registrations Registration[]
+
+  @@index([eventId])
 }
-
-// ─── Hackathon Series ─────────────────────────────────────────────────────────
-
-model HackathonSeries {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  name        String
-  description String?  @db.Text
-  coverImage  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  events Event[]
-}
-
-// ─── Registration & Payments ──────────────────────────────────────────────────
 
 model Registration {
-  id             String             @id @default(cuid())
-  registrationId String             @unique @default(cuid())
-  eventId        String
-  userId         String?
-  name           String
-  email          String
-  phone          String?
-  ticketType     String?
-  status         RegistrationStatus @default(PENDING)
-  paymentStatus  PaymentStatus      @default(UNPAID)
-  paymentId      String?
-  amount         Decimal?           @db.Decimal(10, 2)
-  attended       Boolean            @default(false)
-  qrCode         String?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  id                String             @id @default(cuid())
+  registrationCode  String             @unique // human-readable e.g. KX-2025-001234
+  eventId           String
+  ticketTypeId      String
+  userId            String?
+  name              String
+  email             String
+  phone             String?
+  tshirtSize        String?
+  dietaryPref       String?
+  customFields      Json?              // extra event-specific questions
+  status            RegistrationStatus @default(PENDING)
+  qrCodeUrl         String?
+  checkedInAt       DateTime?
+  deletedAt         DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
-  event Event @relation(fields: [eventId], references: [id])
-  user  User? @relation(fields: [userId], references: [id])
+  event      Event      @relation(fields: [eventId], references: [id])
+  ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
+  user       User?      @relation(fields: [userId], references: [id])
+  payment    Payment?
+  attendance Attendance?
+  certificate Certificate?
+
+  @@index([eventId])
+  @@index([email])
+  @@index([userId])
+  @@index([status])
+  @@index([registrationCode])
 }
 
-// ─── Event P&L ───────────────────────────────────────────────────────────────
+model Payment {
+  id                  String        @id @default(cuid())
+  registrationId      String        @unique
+  userId              String?
+  razorpayOrderId     String        @unique
+  razorpayPaymentId   String?       @unique
+  razorpaySignature   String?
+  amount              Decimal       @db.Decimal(10, 2)
+  currency            String        @default("INR")
+  status              PaymentStatus @default(PENDING)
+  refundStatus        RefundStatus  @default(NONE)
+  refundId            String?
+  refundAmount        Decimal?      @db.Decimal(10, 2)
+  refundReason        String?       @db.Text
+  metadata            Json?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 
-model EventPnL {
-  id             String  @id @default(cuid())
-  eventId        String  @unique
-  ticketRevenue  Decimal @default(0) @db.Decimal(10, 2)
-  sponsorRevenue Decimal @default(0) @db.Decimal(10, 2)
-  otherRevenue   Decimal @default(0) @db.Decimal(10, 2)
-  venueCost      Decimal @default(0) @db.Decimal(10, 2)
-  travelCost     Decimal @default(0) @db.Decimal(10, 2)
-  foodCost       Decimal @default(0) @db.Decimal(10, 2)
-  swagCost       Decimal @default(0) @db.Decimal(10, 2)
-  marketingCost  Decimal @default(0) @db.Decimal(10, 2)
-  printingCost   Decimal @default(0) @db.Decimal(10, 2)
-  operationsCost Decimal @default(0) @db.Decimal(10, 2)
-  otherCost      Decimal @default(0) @db.Decimal(10, 2)
-  notes          String? @db.Text
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  user         User?         @relation(fields: [userId], references: [id])
 
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  @@index([razorpayOrderId])
+  @@index([razorpayPaymentId])
+  @@index([status])
+  @@index([userId])
 }
 
-// ─── Gallery ──────────────────────────────────────────────────────────────────
+model Attendance {
+  id             String   @id @default(cuid())
+  registrationId String   @unique
+  checkedInAt    DateTime @default(now())
+  checkedInBy    String?  // userId of staff who scanned
+  method         String   @default("QR") // QR | MANUAL
 
-model GalleryMedia {
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GALLERY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model GalleryAlbum {
+  id          String   @id @default(cuid())
+  eventId     String?
+  title       String
+  category    String   // meetup | hackathon | workshop | tech-talk | community | bts
+  coverImage  String?
+  isPublished Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event  Event?         @relation(fields: [eventId], references: [id])
+  images GalleryImage[]
+
+  @@index([eventId])
+  @@index([category])
+}
+
+model GalleryImage {
   id        String   @id @default(cuid())
-  eventId   String?
-  category  String // meetup, hackathon, workshop, tech-talk, community, bts
+  albumId   String
   url       String
+  thumbUrl  String?
   caption   String?
   altText   String?
+  width     Int?
+  height    Int?
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
 
-  event Event? @relation(fields: [eventId], references: [id])
+  album GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([albumId])
 }
 
-// ─── Team Applications ────────────────────────────────────────────────────────
-
-model TeamApplication {
-  id         String            @id @default(cuid())
-  userId     String?
-  name       String
-  email      String
-  phone      String?
-  department String
-  role       String?
-  linkedin   String?
-  portfolio  String?
-  experience String?           @db.Text
-  motivation String?           @db.Text
-  status     ApplicationStatus @default(NEW)
-  adminNotes String?           @db.Text
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-
-  user User? @relation(fields: [userId], references: [id])
-}
-
-// ─── Campus Lead Applications ─────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// CAMPUS LEADS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 model CampusLeadApplication {
-  id                   String            @id @default(cuid())
+  id                   String           @id @default(cuid())
   userId               String?
   name                 String
   email                String
   phone                String?
   college              String
-  city                 String
+  cityId               String?
   courseYear           String?
   linkedin             String?
-  experience           String?           @db.Text
-  communityInvolvement String?           @db.Text
-  whyKailshiansX       String?           @db.Text
+  experience           String?          @db.Text
+  communityInvolvement String?          @db.Text
+  whyKailshiansX       String?          @db.Text
   availability         String?
-  status               ApplicationStatus @default(NEW)
-  adminNotes           String?           @db.Text
-  createdAt            DateTime          @default(now())
-  updatedAt            DateTime          @updatedAt
+  referredBy           String?
+  honeypot             String?          // spam trap — must be empty
+  status               CampusLeadStatus @default(APPLIED)
+  adminNotes           String?          @db.Text
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
 
-  user User? @relation(fields: [userId], references: [id])
+  user       User?      @relation(fields: [userId], references: [id])
+  campusLead CampusLead?
+
+  @@index([status])
+  @@index([email])
 }
 
-// ─── State Lead Applications ──────────────────────────────────────────────────
+model CampusLead {
+  id            String           @id @default(cuid())
+  applicationId String           @unique
+  userId        String           @unique
+  collegeId     String?
+  cityId        String?
+  status        CampusLeadStatus @default(ACTIVE)
+  startDate     DateTime         @default(now())
+  endDate       DateTime?
+  eventsSupported Int            @default(0)
+  referrals       Int            @default(0)
+  adminNotes    String?          @db.Text
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  application CampusLeadApplication @relation(fields: [applicationId], references: [id])
+  user        User                  @relation(fields: [userId], references: [id])
+  college     College?              @relation(fields: [collegeId], references: [id])
+  city        City?                 @relation(fields: [cityId], references: [id])
+
+  @@index([status])
+  @@index([cityId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STATE LEADS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 model StateLeadApplication {
-  id                 String            @id @default(cuid())
+  id                 String          @id @default(cuid())
   userId             String?
   name               String
   email              String
   phone              String?
   state              String
-  cities             String?
+  citiesCovered      String?
   linkedin           String?
-  experience         String?           @db.Text
-  leadershipEvidence String?           @db.Text
-  whyKailshiansX     String?           @db.Text
-  status             ApplicationStatus @default(NEW)
-  adminNotes         String?           @db.Text
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  experience         String?         @db.Text
+  leadershipEvidence String?         @db.Text
+  whyKailshiansX     String?         @db.Text
+  honeypot           String?
+  status             StateLeadStatus @default(APPLIED)
+  adminNotes         String?         @db.Text
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
 
-  user User? @relation(fields: [userId], references: [id])
+  user      User?      @relation(fields: [userId], references: [id])
+  stateLead StateLead?
+
+  @@index([status])
+  @@index([state])
 }
 
-// ─── Collaborations ───────────────────────────────────────────────────────────
+model StateLead {
+  id            String          @id @default(cuid())
+  applicationId String          @unique
+  userId        String          @unique
+  state         String
+  status        StateLeadStatus @default(ACTIVE)
+  startDate     DateTime        @default(now())
+  endDate       DateTime?
+  adminNotes    String?         @db.Text
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
-model Collaboration {
-  id               String            @id @default(cuid())
+  application StateLeadApplication @relation(fields: [applicationId], references: [id])
+  user        User                 @relation(fields: [userId], references: [id])
+  cities      City[]
+
+  @@index([state])
+  @@index([status])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COLLABORATIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model CollaborationLead {
+  id               String             @id @default(cuid())
   type             CollaborationType
+  stage            CollaborationStage @default(LEAD)
   organisation     String
   contactPerson    String
   email            String
   phone            String?
   website          String?
-  city             String?
-  proposedEvent    String?           @db.Text
-  resourcesOffered String?           @db.Text
-  message          String?           @db.Text
-  status           ApplicationStatus @default(NEW)
-  adminNotes       String?           @db.Text
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  cityId           String?
+  proposedEvent    String?            @db.Text
+  resourcesOffered String?            @db.Text
+  message          String?            @db.Text
+  honeypot         String?
+  adminNotes       String?            @db.Text
+  assignedTo       String?            // userId of admin handling this
+  deletedAt        DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  city City? @relation(fields: [cityId], references: [id])
+
+  @@index([type])
+  @@index([stage])
+  @@index([email])
 }
 
-// ─── Core Team ────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// TEAM APPLICATIONS & CORE TEAM
+// ═══════════════════════════════════════════════════════════════════════════════
 
-model TeamMember {
-  id        String   @id @default(cuid())
-  name      String
-  role      String
-  category  String // leadership, technology, community, events, partnerships, marketing, operations
-  bio       String?  @db.Text
-  photo     String?
-  linkedin  String?
-  twitter   String?
-  github    String?
-  sortOrder Int      @default(0)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model TeamApplication {
+  id         String               @id @default(cuid())
+  userId     String?
+  name       String
+  email      String
+  phone      String?
+  area       String               // Technology | Events | Community | Partnerships | Marketing | Design | Content | Social | DevRel
+  roleApplied String?
+  linkedin   String?
+  portfolio  String?
+  resumeUrl  String?
+  experience String?              @db.Text
+  motivation String?              @db.Text
+  honeypot   String?
+  status     TeamApplicationStatus @default(NEW)
+  adminNotes String?              @db.Text
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([status])
+  @@index([area])
+}
+
+model CoreTeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  role        String
+  category    String   // leadership | technology | community | events | partnerships | marketing | operations
+  bio         String?  @db.Text
+  photo       String?
+  linkedin    String?
+  twitter     String?
+  github      String?
+  website     String?
+  email       String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  joinedAt    DateTime?
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([isActive])
+}
+
+model FounderContent {
+  id           String   @id @default(cuid())
+  founderName  String
+  founderSlug  String   @unique
+  tagline      String?
+  message      String?  @db.Text  // "why KailshiansX was created"
+  philosophy   String?  @db.Text  // community philosophy
+  photo        String?
+  linkedin     String?
+  twitter      String?
+  milestones   Json?    // Array of { year, title, description }
+  isPublished  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TECH TALK RESOURCES (post-event knowledge archive)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model TechTalkResource {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  speakerId   String?
+  slideUrl    String?
+  videoUrl    String?
+  repoUrl     String?
+  keyTakeaways Json?   // Array of strings
+  tags        String[] // PostgreSQL array
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  speaker Speaker? @relation(fields: [speakerId], references: [id])
+
+  @@index([speakerId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CERTIFICATES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model CertificateTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  templateUrl String   // S3 URL of the base template image
+  fields      Json     // Array of { key, x, y, fontSize, color, fontFamily }
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  certificates Certificate[]
+}
+
+model Certificate {
+  id             String   @id @default(cuid())
+  uniqueId       String   @unique @default(cuid()) // public verification ID e.g. KX-CERT-abc123
+  eventId        String
+  registrationId String?  @unique
+  templateId     String
+  participantName String
+  participantEmail String
+  issuedAt       DateTime @default(now())
+  certificateUrl String?  // generated S3 URL
+  emailSentAt    DateTime?
+
+  event        Event               @relation(fields: [eventId], references: [id])
+  registration Registration?       @relation(fields: [registrationId], references: [id])
+  template     CertificateTemplate @relation(fields: [templateId], references: [id])
+
+  @@index([eventId])
+  @@index([participantEmail])
+  @@index([uniqueId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REVENUE & EXPENSES (PRD §23)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model EventRevenueItem {
+  id          String          @id @default(cuid())
+  eventId     String
+  category    RevenueCategory
+  description String?
+  amount      Decimal         @db.Decimal(10, 2)
+  receivedAt  DateTime?
+  notes       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+model EventExpenseItem {
+  id          String          @id @default(cuid())
+  eventId     String
+  category    ExpenseCategory
+  description String?
+  amount      Decimal         @db.Decimal(10, 2)
+  paidAt      DateTime?
+  receiptUrl  String?
+  notes       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CMS — ContentPage & ContentBlock
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model ContentPage {
+  id          String   @id @default(cuid())
+  slug        String   @unique // e.g. "who-we-are", "founder"
+  title       String
+  metaTitle   String?
+  metaDesc    String?
+  isPublished Boolean  @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  blocks ContentBlock[]
+
+  @@index([slug])
+}
+
+model ContentBlock {
+  id        String           @id @default(cuid())
+  pageId    String
+  type      ContentBlockType
+  data      Json             // flexible payload per block type
+  sortOrder Int              @default(0)
+  isVisible Boolean          @default(true)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  page ContentPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AUDIT LOG
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  userId     String?
+  action     AuditAction
+  entityType String      // "Event" | "Registration" | etc.
+  entityId   String?
+  before     Json?       // snapshot before change
+  after      Json?       // snapshot after change
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime    @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
 }
