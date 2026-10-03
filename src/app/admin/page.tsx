@@ -62,6 +62,7 @@ export default async function AdminDashboardPage() {
       {/* Quick links */}
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[
+          { href: "/admin/checkin", label: "Live QR Check-in Scanner" },
           { href: "/admin/events/new", label: "Create New Event" },
           { href: "/admin/campus-leads", label: "Campus Lead Applications" },
           { href: "/admin/collaborations", label: "Collaboration Pipeline" },

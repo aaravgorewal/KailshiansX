@@ -522,11 +522,15 @@ model Registration {
   name              String
   email             String
   phone             String?
+  college           String?
+  city              String?
   tshirtSize        String?
   dietaryPref       String?
   customFields      Json?              // extra event-specific questions
   status            RegistrationStatus @default(PENDING)
+  holdExpiresAt     DateTime?          // seat held for 10 min during payment
   qrCodeUrl         String?
+  qrPayload         String?            @db.Text
   checkedInAt       DateTime?
   deletedAt         DateTime?
   createdAt         DateTime           @default(now())
