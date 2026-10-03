@@ -660,6 +660,7 @@ model CampusLeadApplication {
   email                String
   phone                String?
   college              String
+  city                 String?
   cityId               String?
   courseYear           String?
   linkedin             String?
@@ -716,11 +717,15 @@ model StateLeadApplication {
   email              String
   phone              String?
   state              String
+  city               String?
   citiesCovered      String?
+  currentRole        String?
   linkedin           String?
   experience         String?         @db.Text
   leadershipEvidence String?         @db.Text
+  communityVision    String?         @db.Text
   whyKailshiansX     String?         @db.Text
+  availabilityHours  String?
   honeypot           String?
   status             StateLeadStatus @default(APPLIED)
   adminNotes         String?         @db.Text

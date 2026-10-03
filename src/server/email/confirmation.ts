@@ -162,3 +162,165 @@ export async function sendRegistrationConfirmationEmail(
     return { success: false };
   }
 }
+
+export interface SendCampusLeadConfirmationParams {
+  email: string;
+  name: string;
+  college: string;
+  city: string;
+  applicationId: string;
+}
+
+export async function sendCampusLeadConfirmationEmail(
+  params: SendCampusLeadConfirmationParams
+): Promise<{ success: boolean; id?: string }> {
+  const { email, name, college, city, applicationId } = params;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Application Received: KailshiansX Campus Lead</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #020617; color: #f8fafc; margin: 0; padding: 24px; }
+    .card { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 32px; max-width: 560px; margin: 0 auto; }
+    .badge { display: inline-block; background-color: #2563eb22; color: #60a5fa; border: 1px solid #3b82f644; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 9999px; margin-bottom: 16px; }
+    h1 { font-size: 22px; font-weight: 800; color: #ffffff; margin: 0 0 12px 0; }
+    p { font-size: 14px; line-height: 1.6; color: #94a3b8; margin: 0 0 16px 0; }
+    .info-box { background-color: #020617; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin: 20px 0; }
+    .workflow { margin: 20px 0; border-left: 2px solid #3b82f6; padding-left: 14px; }
+    .workflow-step { margin-bottom: 10px; font-size: 12px; color: #cbd5e1; }
+    .footer { font-size: 11px; color: #64748b; text-align: center; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">Campus Lead Application</span>
+    <h1>Application Received, ${name}!</h1>
+    <p>Thank you for stepping up to represent <strong>KailshiansX</strong> at <strong>${college} (${city})</strong>. Your application has been logged into our community review pipeline.</p>
+    
+    <div class="info-box">
+      <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Application Reference</div>
+      <div style="font-family: monospace; font-size: 16px; font-weight: 700; color: #38bdf8; margin-top: 4px;">${applicationId}</div>
+    </div>
+
+    <p style="font-weight: 600; color: #f1f5f9; margin-bottom: 8px;">Selection Workflow (PRD §11):</p>
+    <div class="workflow">
+      <div class="workflow-step"><strong>1. Applied</strong> — Logged and under review (current stage)</div>
+      <div class="workflow-step"><strong>2. Screening</strong> — Verification of campus standing, club work & technical profile</div>
+      <div class="workflow-step"><strong>3. 1:1 Video Interview</strong> — Discussion on campus goals and chapter vision</div>
+      <div class="workflow-step"><strong>4. Selected</strong> — Induction kit, chapter repository & badge activation</div>
+      <div class="workflow-step"><strong>5. Active Lead</strong> — Organizing meetups, hackathon teams & student workshops</div>
+    </div>
+
+    <p>Our Community Core team reviews submissions weekly and will reach out via WhatsApp/email regarding the screening outcome.</p>
+
+    <div class="footer">
+      KailshiansX • Kailshians Web Services Developer Community<br>
+      Leading the next generation of builders.
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+
+  if (!resend) {
+    console.log(`[Email Mock] Sent Campus Lead confirmation to ${email} (${applicationId})`);
+    return { success: true, id: `mock_email_${Date.now()}` };
+  }
+
+  try {
+    const data = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: `Application Received: KailshiansX Campus Lead (${college})`,
+      html,
+    });
+    return { success: true, id: data.data?.id };
+  } catch (error) {
+    console.error("Resend campus lead confirmation failed:", error);
+    return { success: false };
+  }
+}
+
+export interface SendStateLeadConfirmationParams {
+  email: string;
+  name: string;
+  state: string;
+  city: string;
+  applicationId: string;
+}
+
+export async function sendStateLeadConfirmationEmail(
+  params: SendStateLeadConfirmationParams
+): Promise<{ success: boolean; id?: string }> {
+  const { email, name, state, city, applicationId } = params;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Application Received: KailshiansX State Lead</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #020617; color: #f8fafc; margin: 0; padding: 24px; }
+    .card { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 32px; max-width: 560px; margin: 0 auto; }
+    .badge { display: inline-block; background-color: #8b5cf622; color: #a78bfa; border: 1px solid #8b5cf644; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 9999px; margin-bottom: 16px; }
+    h1 { font-size: 22px; font-weight: 800; color: #ffffff; margin: 0 0 12px 0; }
+    p { font-size: 14px; line-height: 1.6; color: #94a3b8; margin: 0 0 16px 0; }
+    .info-box { background-color: #020617; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin: 20px 0; }
+    .workflow { margin: 20px 0; border-left: 2px solid #8b5cf6; padding-left: 14px; }
+    .workflow-step { margin-bottom: 10px; font-size: 12px; color: #cbd5e1; }
+    .footer { font-size: 11px; color: #64748b; text-align: center; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">State Lead Application</span>
+    <h1>Application Received, ${name}!</h1>
+    <p>Thank you for applying to lead regional developer ecosystem expansion for <strong>${state}</strong> (headquartered at ${city}).</p>
+    
+    <div class="info-box">
+      <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">State Lead Dossier ID</div>
+      <div style="font-family: monospace; font-size: 16px; font-weight: 700; color: #c084fc; margin-top: 4px;">${applicationId}</div>
+    </div>
+
+    <p style="font-weight: 600; color: #f1f5f9; margin-bottom: 8px;">Executive Workflow (PRD §12):</p>
+    <div class="workflow">
+      <div class="workflow-step"><strong>1. Applied</strong> — Submission received (current stage)</div>
+      <div class="workflow-step"><strong>2. Executive Screening</strong> — Review of regional organizing track record & developer network</div>
+      <div class="workflow-step"><strong>3. Leadership Interview</strong> — Strategic roadmap interview with Founder & Community Leads</div>
+      <div class="workflow-step"><strong>4. Selection & Charter</strong> — State jurisdiction charter, budget allocation & lead credentials</div>
+      <div class="workflow-step"><strong>5. Active State Lead</strong> — Onboarding campus leads, overseeing meetup series & sponsor alliances</div>
+    </div>
+
+    <p>You will be contacted by our leadership team within 3–5 working days to schedule the stage interview.</p>
+
+    <div class="footer">
+      KailshiansX • Kailshians Web Services Developer Community<br>
+      Empowering state developer ecosystems.
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+
+  if (!resend) {
+    console.log(`[Email Mock] Sent State Lead confirmation to ${email} (${applicationId})`);
+    return { success: true, id: `mock_email_${Date.now()}` };
+  }
+
+  try {
+    const data = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: `Executive Application Received: KailshiansX State Lead (${state})`,
+      html,
+    });
+    return { success: true, id: data.data?.id };
+  } catch (error) {
+    console.error("Resend state lead confirmation failed:", error);
+    return { success: false };
+  }
+}
