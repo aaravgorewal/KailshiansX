@@ -110,9 +110,7 @@ export default async function StateLeadsPage() {
 
           <h1 className="text-surface-50 mx-auto max-w-4xl text-3xl leading-tight font-black tracking-tight sm:text-5xl sm:leading-tight md:text-6xl">
             Direct Regional Developer Ecosystem Expansion Across{" "}
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">
-              Your State
-            </span>
+            <span className="text-accent-300">Your State</span>
           </h1>
 
           <p className="text-surface-300 mx-auto max-w-2xl text-sm leading-relaxed sm:text-base">

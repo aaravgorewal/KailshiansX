@@ -14,7 +14,6 @@ import {
   ExternalLink,
   ArrowRight,
   ShieldAlert,
-  Sparkles,
   Building,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
@@ -455,7 +454,7 @@ export function HackathonSeriesClient({
                             key={pIdx}
                             className="text-surface-300 flex items-start gap-2 text-xs"
                           >
-                            <Sparkles className="mt-0.5 size-3 shrink-0 text-amber-400" />
+                            <CheckCircle2 className="mt-0.5 size-3 shrink-0 text-amber-400" />
                             <span>{perk}</span>
                           </div>
                         ))}

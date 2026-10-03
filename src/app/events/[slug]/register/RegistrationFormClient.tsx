@@ -4,7 +4,7 @@ import * as React from "react";
 import Script from "next/script";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Check,
@@ -15,7 +15,7 @@ import {
   User,
   HelpCircle,
   CreditCard,
-  Sparkles,
+  CheckCircle2,
   AlertCircle,
   RefreshCw,
   Building,
@@ -80,7 +80,7 @@ export function RegistrationFormClient({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     trigger,
     formState: { errors },
@@ -104,7 +104,11 @@ export function RegistrationFormClient({
     mode: "onBlur",
   });
 
-  const selectedTierId = watch("ticketTypeId");
+  const selectedTierId = useWatch({ control, name: "ticketTypeId" });
+  const watchedName = useWatch({ control, name: "name" });
+  const watchedEmail = useWatch({ control, name: "email" });
+  const watchedPhone = useWatch({ control, name: "phone" });
+  const watchedCollege = useWatch({ control, name: "college" });
   const selectedTier = ticketTypes.find((t) => t.id === selectedTierId) || ticketTypes[0];
   const isFreeTier = selectedTier ? selectedTier.price === 0 : true;
 
@@ -672,19 +676,19 @@ export function RegistrationFormClient({
                 <div className="text-surface-300 grid grid-cols-2 gap-3 py-1 text-xs">
                   <div>
                     <span className="text-surface-500">Attendee:</span>{" "}
-                    <span className="text-surface-100 font-semibold">{watch("name")}</span>
+                    <span className="text-surface-100 font-semibold">{watchedName}</span>
                   </div>
                   <div>
                     <span className="text-surface-500">Email:</span>{" "}
-                    <span className="text-surface-200 font-medium">{watch("email")}</span>
+                    <span className="text-surface-200 font-medium">{watchedEmail}</span>
                   </div>
                   <div>
                     <span className="text-surface-500">Phone:</span>{" "}
-                    <span className="text-surface-200 font-medium">{watch("phone")}</span>
+                    <span className="text-surface-200 font-medium">{watchedPhone}</span>
                   </div>
                   <div>
                     <span className="text-surface-500">College/Org:</span>{" "}
-                    <span className="text-surface-200 font-medium">{watch("college") || "—"}</span>
+                    <span className="text-surface-200 font-medium">{watchedCollege || "—"}</span>
                   </div>
                 </div>
 
@@ -712,7 +716,7 @@ export function RegistrationFormClient({
                   <span>Your seat is reserved in real-time with atomic quota allocation.</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Sparkles className="text-accent-400 size-4 shrink-0" />
+                  <CheckCircle2 className="text-accent-400 size-4 shrink-0" />
                   <span>Instant QR pass generation + confirmation email dispatched.</span>
                 </div>
               </div>

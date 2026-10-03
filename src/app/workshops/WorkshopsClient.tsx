@@ -18,6 +18,7 @@ import {
   Terminal,
   Shield,
   Briefcase,
+  Brain,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -71,7 +72,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "System Design": <Cpu className="size-3.5" />,
   DevOps: <Terminal className="size-3.5" />,
   Cloud: <Globe className="size-3.5" />,
-  AI: <Sparkles className="text-brand-400 size-3.5" />,
+  AI: <Brain className="text-brand-400 size-3.5" />,
   Blockchain: <Shield className="size-3.5" />,
   "Open Source": <Terminal className="size-3.5 text-emerald-400" />,
   Career: <Briefcase className="size-3.5" />,

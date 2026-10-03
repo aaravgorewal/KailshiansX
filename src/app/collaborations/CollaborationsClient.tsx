@@ -216,10 +216,10 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             setActivePath("college");
             resetForm();
           }}
-          className={`relative rounded-2xl border p-5 text-left transition-all duration-300 ${
+          className={`relative rounded-2xl border p-5 text-left transition-[border-color,background-color,box-shadow,transform] duration-200 ${
             activePath === "college"
-              ? "border-indigo-500/80 bg-slate-900 shadow-lg ring-1 shadow-indigo-500/10 ring-indigo-500/50"
-              : "border-slate-800/80 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/40"
+              ? "bg-surface-900 border-indigo-500/80 shadow-lg ring-1 shadow-indigo-500/10 ring-indigo-500/50"
+              : "border-surface-800/80 bg-surface-950/60 hover:border-surface-700 hover:bg-surface-900/40"
           }`}
         >
           <div className="mb-3 flex items-center justify-between">
@@ -231,7 +231,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             </span>
           </div>
           <h3 className="text-base font-bold text-white">College Partner</h3>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          <p className="text-surface-400 mt-1 text-xs leading-relaxed">
             Co-host hackathons, workshops, and charter student chapters on your campus.
           </p>
         </button>
@@ -243,22 +243,22 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             setActivePath("community");
             resetForm();
           }}
-          className={`relative rounded-2xl border p-5 text-left transition-all duration-300 ${
+          className={`relative rounded-2xl border p-5 text-left transition-[border-color,background-color,box-shadow,transform] duration-200 ${
             activePath === "community"
-              ? "border-cyan-500/80 bg-slate-900 shadow-lg ring-1 shadow-cyan-500/10 ring-cyan-500/50"
-              : "border-slate-800/80 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/40"
+              ? "border-brand-500/80 bg-surface-900 shadow-brand-500/10 ring-brand-500/50 shadow-lg ring-1"
+              : "border-surface-800/80 bg-surface-950/60 hover:border-surface-700 hover:bg-surface-900/40"
           }`}
         >
           <div className="mb-3 flex items-center justify-between">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400">
+            <div className="border-brand-500/30 bg-brand-500/10 text-brand-400 flex h-10 w-10 items-center justify-center rounded-xl border">
               <Users className="h-5 w-5" />
             </div>
-            <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-[11px] font-semibold tracking-wider text-cyan-400/90 uppercase">
+            <span className="border-brand-500/20 bg-brand-500/10 text-brand-400/90 rounded-full border px-2 py-0.5 text-[11px] font-semibold tracking-wider uppercase">
               Communities
             </span>
           </div>
           <h3 className="text-base font-bold text-white">Community Partner</h3>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          <p className="text-surface-400 mt-1 text-xs leading-relaxed">
             Cross-promote events, co-organize city meetups, and share speaker pools.
           </p>
         </button>
@@ -270,10 +270,10 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             setActivePath("venue");
             resetForm();
           }}
-          className={`relative rounded-2xl border p-5 text-left transition-all duration-300 ${
+          className={`relative rounded-2xl border p-5 text-left transition-[border-color,background-color,box-shadow,transform] duration-200 ${
             activePath === "venue"
-              ? "border-amber-500/80 bg-slate-900 shadow-lg ring-1 shadow-amber-500/10 ring-amber-500/50"
-              : "border-slate-800/80 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/40"
+              ? "bg-surface-900 border-amber-500/80 shadow-lg ring-1 shadow-amber-500/10 ring-amber-500/50"
+              : "border-surface-800/80 bg-surface-950/60 hover:border-surface-700 hover:bg-surface-900/40"
           }`}
         >
           <div className="mb-3 flex items-center justify-between">
@@ -285,7 +285,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             </span>
           </div>
           <h3 className="text-base font-bold text-white">Venue Partner</h3>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          <p className="text-surface-400 mt-1 text-xs leading-relaxed">
             Host high-energy tech meetups, hackathons, and bootcamps at your space.
           </p>
         </button>
@@ -297,10 +297,10 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             setActivePath("sponsor");
             resetForm();
           }}
-          className={`relative rounded-2xl border p-5 text-left transition-all duration-300 ${
+          className={`relative rounded-2xl border p-5 text-left transition-[border-color,background-color,box-shadow,transform] duration-200 ${
             activePath === "sponsor"
-              ? "border-emerald-500/80 bg-slate-900 shadow-lg ring-1 shadow-emerald-500/10 ring-emerald-500/50"
-              : "border-slate-800/80 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/40"
+              ? "bg-surface-900 border-emerald-500/80 shadow-lg ring-1 shadow-emerald-500/10 ring-emerald-500/50"
+              : "border-surface-800/80 bg-surface-950/60 hover:border-surface-700 hover:bg-surface-900/40"
           }`}
         >
           <div className="mb-3 flex items-center justify-between">
@@ -312,7 +312,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             </span>
           </div>
           <h3 className="text-base font-bold text-white">Sponsor / Brand</h3>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          <p className="text-surface-400 mt-1 text-xs leading-relaxed">
             Sponsor hackathon tracks, launch bounties, and connect with top builder talent.
           </p>
         </button>
@@ -320,13 +320,16 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
 
       {/* ─── Form Container or Submission Success View ──────────────────────── */}
       {submissionResult ? (
-        <Card className="relative mx-auto max-w-2xl overflow-hidden rounded-3xl border-slate-800 bg-slate-900/90 p-8 text-center shadow-2xl sm:p-12">
-          <div className="pointer-events-none absolute top-0 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" />
+        <Card className="border-surface-800 bg-surface-900/90 relative mx-auto max-w-2xl overflow-hidden rounded-3xl p-8 text-center shadow-2xl sm:p-12">
+          <div className="bg-brand-500/10 pointer-events-none absolute top-0 right-0 h-64 w-64 rounded-full blur-3xl" />
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
             <CheckCircle2 className="h-8 w-8" />
           </div>
 
-          <Badge variant="outline" className="mb-3 border-cyan-500/30 bg-cyan-500/5 text-cyan-400">
+          <Badge
+            variant="outline"
+            className="border-brand-500/30 text-brand-400 mb-3 bg-cyan-500/5"
+          >
             Partnership Inquiry Lodged
           </Badge>
 
@@ -334,14 +337,14 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             Collaboration Dossier Created
           </h2>
 
-          <div className="my-6 inline-block w-full max-w-md rounded-xl border border-slate-800/80 bg-slate-950 p-4 text-left">
-            <div className="mb-1 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
+          <div className="border-surface-800/80 bg-surface-950 my-6 inline-block w-full max-w-md rounded-xl border p-4 text-left">
+            <div className="text-surface-400 mb-1 text-[11px] font-semibold tracking-wider uppercase">
               Partnership Reference ID
             </div>
-            <div className="font-mono text-lg font-bold text-cyan-400">
+            <div className="text-brand-400 font-mono text-lg font-bold">
               {submissionResult.referenceCode}
             </div>
-            <div className="mt-2 flex items-center justify-between border-t border-slate-800 pt-2 text-xs text-slate-400">
+            <div className="border-surface-800 text-surface-400 mt-2 flex items-center justify-between border-t pt-2 text-xs">
               <span>
                 Organisation: <strong>{submissionResult.organisation}</strong>
               </span>
@@ -349,9 +352,9 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             </div>
           </div>
 
-          <p className="mx-auto max-w-lg text-sm leading-relaxed text-slate-300">
+          <p className="text-surface-300 mx-auto max-w-lg text-sm leading-relaxed">
             An auto-acknowledgement and copy of your proposal have been emailed to{" "}
-            <span className="font-medium text-cyan-400">{submissionResult.email}</span>. Our
+            <span className="text-brand-400 font-medium">{submissionResult.email}</span>. Our
             ecosystem partnerships lead has been notified and will contact you within{" "}
             <strong>24–48 hours</strong> to schedule an initial discovery call.
           </p>
@@ -360,20 +363,20 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             <Button
               onClick={resetForm}
               variant="outline"
-              className="w-full border-slate-700 text-slate-200 hover:bg-slate-800 sm:w-auto"
+              className="border-surface-700 text-surface-200 hover:bg-surface-800 w-full sm:w-auto"
             >
               Submit Another Inquiry
             </Button>
             <a
               href="mailto:partnerships@kailshiansx.com"
-              className="inline-flex items-center justify-center text-xs text-slate-400 transition-colors hover:text-white"
+              className="text-surface-400 inline-flex items-center justify-center text-xs transition-colors hover:text-white"
             >
               Urgent query? Email partnerships@kailshiansx.com
             </a>
           </div>
         </Card>
       ) : (
-        <Card className="relative rounded-3xl border-slate-800/80 bg-slate-900/60 p-6 sm:p-10">
+        <Card className="border-surface-800/80 bg-surface-900/60 relative rounded-3xl p-6 sm:p-10">
           {/* Honeypot Spam Trap (Hidden) */}
           <div className="sr-only" aria-hidden="true">
             <label htmlFor="hp_field">Do not fill this field</label>
@@ -404,10 +407,10 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
           </div>
 
           {/* Form Header */}
-          <div className="mb-8 border-b border-slate-800/80 pb-6">
+          <div className="border-surface-800/80 mb-8 border-b pb-6">
             <div className="mb-2 flex items-center gap-3">
-              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-cyan-400" />
-              <span className="text-xs font-semibold tracking-wider text-cyan-400 uppercase">
+              <span className="bg-brand-400 h-2.5 w-2.5 animate-pulse rounded-full" />
+              <span className="text-brand-400 text-xs font-semibold tracking-wider uppercase">
                 PRD §13 Collaboration Funnel
               </span>
             </div>
@@ -417,7 +420,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
               {activePath === "venue" && "Venue & Space Provider Partnership Form"}
               {activePath === "sponsor" && "Brand & Event Sponsorship Form"}
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="text-surface-400 mt-1 text-sm">
               {activePath === "college" &&
                 "Partner with KailshiansX to bring hackathons, bootcamps, and a student developer chapter to your campus."}
               {activePath === "community" &&
@@ -455,7 +458,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
               <>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       College / University Name <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -466,12 +469,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCollegeData({ ...collegeData, organisation: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       College Website / Portal
                     </label>
                     <input
@@ -479,12 +482,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="https://college.edu.in"
                       value={collegeData.website}
                       onChange={(e) => setCollegeData({ ...collegeData, website: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Contact Person Name <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -495,12 +498,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCollegeData({ ...collegeData, contactPerson: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Designation / Club Role <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -511,12 +514,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCollegeData({ ...collegeData, roleDesignation: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Official Email Address <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -525,12 +528,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="contact@college.edu.in"
                       value={collegeData.email}
                       onChange={(e) => setCollegeData({ ...collegeData, email: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Phone / WhatsApp Number <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -539,12 +542,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="+91 98765 43210"
                       value={collegeData.phone}
                       onChange={(e) => setCollegeData({ ...collegeData, phone: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       City <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -553,12 +556,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="e.g. Dehradun"
                       value={collegeData.city}
                       onChange={(e) => setCollegeData({ ...collegeData, city: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Expected Student Audience Reach <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -570,7 +573,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                             .value as CollegeCollaborationInput["expectedStudentReach"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="100-250">100 – 250 students</option>
                       <option value="250-500">250 – 500 students</option>
@@ -581,7 +584,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Proposed Event or Collaboration Scope (PRD §13){" "}
                     <span className="text-red-400">*</span>
                   </label>
@@ -593,12 +596,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setCollegeData({ ...collegeData, proposedEvent: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Campus Facilities / Resources Offered <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -609,12 +612,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setCollegeData({ ...collegeData, resourcesOffered: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Additional Message / Preferred Months
                   </label>
                   <textarea
@@ -622,7 +625,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     placeholder="Mention tentative event dates, department approvals status, or any questions."
                     value={collegeData.message}
                     onChange={(e) => setCollegeData({ ...collegeData, message: e.target.value })}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
               </>
@@ -633,7 +636,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
               <>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Community Name <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -644,12 +647,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCommunityData({ ...communityData, organisation: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Community Link (Website, Meetup, Discord, X)
                     </label>
                     <input
@@ -659,12 +662,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCommunityData({ ...communityData, website: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Community Lead / Organiser Name <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -675,12 +678,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCommunityData({ ...communityData, contactPerson: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Contact Email <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -691,12 +694,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCommunityData({ ...communityData, email: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Phone / WhatsApp Number <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -707,12 +710,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setCommunityData({ ...communityData, phone: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Base City / Region <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -721,12 +724,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="e.g. Jaipur, Chandigarh, Delhi NCR"
                       value={communityData.city}
                       onChange={(e) => setCommunityData({ ...communityData, city: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Community Size <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -738,7 +741,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                             .value as CommunityCollaborationInput["communitySize"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="100-500">100 – 500 members</option>
                       <option value="500-2000">500 – 2,000 members</option>
@@ -748,7 +751,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Technical Focus <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -759,7 +762,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                           techFocus: e.target.value as CommunityCollaborationInput["techFocus"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="AI & Machine Learning">AI & Machine Learning</option>
                       <option value="Web & Full Stack">Web & Full Stack</option>
@@ -774,7 +777,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Proposed Joint Event / Collaboration Idea (PRD §13){" "}
                     <span className="text-red-400">*</span>
                   </label>
@@ -786,12 +789,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setCommunityData({ ...communityData, proposedEvent: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Resources & Reach to Share <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -802,12 +805,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setCommunityData({ ...communityData, resourcesOffered: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Additional Message
                   </label>
                   <textarea
@@ -817,7 +820,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setCommunityData({ ...communityData, message: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
               </>
@@ -828,7 +831,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
               <>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Venue / Facility Name <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -837,12 +840,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="e.g. Innov8 Coworking or TechHub Auditorium"
                       value={venueData.organisation}
                       onChange={(e) => setVenueData({ ...venueData, organisation: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Venue Website / Photos Link
                     </label>
                     <input
@@ -850,12 +853,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="https://yourspace.com"
                       value={venueData.website}
                       onChange={(e) => setVenueData({ ...venueData, website: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Contact Person (Manager / In-charge) <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -866,12 +869,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setVenueData({ ...venueData, contactPerson: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Email Address <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -880,12 +883,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="events@venuehub.in"
                       value={venueData.email}
                       onChange={(e) => setVenueData({ ...venueData, email: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Phone Number <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -894,12 +897,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="+91 98765 43210"
                       value={venueData.phone}
                       onChange={(e) => setVenueData({ ...venueData, phone: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       City <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -908,12 +911,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="e.g. Dehradun, Chandigarh, Gurgaon"
                       value={venueData.city}
                       onChange={(e) => setVenueData({ ...venueData, city: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Facility Type <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -924,7 +927,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                           facilityType: e.target.value as VenueCollaborationInput["facilityType"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="Coworking Space">Coworking Space</option>
                       <option value="University / College Auditorium">
@@ -938,7 +941,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Seating Capacity <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -950,7 +953,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                             .value as VenueCollaborationInput["seatingCapacity"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="50-100">50 – 100 seats</option>
                       <option value="100-250">100 – 250 seats</option>
@@ -961,7 +964,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Address / Landmark <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -970,13 +973,13 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     placeholder="Floor, Building, Road, Landmark, Pin code"
                     value={venueData.address}
                     onChange={(e) => setVenueData({ ...venueData, address: e.target.value })}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 {/* Amenities Checkboxes */}
                 <div>
-                  <label className="mb-3 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-3 block text-xs font-semibold tracking-wider uppercase">
                     Available Amenities <span className="text-red-400">*</span>
                   </label>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -997,17 +1000,17 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                           key={amenity}
                           type="button"
                           onClick={() => toggleAmenity(amenity)}
-                          className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-medium transition-all ${
+                          className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-medium transition-[border-color,background-color,color] ${
                             selected
                               ? "border-amber-500/50 bg-amber-500/10 text-amber-300"
-                              : "border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700 hover:text-slate-300"
+                              : "border-surface-800 bg-surface-950 text-surface-400 hover:border-surface-700 hover:text-surface-300"
                           }`}
                         >
                           <div
                             className={`flex h-4 w-4 items-center justify-center rounded border transition-colors ${
                               selected
                                 ? "border-amber-500 bg-amber-500 text-black"
-                                : "border-slate-700 bg-slate-900"
+                                : "border-surface-700 bg-surface-900"
                             }`}
                           >
                             {selected && <Check className="h-3 w-3 stroke-[3]" />}
@@ -1020,7 +1023,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Event Formats Supported & Availability (PRD §13){" "}
                     <span className="text-red-400">*</span>
                   </label>
@@ -1030,12 +1033,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     placeholder="e.g. Saturdays full day (9 AM – 6 PM), Weekday evening meetups (5 PM – 8 PM). Open to 24-hr weekend hackathons."
                     value={venueData.proposedEvent}
                     onChange={(e) => setVenueData({ ...venueData, proposedEvent: e.target.value })}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Hosting Terms & Resources Offered <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -1046,12 +1049,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setVenueData({ ...venueData, resourcesOffered: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Additional Notes
                   </label>
                   <textarea
@@ -1059,7 +1062,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     placeholder="Any specific building entry guidelines, Metro proximity, or restrictions."
                     value={venueData.message}
                     onChange={(e) => setVenueData({ ...venueData, message: e.target.value })}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
               </>
@@ -1070,7 +1073,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
               <>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Company / Brand Name <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1081,12 +1084,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setSponsorData({ ...sponsorData, organisation: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Company Website <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1095,12 +1098,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="https://company.com"
                       value={sponsorData.website}
                       onChange={(e) => setSponsorData({ ...sponsorData, website: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Representative Name <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1111,12 +1114,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setSponsorData({ ...sponsorData, contactPerson: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Designation / Role <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1127,12 +1130,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       onChange={(e) =>
                         setSponsorData({ ...sponsorData, roleDesignation: e.target.value })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Work Email <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1141,12 +1144,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="partner@company.com"
                       value={sponsorData.email}
                       onChange={(e) => setSponsorData({ ...sponsorData, email: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Phone Number <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1155,12 +1158,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="+91 98765 43210"
                       value={sponsorData.phone}
                       onChange={(e) => setSponsorData({ ...sponsorData, phone: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Headquarters / Operating City <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1169,12 +1172,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                       placeholder="e.g. Bengaluru, San Francisco, Delhi NCR"
                       value={sponsorData.city}
                       onChange={(e) => setSponsorData({ ...sponsorData, city: e.target.value })}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Target Audience Persona <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -1186,7 +1189,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                             .value as SponsorCollaborationInput["targetAudience"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="Broad Developer Ecosystem">Broad Developer Ecosystem</option>
                       <option value="College Students & New Grads">
@@ -1205,7 +1208,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Sponsorship Format / Scope <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -1217,7 +1220,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                             .value as SponsorCollaborationInput["sponsorshipScope"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="Hackathon Title Sponsor">Hackathon Title Sponsor</option>
                       <option value="Hackathon Track / Bounty Sponsor">
@@ -1242,7 +1245,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                    <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                       Budget / Contribution Range <span className="text-red-400">*</span>
                     </label>
                     <select
@@ -1253,7 +1256,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                           budgetTier: e.target.value as SponsorCollaborationInput["budgetTier"],
                         })
                       }
-                      className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                      className="border-surface-800 bg-surface-950 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                     >
                       <option value="₹1,50,000 – ₹5,00,000">₹1,50,000 – ₹5,00,000</option>
                       <option value="₹50,000 – ₹1,50,000">₹50,000 – ₹1,50,000</option>
@@ -1267,7 +1270,7 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Campaign Vision & Objectives (PRD §13) <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -1278,12 +1281,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setSponsorData({ ...sponsorData, proposedEvent: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Resources / Sponsorship Offered <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -1294,12 +1297,12 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     onChange={(e) =>
                       setSponsorData({ ...sponsorData, resourcesOffered: e.target.value })
                     }
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold tracking-wider text-slate-300 uppercase">
+                  <label className="text-surface-300 mb-2 block text-xs font-semibold tracking-wider uppercase">
                     Additional Message / Timelines
                   </label>
                   <textarea
@@ -1307,23 +1310,25 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
                     placeholder="Any specific target cities or upcoming quarterly marketing launch dates."
                     value={sponsorData.message}
                     onChange={(e) => setSponsorData({ ...sponsorData, message: e.target.value })}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white placeholder-slate-500 transition-all focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-none"
+                    className="border-surface-800 bg-surface-950 placeholder-surface-400 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm text-white transition-[border-color,box-shadow] focus:ring-1 focus:outline-none"
                   />
                 </div>
               </>
             )}
 
             {/* Submit Button */}
-            <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-800/80 pt-6 sm:flex-row">
-              <div className="flex items-center gap-2 text-xs text-slate-400">
+            <div className="border-surface-800/80 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
+              <div className="text-surface-400 flex items-center gap-2 text-xs">
                 <ShieldCheck className="h-4 w-4 text-emerald-400" />
                 <span>Protected with honeypot verification & CRM pipeline automation</span>
               </div>
 
               <Button
                 type="submit"
+                variant="default"
+                size="lg"
                 disabled={isPending}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-3 font-bold text-white shadow-lg shadow-cyan-500/20 transition-all hover:from-cyan-400 hover:to-blue-500 sm:w-auto"
+                className="w-full sm:w-auto"
               >
                 {isPending ? (
                   <>

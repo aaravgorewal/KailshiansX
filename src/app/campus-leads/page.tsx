@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   GraduationCap,
-  Sparkles,
   Award,
   CheckCircle2,
   ArrowRight,
@@ -248,28 +247,28 @@ export default async function CampusLeadsPage() {
 
             <ul className="text-surface-300 space-y-3.5 text-xs">
               <li className="flex items-start gap-2.5">
-                <Sparkles className="text-accent-400 mt-0.5 size-4 shrink-0" />
+                <CheckCircle2 className="text-accent-400 mt-0.5 size-4 shrink-0" />
                 <span>
                   <strong>Official Credential & Reference:</strong> Cryptographically verified Lead
                   credential and personal recommendation letters for MS/jobs.
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
-                <Sparkles className="text-accent-400 mt-0.5 size-4 shrink-0" />
+                <CheckCircle2 className="text-accent-400 mt-0.5 size-4 shrink-0" />
                 <span>
                   <strong>VIP Access & Travel Stipends:</strong> Free VIP passes to all KailshiansX
                   flagship hackathons, meetups, and summits.
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
-                <Sparkles className="text-accent-400 mt-0.5 size-4 shrink-0" />
+                <CheckCircle2 className="text-accent-400 mt-0.5 size-4 shrink-0" />
                 <span>
                   <strong>Founder & Tech Lead Mentorship:</strong> Monthly closed-door AMAs and 1:1
                   resume/architecture reviews with engineering leaders.
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
-                <Sparkles className="text-accent-400 mt-0.5 size-4 shrink-0" />
+                <CheckCircle2 className="text-accent-400 mt-0.5 size-4 shrink-0" />
                 <span>
                   <strong>Exclusive Swag Kit:</strong> KailshiansX Lead hoodie, custom badge,
                   stickers, and event host merchandise.

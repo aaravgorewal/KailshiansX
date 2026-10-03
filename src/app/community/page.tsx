@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Crown, ArrowRight, Sparkles, MapPin, Building, ChevronDown } from "lucide-react";
+import { Crown, ArrowRight, MapPin, Building, ChevronDown, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { getCommunityOverview } from "@/server/community/queries";
@@ -250,7 +250,7 @@ export default async function CommunityPage() {
 
                   {/* Perks & Powers */}
                   <div className="border-surface-800/80 text-surface-400 flex items-center gap-2 border-t pt-3 text-[11px]">
-                    <Sparkles className="text-brand-400 size-3.5 shrink-0" />
+                    <CheckCircle2 className="text-brand-400 size-3.5 shrink-0" />
                     <span>
                       <strong>Key Mandate:</strong> {tier.perks}
                     </span>

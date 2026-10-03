@@ -150,14 +150,6 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           className="bg-grid pointer-events-none absolute inset-0 opacity-30"
           aria-hidden="true"
         />
-        <div
-          className="pointer-events-none absolute top-0 left-1/2 h-[350px] w-[700px] -translate-x-1/2 rounded-full opacity-20 blur-3xl"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(61,97,252,0.4) 0%, rgba(139,61,255,0.2) 60%, transparent 80%)",
-          }}
-          aria-hidden="true"
-        />
 
         <div className="container-page relative z-10 text-center">
           <SectionHeader
