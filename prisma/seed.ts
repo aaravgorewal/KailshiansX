@@ -1025,6 +1025,459 @@ async function main() {
   });
   console.log("✅ Tech talk resource created");
 
+  // ─── Home Page CMS & Testimonials ──────────────────────────────────────────
+  const homePage = await prisma.contentPage.upsert({
+    where: { slug: "home" },
+    update: {},
+    create: {
+      slug: "home",
+      title: "Home",
+      metaTitle: "KailshiansX — Developer Events & Community",
+      metaDesc:
+        "Developer Events. Builder Communities. Real Connections. Discover hackathons, meetups, workshops, tech talks and community programs by Kailshians Web Services.",
+      isPublished: true,
+    },
+  });
+
+  const existingTestimonials = await prisma.contentBlock.findMany({
+    where: { pageId: homePage.id, type: "TESTIMONIAL" },
+  });
+
+  if (existingTestimonials.length === 0) {
+    const testimonialData = [
+      {
+        quote:
+          "KailshiansX completely changed how our campus approaches open source and hackathons. The energy at PadharoX was world-class, and our students walked away with internships.",
+        author: "Ananya Deshmukh",
+        role: "Campus Lead",
+        company: "MNIT Jaipur",
+        rating: 5,
+        eventTitle: "PadharoX Jaipur",
+      },
+      {
+        quote:
+          "Speaking at KailshiansX tech talks was one of the most rewarding community experiences of the year. The questions from the audience were sharp, deeply technical, and inspiring.",
+        author: "Rohan Varma",
+        role: "Lead Architect",
+        company: "CloudScale Systems",
+        rating: 5,
+        eventTitle: "Tech Talks Delhi",
+      },
+      {
+        quote:
+          "The 36-hour NirmanX hackathon was flawlessly organized. From the mentorship to the API sponsor tracks, everything felt like a premier Silicon Valley hackathon.",
+        author: "Siddharth Rao",
+        role: "Winner & Student Founder",
+        company: "BuidlHQ",
+        rating: 5,
+        eventTitle: "NirmanX Bengaluru",
+      },
+      {
+        quote:
+          "The hands-on distributed systems workshop was exceptional. Real production architectural war stories, zero fluff. Exactly what engineering students need.",
+        author: "Meera Krishnan",
+        role: "Senior Backend Engineer",
+        company: "HyperScale",
+        rating: 5,
+        eventTitle: "Cloud Masterclass",
+      },
+    ];
+
+    for (let i = 0; i < testimonialData.length; i++) {
+      await prisma.contentBlock.create({
+        data: {
+          pageId: homePage.id,
+          type: "TESTIMONIAL",
+          sortOrder: i,
+          data: testimonialData[i],
+          isVisible: true,
+        },
+      });
+    }
+    console.log("✅ Home page CMS testimonials seeded");
+  }
+
+  // ─── Additional Partners ───────────────────────────────────────────────────
+  const [razorpay, resend, awsCommunity, springboard] = await Promise.all([
+    prisma.partner.upsert({
+      where: { slug: "razorpay" },
+      update: {},
+      create: {
+        name: "Razorpay",
+        slug: "razorpay",
+        website: "https://razorpay.com",
+        category: "brand",
+      },
+    }),
+    prisma.partner.upsert({
+      where: { slug: "resend" },
+      update: {},
+      create: {
+        name: "Resend",
+        slug: "resend",
+        website: "https://resend.com",
+        category: "brand",
+      },
+    }),
+    prisma.partner.upsert({
+      where: { slug: "aws-community" },
+      update: {},
+      create: {
+        name: "AWS Community India",
+        slug: "aws-community",
+        website: "https://aws.amazon.com",
+        category: "community",
+      },
+    }),
+    prisma.partner.upsert({
+      where: { slug: "91springboard" },
+      update: {},
+      create: {
+        name: "91springboard",
+        slug: "91springboard",
+        website: "https://91springboard.com",
+        category: "venue",
+      },
+    }),
+  ]);
+  console.log("✅ Additional ecosystem partners seeded");
+
+  // ─── Upcoming 2026/2027 Events ─────────────────────────────────────────────
+  const [padharoX01, nirmanX2026, techTalkScale, techTalkAgents, workshopRust] = await Promise.all([
+    prisma.event.upsert({
+      where: { slug: "padharox-01" },
+      update: {},
+      create: {
+        slug: "padharox-01",
+        title: "PadharoX Edition 01 — Jaipur AI & Cloud Summit",
+        type: "MEETUP",
+        status: "PUBLISHED",
+        overview:
+          "Rajasthan's biggest developer gathering of 2026. Deep dives on generative AI agents, cloud architectures, and open source scaling.",
+        cityId: jaipur.id,
+        venue: "JECC Auditorium",
+        venueAddress: "RIICO Industrial Area, Sitapura, Jaipur, Rajasthan 302022",
+        startDate: new Date("2026-11-14T10:00:00.000Z"),
+        endDate: new Date("2026-11-14T18:00:00.000Z"),
+        registrationDeadline: new Date("2026-11-12T23:59:59.000Z"),
+        maxCapacity: 500,
+        isFeatured: true,
+        metaTitle: "PadharoX Edition 01 — Jaipur AI & Cloud Summit",
+        metaDescription:
+          "Join 500+ builders at PadharoX 01 in Jaipur for talks on generative AI, cloud, and systems engineering.",
+      },
+    }),
+    prisma.event.upsert({
+      where: { slug: "nirmanx-2026" },
+      update: {},
+      create: {
+        slug: "nirmanx-2026",
+        title: "NirmanX 2026 — National Hackathon Season 02",
+        type: "HACKATHON",
+        status: "PUBLISHED",
+        overview:
+          "36 hours of non-stop building. ₹10 Lakhs in prizes and seed grants for student and early-stage developer prototypes across India.",
+        cityId: delhi.id,
+        venue: "IIT Delhi Research Park",
+        venueAddress: "IIT Delhi, Hauz Khas, New Delhi 110016",
+        startDate: new Date("2026-12-05T09:00:00.000Z"),
+        endDate: new Date("2026-12-06T20:00:00.000Z"),
+        registrationDeadline: new Date("2026-11-30T23:59:59.000Z"),
+        maxCapacity: 600,
+        isFeatured: true,
+        metaTitle: "NirmanX 2026 — 36h National Hackathon",
+        metaDescription:
+          "Build prototypes, solve real problems, and compete for ₹10L prize pool at NirmanX 2026.",
+      },
+    }),
+    prisma.event.upsert({
+      where: { slug: "techtalk-scaling-10m" },
+      update: {},
+      create: {
+        slug: "techtalk-scaling-10m",
+        title: "Scaling to 10M Requests: Microservices Architecture Deep Dive",
+        type: "TECH_TALK",
+        status: "PUBLISHED",
+        overview:
+          "An architectural breakdown of high-throughput backend services, rate limiters, database connection pooling, and multi-region replication.",
+        cityId: delhi.id,
+        venue: "Innov8 Coworking Connaught Place",
+        venueAddress: "Regal Building, CP, New Delhi 110001",
+        startDate: new Date("2026-10-24T17:00:00.000Z"),
+        endDate: new Date("2026-10-24T20:00:00.000Z"),
+        registrationDeadline: new Date("2026-10-23T23:59:59.000Z"),
+        maxCapacity: 120,
+        isFeatured: true,
+        metaTitle: "Scaling to 10M Requests — Tech Talk",
+        metaDescription:
+          "Deep dive into production microservices, distributed caching, and zero-downtime deploys.",
+      },
+    }),
+    prisma.event.upsert({
+      where: { slug: "techtalk-agentic-ai" },
+      update: {},
+      create: {
+        slug: "techtalk-agentic-ai",
+        title: "Building Agentic AI Systems in Production",
+        type: "TECH_TALK",
+        status: "PUBLISHED",
+        overview:
+          "Exploring autonomous LLM agents, tool-calling loops, evaluation benchmarks, and latency optimizations in Next.js applications.",
+        cityId: jaipur.id,
+        venue: "MNIT Mini Auditorium",
+        venueAddress: "MNIT Campus, Jaipur, Rajasthan 302017",
+        startDate: new Date("2026-11-28T16:00:00.000Z"),
+        endDate: new Date("2026-11-28T19:00:00.000Z"),
+        registrationDeadline: new Date("2026-11-27T23:59:59.000Z"),
+        maxCapacity: 180,
+        isFeatured: true,
+        metaTitle: "Building Agentic AI Systems — Tech Talk",
+        metaDescription:
+          "Hands-on talk on autonomous agents, tool orchestration, and LLM reliability.",
+      },
+    }),
+    prisma.event.upsert({
+      where: { slug: "workshop-rust-systems" },
+      update: {},
+      create: {
+        slug: "workshop-rust-systems",
+        title: "Hands-on Rust & Distributed Systems Masterclass",
+        type: "WORKSHOP",
+        status: "PUBLISHED",
+        overview:
+          "A full-day interactive coding masterclass building a distributed key-value store and Raft consensus engine in Rust.",
+        cityId: chandigarh.id,
+        venue: "TechPark Chandigarh Campus",
+        venueAddress: "Rajiv Gandhi Chandigarh Technology Park, Chandigarh 160101",
+        startDate: new Date("2026-10-31T09:30:00.000Z"),
+        endDate: new Date("2026-10-31T17:30:00.000Z"),
+        registrationDeadline: new Date("2026-10-29T23:59:59.000Z"),
+        maxCapacity: 80,
+        isFeatured: true,
+        metaTitle: "Rust & Distributed Systems Workshop | KailshiansX",
+        metaDescription:
+          "Build a distributed storage engine from scratch in Rust with industry mentors.",
+      },
+    }),
+  ]);
+  console.log("✅ Upcoming 2026/2027 events created");
+
+  // Link PadharoX series edition
+  const padharoXSeries = await prisma.series.findUnique({ where: { slug: "padharox" } });
+  if (padharoXSeries) {
+    await prisma.seriesEdition.upsert({
+      where: { seriesId_editionNo: { seriesId: padharoXSeries.id, editionNo: 1 } },
+      update: {},
+      create: {
+        seriesId: padharoXSeries.id,
+        eventId: padharoX01.id,
+        editionNo: 1,
+        theme: "AI Systems & Cloud Scaling",
+      },
+    });
+  }
+
+  // Link speakers to upcoming events
+  await Promise.all([
+    prisma.eventSpeaker.upsert({
+      where: {
+        eventId_speakerId_role: { eventId: padharoX01.id, speakerId: rahul.id, role: "SPEAKER" },
+      },
+      update: {},
+      create: { eventId: padharoX01.id, speakerId: rahul.id, role: "SPEAKER" },
+    }),
+    prisma.eventSpeaker.upsert({
+      where: {
+        eventId_speakerId_role: { eventId: padharoX01.id, speakerId: priya.id, role: "SPEAKER" },
+      },
+      update: {},
+      create: { eventId: padharoX01.id, speakerId: priya.id, role: "SPEAKER" },
+    }),
+    prisma.eventSpeaker.upsert({
+      where: {
+        eventId_speakerId_role: { eventId: nirmanX2026.id, speakerId: arjun.id, role: "JUDGE" },
+      },
+      update: {},
+      create: { eventId: nirmanX2026.id, speakerId: arjun.id, role: "JUDGE" },
+    }),
+    prisma.eventSpeaker.upsert({
+      where: {
+        eventId_speakerId_role: { eventId: techTalkScale.id, speakerId: deepa.id, role: "SPEAKER" },
+      },
+      update: {},
+      create: { eventId: techTalkScale.id, speakerId: deepa.id, role: "SPEAKER" },
+    }),
+    prisma.eventSpeaker.upsert({
+      where: {
+        eventId_speakerId_role: {
+          eventId: techTalkAgents.id,
+          speakerId: priya.id,
+          role: "SPEAKER",
+        },
+      },
+      update: {},
+      create: { eventId: techTalkAgents.id, speakerId: priya.id, role: "SPEAKER" },
+    }),
+    prisma.eventSpeaker.upsert({
+      where: {
+        eventId_speakerId_role: { eventId: workshopRust.id, speakerId: rahul.id, role: "MENTOR" },
+      },
+      update: {},
+      create: { eventId: workshopRust.id, speakerId: rahul.id, role: "MENTOR" },
+    }),
+  ]);
+
+  // Link partners to upcoming events
+  await Promise.all([
+    prisma.eventPartner.upsert({
+      where: { eventId_partnerId: { eventId: padharoX01.id, partnerId: razorpay.id } },
+      update: {},
+      create: { eventId: padharoX01.id, partnerId: razorpay.id, tier: "TITLE" },
+    }),
+    prisma.eventPartner.upsert({
+      where: { eventId_partnerId: { eventId: padharoX01.id, partnerId: gitHub.id } },
+      update: {},
+      create: { eventId: padharoX01.id, partnerId: gitHub.id, tier: "GOLD" },
+    }),
+    prisma.eventPartner.upsert({
+      where: { eventId_partnerId: { eventId: nirmanX2026.id, partnerId: resend.id } },
+      update: {},
+      create: { eventId: nirmanX2026.id, partnerId: resend.id, tier: "GOLD" },
+    }),
+    prisma.eventPartner.upsert({
+      where: { eventId_partnerId: { eventId: workshopRust.id, partnerId: awsCommunity.id } },
+      update: {},
+      create: { eventId: workshopRust.id, partnerId: awsCommunity.id, tier: "COMMUNITY" },
+    }),
+    prisma.eventPartner.upsert({
+      where: { eventId_partnerId: { eventId: techTalkScale.id, partnerId: springboard.id } },
+      update: {},
+      create: { eventId: techTalkScale.id, partnerId: springboard.id, tier: "COMMUNITY" },
+    }),
+  ]);
+
+  // Create sample users and registrations
+  const sampleUsers = await Promise.all([
+    prisma.user.upsert({
+      where: { email: "ananya.deshmukh@mnit.ac.in" },
+      update: {},
+      create: {
+        name: "Ananya Deshmukh",
+        email: "ananya.deshmukh@mnit.ac.in",
+        role: "CAMPUS_LEAD",
+      },
+    }),
+    prisma.user.upsert({
+      where: { email: "rohan.pec@pec.edu.in" },
+      update: {},
+      create: {
+        name: "Rohan Varma",
+        email: "rohan.pec@pec.edu.in",
+        role: "CAMPUS_LEAD",
+      },
+    }),
+    prisma.user.upsert({
+      where: { email: "karan.statelead@kailshiansx.com" },
+      update: {},
+      create: {
+        name: "Karan Singh",
+        email: "karan.statelead@kailshiansx.com",
+        role: "STATE_LEAD",
+      },
+    }),
+  ]);
+
+  // Create campus lead applications and active campus leads
+  let campusApp1 = await prisma.campusLeadApplication.findFirst({
+    where: { email: "ananya.deshmukh@mnit.ac.in" },
+  });
+  if (!campusApp1) {
+    campusApp1 = await prisma.campusLeadApplication.create({
+      data: {
+        userId: sampleUsers[0].id,
+        name: "Ananya Deshmukh",
+        email: "ananya.deshmukh@mnit.ac.in",
+        college: "MNIT Jaipur",
+        cityId: jaipur.id,
+        courseYear: "3rd Year",
+        status: "SELECTED",
+      },
+    });
+  }
+
+  await prisma.campusLead.upsert({
+    where: { userId: sampleUsers[0].id },
+    update: {},
+    create: {
+      applicationId: campusApp1.id,
+      userId: sampleUsers[0].id,
+      collegeId: mnit.id,
+      cityId: jaipur.id,
+      status: "ACTIVE",
+      eventsSupported: 4,
+      referrals: 120,
+    },
+  });
+
+  let stateApp1 = await prisma.stateLeadApplication.findFirst({
+    where: { email: "karan.statelead@kailshiansx.com" },
+  });
+  if (!stateApp1) {
+    stateApp1 = await prisma.stateLeadApplication.create({
+      data: {
+        userId: sampleUsers[2].id,
+        name: "Karan Singh",
+        email: "karan.statelead@kailshiansx.com",
+        state: "Rajasthan",
+        citiesCovered: "Jaipur, Jodhpur, Udaipur, Kota",
+        status: "SELECTED",
+      },
+    });
+  }
+
+  await prisma.stateLead.upsert({
+    where: { userId: sampleUsers[2].id },
+    update: {},
+    create: {
+      applicationId: stateApp1.id,
+      userId: sampleUsers[2].id,
+      state: "Rajasthan",
+      status: "ACTIVE",
+    },
+  });
+  console.log("✅ Campus Leads & State Leads seeded");
+
+  // Create registrations
+  let ticketPadharo = await prisma.ticketType.findFirst({
+    where: { eventId: padharoX01.id, name: "General Attendee" },
+  });
+  if (!ticketPadharo) {
+    ticketPadharo = await prisma.ticketType.create({
+      data: {
+        eventId: padharoX01.id,
+        name: "General Attendee",
+        price: 0,
+        quota: 500,
+        saleStart: new Date("2026-09-01T00:00:00Z"),
+        saleEnd: new Date("2026-11-13T23:59:59Z"),
+      },
+    });
+  }
+
+  await prisma.registration.upsert({
+    where: { registrationCode: "KX-2026-PX001" },
+    update: {},
+    create: {
+      registrationCode: "KX-2026-PX001",
+      eventId: padharoX01.id,
+      userId: sampleUsers[0].id,
+      ticketTypeId: ticketPadharo.id,
+      name: "Ananya Deshmukh",
+      email: "ananya.deshmukh@mnit.ac.in",
+      status: "CONFIRMED",
+    },
+  });
+
   console.log("\n🎉 Seed complete! KailshiansX is ready.");
 }
 

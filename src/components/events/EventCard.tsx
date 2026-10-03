@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import Link from "next/link";
 import { Calendar, MapPin, Users, ArrowRight, Clock, Sparkles } from "lucide-react";
