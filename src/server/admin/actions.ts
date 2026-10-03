@@ -23,6 +23,7 @@ import {
   SeriesKind,
 } from "@prisma/client";
 import { queueStatusChangeEmail, retryEmailJob, processEmailQueue } from "@/server/email";
+import { sanitizeRichText } from "@/server/security/sanitize";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 1. EVENT ACTIONS (CRUD, Duplicate, Publish Toggle)
@@ -112,7 +113,7 @@ export async function createEvent(data: EventFormData) {
         type: data.type,
         status: data.status || EventStatus.DRAFT,
         category: data.category || null,
-        overview: data.overview || null,
+        overview: data.overview ? sanitizeRichText(data.overview) : null,
         coverImage: data.coverImage || null,
         cityId: data.cityId || null,
         venue: data.venue || null,
@@ -127,7 +128,7 @@ export async function createEvent(data: EventFormData) {
         maxCapacity: data.maxCapacity ? Number(data.maxCapacity) : null,
         isFeatured: Boolean(data.isFeatured),
         metaTitle: data.metaTitle || null,
-        metaDescription: data.metaDescription || null,
+        metaDescription: data.metaDescription ? sanitizeRichText(data.metaDescription) : null,
       },
     });
 
@@ -206,7 +207,7 @@ export async function createEvent(data: EventFormData) {
         data: data.faqs.map((f, idx) => ({
           eventId: event.id,
           question: f.question,
-          answer: f.answer,
+          answer: sanitizeRichText(f.answer),
           sortOrder: f.sortOrder ?? idx,
         })),
       });
@@ -259,7 +260,7 @@ export async function updateEvent(id: string, data: EventFormData) {
         type: data.type,
         status: data.status,
         category: data.category || null,
-        overview: data.overview || null,
+        overview: data.overview ? sanitizeRichText(data.overview) : null,
         coverImage: data.coverImage || null,
         cityId: data.cityId || null,
         venue: data.venue || null,
@@ -274,7 +275,7 @@ export async function updateEvent(id: string, data: EventFormData) {
         maxCapacity: data.maxCapacity ? Number(data.maxCapacity) : null,
         isFeatured: Boolean(data.isFeatured),
         metaTitle: data.metaTitle || null,
-        metaDescription: data.metaDescription || null,
+        metaDescription: data.metaDescription ? sanitizeRichText(data.metaDescription) : null,
       },
     });
 
@@ -398,7 +399,7 @@ export async function updateEvent(id: string, data: EventFormData) {
           data: data.faqs.map((f, idx) => ({
             eventId: id,
             question: f.question,
-            answer: f.answer,
+            answer: sanitizeRichText(f.answer),
             sortOrder: f.sortOrder ?? idx,
           })),
         });

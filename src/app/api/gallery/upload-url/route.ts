@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminForRoute } from "@/server/auth/require-role";
 import { createPresignedUploadUrl } from "@/lib/storage";
+import { validateFileUpload } from "@/server/security/upload";
 import { db } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
@@ -14,10 +15,16 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { albumId, filename, contentType } = body;
+    const { albumId, filename, contentType, sizeBytes } = body;
 
     if (!albumId || !filename) {
       return NextResponse.json({ error: "albumId and filename are required" }, { status: 400 });
+    }
+
+    // Security: Validate file type and size limits
+    const validation = validateFileUpload({ contentType, sizeBytes, filename });
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
     // Verify album exists

@@ -29,16 +29,31 @@ export async function generateMetadata({
   }
 
   const { series } = data;
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+  const ogImage = series.coverImage || "/og-image.png";
+
   return {
     title: `${series.name} — 36-Hour Hackathon Series | KailshiansX`,
     description:
       series.tagline ||
       series.purpose ||
       `Explore problem statements, prizes, and rules for ${series.name} by KailshiansX.`,
+    alternates: {
+      canonical: `${APP_URL}/hackathon-series/${series.slug}`,
+    },
     openGraph: {
       title: `${series.name} — National Hackathon Series`,
       description: series.purpose || `36-hour product hackathon by KailshiansX.`,
-      url: `https://kailshiansx.com/hackathon-series/${series.slug}`,
+      url: `${APP_URL}/hackathon-series/${series.slug}`,
+      siteName: "KailshiansX",
+      type: "website",
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: series.name,
+      description: series.tagline || series.purpose || `Hackathon series by KailshiansX.`,
+      images: [ogImage],
     },
   };
 }

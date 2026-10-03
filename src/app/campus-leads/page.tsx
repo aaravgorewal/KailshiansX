@@ -16,14 +16,29 @@ import { getCommunityOverview } from "@/server/community/queries";
 
 export const dynamic = "force-dynamic";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "Campus Lead Program | Represent KailshiansX at Your College",
   description:
     "Apply to become a KailshiansX Campus Lead. Build your university developer chapter, host campus hackathons, get VIP flagship passes, direct founder mentorship, and exclusive swag.",
+  alternates: {
+    canonical: `${APP_URL}/campus-leads`,
+  },
   openGraph: {
     title: "Campus Lead Program | KailshiansX",
     description:
       "Represent KailshiansX within your college. Drive events, build your chapter, and grow as a recognized student developer leader.",
+    url: `${APP_URL}/campus-leads`,
+    siteName: "KailshiansX",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Campus Lead Program | KailshiansX",
+    description: "Represent KailshiansX within your college. Build your campus developer chapter.",
+    images: ["/og-image.png"],
   },
 };
 

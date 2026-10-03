@@ -7,15 +7,29 @@ import { TechTalksSearchClient } from "./TechTalksSearchClient";
 
 export const dynamic = "force-dynamic";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "Tech Talks & Engineering Archive | KailshiansX",
   description:
     "Expert technical sessions and searchable knowledge archive. Deep-dives on Distributed Systems, AI, Postgres internals, Rust, and Next.js with slides and video recordings.",
+  alternates: {
+    canonical: `${APP_URL}/tech-talks`,
+  },
   openGraph: {
     title: "KailshiansX Tech Talks — Engineering Knowledge Archive",
     description:
       "Expert tech talks from leading engineers. Watch past recordings, download slides, and review key takeaways.",
-    url: "https://kailshiansx.com/tech-talks",
+    url: `${APP_URL}/tech-talks`,
+    siteName: "KailshiansX",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KailshiansX Tech Talks — Engineering Knowledge Archive",
+    description: "Expert tech talks from leading engineers with slides and video recordings.",
+    images: ["/og-image.png"],
   },
 };
 

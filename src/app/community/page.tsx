@@ -9,14 +9,29 @@ import { CommunityModalsClient } from "./CommunityModalsClient";
 
 export const dynamic = "force-dynamic";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "Developer Community & Ecosystem | KailshiansX",
   description:
     "Explore the KailshiansX community hierarchy: KailshiansX -> State Leads -> City Communities -> Campus Leads -> College Chapters -> Members. Join 1,200+ builders, apply for leadership, or start a college chapter.",
+  alternates: {
+    canonical: `${APP_URL}/community`,
+  },
   openGraph: {
     title: "Developer Community & Ecosystem | KailshiansX",
     description:
       "A living, multi-tier ecosystem of software engineers, university campus leads, regional state directors, and tech mentors.",
+    url: `${APP_URL}/community`,
+    siteName: "KailshiansX",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Developer Community & Ecosystem | KailshiansX",
+    description: "Join 1,200+ builders across India. Move from attendee to leader.",
+    images: ["/og-image.png"],
   },
 };
 

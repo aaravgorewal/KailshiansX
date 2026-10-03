@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/useToast";
 import { cn } from "@/lib/utils";
+import { trackApplicationSubmit } from "@/lib/analytics";
 
 export function JoinTeamClient() {
   const [selectedArea, setSelectedArea] = React.useState<string>("ALL");
@@ -82,6 +83,11 @@ export function JoinTeamClient() {
       setSubmissionSuccess({
         id: data.id,
         message: data.message,
+      });
+
+      trackApplicationSubmit({
+        type: "team",
+        roleOrTrack: `${formData.roleApplied} (${formData.area})`,
       });
 
       toast({

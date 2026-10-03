@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/useToast";
 import { cn } from "@/lib/utils";
+import { trackRegisterClick } from "@/lib/analytics";
 
 export interface EventStickyCtaProps {
   slug: string;
@@ -88,6 +89,11 @@ export function EventStickyCta({
   };
 
   const handleScrollToTickets = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    trackRegisterClick({
+      eventSlug: slug,
+      eventTitle: title,
+      price: lowestPrice,
+    });
     const ticketsEl = document.getElementById("tickets");
     if (ticketsEl) {
       e.preventDefault();

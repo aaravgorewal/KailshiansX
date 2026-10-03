@@ -28,6 +28,7 @@ import {
 } from "@/server/collaborations/actions";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { trackApplicationSubmit } from "@/lib/analytics";
 import { Button } from "@/components/ui/Button";
 
 type CollaborationPath = "college" | "community" | "venue" | "sponsor";
@@ -188,6 +189,13 @@ export function CollaborationsClient({ initialPath = "college" }: Collaborations
             email: sponsorData.email,
           });
         }
+      }
+
+      if (res.success && res.leadId && res.referenceCode) {
+        trackApplicationSubmit({
+          type: "collaboration",
+          roleOrTrack: activePath,
+        });
       }
 
       if (!res.success) {

@@ -3,9 +3,19 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { submitTeamApplication } from "@/server/applications/team";
+import { checkRateLimit, getClientIp } from "@/server/security/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request.headers);
+    const rl = await checkRateLimit(ip, "form");
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: "Too many submission attempts. Please try again in a few minutes." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const result = await submitTeamApplication(body);
 

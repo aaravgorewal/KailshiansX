@@ -7,15 +7,29 @@ import { WorkshopsClient } from "./WorkshopsClient";
 
 export const dynamic = "force-dynamic";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "Workshops | Hands-On Engineering Masterclasses | KailshiansX",
   description:
     "Intensive technical workshops across MERN, Backend, System Design, DevOps, Cloud, AI, Blockchain, and Open Source. Lead by engineers from Google, Microsoft, and top startups.",
+  alternates: {
+    canonical: `${APP_URL}/workshops`,
+  },
   openGraph: {
     title: "KailshiansX Workshops — Learn by Building",
     description:
       "Deep-dive hands-on boot camps across India. Host a workshop or request one at your college campus.",
-    url: "https://kailshiansx.com/workshops",
+    url: `${APP_URL}/workshops`,
+    siteName: "KailshiansX",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KailshiansX Workshops — Hands-On Engineering",
+    description: "Deep-dive hands-on boot camps across India.",
+    images: ["/og-image.png"],
   },
 };
 

@@ -16,10 +16,15 @@ import { Card } from "@/components/ui/Card";
 import { FAQAccordion, type FAQItem } from "@/components/ui/FAQAccordion";
 import { PartnerLogoGrid } from "@/components/ui/PartnerLogoGrid";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "Collaborations & Partnerships | KailshiansX",
   description:
     "Partner with KailshiansX across four dedicated paths: College Collaborations, Community Partners, Venue Hosts, and Brand/Tech Sponsors. Empower developer ecosystems across India.",
+  alternates: {
+    canonical: `${APP_URL}/collaborations`,
+  },
   keywords: [
     "KailshiansX Collaborations",
     "College Hackathon Partnership",
@@ -33,8 +38,16 @@ export const metadata: Metadata = {
     title: "Collaborations & Partnerships | KailshiansX",
     description:
       "Partner with KailshiansX across four dedicated paths: College Collaborations, Community Partners, Venue Hosts, and Brand Sponsors.",
-    url: "https://kailshiansx.com/collaborations",
+    url: `${APP_URL}/collaborations`,
+    siteName: "KailshiansX",
     type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Collaborations & Partnerships | KailshiansX",
+    description: "Partner with KailshiansX across Colleges, Communities, Venues, and Sponsors.",
+    images: ["/og-image.png"],
   },
 };
 

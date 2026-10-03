@@ -4,9 +4,18 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { SignInClient } from "./SignInClient";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "Sign In | KailshiansX",
   description: "Sign in to KailshiansX with Google or a magic link.",
+  alternates: {
+    canonical: `${APP_URL}/signin`,
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 interface Props {

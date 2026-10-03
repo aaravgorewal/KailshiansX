@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
+import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -60,11 +60,14 @@ export function PartnerLogoGrid({
     const CardContent = (
       <div className="group border-surface-800 bg-surface-900/60 hover:border-surface-600 hover:bg-surface-850 relative flex h-24 w-full items-center justify-center rounded-xl border p-4 backdrop-blur-sm transition-all duration-300 hover:shadow-lg sm:h-28">
         {partner.logoUrl ? (
-          <img
+          <Image
             src={partner.logoUrl}
             alt={partner.name}
+            width={130}
+            height={48}
             className="max-h-12 max-w-[130px] object-contain opacity-60 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
             loading="lazy"
+            unoptimized={partner.logoUrl.startsWith("data:")}
           />
         ) : (
           <div className="flex flex-col items-center justify-center text-center">

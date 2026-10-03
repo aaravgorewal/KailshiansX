@@ -16,6 +16,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { trackApplicationSubmit } from "@/lib/analytics";
 import {
   campusLeadApplicationSchema,
   type CampusLeadApplicationInput,
@@ -55,6 +56,10 @@ export function CampusLeadFormClient() {
     try {
       const res = await applyCampusLead(values);
       if (res.success && res.applicationId) {
+        trackApplicationSubmit({
+          type: "campus_lead",
+          roleOrTrack: values.college,
+        });
         setSuccessAppId(res.applicationId);
         reset();
       } else {

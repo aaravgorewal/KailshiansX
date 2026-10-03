@@ -21,16 +21,31 @@ export async function generateMetadata({ params }: MeetupSeriesDetailPageProps):
   }
 
   const { series } = data;
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+  const ogImage = series.coverImage || "/og-image.png";
+
   return {
     title: `${series.name} — Developer Meetup Series | KailshiansX`,
     description:
       series.tagline ||
       series.purpose ||
       `Explore past and upcoming editions of ${series.name} by KailshiansX.`,
+    alternates: {
+      canonical: `${APP_URL}/meetup-series/${series.slug}`,
+    },
     openGraph: {
       title: `${series.name} — ${series.region || series.city || "Developer Meetup"}`,
       description: series.purpose || `Developer events, talks, and community by KailshiansX.`,
-      url: `https://kailshiansx.com/meetup-series/${series.slug}`,
+      url: `${APP_URL}/meetup-series/${series.slug}`,
+      siteName: "KailshiansX",
+      type: "website",
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: series.name,
+      description: series.tagline || series.purpose || `Meetup series by KailshiansX.`,
+      images: [ogImage],
     },
   };
 }

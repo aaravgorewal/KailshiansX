@@ -25,6 +25,9 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description: APP_DESCRIPTION,
+  alternates: {
+    canonical: APP_URL,
+  },
   keywords: [
     "developer events",
     "hackathon",
@@ -87,10 +90,48 @@ export const viewport: Viewport = {
 };
 
 import { Toaster } from "@/components/ui/Toaster";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${APP_URL}#organization`,
+      name: APP_NAME,
+      url: APP_URL,
+      logo: `${APP_URL}/og-image.png`,
+      description: APP_DESCRIPTION,
+      parentOrganization: {
+        "@type": "Organization",
+        name: "Kailshians Web Services",
+        url: "https://kailshians.com",
+      },
+      sameAs: [
+        "https://twitter.com/kailshiansx",
+        "https://github.com/kailshiansx",
+        "https://linkedin.com/company/kailshiansx",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${APP_URL}#website`,
+      url: APP_URL,
+      name: APP_NAME,
+      publisher: { "@id": `${APP_URL}#organization` },
+    },
+  ],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={cn("dark", "font-sans", geist.variable)} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
       <body
         className={`${geistMono.variable} bg-surface-950 text-surface-100 flex min-h-screen flex-col font-sans antialiased`}
       >
@@ -98,6 +139,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1 pt-16">{children}</main>
         <Footer />
         <Toaster />
+        <GoogleAnalytics />
       </body>
     </html>
   );

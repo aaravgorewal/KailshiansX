@@ -65,14 +65,29 @@ export async function generateMetadata({ params }: TechTalkDetailPageProps): Pro
   const { talk } = data;
   const speakerName = talk.speakers[0]?.speaker.name;
 
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+  const ogImage = talk.coverImage || "/og-image.png";
+
   return {
     title: `${talk.title} ${speakerName ? `— ${speakerName}` : ""} | Tech Talks | KailshiansX`,
     description:
       talk.overview || `Expert tech talk on ${talk.title}. Watch recordings and access slides.`,
+    alternates: {
+      canonical: `${APP_URL}/tech-talks/${talk.slug}`,
+    },
     openGraph: {
       title: talk.title,
       description: talk.overview || "KailshiansX expert session knowledge archive.",
-      url: `https://kailshiansx.com/tech-talks/${talk.slug}`,
+      url: `${APP_URL}/tech-talks/${talk.slug}`,
+      siteName: "KailshiansX",
+      type: "article",
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: talk.title,
+      description: talk.overview || "KailshiansX expert session knowledge archive.",
+      images: [ogImage],
     },
   };
 }

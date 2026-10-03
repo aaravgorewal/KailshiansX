@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   Calendar,
@@ -322,6 +323,21 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                   </Badge>
                 )}
               </div>
+
+              {/* Cover Image Banner */}
+              {event.coverImage && (
+                <div className="border-surface-800 bg-surface-900 relative aspect-[21/9] w-full max-w-4xl overflow-hidden rounded-2xl border shadow-2xl">
+                  <Image
+                    src={event.coverImage}
+                    alt={event.title}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 896px"
+                    className="object-cover"
+                    unoptimized={event.coverImage.startsWith("data:")}
+                  />
+                </div>
+              )}
 
               {/* Event Title */}
               <h1 className="text-surface-50 text-3xl leading-[1.12] font-black tracking-tight sm:text-5xl md:text-6xl">

@@ -8,14 +8,29 @@ import { getCommunityOverview } from "@/server/community/queries";
 
 export const dynamic = "force-dynamic";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "State Lead Program | Lead Regional Ecosystem Expansion | KailshiansX",
   description:
     "Apply to become a KailshiansX State Lead. Coordinate regional developer expansion, onboard campus leads, oversee regional meetup properties, and represent KailshiansX across cities in your state.",
+  alternates: {
+    canonical: `${APP_URL}/state-leads`,
+  },
   openGraph: {
     title: "State Lead Program | KailshiansX",
     description:
       "Coordinate developer community expansion across cities and campuses in your state. Identify campus leads, support local events, and drive ecosystem growth.",
+    url: `${APP_URL}/state-leads`,
+    siteName: "KailshiansX",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "State Lead Program | KailshiansX",
+    description: "Lead regional developer expansion across campuses and cities in your state.",
+    images: ["/og-image.png"],
   },
 };
 

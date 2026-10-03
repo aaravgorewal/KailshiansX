@@ -4,6 +4,7 @@
 import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { requireAdmin } from "@/server/auth/require-role";
+import { sanitizeRichText } from "@/server/security/sanitize";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 1. CORE TEAM QUERIES & MUTATIONS (PRD §15)
@@ -46,7 +47,7 @@ export async function createCoreTeamMember(data: {
       slug: finalSlug,
       role: data.role,
       category: data.category,
-      bio: data.bio || null,
+      bio: data.bio ? sanitizeRichText(data.bio) : null,
       photo: data.photo || null,
       linkedin: data.linkedin || null,
       twitter: data.twitter || null,
@@ -97,6 +98,7 @@ export async function updateCoreTeamMember(
     where: { id },
     data: {
       ...data,
+      bio: data.bio !== undefined ? (data.bio ? sanitizeRichText(data.bio) : null) : undefined,
     },
   });
 
@@ -217,8 +219,8 @@ export async function updateFounderContent(data: {
       data: {
         founderName: data.founderName,
         tagline: data.tagline,
-        message: data.message,
-        philosophy: data.philosophy,
+        message: sanitizeRichText(data.message),
+        philosophy: sanitizeRichText(data.philosophy),
         photo: data.photo || founder.photo,
         linkedin: data.linkedin,
         twitter: data.twitter,
@@ -232,8 +234,8 @@ export async function updateFounderContent(data: {
         founderName: data.founderName,
         founderSlug: "aarav-gorewal",
         tagline: data.tagline,
-        message: data.message,
-        philosophy: data.philosophy,
+        message: sanitizeRichText(data.message),
+        philosophy: sanitizeRichText(data.philosophy),
         photo: data.photo,
         linkedin: data.linkedin,
         twitter: data.twitter,
@@ -407,14 +409,18 @@ export async function updateWhoWeAreContent(data: WhoWeAreContent) {
     update: {
       title: data.title || "Who We Are",
       metaTitle: `${data.title} | KailshiansX`,
-      metaDesc: data.introDescription.slice(0, 160),
+      metaDesc: sanitizeRichText(data.introDescription)
+        .replace(/<[^>]*>/g, "")
+        .slice(0, 160),
       isPublished: true,
     },
     create: {
       slug: "who-we-are",
       title: data.title || "Who We Are",
       metaTitle: `${data.title} | KailshiansX`,
-      metaDesc: data.introDescription.slice(0, 160),
+      metaDesc: sanitizeRichText(data.introDescription)
+        .replace(/<[^>]*>/g, "")
+        .slice(0, 160),
       isPublished: true,
     },
   });

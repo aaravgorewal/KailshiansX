@@ -28,6 +28,7 @@ import { registrationFormSchema, type RegistrationFormData } from "@/lib/validat
 import { initiateRegistration, verifyPaymentAndComplete } from "@/server/events/actions";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { trackPaymentSuccess } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 interface RazorpayResponse {
@@ -191,6 +192,12 @@ export function RegistrationFormClient({
               });
 
               if (verifyRes.success && verifyRes.redirectUrl) {
+                trackPaymentSuccess({
+                  orderId: paymentResponse.razorpay_order_id,
+                  paymentId: paymentResponse.razorpay_payment_id,
+                  amount: res.razorpayOrder?.amount ?? 0,
+                  eventSlug,
+                });
                 router.push(verifyRes.redirectUrl);
               } else {
                 setServerError(

@@ -7,15 +7,29 @@ import { Button } from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+
 export const metadata: Metadata = {
   title: "Meetup Series | Grassroots Developer Communities | KailshiansX",
   description:
     "Long-term city and community meetup brands by KailshiansX — RaibarX (Rajasthan), TricityX (Chandigarh Corridor), PadharoX (Sun City) and more. Consistent, high-trust developer gatherings.",
+  alternates: {
+    canonical: `${APP_URL}/meetup-series`,
+  },
   openGraph: {
     title: "KailshiansX Meetup Series — Building Lasting Developer Communities",
     description:
       "Consistent, city-first developer meetup properties. Join Rajasthan's, Chandigarh's, and Western India's builder ecosystems.",
-    url: "https://kailshiansx.com/meetup-series",
+    url: `${APP_URL}/meetup-series`,
+    siteName: "KailshiansX",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KailshiansX Meetup Series — Builder Communities",
+    description: "Consistent, city-first developer meetup properties across India.",
+    images: ["/og-image.png"],
   },
 };
 

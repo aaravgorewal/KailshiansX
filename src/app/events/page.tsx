@@ -142,119 +142,158 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
     count: c._count.events,
   }));
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: events.map((event, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Event",
+        name: event.title,
+        description: event.overview || event.title,
+        startDate: event.startDate.toISOString(),
+        endDate: (event.endDate || event.startDate).toISOString(),
+        eventStatus: "https://schema.org/EventScheduled",
+        eventAttendanceMode:
+          event.attendanceMode === "VIRTUAL"
+            ? "https://schema.org/OnlineEventAttendanceMode"
+            : "https://schema.org/OfflineEventAttendanceMode",
+        location: {
+          "@type": "Place",
+          name: event.venue || "Venue",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: event.city?.name || "India",
+            addressRegion: event.city?.state || "India",
+            addressCountry: "IN",
+          },
+        },
+        image: event.coverImage || `${APP_URL}/events/${event.slug}/opengraph-image`,
+        url: `${APP_URL}/events/${event.slug}`,
+      },
+    })),
+  };
+
   return (
-    <div className="bg-surface-950 min-h-screen pb-24">
-      {/* Hero Header Banner */}
-      <section className="from-surface-900 to-surface-950 border-surface-800 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-12">
-        <div
-          className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-          aria-hidden="true"
-        />
-
-        <div className="container-page relative z-10 text-center">
-          <SectionHeader
-            badge="Verified Gathering Schedule"
-            title="Discover KailshiansX Gatherings"
-            highlight="KailshiansX Gatherings"
-            description="From flagship 36-hour hackathons and citywide summits to hands-on distributed systems masterclasses. Find your next stage."
-            align="center"
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="bg-surface-950 min-h-screen pb-24">
+        {/* Hero Header Banner */}
+        <section className="from-surface-900 to-surface-950 border-surface-800 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-12">
+          <div
+            className="bg-grid pointer-events-none absolute inset-0 opacity-30"
+            aria-hidden="true"
           />
-        </div>
-      </section>
 
-      {/* Main Events Catalog Area */}
-      <main className="container-page pt-10">
-        {/* Dynamic Interactive Filter Bar */}
-        <div className="border-surface-800 bg-surface-900/50 mb-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm">
-          <EventsFilterBar
-            initialSearch={q}
-            initialTimeline={timeline}
-            initialType={type}
-            initialCity={city}
-            cities={cityOptions}
-            totalResults={totalResults}
-            upcomingCount={upcomingCount}
-            pastCount={pastCount}
-          />
-        </div>
-
-        {/* Events Grid or Empty State */}
-        {events.length > 0 ? (
-          <div className="space-y-12">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {events.map((event) => {
-                const isFree =
-                  event.ticketTypes.length === 0 ||
-                  event.ticketTypes.some((t) => Number(t.price) === 0);
-                const lowestPrice =
-                  event.ticketTypes.length > 0
-                    ? Math.min(...event.ticketTypes.map((t) => Number(t.price)))
-                    : 0;
-
-                const tags = [
-                  event.type === "HACKATHON"
-                    ? "Hackathon"
-                    : event.type === "WORKSHOP"
-                      ? "Workshop"
-                      : event.type === "TECH_TALK"
-                        ? "Tech Talk"
-                        : "Meetup",
-                  event.attendanceMode === "IN_PERSON" ? "In-Person" : "Virtual",
-                ];
-
-                return (
-                  <EventCard
-                    key={event.id}
-                    id={event.id}
-                    title={event.title}
-                    slug={event.slug}
-                    type={event.type as EventType}
-                    status={event.status as EventStatus}
-                    startDate={event.startDate}
-                    endDate={event.endDate || undefined}
-                    venue={event.venue || undefined}
-                    city={event.city?.name || undefined}
-                    coverUrl={event.coverImage || undefined}
-                    isFree={isFree}
-                    price={isFree ? 0 : lowestPrice}
-                    attendeeCount={event._count.registrations}
-                    speakerCount={event._count.speakers}
-                    tags={tags}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Server-side Pagination */}
-            {totalPages > 1 && (
-              <div className="border-surface-800/80 border-t pt-6">
-                <EventsPagination currentPage={page} totalPages={totalPages} />
-              </div>
-            )}
+          <div className="container-page relative z-10 text-center">
+            <SectionHeader
+              badge="Verified Gathering Schedule"
+              title="Discover KailshiansX Gatherings"
+              highlight="KailshiansX Gatherings"
+              description="From flagship 36-hour hackathons and citywide summits to hands-on distributed systems masterclasses. Find your next stage."
+              align="center"
+            />
           </div>
-        ) : (
-          <EmptyState
-            icon={<Search className="text-surface-500 size-10" />}
-            title="No Gatherings Found"
-            description={
-              q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
-                ? "No events match your current filter selection. Try resetting your search or exploring past archives."
-                : "No upcoming events scheduled right now. Check back soon for the next cohort announcement!"
-            }
-            action={
-              q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
-                ? {
-                    label: "Reset All Filters",
-                    href: "/events",
-                  }
-                : {
-                    label: "View Past Archives",
-                    href: "/events?timeline=past",
-                  }
-            }
-          />
-        )}
-      </main>
-    </div>
+        </section>
+
+        {/* Main Events Catalog Area */}
+        <main className="container-page pt-10">
+          {/* Dynamic Interactive Filter Bar */}
+          <div className="border-surface-800 bg-surface-900/50 mb-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm">
+            <EventsFilterBar
+              initialSearch={q}
+              initialTimeline={timeline}
+              initialType={type}
+              initialCity={city}
+              cities={cityOptions}
+              totalResults={totalResults}
+              upcomingCount={upcomingCount}
+              pastCount={pastCount}
+            />
+          </div>
+
+          {/* Events Grid or Empty State */}
+          {events.length > 0 ? (
+            <div className="space-y-12">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {events.map((event) => {
+                  const isFree =
+                    event.ticketTypes.length === 0 ||
+                    event.ticketTypes.some((t) => Number(t.price) === 0);
+                  const lowestPrice =
+                    event.ticketTypes.length > 0
+                      ? Math.min(...event.ticketTypes.map((t) => Number(t.price)))
+                      : 0;
+
+                  const tags = [
+                    event.type === "HACKATHON"
+                      ? "Hackathon"
+                      : event.type === "WORKSHOP"
+                        ? "Workshop"
+                        : event.type === "TECH_TALK"
+                          ? "Tech Talk"
+                          : "Meetup",
+                    event.attendanceMode === "IN_PERSON" ? "In-Person" : "Virtual",
+                  ];
+
+                  return (
+                    <EventCard
+                      key={event.id}
+                      id={event.id}
+                      title={event.title}
+                      slug={event.slug}
+                      type={event.type as EventType}
+                      status={event.status as EventStatus}
+                      startDate={event.startDate}
+                      endDate={event.endDate || undefined}
+                      venue={event.venue || undefined}
+                      city={event.city?.name || undefined}
+                      coverUrl={event.coverImage || undefined}
+                      isFree={isFree}
+                      price={isFree ? 0 : lowestPrice}
+                      attendeeCount={event._count.registrations}
+                      speakerCount={event._count.speakers}
+                      tags={tags}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Server-side Pagination */}
+              {totalPages > 1 && (
+                <div className="border-surface-800/80 border-t pt-6">
+                  <EventsPagination currentPage={page} totalPages={totalPages} />
+                </div>
+              )}
+            </div>
+          ) : (
+            <EmptyState
+              icon={<Search className="text-surface-500 size-10" />}
+              title="No Gatherings Found"
+              description={
+                q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
+                  ? "No events match your current filter selection. Try resetting your search or exploring past archives."
+                  : "No upcoming events scheduled right now. Check back soon for the next cohort announcement!"
+              }
+              action={
+                q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
+                  ? {
+                      label: "Reset All Filters",
+                      href: "/events",
+                    }
+                  : {
+                      label: "View Past Archives",
+                      href: "/events?timeline=past",
+                    }
+              }
+            />
+          )}
+        </main>
+      </div>
+    </>
   );
 }

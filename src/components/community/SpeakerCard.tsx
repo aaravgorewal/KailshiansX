@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Globe, Mic, Award, Compass } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";
@@ -95,12 +95,17 @@ export function SpeakerCard({
       <div className="relative mt-2 mb-4">
         <div className="from-brand-500 via-accent-500 to-brand-400 size-24 rounded-full bg-gradient-to-tr p-1 transition-shadow group-hover:shadow-[0_0_20px_rgba(61,97,252,0.3)] sm:size-28">
           {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={name}
-              className="bg-surface-950 size-full rounded-full object-cover"
-              loading="lazy"
-            />
+            <div className="relative size-full overflow-hidden rounded-full">
+              <Image
+                src={avatarUrl}
+                alt={name}
+                fill
+                sizes="112px"
+                className="bg-surface-950 size-full rounded-full object-cover"
+                loading="lazy"
+                unoptimized={avatarUrl.startsWith("data:")}
+              />
+            </div>
           ) : (
             <div className="bg-surface-950 text-surface-200 flex size-full items-center justify-center rounded-full text-xl font-bold">
               {name.charAt(0)}

@@ -2,6 +2,7 @@
 // Dev fallback route for handling uploads when S3 credentials are not yet configured
 
 import { NextRequest, NextResponse } from "next/server";
+import { validateFileUpload } from "@/server/security/upload";
 
 // In-memory or fallback storage for mock mode in local dev
 const mockStorage = new Map<string, { buffer: Buffer; contentType: string }>();
@@ -16,9 +17,20 @@ export async function PUT(request: NextRequest) {
 
   const contentType = request.headers.get("content-type") || "image/jpeg";
   const arrayBuffer = await request.arrayBuffer();
+
+  const validation = validateFileUpload({
+    contentType,
+    sizeBytes: arrayBuffer.byteLength,
+    filename: key,
+  });
+
+  if (!validation.valid) {
+    return NextResponse.json({ error: validation.error }, { status: 400 });
+  }
+
   mockStorage.set(key, {
     buffer: Buffer.from(arrayBuffer),
-    contentType,
+    contentType: validation.normalizedMimeType || contentType,
   });
 
   return new NextResponse(null, { status: 200 });

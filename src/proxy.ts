@@ -8,6 +8,7 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { checkRateLimit, getClientIp } from "@/server/security/rate-limit";
 
 const ADMIN_ROLES = ["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"] as const;
 type AdminRole = (typeof ADMIN_ROLES)[number];
@@ -19,7 +20,42 @@ function isAdminRole(role: string | undefined): role is AdminRole {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ── Protect /admin/* ────────────────────────────────────────────────────────
+  // ── 1. CSRF Protection for API Mutations ────────────────────────────────────
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method) && pathname.startsWith("/api/")) {
+    // Webhooks verify their own cryptographic HMAC signatures
+    if (!pathname.startsWith("/api/webhooks/")) {
+      const origin = request.headers.get("origin");
+      const host = request.headers.get("host");
+      if (origin && host) {
+        try {
+          const originHost = new URL(origin).host;
+          if (
+            originHost !== host &&
+            !originHost.includes("localhost") &&
+            !originHost.includes("127.0.0.1")
+          ) {
+            return new NextResponse("Cross-origin request forbidden", { status: 403 });
+          }
+        } catch {
+          return new NextResponse("Invalid origin header", { status: 400 });
+        }
+      }
+    }
+  }
+
+  // ── 2. Rate Limiting for Authentication ─────────────────────────────────────
+  if (pathname.startsWith("/signin") || pathname.startsWith("/api/auth")) {
+    const ip = getClientIp(request.headers);
+    const rl = await checkRateLimit(ip, "auth");
+    if (!rl.success) {
+      return new NextResponse("Too many authentication requests. Please try again shortly.", {
+        status: 429,
+        headers: { "Retry-After": "60" },
+      });
+    }
+  }
+
+  // ── 3. Protect /admin/* ─────────────────────────────────────────────────────
   if (pathname.startsWith("/admin")) {
     const session = await auth();
 

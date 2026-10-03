@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { trackApplicationSubmit } from "@/lib/analytics";
 import {
   stateLeadApplicationSchema,
   type StateLeadApplicationInput,
@@ -57,6 +58,10 @@ export function StateLeadFormClient() {
     try {
       const res = await applyStateLead(values);
       if (res.success && res.applicationId) {
+        trackApplicationSubmit({
+          type: "state_lead",
+          roleOrTrack: values.state,
+        });
         setSuccessAppId(res.applicationId);
         reset();
       } else {

@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Calendar, MapPin, Users, ArrowRight, Clock, Mic } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -92,7 +92,15 @@ export function EventCard({
       {/* Cover Media Container */}
       <div className="bg-surface-950 relative aspect-[16/9] w-full overflow-hidden">
         {coverUrl ? (
-          <img src={coverUrl} alt={title} className="h-full w-full object-cover" loading="lazy" />
+          <Image
+            src={coverUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            unoptimized={coverUrl.startsWith("data:")}
+          />
         ) : (
           <div className="from-surface-900 via-surface-950 to-brand-950/40 relative flex h-full w-full items-center justify-center bg-gradient-to-br p-6">
             <div className="bg-grid absolute inset-0 opacity-30" />

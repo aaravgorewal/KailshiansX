@@ -47,8 +47,21 @@ export function UploadPhotosModal({
   const handleFilesAdded = (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
+    const MAX_SIZE = 10 * 1024 * 1024;
+    const oversized = Array.from(files).filter((file) => file.size > MAX_SIZE);
+    if (oversized.length > 0) {
+      toast({
+        title: "File size limit exceeded",
+        description: `Files must be under 10MB. Skipped: ${oversized
+          .map((f) => f.name)
+          .slice(0, 3)
+          .join(", ")}`,
+        variant: "destructive",
+      });
+    }
+
     const newFiles: QueuedFile[] = Array.from(files)
-      .filter((file) => file.type.startsWith("image/"))
+      .filter((file) => file.type.startsWith("image/") && file.size <= MAX_SIZE)
       .map((file) => ({
         file,
         previewUrl: URL.createObjectURL(file),
@@ -57,11 +70,13 @@ export function UploadPhotosModal({
       }));
 
     if (newFiles.length === 0) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select image files (JPEG, PNG, WebP).",
-        variant: "destructive",
-      });
+      if (oversized.length === 0) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select image files (JPEG, PNG, WebP, AVIF).",
+          variant: "destructive",
+        });
+      }
       return;
     }
 
