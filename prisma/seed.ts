@@ -1157,6 +1157,9 @@ async function main() {
         cityId: jaipur.id,
         venue: "JECC Auditorium",
         venueAddress: "RIICO Industrial Area, Sitapura, Jaipur, Rajasthan 302022",
+        venueMapUrl: "https://maps.google.com/?q=JECC+Jaipur",
+        eligibility:
+          "Open to software engineers, college students, tech founders, and open-source contributors. Prior programming experience in Python, JavaScript, or Cloud services is helpful.",
         startDate: new Date("2026-11-14T10:00:00.000Z"),
         endDate: new Date("2026-11-14T18:00:00.000Z"),
         registrationDeadline: new Date("2026-11-12T23:59:59.000Z"),
@@ -1169,7 +1172,11 @@ async function main() {
     }),
     prisma.event.upsert({
       where: { slug: "nirmanx-2026" },
-      update: {},
+      update: {
+        venueMapUrl: "https://maps.google.com/?q=IIT+Delhi+Research+Park",
+        eligibility:
+          "Open to teams of 2 to 4 developers. All members must be registered college students or early-stage builders (graduated within last 2 years). Valid ID proof required.",
+      },
       create: {
         slug: "nirmanx-2026",
         title: "NirmanX 2026 — National Hackathon Season 02",
@@ -1180,6 +1187,9 @@ async function main() {
         cityId: delhi.id,
         venue: "IIT Delhi Research Park",
         venueAddress: "IIT Delhi, Hauz Khas, New Delhi 110016",
+        venueMapUrl: "https://maps.google.com/?q=IIT+Delhi+Research+Park",
+        eligibility:
+          "Open to teams of 2 to 4 developers. All members must be registered college students or early-stage builders (graduated within last 2 years). Valid ID proof required.",
         startDate: new Date("2026-12-05T09:00:00.000Z"),
         endDate: new Date("2026-12-06T20:00:00.000Z"),
         registrationDeadline: new Date("2026-11-30T23:59:59.000Z"),
@@ -1447,7 +1457,7 @@ async function main() {
   });
   console.log("✅ Campus Leads & State Leads seeded");
 
-  // Create registrations
+  // Create tickets and schedule for upcoming events
   let ticketPadharo = await prisma.ticketType.findFirst({
     where: { eventId: padharoX01.id, name: "General Attendee" },
   });
@@ -1458,11 +1468,309 @@ async function main() {
         name: "General Attendee",
         price: 0,
         quota: 500,
+        isFree: true,
+        description: "Full event access, keynote sessions, partner expo & lunch.",
         saleStart: new Date("2026-09-01T00:00:00Z"),
         saleEnd: new Date("2026-11-13T23:59:59Z"),
       },
     });
   }
+
+  const existingVip = await prisma.ticketType.findFirst({
+    where: { eventId: padharoX01.id, name: "Community VIP Pass" },
+  });
+  if (!existingVip) {
+    await prisma.ticketType.create({
+      data: {
+        eventId: padharoX01.id,
+        name: "Community VIP Pass",
+        price: 299,
+        quota: 50,
+        isFree: false,
+        description: "Priority front-row seating, exclusive speaker dinner invite & swag kit.",
+        saleStart: new Date("2026-09-01T00:00:00Z"),
+        saleEnd: new Date("2026-11-12T23:59:59Z"),
+      },
+    });
+  }
+
+  const existingNirmanTicket = await prisma.ticketType.findFirst({
+    where: { eventId: nirmanX2026.id, name: "Hacker Team Pass (2-4 pax)" },
+  });
+  if (!existingNirmanTicket) {
+    await prisma.ticketType.create({
+      data: {
+        eventId: nirmanX2026.id,
+        name: "Hacker Team Pass (2-4 pax)",
+        price: 0,
+        quota: 150,
+        isFree: true,
+        description: "Includes hackathon team entry, 36h food, snacks, mentor access & swag.",
+        saleStart: new Date("2026-10-01T00:00:00Z"),
+        saleEnd: new Date("2026-11-28T23:59:59Z"),
+      },
+    });
+  }
+
+  // Schedule for PadharoX 01
+  await prisma.eventScheduleItem.createMany({
+    data: [
+      {
+        eventId: padharoX01.id,
+        startTime: new Date("2026-11-14T10:00:00Z"),
+        endTime: new Date("2026-11-14T10:45:00Z"),
+        title: "Check-in, Morning Chai & Swag Collection",
+        description: "Collect your personalized developer badge and KailshiansX welcome kit.",
+        sortOrder: 1,
+      },
+      {
+        eventId: padharoX01.id,
+        startTime: new Date("2026-11-14T10:45:00Z"),
+        endTime: new Date("2026-11-14T11:45:00Z"),
+        title: "Opening Keynote: Scaling GenAI Infrastructure from 0 to 1M Users",
+        description:
+          "Real-world war stories from building high-scale distributed agentic platforms.",
+        speakerId: rahul.id,
+        sortOrder: 2,
+      },
+      {
+        eventId: padharoX01.id,
+        startTime: new Date("2026-11-14T11:45:00Z"),
+        endTime: new Date("2026-11-14T12:45:00Z"),
+        title: "Architecture Session: Event-Driven Microservices with Next.js & Postgres",
+        description:
+          "Deep dive into CDC pipelines, server actions, and resilient queue processing.",
+        speakerId: priya.id,
+        sortOrder: 3,
+      },
+      {
+        eventId: padharoX01.id,
+        startTime: new Date("2026-11-14T12:45:00Z"),
+        endTime: new Date("2026-11-14T14:15:00Z"),
+        title: "Community Networking Lunch & Ecosystem Partner Expo",
+        description: "Connect with founders, campus leads, and tech recruiters at sponsor booths.",
+        sortOrder: 4,
+      },
+      {
+        eventId: padharoX01.id,
+        startTime: new Date("2026-11-14T14:15:00Z"),
+        endTime: new Date("2026-11-14T16:00:00Z"),
+        title: "Live Terminal Lab: Building Autonomous Tool-Calling Agents",
+        description: "Hands-on terminal coding session deploying agents to edge containers.",
+        sortOrder: 5,
+      },
+      {
+        eventId: padharoX01.id,
+        startTime: new Date("2026-11-14T16:00:00Z"),
+        endTime: new Date("2026-11-14T17:30:00Z"),
+        title: "Open Mic, Campus Chapter Awards & Closing Remarks",
+        description: "Celebrating top campus leaders, community giveaways, and open mic pitches.",
+        sortOrder: 6,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  // FAQs for PadharoX 01
+  await prisma.eventFaq.createMany({
+    data: [
+      {
+        eventId: padharoX01.id,
+        question: "Is PadharoX free to attend?",
+        answer:
+          "Yes! General Admission and Student passes are 100% free of charge sponsored by our ecosystem partners.",
+        sortOrder: 1,
+      },
+      {
+        eventId: padharoX01.id,
+        question: "Will verifiable certificates be provided?",
+        answer:
+          "Yes, all verified attendees will receive a cryptographically verifiable digital certificate powered by KailshiansX.",
+        sortOrder: 2,
+      },
+      {
+        eventId: padharoX01.id,
+        question: "What should I bring with me?",
+        answer:
+          "Bring your laptop, charger, student or professional ID, and enthusiasm to learn and connect with fellow builders.",
+        sortOrder: 3,
+      },
+      {
+        eventId: padharoX01.id,
+        question: "Where is the venue and is parking available?",
+        answer:
+          "JECC Auditorium is located in the RIICO Industrial Area, Sitapura, Jaipur. Ample two-wheeler and four-wheeler parking is available on-site.",
+        sortOrder: 4,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  // Tracks for PadharoX 01
+  await prisma.eventTrack.createMany({
+    data: [
+      {
+        eventId: padharoX01.id,
+        name: "Agentic AI & LLM Systems",
+        description:
+          "Multi-agent orchestration, tool use, memory architectures, and model evaluations.",
+        color: "#3d61fc",
+        sortOrder: 1,
+      },
+      {
+        eventId: padharoX01.id,
+        name: "High-Scale Cloud Infrastructure",
+        description: "Distributed databases, event queues, edge deployments, and Kubernetes.",
+        color: "#8b3dff",
+        sortOrder: 2,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  // Gallery Album for PadharoX 01
+  const existingPadharoAlbum = await prisma.galleryAlbum.findFirst({
+    where: { eventId: padharoX01.id },
+  });
+  if (!existingPadharoAlbum) {
+    const padharoAlbum = await prisma.galleryAlbum.create({
+      data: {
+        eventId: padharoX01.id,
+        title: "PadharoX 01 — Community Preview & Teaser",
+        category: "meetup",
+        isPublished: true,
+      },
+    });
+    await prisma.galleryImage.createMany({
+      data: [
+        {
+          albumId: padharoAlbum.id,
+          url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
+          caption: "Auditorium Main Stage at JECC Jaipur",
+          altText: "Conference hall stage",
+          sortOrder: 1,
+        },
+        {
+          albumId: padharoAlbum.id,
+          url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1200&q=80",
+          caption: "Developer Networking and Discussions",
+          altText: "Developers networking",
+          sortOrder: 2,
+        },
+        {
+          albumId: padharoAlbum.id,
+          url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&q=80",
+          caption: "Collaborative Workshop & Coding Labs",
+          altText: "Coding workshop",
+          sortOrder: 3,
+        },
+      ],
+      skipDuplicates: true,
+    });
+  }
+
+  // Schedule and FAQs for NirmanX 2026
+  await prisma.eventScheduleItem.createMany({
+    data: [
+      {
+        eventId: nirmanX2026.id,
+        startTime: new Date("2026-12-05T09:00:00Z"),
+        endTime: new Date("2026-12-05T10:30:00Z"),
+        title: "Hacker Team Check-in, Desk Setup & Breakfast",
+        description: "Pick up your hacker badges, access credentials, and setup workstations.",
+        sortOrder: 1,
+      },
+      {
+        eventId: nirmanX2026.id,
+        startTime: new Date("2026-12-05T10:30:00Z"),
+        endTime: new Date("2026-12-05T11:30:00Z"),
+        title: "Opening Ceremony, Problem Statements & Track Reveals",
+        description: "Jury introduction, judging criteria briefing, and sponsor API unlocks.",
+        sortOrder: 2,
+      },
+      {
+        eventId: nirmanX2026.id,
+        startTime: new Date("2026-12-05T11:30:00Z"),
+        endTime: new Date("2026-12-06T17:00:00Z"),
+        title: "36-Hour Hackathon Sprints & Mentorship Rounds",
+        description:
+          "Continuous building with dedicated industry mentors roving throughout the night.",
+        sortOrder: 3,
+      },
+      {
+        eventId: nirmanX2026.id,
+        startTime: new Date("2026-12-06T17:00:00Z"),
+        endTime: new Date("2026-12-06T19:00:00Z"),
+        title: "Code Freeze & Top 10 Live Stage Demos",
+        description: "Finalist teams demo working prototypes live to the executive jury.",
+        sortOrder: 4,
+      },
+      {
+        eventId: nirmanX2026.id,
+        startTime: new Date("2026-12-06T19:00:00Z"),
+        endTime: new Date("2026-12-06T20:00:00Z"),
+        title: "Awards Ceremony & ₹10 Lakhs Grants Distribution",
+        description: "Winner announcements, grant felicitations, and closing celebrations.",
+        sortOrder: 5,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  await prisma.eventFaq.createMany({
+    data: [
+      {
+        eventId: nirmanX2026.id,
+        question: "What is the team size limit?",
+        answer:
+          "Teams must consist of 2 to 4 members. Inter-college teams and cross-functional teams are welcome.",
+        sortOrder: 1,
+      },
+      {
+        eventId: nirmanX2026.id,
+        question: "Are food, snacks, and accommodation provided?",
+        answer:
+          "Yes, 36 hours of continuous meals, midnight pizza, energy drinks, and designated resting zones are provided.",
+        sortOrder: 2,
+      },
+      {
+        eventId: nirmanX2026.id,
+        question: "Who owns the intellectual property (IP) created?",
+        answer:
+          "You and your team retain 100% ownership of your code, design, and intellectual property.",
+        sortOrder: 3,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  await prisma.eventTrack.createMany({
+    data: [
+      {
+        eventId: nirmanX2026.id,
+        name: "Autonomous AI Agents",
+        description:
+          "Multi-modal agents, autonomous task solvers, and developer productivity tools.",
+        color: "#3d61fc",
+        sortOrder: 1,
+      },
+      {
+        eventId: nirmanX2026.id,
+        name: "Digital Public Goods & FinTech",
+        description: "UPI ecosystem innovations, decentralized identity, and financial access.",
+        color: "#10b981",
+        sortOrder: 2,
+      },
+      {
+        eventId: nirmanX2026.id,
+        name: "Open Bharat Tech",
+        description: "Local language interfaces, smart agriculture, and healthcare systems.",
+        color: "#f59e0b",
+        sortOrder: 3,
+      },
+    ],
+    skipDuplicates: true,
+  });
 
   await prisma.registration.upsert({
     where: { registrationCode: "KX-2026-PX001" },
