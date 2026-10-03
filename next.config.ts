@@ -23,9 +23,7 @@ const nextConfig: NextConfig = {
   // Enable server actions
   experimental: {
     serverActions: {
-      allowedOrigins: [
-        process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-      ],
+      allowedOrigins: [process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"],
     },
   },
 };

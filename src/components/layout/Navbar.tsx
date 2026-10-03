@@ -22,10 +22,10 @@ function Logo() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-2 font-bold text-xl tracking-tight group"
+      className="group flex items-center gap-2 text-xl font-bold tracking-tight"
       aria-label="KailshiansX home"
     >
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white shadow-glow group-hover:shadow-glowAccent transition-shadow duration-300">
+      <span className="bg-brand-500 shadow-glow group-hover:shadow-glowAccent flex h-8 w-8 items-center justify-center rounded-lg text-white transition-shadow duration-300">
         <Zap size={16} strokeWidth={2.5} />
       </span>
       <span className="text-surface-50">
@@ -64,7 +64,7 @@ function DropdownMenu({ item }: { item: NavItem }) {
         aria-expanded={open}
         aria-haspopup="true"
         className={cn(
-          "flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
+          "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
           "text-surface-300 hover:text-surface-50 hover:bg-surface-800",
           isActive && "text-brand-400 bg-surface-800"
         )}
@@ -80,8 +80,8 @@ function DropdownMenu({ item }: { item: NavItem }) {
         <div
           onMouseLeave={() => setOpen(false)}
           className={cn(
-            "absolute top-full left-0 mt-1 min-w-[220px] rounded-xl border border-surface-700",
-            "bg-surface-900/95 backdrop-blur-md shadow-card p-2 z-50",
+            "border-surface-700 absolute top-full left-0 mt-1 min-w-[220px] rounded-xl border",
+            "bg-surface-900/95 shadow-card z-50 p-2 backdrop-blur-md",
             "animate-in fade-in-0 slide-in-from-top-2 duration-200"
           )}
           role="menu"
@@ -102,9 +102,7 @@ function DropdownMenu({ item }: { item: NavItem }) {
             >
               <span className="block text-sm font-medium">{child.label}</span>
               {child.description && (
-                <span className="block text-xs text-surface-400 mt-0.5">
-                  {child.description}
-                </span>
+                <span className="text-surface-400 mt-0.5 block text-xs">{child.description}</span>
               )}
             </Link>
           ))}
@@ -118,16 +116,13 @@ function DropdownMenu({ item }: { item: NavItem }) {
 
 function NavLink({ item }: { item: NavItem }) {
   const pathname = usePathname();
-  const isActive =
-    item.href === "/"
-      ? pathname === "/"
-      : pathname.startsWith(item.href);
+  const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
   return (
     <Link
       href={item.href}
       className={cn(
-        "px-3 py-2 text-sm font-medium rounded-lg transition-colors",
+        "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
         "text-surface-300 hover:text-surface-50 hover:bg-surface-800",
         isActive && "text-brand-400 bg-surface-800"
       )}
@@ -139,24 +134,20 @@ function NavLink({ item }: { item: NavItem }) {
 
 // ─── Mobile Drawer ────────────────────────────────────────────────────────────
 
-function MobileDrawer({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
 
   React.useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   React.useEffect(() => {
     onClose();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (
@@ -174,7 +165,7 @@ function MobileDrawer({
       <div
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-80 max-w-[calc(100vw-3rem)]",
-          "bg-surface-900 border-r border-surface-700",
+          "bg-surface-900 border-surface-700 border-r",
           "flex flex-col transition-transform duration-300 ease-in-out",
           open ? "translate-x-0" : "-translate-x-full"
         )}
@@ -183,51 +174,49 @@ function MobileDrawer({
         aria-label="Navigation menu"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-surface-700">
+        <div className="border-surface-700 flex items-center justify-between border-b px-5 py-4">
           <Logo />
           <button
             onClick={onClose}
             aria-label="Close navigation"
-            className="rounded-lg p-2 text-surface-400 hover:text-surface-50 hover:bg-surface-800 transition-colors"
+            className="text-surface-400 hover:text-surface-50 hover:bg-surface-800 rounded-lg p-2 transition-colors"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3" aria-label="Mobile navigation">
+        <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Mobile navigation">
           {ALL_NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col px-4 py-3 rounded-lg mb-0.5 transition-colors",
+                "mb-0.5 flex flex-col rounded-lg px-4 py-3 transition-colors",
                 "text-surface-200 hover:text-surface-50 hover:bg-surface-800",
-                (item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href)) &&
+                (item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)) &&
                   "text-brand-400 bg-surface-800"
               )}
             >
               <span className="text-sm font-medium">{item.label}</span>
               {item.description && (
-                <span className="text-xs text-surface-400 mt-0.5">{item.description}</span>
+                <span className="text-surface-400 mt-0.5 text-xs">{item.description}</span>
               )}
             </Link>
           ))}
         </nav>
 
         {/* Footer CTA */}
-        <div className="px-5 py-4 border-t border-surface-700 space-y-2">
+        <div className="border-surface-700 space-y-2 border-t px-5 py-4">
           <Link
             href="/events"
-            className="block w-full text-center rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold py-2.5 transition-colors"
+            className="bg-brand-500 hover:bg-brand-600 block w-full rounded-lg py-2.5 text-center text-sm font-semibold text-white transition-colors"
           >
             Explore Events
           </Link>
           <Link
             href="/join-team"
-            className="block w-full text-center rounded-lg border border-surface-600 hover:bg-surface-800 text-surface-200 text-sm font-medium py-2.5 transition-colors"
+            className="border-surface-600 hover:bg-surface-800 text-surface-200 block w-full rounded-lg border py-2.5 text-center text-sm font-medium transition-colors"
           >
             Join Team
           </Link>
@@ -253,9 +242,9 @@ export function Navbar({ user }: { user: NavbarUser }) {
     <>
       <header
         className={cn(
-          "fixed top-0 inset-x-0 z-30 transition-all duration-300",
+          "fixed inset-x-0 top-0 z-30 transition-all duration-300",
           scrolled
-            ? "bg-surface-950/95 backdrop-blur-md border-b border-surface-800 shadow-card"
+            ? "bg-surface-950/95 border-surface-800 shadow-card border-b backdrop-blur-md"
             : "bg-transparent"
         )}
       >
@@ -265,10 +254,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
             <Logo />
 
             {/* Center — Desktop nav (hidden on mobile) */}
-            <nav
-              className="hidden lg:flex items-center gap-1"
-              aria-label="Primary navigation"
-            >
+            <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
               {PRIMARY_NAV.map((item) =>
                 item.children ? (
                   <DropdownMenu key={item.href} item={item} />
@@ -284,7 +270,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
               <Link
                 href="/events"
                 className={cn(
-                  "hidden sm:inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold transition-all",
+                  "hidden items-center rounded-lg px-4 py-2 text-sm font-semibold transition-all sm:inline-flex",
                   "bg-brand-500 hover:bg-brand-600 text-white"
                 )}
               >
@@ -298,7 +284,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
                 <Link
                   href="/signin"
                   id="nav-signin-btn"
-                  className="hidden sm:inline-flex items-center px-3 py-2 rounded-lg border border-surface-700 text-sm font-medium text-surface-200 hover:border-brand-500 hover:text-brand-400 transition-all"
+                  className="border-surface-700 text-surface-200 hover:border-brand-500 hover:text-brand-400 hidden items-center rounded-lg border px-3 py-2 text-sm font-medium transition-all sm:inline-flex"
                 >
                   Sign In
                 </Link>
@@ -308,7 +294,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
               <button
                 onClick={() => setDrawerOpen(true)}
                 aria-label="Open navigation menu"
-                className="lg:hidden rounded-lg p-2 text-surface-300 hover:text-surface-50 hover:bg-surface-800 transition-colors"
+                className="text-surface-300 hover:text-surface-50 hover:bg-surface-800 rounded-lg p-2 transition-colors lg:hidden"
               >
                 <Menu size={22} />
               </button>

@@ -46,11 +46,14 @@ export default function HomePage() {
   return (
     <>
       {/* ─── Hero ───────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-surface-950 pt-20 pb-24 sm:pt-28 sm:pb-32">
+      <section className="bg-surface-950 relative overflow-hidden pt-20 pb-24 sm:pt-28 sm:pb-32">
         {/* Background effects */}
-        <div className="pointer-events-none absolute inset-0 bg-grid opacity-40" aria-hidden="true" />
         <div
-          className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[900px] rounded-full opacity-20 blur-3xl"
+          className="bg-grid pointer-events-none absolute inset-0 opacity-40"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute top-0 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full opacity-20 blur-3xl"
           style={{
             background:
               "radial-gradient(ellipse at center, rgba(61,97,252,0.4) 0%, rgba(139,61,255,0.2) 50%, transparent 80%)",
@@ -60,7 +63,7 @@ export default function HomePage() {
 
         <div className="container-page relative z-10 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-sm font-medium text-brand-400 mb-8">
+          <div className="border-brand-500/30 bg-brand-500/10 text-brand-400 mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium">
             <Zap size={14} className="text-brand-400" />
             Developer Events. Builder Communities. Real Connections.
           </div>
@@ -72,18 +75,17 @@ export default function HomePage() {
             <span className="gradient-text">Discover, Connect & Grow</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-surface-400 leading-relaxed">
-            KailshiansX is the developer events &amp; community platform by Kailshians Web
-            Services. Hackathons, meetups, workshops, tech talks, campus leads and more —
-            all in one place.
+          <p className="text-surface-400 mx-auto mt-6 max-w-2xl text-lg leading-relaxed">
+            KailshiansX is the developer events &amp; community platform by Kailshians Web Services.
+            Hackathons, meetups, workshops, tech talks, campus leads and more — all in one place.
           </p>
 
           {/* CTAs */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/events"
               id="hero-explore-events"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-7 py-3.5 text-base font-semibold text-white shadow-glow hover:shadow-glow-accent transition-all duration-200"
+              className="bg-brand-500 hover:bg-brand-600 shadow-glow hover:shadow-glow-accent inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold text-white transition-all duration-200"
             >
               Explore Events
               <ArrowRight size={18} />
@@ -91,14 +93,14 @@ export default function HomePage() {
             <Link
               href="/community"
               id="hero-join-community"
-              className="inline-flex items-center gap-2 rounded-xl border border-surface-600 hover:border-brand-500 bg-surface-900 hover:bg-surface-800 px-7 py-3.5 text-base font-semibold text-surface-200 transition-all duration-200"
+              className="border-surface-600 hover:border-brand-500 bg-surface-900 hover:bg-surface-800 text-surface-200 inline-flex items-center gap-2 rounded-xl border px-7 py-3.5 text-base font-semibold transition-all duration-200"
             >
               Join Community
             </Link>
             <Link
               href="/collaborations"
               id="hero-partner"
-              className="inline-flex items-center gap-2 rounded-xl border border-surface-700 hover:border-accent-500 px-7 py-3.5 text-base font-semibold text-surface-300 transition-all duration-200"
+              className="border-surface-700 hover:border-accent-500 text-surface-300 inline-flex items-center gap-2 rounded-xl border px-7 py-3.5 text-base font-semibold transition-all duration-200"
             >
               Partner With Us
             </Link>
@@ -107,12 +109,12 @@ export default function HomePage() {
       </section>
 
       {/* ─── Stats ─────────────────────────────────────────────────────────── */}
-      <section className="border-y border-surface-800 bg-surface-900/50">
-        <div className="container-page py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+      <section className="border-surface-800 bg-surface-900/50 border-y">
+        <div className="container-page grid grid-cols-2 gap-8 py-12 text-center sm:grid-cols-4">
           {STATS.map((stat) => (
             <div key={stat.label}>
-              <div className="text-3xl sm:text-4xl font-bold gradient-text">{stat.value}</div>
-              <div className="mt-1 text-sm text-surface-400">{stat.label}</div>
+              <div className="gradient-text text-3xl font-bold sm:text-4xl">{stat.value}</div>
+              <div className="text-surface-400 mt-1 text-sm">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -120,22 +122,18 @@ export default function HomePage() {
 
       {/* ─── Highlights ────────────────────────────────────────────────────── */}
       <section className="section-spacing container-page">
-        <h2 className="text-3xl font-bold text-surface-50 mb-2">What We Do</h2>
+        <h2 className="text-surface-50 mb-2 text-3xl font-bold">What We Do</h2>
         <p className="text-surface-400 mb-10">
           Every feature moves you one step closer to the community.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {HIGHLIGHTS.map(({ icon: Icon, title, description, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="card-glow p-6 group"
-            >
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400 group-hover:bg-brand-500/20 transition-colors">
+            <Link key={href} href={href} className="card-glow group p-6">
+              <div className="bg-brand-500/10 text-brand-400 group-hover:bg-brand-500/20 mb-4 flex h-10 w-10 items-center justify-center rounded-lg transition-colors">
                 <Icon size={20} />
               </div>
-              <h3 className="font-semibold text-surface-100 mb-1">{title}</h3>
-              <p className="text-sm text-surface-400 leading-relaxed">{description}</p>
+              <h3 className="text-surface-100 mb-1 font-semibold">{title}</h3>
+              <p className="text-surface-400 text-sm leading-relaxed">{description}</p>
             </Link>
           ))}
         </div>
@@ -143,18 +141,18 @@ export default function HomePage() {
 
       {/* ─── Final CTA ─────────────────────────────────────────────────────── */}
       <section className="section-spacing container-page text-center">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-brand-500/20 bg-gradient-to-br from-brand-950/50 to-accent-950/30 p-10 sm:p-14">
-          <h2 className="text-3xl sm:text-4xl font-bold text-surface-50 mb-4">
+        <div className="border-brand-500/20 from-brand-950/50 to-accent-950/30 mx-auto max-w-2xl rounded-2xl border bg-gradient-to-br p-10 sm:p-14">
+          <h2 className="text-surface-50 mb-4 text-3xl font-bold sm:text-4xl">
             Ready to be part of the movement?
           </h2>
           <p className="text-surface-400 mb-8 leading-relaxed">
-            Attendee → Member → Contributor → Lead → Organiser → Mentor/Speaker.
-            Your journey starts here.
+            Attendee → Member → Contributor → Lead → Organiser → Mentor/Speaker. Your journey starts
+            here.
           </p>
           <Link
             href="/join-team"
             id="final-cta-join"
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-8 py-3.5 text-base font-semibold text-white shadow-glow transition-all"
+            className="bg-brand-500 hover:bg-brand-600 shadow-glow inline-flex items-center gap-2 rounded-xl px-8 py-3.5 text-base font-semibold text-white transition-all"
           >
             Join The Team <ArrowRight size={18} />
           </Link>

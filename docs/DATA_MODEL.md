@@ -69,12 +69,12 @@ erDiagram
 
 ### Auth & Identity
 
-| Model | Purpose | Key Fields |
-|-------|---------|------------|
-| `User` | Platform user (any role) | `email`, `role`, `deletedAt` (soft delete) |
-| `Account` | OAuth provider link (Auth.js) | `provider`, `providerAccountId` |
-| `Session` | Active sessions (Auth.js) | `sessionToken`, `expires` |
-| `VerificationToken` | Email magic link (Auth.js) | `identifier`, `token` |
+| Model               | Purpose                       | Key Fields                                 |
+| ------------------- | ----------------------------- | ------------------------------------------ |
+| `User`              | Platform user (any role)      | `email`, `role`, `deletedAt` (soft delete) |
+| `Account`           | OAuth provider link (Auth.js) | `provider`, `providerAccountId`            |
+| `Session`           | Active sessions (Auth.js)     | `sessionToken`, `expires`                  |
+| `VerificationToken` | Email magic link (Auth.js)    | `identifier`, `token`                      |
 
 **Role Enum:** `SUPER_ADMIN` > `ADMIN` > `EVENT_MANAGER` > `VIEWER` + `CAMPUS_LEAD` | `STATE_LEAD` | `MEMBER`
 
@@ -82,23 +82,23 @@ erDiagram
 
 ### Geography
 
-| Model | Purpose | Notes |
-|-------|---------|-------|
-| `City` | City master (Jaipur, Chandigarh, Delhi…) | `name` unique; links events, leads, colleges |
-| `College` | College master | Unique on `(name, cityId)` |
+| Model     | Purpose                                  | Notes                                        |
+| --------- | ---------------------------------------- | -------------------------------------------- |
+| `City`    | City master (Jaipur, Chandigarh, Delhi…) | `name` unique; links events, leads, colleges |
+| `College` | College master                           | Unique on `(name, cityId)`                   |
 
 ---
 
 ### Events
 
-| Model | Purpose | Key Fields |
-|-------|---------|------------|
-| `Event` | Core event entity | `slug`, `type`, `status`, `startDate`, `cityId`, `deletedAt` |
-| `EventScheduleItem` | Timed agenda slots | `startTime`, `endTime`, `speakerId` |
-| `EventTrack` | Hackathon/parallel tracks | `name`, `color` |
-| `EventFaq` | Per-event Q&A | `question`, `answer`, `sortOrder` |
-| `EventSpeaker` | Event↔Speaker join (with role) | `role: SPEAKER\|JUDGE\|MENTOR` |
-| `EventPartner` | Event↔Partner join (with tier) | `tier: TITLE\|GOLD\|SILVER\|BRONZE\|COMMUNITY\|MEDIA` |
+| Model               | Purpose                        | Key Fields                                                   |
+| ------------------- | ------------------------------ | ------------------------------------------------------------ |
+| `Event`             | Core event entity              | `slug`, `type`, `status`, `startDate`, `cityId`, `deletedAt` |
+| `EventScheduleItem` | Timed agenda slots             | `startTime`, `endTime`, `speakerId`                          |
+| `EventTrack`        | Hackathon/parallel tracks      | `name`, `color`                                              |
+| `EventFaq`          | Per-event Q&A                  | `question`, `answer`, `sortOrder`                            |
+| `EventSpeaker`      | Event↔Speaker join (with role) | `role: SPEAKER\|JUDGE\|MENTOR`                               |
+| `EventPartner`      | Event↔Partner join (with tier) | `tier: TITLE\|GOLD\|SILVER\|BRONZE\|COMMUNITY\|MEDIA`        |
 
 **Event Types:** `MEETUP` | `HACKATHON` | `WORKSHOP` | `TECH_TALK` | `OTHER`  
 **Event Statuses:** `DRAFT` → `PUBLISHED` → `ARCHIVED`
@@ -107,9 +107,9 @@ erDiagram
 
 ### Series
 
-| Model | Purpose |
-|-------|---------|
-| `Series` | Named series (RaibarX, NirmanX, …) with `kind: MEETUP\|HACKATHON` |
+| Model           | Purpose                                                                  |
+| --------------- | ------------------------------------------------------------------------ |
+| `Series`        | Named series (RaibarX, NirmanX, …) with `kind: MEETUP\|HACKATHON`        |
 | `SeriesEdition` | Join between `Series` and `Event`, with `editionNo` and optional `theme` |
 
 **Seed data:** RaibarX, TricityX, PadharoX (meetups); NirmanX, AarambhX (hackathons)
@@ -118,10 +118,10 @@ erDiagram
 
 ### Speakers & Partners (Global Pools)
 
-| Model | Key Fields |
-|-------|------------|
+| Model     | Key Fields                                                             |
+| --------- | ---------------------------------------------------------------------- |
 | `Speaker` | `slug`, `designation`, `organisation`, `linkedin`, `twitter`, `github` |
-| `Partner` | `slug`, `logo`, `website`, `category` |
+| `Partner` | `slug`, `logo`, `website`, `category`                                  |
 
 Speakers and Partners are **global** — they're linked to specific events via `EventSpeaker` / `EventPartner` join tables with metadata (role/tier).
 
@@ -129,12 +129,12 @@ Speakers and Partners are **global** — they're linked to specific events via `
 
 ### Tickets & Registrations
 
-| Model | Purpose | Key Fields |
-|-------|---------|------------|
-| `TicketType` | Ticket tier per event | `price`, `quota`, `saleStart`, `saleEnd`, `isFree` |
-| `Registration` | Attendee booking | `registrationCode` (human-readable), `status`, `qrCodeUrl`, `checkedInAt` |
-| `Payment` | Razorpay payment record | `razorpayOrderId`, `razorpayPaymentId`, `status`, `refundStatus` |
-| `Attendance` | QR check-in record | `checkedInAt`, `method: QR\|MANUAL` |
+| Model          | Purpose                 | Key Fields                                                                |
+| -------------- | ----------------------- | ------------------------------------------------------------------------- |
+| `TicketType`   | Ticket tier per event   | `price`, `quota`, `saleStart`, `saleEnd`, `isFree`                        |
+| `Registration` | Attendee booking        | `registrationCode` (human-readable), `status`, `qrCodeUrl`, `checkedInAt` |
+| `Payment`      | Razorpay payment record | `razorpayOrderId`, `razorpayPaymentId`, `status`, `refundStatus`          |
+| `Attendance`   | QR check-in record      | `checkedInAt`, `method: QR\|MANUAL`                                       |
 
 **Registration flow:** `TicketType` selected → `Registration` created (PENDING) → `Payment` created → on capture → Registration → CONFIRMED → at event → `Attendance` record
 
@@ -142,10 +142,10 @@ Speakers and Partners are **global** — they're linked to specific events via `
 
 ### Gallery
 
-| Model | Purpose |
-|-------|---------|
+| Model          | Purpose                             |
+| -------------- | ----------------------------------- |
 | `GalleryAlbum` | Named album per event or standalone | `category: meetup\|hackathon\|workshop\|tech-talk\|community\|bts` |
-| `GalleryImage` | Individual photo | `url`, `thumbUrl`, `caption`, `altText`, `sortOrder` |
+| `GalleryImage` | Individual photo                    | `url`, `thumbUrl`, `caption`, `altText`, `sortOrder`               |
 
 ---
 
@@ -153,17 +153,17 @@ Speakers and Partners are **global** — they're linked to specific events via `
 
 #### Campus Leads (PRD §11)
 
-| Model | Workflow |
-|-------|---------|
-| `CampusLeadApplication` | Form submission → status: `APPLIED → SCREENING → INTERVIEW → SELECTED` |
-| `CampusLead` | Active lead record (created on SELECTED) → `ACTIVE → ALUMNI \| INACTIVE` |
+| Model                   | Workflow                                                                 |
+| ----------------------- | ------------------------------------------------------------------------ |
+| `CampusLeadApplication` | Form submission → status: `APPLIED → SCREENING → INTERVIEW → SELECTED`   |
+| `CampusLead`            | Active lead record (created on SELECTED) → `ACTIVE → ALUMNI \| INACTIVE` |
 
 #### State Leads (PRD §12)
 
-| Model | Workflow |
-|-------|---------|
+| Model                  | Workflow                                |
+| ---------------------- | --------------------------------------- |
 | `StateLeadApplication` | Form submission → same 5-stage workflow |
-| `StateLead` | Covers a `state`, linked to `City[]` |
+| `StateLead`            | Covers a `state`, linked to `City[]`    |
 
 Both have `honeypot` field for spam protection.
 
@@ -171,36 +171,36 @@ Both have `honeypot` field for spam protection.
 
 ### Collaborations (PRD §13)
 
-| Model | Purpose |
-|-------|---------|
+| Model               | Purpose           |
+| ------------------- | ----------------- |
 | `CollaborationLead` | CRM-lite pipeline | `type: COLLEGE\|COMMUNITY\|VENUE\|SPONSOR`, `stage: LEAD → CONTACTED → NEGOTIATING → CONFIRMED` |
 
 ---
 
 ### Team & Organisation
 
-| Model | Purpose |
-|-------|---------|
+| Model             | Purpose                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------ |
 | `TeamApplication` | Join Team form (PRD §14) — area, status `NEW → REVIEWING → INTERVIEW → SELECTED\|REJECTED` |
-| `CoreTeamMember` | Published team directory | `category`, `isActive`, `deletedAt` |
-| `FounderContent` | CMS for Founder page | `milestones` (JSON), `philosophy`, `message` |
+| `CoreTeamMember`  | Published team directory                                                                   | `category`, `isActive`, `deletedAt`          |
+| `FounderContent`  | CMS for Founder page                                                                       | `milestones` (JSON), `philosophy`, `message` |
 
 ---
 
 ### Certificates
 
-| Model | Purpose |
-|-------|---------|
-| `CertificateTemplate` | Base template with `fields` JSON (position, font, color per field) |
-| `Certificate` | Issued cert — `uniqueId` for public verification, `certificateUrl` (S3 generated) |
+| Model                 | Purpose                                                                           |
+| --------------------- | --------------------------------------------------------------------------------- |
+| `CertificateTemplate` | Base template with `fields` JSON (position, font, color per field)                |
+| `Certificate`         | Issued cert — `uniqueId` for public verification, `certificateUrl` (S3 generated) |
 
 ---
 
 ### Finance (PRD §23)
 
-| Model | Purpose | Categories |
-|-------|---------|------------|
-| `EventRevenueItem` | Line-item revenue | `TICKET \| SPONSORSHIP \| MERCH \| OTHER` |
+| Model              | Purpose           | Categories                                                                                     |
+| ------------------ | ----------------- | ---------------------------------------------------------------------------------------------- |
+| `EventRevenueItem` | Line-item revenue | `TICKET \| SPONSORSHIP \| MERCH \| OTHER`                                                      |
 | `EventExpenseItem` | Line-item expense | `VENUE \| TRAVEL \| FOOD \| SWAG \| MARKETING \| PRINTING \| OPERATIONS \| LOGISTICS \| OTHER` |
 
 Totals are computed at query time (SUM) — no denormalized totals to stay in sync.
@@ -209,38 +209,39 @@ Totals are computed at query time (SUM) — no denormalized totals to stay in sy
 
 ### CMS
 
-| Model | Purpose |
-|-------|---------|
-| `ContentPage` | URL-mapped page (slug) | isPublished, metaTitle, metaDesc |
+| Model          | Purpose                     |
+| -------------- | --------------------------- |
+| `ContentPage`  | URL-mapped page (slug)      | isPublished, metaTitle, metaDesc                                                                    |
 | `ContentBlock` | Ordered block inside a page | `type: HERO\|TEXT\|IMAGE\|VIDEO\|FAQ\|CTA\|TESTIMONIAL\|STATS\|TEAM_GRID\|EVENT_LIST`, `data: Json` |
 
 ---
 
 ### Audit
 
-| Model | Purpose |
-|-------|---------|
+| Model      | Purpose              |
+| ---------- | -------------------- |
 | `AuditLog` | Immutable change log | `action`, `entityType`, `entityId`, `before`, `after`, `ipAddress` |
 
 ---
 
 ## Indexes Summary
 
-| Table | Indexes |
-|-------|---------|
-| `User` | `email` (unique), `role` |
-| `Event` | `slug` (unique), `status`, `type`, `startDate`, `cityId` |
-| `Registration` | `eventId`, `email`, `userId`, `status`, `registrationCode` (unique) |
-| `Payment` | `razorpayOrderId` (unique), `razorpayPaymentId` (unique), `status`, `userId` |
-| `Series` | `slug` (unique), `kind` |
-| `SeriesEdition` | `(seriesId, editionNo)` (unique), `eventId` (unique) |
-| `AuditLog` | `userId`, `(entityType, entityId)`, `createdAt` |
+| Table           | Indexes                                                                      |
+| --------------- | ---------------------------------------------------------------------------- |
+| `User`          | `email` (unique), `role`                                                     |
+| `Event`         | `slug` (unique), `status`, `type`, `startDate`, `cityId`                     |
+| `Registration`  | `eventId`, `email`, `userId`, `status`, `registrationCode` (unique)          |
+| `Payment`       | `razorpayOrderId` (unique), `razorpayPaymentId` (unique), `status`, `userId` |
+| `Series`        | `slug` (unique), `kind`                                                      |
+| `SeriesEdition` | `(seriesId, editionNo)` (unique), `eventId` (unique)                         |
+| `AuditLog`      | `userId`, `(entityType, entityId)`, `createdAt`                              |
 
 ---
 
 ## Soft Delete Policy
 
 Models with `deletedAt DateTime?`:
+
 - `User` — never hard-delete users (audit trail)
 - `Event` — keep slug, registrations intact
 - `CollaborationLead` — keep pipeline history
@@ -253,20 +254,20 @@ Models without soft delete use **cascade** `onDelete` at the relation level (e.g
 
 ## Seed Data Summary
 
-| Entity | Count | Details |
-|--------|-------|---------|
-| Cities | 3 | Jaipur, Chandigarh, Delhi |
-| Colleges | 3 | MNIT Jaipur, PEC Chandigarh, IIT Delhi |
-| Speakers | 4 | Rahul (Google), Priya (Microsoft), Arjun (Devstack), Deepa (Razorpay) |
-| Partners | 3 | TechCorp, Startup India, GitHub |
-| Series | 5 | RaibarX, TricityX, PadharoX (meetup); NirmanX, AarambhX (hackathon) |
-| Events | 6 | 2× RaibarX, TricityX-01, NirmanX-01, AarambhX-01, Cloud Workshop |
-| Ticket Types | 8 | Free + paid tiers across events |
-| Schedule Items | 5 | RaibarX-01 full agenda |
-| FAQs | 5 | NirmanX-01 |
-| Tracks | 4 | NirmanX-01 (Civic, Agri, Ed, Open) |
-| Gallery Images | 3 | RaibarX-01 album |
-| Revenue Items | 4 | NirmanX-01 (tickets + sponsors) |
-| Expense Items | 6 | NirmanX-01 (venue, food, swag, etc.) |
-| Core Team | 3 | Founder, Community Head, Lead Engineer |
-| Certificate Template | 1 | Standard KailshiansX template |
+| Entity               | Count | Details                                                               |
+| -------------------- | ----- | --------------------------------------------------------------------- |
+| Cities               | 3     | Jaipur, Chandigarh, Delhi                                             |
+| Colleges             | 3     | MNIT Jaipur, PEC Chandigarh, IIT Delhi                                |
+| Speakers             | 4     | Rahul (Google), Priya (Microsoft), Arjun (Devstack), Deepa (Razorpay) |
+| Partners             | 3     | TechCorp, Startup India, GitHub                                       |
+| Series               | 5     | RaibarX, TricityX, PadharoX (meetup); NirmanX, AarambhX (hackathon)   |
+| Events               | 6     | 2× RaibarX, TricityX-01, NirmanX-01, AarambhX-01, Cloud Workshop      |
+| Ticket Types         | 8     | Free + paid tiers across events                                       |
+| Schedule Items       | 5     | RaibarX-01 full agenda                                                |
+| FAQs                 | 5     | NirmanX-01                                                            |
+| Tracks               | 4     | NirmanX-01 (Civic, Agri, Ed, Open)                                    |
+| Gallery Images       | 3     | RaibarX-01 album                                                      |
+| Revenue Items        | 4     | NirmanX-01 (tickets + sponsors)                                       |
+| Expense Items        | 6     | NirmanX-01 (venue, food, swag, etc.)                                  |
+| Core Team            | 3     | Founder, Community Head, Lead Engineer                                |
+| Certificate Template | 1     | Standard KailshiansX template                                         |

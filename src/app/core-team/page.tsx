@@ -3,7 +3,8 @@ import { PlaceholderPage } from "@/components/ui/PlaceholderPage";
 
 export const metadata: Metadata = {
   title: "Core Team",
-  description: "Meet the people building KailshiansX — leadership, technology, community and operations.",
+  description:
+    "Meet the people building KailshiansX — leadership, technology, community and operations.",
 };
 
 export default function CoreTeamPage() {

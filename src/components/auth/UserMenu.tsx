@@ -62,12 +62,12 @@ export function UserMenu({ user }: Props) {
       <button
         id="user-menu-trigger"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-surface-800 transition-colors"
+        className="hover:bg-surface-800 flex items-center gap-2 rounded-xl px-2 py-1.5 transition-colors"
         aria-expanded={open}
         aria-haspopup="true"
       >
         {/* Avatar */}
-        <div className="relative w-8 h-8 rounded-full overflow-hidden bg-brand-500/20 flex items-center justify-center ring-2 ring-surface-700">
+        <div className="bg-brand-500/20 ring-surface-700 relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full ring-2">
           {user.image ? (
             <Image
               src={user.image}
@@ -77,12 +77,10 @@ export function UserMenu({ user }: Props) {
               sizes="32px"
             />
           ) : (
-            <span className="text-xs font-bold text-brand-400">
-              {getInitials(user.name)}
-            </span>
+            <span className="text-brand-400 text-xs font-bold">{getInitials(user.name)}</span>
           )}
         </div>
-        <span className="hidden sm:block text-sm font-medium text-surface-200 max-w-[120px] truncate">
+        <span className="text-surface-200 hidden max-w-[120px] truncate text-sm font-medium sm:block">
           {user.name ?? user.email ?? "Account"}
         </span>
         <ChevronDown
@@ -93,15 +91,13 @@ export function UserMenu({ user }: Props) {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-surface-700 bg-surface-900 shadow-[var(--shadow-card)] py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+        <div className="border-surface-700 bg-surface-900 animate-in fade-in slide-in-from-top-1 absolute top-full right-0 z-50 mt-2 w-64 rounded-xl border py-1 shadow-[var(--shadow-card)] duration-150">
           {/* User info */}
-          <div className="px-4 py-3 border-b border-surface-800">
-            <p className="text-sm font-semibold text-surface-100 truncate">
-              {user.name ?? "User"}
-            </p>
-            <p className="text-xs text-surface-400 truncate mt-0.5">{user.email}</p>
+          <div className="border-surface-800 border-b px-4 py-3">
+            <p className="text-surface-100 truncate text-sm font-semibold">{user.name ?? "User"}</p>
+            <p className="text-surface-400 mt-0.5 truncate text-xs">{user.email}</p>
             <span
-              className={`inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full ${badge.className}`}
+              className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${badge.className}`}
             >
               {badge.label}
             </span>
@@ -112,7 +108,7 @@ export function UserMenu({ user }: Props) {
             <Link
               href="/account"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-surface-300 hover:bg-surface-800 hover:text-surface-50 transition-colors"
+              className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
             >
               <User size={15} />
               My Account
@@ -122,7 +118,7 @@ export function UserMenu({ user }: Props) {
               <Link
                 href="/admin"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-4 py-2 text-sm text-surface-300 hover:bg-surface-800 hover:text-surface-50 transition-colors"
+                className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
               >
                 <Settings size={15} />
                 Admin Dashboard
@@ -131,14 +127,14 @@ export function UserMenu({ user }: Props) {
           </div>
 
           {/* Sign out */}
-          <div className="border-t border-surface-800 py-1">
+          <div className="border-surface-800 border-t py-1">
             <button
               id="btn-signout"
               onClick={() => {
                 setOpen(false);
                 signOut({ callbackUrl: "/" });
               }}
-              className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+              className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-400 transition-colors hover:bg-red-500/10"
             >
               <LogOut size={15} />
               Sign Out

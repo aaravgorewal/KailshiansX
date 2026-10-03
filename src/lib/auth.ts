@@ -80,8 +80,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signOut(message) {
       // message.session exists when using database sessions
       const sessionObj = "session" in message ? message.session : null;
-      const userId =
-        (sessionObj as { userId?: string } | null)?.userId ?? null;
+      const userId = (sessionObj as { userId?: string } | null)?.userId ?? null;
       if (userId) {
         await db.auditLog.create({
           data: {

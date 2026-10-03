@@ -17,10 +17,18 @@ export const ALL_NAV_ITEMS: NavItem[] = [
   { label: "Workshops", href: "/workshops", description: "Hands-on technical workshops" },
   { label: "Tech Talks", href: "/tech-talks", description: "Expert sessions & talks" },
   { label: "Meetup Series", href: "/meetup-series", description: "City community meetup brands" },
-  { label: "Hackathon Series", href: "/hackathon-series", description: "Recurring hackathon properties" },
+  {
+    label: "Hackathon Series",
+    href: "/hackathon-series",
+    description: "Recurring hackathon properties",
+  },
   { label: "Community", href: "/community", description: "Join the KailshiansX community" },
   { label: "Campus Leads", href: "/campus-leads", description: "Represent us at your college" },
-  { label: "State Leads", href: "/state-leads", description: "Lead community growth across your state" },
+  {
+    label: "State Leads",
+    href: "/state-leads",
+    description: "Lead community growth across your state",
+  },
   { label: "Collaborations", href: "/collaborations", description: "Partner with KailshiansX" },
   { label: "Gallery", href: "/gallery", description: "Photos from our events" },
   { label: "Join Team", href: "/join-team", description: "Work with us" },
@@ -40,8 +48,16 @@ export const PRIMARY_NAV: NavItem[] = [
       { label: "All Events", href: "/events", description: "Browse all upcoming & past events" },
       { label: "Workshops", href: "/workshops", description: "Hands-on technical workshops" },
       { label: "Tech Talks", href: "/tech-talks", description: "Expert sessions & industry talks" },
-      { label: "Meetup Series", href: "/meetup-series", description: "City community meetup brands" },
-      { label: "Hackathon Series", href: "/hackathon-series", description: "Recurring hackathon properties" },
+      {
+        label: "Meetup Series",
+        href: "/meetup-series",
+        description: "City community meetup brands",
+      },
+      {
+        label: "Hackathon Series",
+        href: "/hackathon-series",
+        description: "Recurring hackathon properties",
+      },
     ],
   },
   {
@@ -49,8 +65,16 @@ export const PRIMARY_NAV: NavItem[] = [
     href: "/community",
     children: [
       { label: "Community Hub", href: "/community", description: "Join the KailshiansX network" },
-      { label: "Campus Leads", href: "/campus-leads", description: "Represent KailshiansX at your college" },
-      { label: "State Leads", href: "/state-leads", description: "Drive expansion across your state" },
+      {
+        label: "Campus Leads",
+        href: "/campus-leads",
+        description: "Represent KailshiansX at your college",
+      },
+      {
+        label: "State Leads",
+        href: "/state-leads",
+        description: "Drive expansion across your state",
+      },
     ],
   },
   { label: "Collaborations", href: "/collaborations" },

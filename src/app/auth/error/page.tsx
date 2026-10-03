@@ -30,25 +30,25 @@ export default async function AuthErrorPage({ searchParams }: Props) {
   const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.Default;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-page)] px-4">
-      <div className="card-glow rounded-2xl p-10 max-w-sm w-full text-center space-y-4">
-        <div className="mx-auto w-14 h-14 rounded-full bg-red-500/10 flex items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg-page)] px-4">
+      <div className="card-glow w-full max-w-sm space-y-4 rounded-2xl p-10 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
           <AlertTriangle className="text-red-400" size={28} />
         </div>
         <h1 className="text-xl font-bold text-[var(--text-primary)]">
           {errorCode === "AccessDenied" ? "Access Denied" : "Sign-in Error"}
         </h1>
-        <p className="text-sm text-[var(--text-muted)] leading-relaxed">{message}</p>
-        <div className="flex flex-col sm:flex-row gap-2 pt-2">
+        <p className="text-sm leading-relaxed text-[var(--text-muted)]">{message}</p>
+        <div className="flex flex-col gap-2 pt-2 sm:flex-row">
           <Link
             href="/signin"
-            className="flex-1 px-4 py-2.5 rounded-lg bg-brand-500 text-white text-sm font-medium hover:bg-brand-600 transition-colors text-center"
+            className="bg-brand-500 hover:bg-brand-600 flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-medium text-white transition-colors"
           >
             Back to Sign In
           </Link>
           <Link
             href="/"
-            className="flex-1 px-4 py-2.5 rounded-lg border border-[var(--border)] text-[var(--text-secondary)] text-sm font-medium hover:border-brand-500 transition-colors text-center"
+            className="hover:border-brand-500 flex-1 rounded-lg border border-[var(--border)] px-4 py-2.5 text-center text-sm font-medium text-[var(--text-secondary)] transition-colors"
           >
             Go Home
           </Link>

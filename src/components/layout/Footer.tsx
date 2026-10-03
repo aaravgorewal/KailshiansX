@@ -45,25 +45,25 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-surface-800 bg-surface-950 mt-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="border-surface-800 bg-surface-950 mt-24 border-t">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Top grid */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand column */}
           <div className="space-y-4">
             <Link
               href="/"
-              className="flex items-center gap-2 font-bold text-xl tracking-tight"
+              className="flex items-center gap-2 text-xl font-bold tracking-tight"
               aria-label="KailshiansX home"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white">
+              <span className="bg-brand-500 flex h-8 w-8 items-center justify-center rounded-lg text-white">
                 <Zap size={16} strokeWidth={2.5} />
               </span>
               <span className="text-surface-50">
                 Kailshians<span className="text-brand-400">X</span>
               </span>
             </Link>
-            <p className="text-sm text-surface-400 leading-relaxed max-w-[220px]">
+            <p className="text-surface-400 max-w-[220px] text-sm leading-relaxed">
               Developer events &amp; community platform by Kailshians Web Services.
             </p>
             {/* Socials */}
@@ -75,7 +75,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-surface-400 hover:text-brand-400 transition-colors text-xs font-medium"
+                  className="text-surface-400 hover:text-brand-400 text-xs font-medium transition-colors"
                 >
                   {label.split(" ")[0]}
                 </a>
@@ -86,7 +86,7 @@ export function Footer() {
           {/* Link columns */}
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.heading}>
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-4">
+              <h3 className="text-surface-400 mb-4 text-xs font-semibold tracking-widest uppercase">
                 {col.heading}
               </h3>
               <ul className="space-y-2.5">
@@ -94,7 +94,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-surface-300 hover:text-surface-50 transition-colors"
+                      className="text-surface-300 hover:text-surface-50 text-sm transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -106,10 +106,8 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-6 border-t border-surface-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-surface-500">
-          <p>
-            &copy; {year} Kailshians Web Services. All rights reserved.
-          </p>
+        <div className="border-surface-800 text-surface-500 mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs sm:flex-row">
+          <p>&copy; {year} Kailshians Web Services. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-surface-300 transition-colors">
               Privacy Policy

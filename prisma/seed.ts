@@ -229,7 +229,14 @@ async function main() {
       },
     }),
   ]);
-  console.log("✅ Series:", raibarX.name, tricityX.name, padharoX.name, nirmanX.name, aarambhX.name);
+  console.log(
+    "✅ Series:",
+    raibarX.name,
+    tricityX.name,
+    padharoX.name,
+    nirmanX.name,
+    aarambhX.name
+  );
 
   // ─── Certificate Template ────────────────────────────────────────────────────
   const defaultTemplate = await prisma.certificateTemplate.upsert({
@@ -241,10 +248,24 @@ async function main() {
       description: "Default certificate template for all events",
       templateUrl: "https://cdn.kailshiansx.com/templates/cert-standard.png",
       fields: [
-        { key: "participantName", x: 540, y: 320, fontSize: 36, color: "#1a1a2e", fontFamily: "Inter" },
+        {
+          key: "participantName",
+          x: 540,
+          y: 320,
+          fontSize: 36,
+          color: "#1a1a2e",
+          fontFamily: "Inter",
+        },
         { key: "eventName", x: 540, y: 390, fontSize: 22, color: "#3d61fc", fontFamily: "Inter" },
         { key: "issuedAt", x: 540, y: 460, fontSize: 16, color: "#71717a", fontFamily: "Inter" },
-        { key: "uniqueId", x: 820, y: 560, fontSize: 12, color: "#a1a1aa", fontFamily: "Geist Mono" },
+        {
+          key: "uniqueId",
+          x: 820,
+          y: 560,
+          fontSize: 12,
+          color: "#a1a1aa",
+          fontFamily: "Geist Mono",
+        },
       ],
       isDefault: true,
     },
@@ -298,7 +319,8 @@ async function main() {
       maxCapacity: 350,
       isFeatured: true,
       metaTitle: "RaibarX Edition 02 — AI & Open Source",
-      metaDescription: "RaibarX is back! Join 350+ developers for talks on AI, open-source, and developer careers.",
+      metaDescription:
+        "RaibarX is back! Join 350+ developers for talks on AI, open-source, and developer careers.",
     },
   });
 
@@ -342,7 +364,8 @@ async function main() {
       startDate: new Date("2025-09-06T10:00:00.000Z"),
       endDate: new Date("2025-09-07T10:00:00.000Z"),
       registrationDeadline: new Date("2025-08-30T23:59:59.000Z"),
-      eligibility: "Open to all — students, professionals, and independent developers. Team size: 2-4.",
+      eligibility:
+        "Open to all — students, professionals, and independent developers. Team size: 2-4.",
       maxCapacity: 500,
       isFeatured: true,
       metaTitle: "NirmanX Season 01 — 24-hr Hackathon Jaipur",
@@ -398,7 +421,15 @@ async function main() {
     },
   });
 
-  console.log("✅ Events:", raibarX01.title, raibarX02.title, tricityX01.title, nirmanX01.title, aarambhX01.title, cloudWorkshop.title);
+  console.log(
+    "✅ Events:",
+    raibarX01.title,
+    raibarX02.title,
+    tricityX01.title,
+    nirmanX01.title,
+    aarambhX01.title,
+    cloudWorkshop.title
+  );
 
   // ─── Series Editions ──────────────────────────────────────────────────────
   await Promise.all([
@@ -410,17 +441,32 @@ async function main() {
     prisma.seriesEdition.upsert({
       where: { eventId: raibarX02.id },
       update: {},
-      create: { seriesId: raibarX.id, eventId: raibarX02.id, editionNo: 2, theme: "AI & Open Source" },
+      create: {
+        seriesId: raibarX.id,
+        eventId: raibarX02.id,
+        editionNo: 2,
+        theme: "AI & Open Source",
+      },
     }),
     prisma.seriesEdition.upsert({
       where: { eventId: tricityX01.id },
       update: {},
-      create: { seriesId: tricityX.id, eventId: tricityX01.id, editionNo: 1, theme: "Cloud Meets Community" },
+      create: {
+        seriesId: tricityX.id,
+        eventId: tricityX01.id,
+        editionNo: 1,
+        theme: "Cloud Meets Community",
+      },
     }),
     prisma.seriesEdition.upsert({
       where: { eventId: nirmanX01.id },
       update: {},
-      create: { seriesId: nirmanX.id, eventId: nirmanX01.id, editionNo: 1, theme: "Hack for Bharat" },
+      create: {
+        seriesId: nirmanX.id,
+        eventId: nirmanX01.id,
+        editionNo: 1,
+        theme: "Hack for Bharat",
+      },
     }),
     prisma.seriesEdition.upsert({
       where: { eventId: aarambhX01.id },
@@ -434,35 +480,47 @@ async function main() {
   await Promise.all([
     // RaibarX 01
     prisma.eventSpeaker.upsert({
-      where: { eventId_speakerId_role: { eventId: raibarX01.id, speakerId: rahul.id, role: "SPEAKER" } },
+      where: {
+        eventId_speakerId_role: { eventId: raibarX01.id, speakerId: rahul.id, role: "SPEAKER" },
+      },
       update: {},
       create: { eventId: raibarX01.id, speakerId: rahul.id, role: "SPEAKER", sortOrder: 1 },
     }),
     prisma.eventSpeaker.upsert({
-      where: { eventId_speakerId_role: { eventId: raibarX01.id, speakerId: priya.id, role: "SPEAKER" } },
+      where: {
+        eventId_speakerId_role: { eventId: raibarX01.id, speakerId: priya.id, role: "SPEAKER" },
+      },
       update: {},
       create: { eventId: raibarX01.id, speakerId: priya.id, role: "SPEAKER", sortOrder: 2 },
     }),
     // RaibarX 02
     prisma.eventSpeaker.upsert({
-      where: { eventId_speakerId_role: { eventId: raibarX02.id, speakerId: arjun.id, role: "SPEAKER" } },
+      where: {
+        eventId_speakerId_role: { eventId: raibarX02.id, speakerId: arjun.id, role: "SPEAKER" },
+      },
       update: {},
       create: { eventId: raibarX02.id, speakerId: arjun.id, role: "SPEAKER", sortOrder: 1 },
     }),
     // NirmanX 01 — judge + mentor
     prisma.eventSpeaker.upsert({
-      where: { eventId_speakerId_role: { eventId: nirmanX01.id, speakerId: rahul.id, role: "JUDGE" } },
+      where: {
+        eventId_speakerId_role: { eventId: nirmanX01.id, speakerId: rahul.id, role: "JUDGE" },
+      },
       update: {},
       create: { eventId: nirmanX01.id, speakerId: rahul.id, role: "JUDGE", sortOrder: 1 },
     }),
     prisma.eventSpeaker.upsert({
-      where: { eventId_speakerId_role: { eventId: nirmanX01.id, speakerId: arjun.id, role: "MENTOR" } },
+      where: {
+        eventId_speakerId_role: { eventId: nirmanX01.id, speakerId: arjun.id, role: "MENTOR" },
+      },
       update: {},
       create: { eventId: nirmanX01.id, speakerId: arjun.id, role: "MENTOR", sortOrder: 2 },
     }),
     // Cloud Workshop
     prisma.eventSpeaker.upsert({
-      where: { eventId_speakerId_role: { eventId: cloudWorkshop.id, speakerId: deepa.id, role: "SPEAKER" } },
+      where: {
+        eventId_speakerId_role: { eventId: cloudWorkshop.id, speakerId: deepa.id, role: "SPEAKER" },
+      },
       update: {},
       create: { eventId: cloudWorkshop.id, speakerId: deepa.id, role: "SPEAKER", sortOrder: 1 },
     }),
@@ -600,11 +658,43 @@ async function main() {
   // ─── Event Schedule Items ─────────────────────────────────────────────────
   await prisma.eventScheduleItem.createMany({
     data: [
-      { eventId: raibarX01.id, startTime: new Date("2025-03-15T10:00:00Z"), endTime: new Date("2025-03-15T10:30:00Z"), title: "Registration & Breakfast", sortOrder: 1 },
-      { eventId: raibarX01.id, startTime: new Date("2025-03-15T10:30:00Z"), endTime: new Date("2025-03-15T11:00:00Z"), title: "Opening Keynote: Building for Bharat", speakerId: rahul.id, sortOrder: 2 },
-      { eventId: raibarX01.id, startTime: new Date("2025-03-15T11:00:00Z"), endTime: new Date("2025-03-15T11:45:00Z"), title: "AI & ML in Production — Lessons from Microsoft", speakerId: priya.id, sortOrder: 3 },
-      { eventId: raibarX01.id, startTime: new Date("2025-03-15T13:00:00Z"), endTime: new Date("2025-03-15T14:00:00Z"), title: "Networking Lunch", sortOrder: 4 },
-      { eventId: raibarX01.id, startTime: new Date("2025-03-15T15:30:00Z"), endTime: new Date("2025-03-15T17:00:00Z"), title: "Open Mic & Community Announcements", sortOrder: 5 },
+      {
+        eventId: raibarX01.id,
+        startTime: new Date("2025-03-15T10:00:00Z"),
+        endTime: new Date("2025-03-15T10:30:00Z"),
+        title: "Registration & Breakfast",
+        sortOrder: 1,
+      },
+      {
+        eventId: raibarX01.id,
+        startTime: new Date("2025-03-15T10:30:00Z"),
+        endTime: new Date("2025-03-15T11:00:00Z"),
+        title: "Opening Keynote: Building for Bharat",
+        speakerId: rahul.id,
+        sortOrder: 2,
+      },
+      {
+        eventId: raibarX01.id,
+        startTime: new Date("2025-03-15T11:00:00Z"),
+        endTime: new Date("2025-03-15T11:45:00Z"),
+        title: "AI & ML in Production — Lessons from Microsoft",
+        speakerId: priya.id,
+        sortOrder: 3,
+      },
+      {
+        eventId: raibarX01.id,
+        startTime: new Date("2025-03-15T13:00:00Z"),
+        endTime: new Date("2025-03-15T14:00:00Z"),
+        title: "Networking Lunch",
+        sortOrder: 4,
+      },
+      {
+        eventId: raibarX01.id,
+        startTime: new Date("2025-03-15T15:30:00Z"),
+        endTime: new Date("2025-03-15T17:00:00Z"),
+        title: "Open Mic & Community Announcements",
+        sortOrder: 5,
+      },
     ],
     skipDuplicates: true,
   });
@@ -613,11 +703,36 @@ async function main() {
   // ─── FAQs ─────────────────────────────────────────────────────────────────
   await prisma.eventFaq.createMany({
     data: [
-      { eventId: nirmanX01.id, question: "What is the team size?", answer: "Teams of 2 to 4 members.", sortOrder: 1 },
-      { eventId: nirmanX01.id, question: "Can I participate alone?", answer: "No, teams of minimum 2 are required.", sortOrder: 2 },
-      { eventId: nirmanX01.id, question: "Is food provided?", answer: "Yes — dinner, midnight snacks, and breakfast are provided.", sortOrder: 3 },
-      { eventId: nirmanX01.id, question: "What should I bring?", answer: "Laptop, charger, student ID, and your best ideas.", sortOrder: 4 },
-      { eventId: nirmanX01.id, question: "What are the tracks?", answer: "Civic Tech, AgriTech, EdTech, and Open Innovation.", sortOrder: 5 },
+      {
+        eventId: nirmanX01.id,
+        question: "What is the team size?",
+        answer: "Teams of 2 to 4 members.",
+        sortOrder: 1,
+      },
+      {
+        eventId: nirmanX01.id,
+        question: "Can I participate alone?",
+        answer: "No, teams of minimum 2 are required.",
+        sortOrder: 2,
+      },
+      {
+        eventId: nirmanX01.id,
+        question: "Is food provided?",
+        answer: "Yes — dinner, midnight snacks, and breakfast are provided.",
+        sortOrder: 3,
+      },
+      {
+        eventId: nirmanX01.id,
+        question: "What should I bring?",
+        answer: "Laptop, charger, student ID, and your best ideas.",
+        sortOrder: 4,
+      },
+      {
+        eventId: nirmanX01.id,
+        question: "What are the tracks?",
+        answer: "Civic Tech, AgriTech, EdTech, and Open Innovation.",
+        sortOrder: 5,
+      },
     ],
     skipDuplicates: true,
   });
@@ -626,10 +741,34 @@ async function main() {
   // ─── Event Tracks (NirmanX) ───────────────────────────────────────────────
   await prisma.eventTrack.createMany({
     data: [
-      { eventId: nirmanX01.id, name: "Civic Tech", description: "Solutions for government, civic participation and public services", color: "#3d61fc", sortOrder: 1 },
-      { eventId: nirmanX01.id, name: "AgriTech", description: "Technology for farmers, supply chains and rural India", color: "#22c55e", sortOrder: 2 },
-      { eventId: nirmanX01.id, name: "EdTech", description: "Making quality education accessible to all", color: "#f59e0b", sortOrder: 3 },
-      { eventId: nirmanX01.id, name: "Open Innovation", description: "Build anything that creates positive impact", color: "#8b3dff", sortOrder: 4 },
+      {
+        eventId: nirmanX01.id,
+        name: "Civic Tech",
+        description: "Solutions for government, civic participation and public services",
+        color: "#3d61fc",
+        sortOrder: 1,
+      },
+      {
+        eventId: nirmanX01.id,
+        name: "AgriTech",
+        description: "Technology for farmers, supply chains and rural India",
+        color: "#22c55e",
+        sortOrder: 2,
+      },
+      {
+        eventId: nirmanX01.id,
+        name: "EdTech",
+        description: "Making quality education accessible to all",
+        color: "#f59e0b",
+        sortOrder: 3,
+      },
+      {
+        eventId: nirmanX01.id,
+        name: "Open Innovation",
+        description: "Build anything that creates positive impact",
+        color: "#8b3dff",
+        sortOrder: 4,
+      },
     ],
     skipDuplicates: true,
   });
@@ -646,25 +785,113 @@ async function main() {
   });
   await prisma.galleryImage.createMany({
     data: [
-      { albumId: raibarX01Album.id, url: "https://cdn.kailshiansx.com/gallery/raibarx-01/01.jpg", caption: "Opening keynote by Rahul Sharma", altText: "Speaker on stage", sortOrder: 1 },
-      { albumId: raibarX01Album.id, url: "https://cdn.kailshiansx.com/gallery/raibarx-01/02.jpg", caption: "Networking at the event", altText: "Developers networking", sortOrder: 2 },
-      { albumId: raibarX01Album.id, url: "https://cdn.kailshiansx.com/gallery/raibarx-01/03.jpg", caption: "Community group photo", altText: "Group photo", sortOrder: 3 },
+      {
+        albumId: raibarX01Album.id,
+        url: "https://cdn.kailshiansx.com/gallery/raibarx-01/01.jpg",
+        caption: "Opening keynote by Rahul Sharma",
+        altText: "Speaker on stage",
+        sortOrder: 1,
+      },
+      {
+        albumId: raibarX01Album.id,
+        url: "https://cdn.kailshiansx.com/gallery/raibarx-01/02.jpg",
+        caption: "Networking at the event",
+        altText: "Developers networking",
+        sortOrder: 2,
+      },
+      {
+        albumId: raibarX01Album.id,
+        url: "https://cdn.kailshiansx.com/gallery/raibarx-01/03.jpg",
+        caption: "Community group photo",
+        altText: "Group photo",
+        sortOrder: 3,
+      },
     ],
   });
   console.log("✅ Gallery albums & images created");
 
   // ─── Revenue & Expense Items (NirmanX 01) ─────────────────────────────────
   await Promise.all([
-    prisma.eventRevenueItem.create({ data: { eventId: nirmanX01.id, category: "TICKET", description: "Student registrations (320 × ₹499)", amount: 159680 } }),
-    prisma.eventRevenueItem.create({ data: { eventId: nirmanX01.id, category: "TICKET", description: "Professional registrations (45 × ₹999)", amount: 44955 } }),
-    prisma.eventRevenueItem.create({ data: { eventId: nirmanX01.id, category: "SPONSORSHIP", description: "TechCorp — Title Sponsor", amount: 300000 } }),
-    prisma.eventRevenueItem.create({ data: { eventId: nirmanX01.id, category: "SPONSORSHIP", description: "GitHub — Community Partner", amount: 50000 } }),
-    prisma.eventExpenseItem.create({ data: { eventId: nirmanX01.id, category: "VENUE", description: "JECC venue booking", amount: 150000 } }),
-    prisma.eventExpenseItem.create({ data: { eventId: nirmanX01.id, category: "FOOD", description: "Dinner, snacks & breakfast for 500", amount: 125000 } }),
-    prisma.eventExpenseItem.create({ data: { eventId: nirmanX01.id, category: "SWAG", description: "T-shirts, stickers, lanyards", amount: 75000 } }),
-    prisma.eventExpenseItem.create({ data: { eventId: nirmanX01.id, category: "MARKETING", description: "Social media & print ads", amount: 35000 } }),
-    prisma.eventExpenseItem.create({ data: { eventId: nirmanX01.id, category: "PRINTING", description: "Banners, standees, certificates", amount: 20000 } }),
-    prisma.eventExpenseItem.create({ data: { eventId: nirmanX01.id, category: "LOGISTICS", description: "Prize delivery & operations", amount: 25000 } }),
+    prisma.eventRevenueItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "TICKET",
+        description: "Student registrations (320 × ₹499)",
+        amount: 159680,
+      },
+    }),
+    prisma.eventRevenueItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "TICKET",
+        description: "Professional registrations (45 × ₹999)",
+        amount: 44955,
+      },
+    }),
+    prisma.eventRevenueItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "SPONSORSHIP",
+        description: "TechCorp — Title Sponsor",
+        amount: 300000,
+      },
+    }),
+    prisma.eventRevenueItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "SPONSORSHIP",
+        description: "GitHub — Community Partner",
+        amount: 50000,
+      },
+    }),
+    prisma.eventExpenseItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "VENUE",
+        description: "JECC venue booking",
+        amount: 150000,
+      },
+    }),
+    prisma.eventExpenseItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "FOOD",
+        description: "Dinner, snacks & breakfast for 500",
+        amount: 125000,
+      },
+    }),
+    prisma.eventExpenseItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "SWAG",
+        description: "T-shirts, stickers, lanyards",
+        amount: 75000,
+      },
+    }),
+    prisma.eventExpenseItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "MARKETING",
+        description: "Social media & print ads",
+        amount: 35000,
+      },
+    }),
+    prisma.eventExpenseItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "PRINTING",
+        description: "Banners, standees, certificates",
+        amount: 20000,
+      },
+    }),
+    prisma.eventExpenseItem.create({
+      data: {
+        eventId: nirmanX01.id,
+        category: "LOGISTICS",
+        description: "Prize delivery & operations",
+        amount: 25000,
+      },
+    }),
   ]);
   console.log("✅ Revenue & expense items created");
 
@@ -729,9 +956,22 @@ async function main() {
       philosophy:
         "Great communities are built on trust, consistency and genuine care for people. We don't just run events — we build long-term relationships between developers, founders, colleges and the industry.",
       milestones: [
-        { year: 2024, title: "KailshiansX Founded", description: "Started with a simple idea: better developer events for Tier-2 India." },
-        { year: 2025, title: "RaibarX Launched", description: "Rajasthan's first developer meetup series with 200+ attendees at Edition 01." },
-        { year: 2025, title: "NirmanX Season 01", description: "500 participants. ₹1.5L in prizes. 4 tracks. 24 hours." },
+        {
+          year: 2024,
+          title: "KailshiansX Founded",
+          description: "Started with a simple idea: better developer events for Tier-2 India.",
+        },
+        {
+          year: 2025,
+          title: "RaibarX Launched",
+          description:
+            "Rajasthan's first developer meetup series with 200+ attendees at Edition 01.",
+        },
+        {
+          year: 2025,
+          title: "NirmanX Season 01",
+          description: "500 participants. ₹1.5L in prizes. 4 tracks. 24 hours.",
+        },
       ],
       isPublished: true,
     },
@@ -747,7 +987,8 @@ async function main() {
         slug: "who-we-are",
         title: "Who We Are",
         metaTitle: "Who We Are | KailshiansX",
-        metaDesc: "KailshiansX is the developer events and community initiative of Kailshians Web Services.",
+        metaDesc:
+          "KailshiansX is the developer events and community initiative of Kailshians Web Services.",
         isPublished: true,
       },
     }),

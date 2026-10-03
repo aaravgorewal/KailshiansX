@@ -5,6 +5,7 @@ Product principle: this is NOT a static events site. Every feature should move a
 Stack: Next.js (App Router) + TypeScript (strict) + Tailwind, PostgreSQL + Prisma, Auth.js (Google + email), Razorpay, Resend for email, S3-compatible storage, deploy on Vercel.
 
 Rules:
+
 - Mobile-first, responsive, SEO-friendly (metadata, OG tags, sitemap, JSON-LD for events).
 - Server Components by default; Client Components only when needed.
 - Validate every input with Zod on client AND server. Add spam protection (honeypot + rate limit + Turnstile/reCAPTCHA) to all public forms.
