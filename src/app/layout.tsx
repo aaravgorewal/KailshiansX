@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono, Geist } from "next/font/google";
-import { Navbar } from "@/components/layout/Navbar";
+import { NavbarWrapper } from "@/components/layout/NavbarWrapper";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -102,7 +102,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistMono.variable} bg-surface-950 text-surface-100 font-sans antialiased min-h-screen flex flex-col`}
       >
-        <Navbar />
+        <NavbarWrapper />
         <main className="flex-1 pt-16">{children}</main>
         <Footer />
       </body>

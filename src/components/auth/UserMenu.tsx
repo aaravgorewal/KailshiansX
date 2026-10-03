@@ -1,0 +1,151 @@
+"use client";
+// src/components/auth/UserMenu.tsx
+// Minimal user menu shown in the Navbar when signed in.
+// Displays avatar/initials, name, role badge, and sign-out button.
+
+import { signOut } from "next-auth/react";
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { LogOut, User, Settings, ChevronDown } from "lucide-react";
+import type { UserRole } from "@prisma/client";
+
+interface Props {
+  user: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role: UserRole;
+  };
+}
+
+const ROLE_BADGE: Record<UserRole, { label: string; className: string }> = {
+  SUPER_ADMIN: { label: "Super Admin", className: "bg-red-500/20 text-red-400" },
+  ADMIN: { label: "Admin", className: "bg-orange-500/20 text-orange-400" },
+  EVENT_MANAGER: { label: "Event Manager", className: "bg-yellow-500/20 text-yellow-400" },
+  CAMPUS_LEAD: { label: "Campus Lead", className: "bg-green-500/20 text-green-400" },
+  STATE_LEAD: { label: "State Lead", className: "bg-teal-500/20 text-teal-400" },
+  MEMBER: { label: "Member", className: "bg-brand-500/20 text-brand-400" },
+  VIEWER: { label: "Viewer", className: "bg-surface-700 text-surface-400" },
+};
+
+function getInitials(name?: string | null) {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+}
+
+export function UserMenu({ user }: Props) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const badge = ROLE_BADGE[user.role];
+  const isAdmin = ["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"].includes(user.role);
+
+  // Close on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      {/* Trigger */}
+      <button
+        id="user-menu-trigger"
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-surface-800 transition-colors"
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
+        {/* Avatar */}
+        <div className="relative w-8 h-8 rounded-full overflow-hidden bg-brand-500/20 flex items-center justify-center ring-2 ring-surface-700">
+          {user.image ? (
+            <Image
+              src={user.image}
+              alt={user.name ?? "User"}
+              fill
+              className="object-cover"
+              sizes="32px"
+            />
+          ) : (
+            <span className="text-xs font-bold text-brand-400">
+              {getInitials(user.name)}
+            </span>
+          )}
+        </div>
+        <span className="hidden sm:block text-sm font-medium text-surface-200 max-w-[120px] truncate">
+          {user.name ?? user.email ?? "Account"}
+        </span>
+        <ChevronDown
+          size={14}
+          className={`text-surface-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-surface-700 bg-surface-900 shadow-[var(--shadow-card)] py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+          {/* User info */}
+          <div className="px-4 py-3 border-b border-surface-800">
+            <p className="text-sm font-semibold text-surface-100 truncate">
+              {user.name ?? "User"}
+            </p>
+            <p className="text-xs text-surface-400 truncate mt-0.5">{user.email}</p>
+            <span
+              className={`inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full ${badge.className}`}
+            >
+              {badge.label}
+            </span>
+          </div>
+
+          {/* Links */}
+          <div className="py-1">
+            <Link
+              href="/account"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2 text-sm text-surface-300 hover:bg-surface-800 hover:text-surface-50 transition-colors"
+            >
+              <User size={15} />
+              My Account
+            </Link>
+
+            {isAdmin && (
+              <Link
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-sm text-surface-300 hover:bg-surface-800 hover:text-surface-50 transition-colors"
+              >
+                <Settings size={15} />
+                Admin Dashboard
+              </Link>
+            )}
+          </div>
+
+          {/* Sign out */}
+          <div className="border-t border-surface-800 py-1">
+            <button
+              id="btn-signout"
+              onClick={() => {
+                setOpen(false);
+                signOut({ callbackUrl: "/" });
+              }}
+              className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+            >
+              <LogOut size={15} />
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -6,6 +6,15 @@ import { usePathname } from "next/navigation";
 import { X, Menu, ChevronDown, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRIMARY_NAV, ALL_NAV_ITEMS, type NavItem } from "@/lib/nav";
+import { UserMenu } from "@/components/auth/UserMenu";
+import type { UserRole } from "@prisma/client";
+
+type NavbarUser = {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role: UserRole;
+} | null;
 
 // ─── Logo ─────────────────────────────────────────────────────────────────────
 
@@ -230,7 +239,7 @@ function MobileDrawer({
 
 // ─── Main Navbar ──────────────────────────────────────────────────────────────
 
-export function Navbar() {
+export function Navbar({ user }: { user: NavbarUser }) {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
 
@@ -269,17 +278,32 @@ export function Navbar() {
               )}
             </nav>
 
-            {/* Right — CTAs + hamburger */}
+            {/* Right — Auth + hamburger */}
             <div className="flex items-center gap-2">
+              {/* Events CTA — hide when user menu takes space */}
               <Link
                 href="/events"
                 className={cn(
                   "hidden sm:inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold transition-all",
-                  "bg-brand-500 hover:bg-brand-600 text-white shadow-glow hover:shadow-glowAccent"
+                  "bg-brand-500 hover:bg-brand-600 text-white"
                 )}
               >
                 Explore Events
               </Link>
+
+              {/* Auth: signed-in → UserMenu, guest → Sign In */}
+              {user ? (
+                <UserMenu user={user} />
+              ) : (
+                <Link
+                  href="/signin"
+                  id="nav-signin-btn"
+                  className="hidden sm:inline-flex items-center px-3 py-2 rounded-lg border border-surface-700 text-sm font-medium text-surface-200 hover:border-brand-500 hover:text-brand-400 transition-all"
+                >
+                  Sign In
+                </Link>
+              )}
+
               {/* Hamburger — visible on < lg */}
               <button
                 onClick={() => setDrawerOpen(true)}
