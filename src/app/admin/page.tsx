@@ -67,7 +67,8 @@ export default async function AdminDashboardPage() {
           { href: "/admin/campus-leads", label: "Campus Lead Applications" },
           { href: "/admin/collaborations", label: "Collaboration Pipeline" },
           { href: "/admin/gallery", label: "Gallery Manager" },
-          { href: "/admin/team-applications", label: "Team Applications" },
+          { href: "/admin/cms", label: "Content & Team CMS" },
+          { href: "/admin/team-applications", label: "Team Applications Pipeline" },
           { href: "/admin/audit-log", label: "Audit Log" },
         ].map((link) => (
           <a
