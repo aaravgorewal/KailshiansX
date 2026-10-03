@@ -127,10 +127,15 @@ enum CollaborationType {
 
 enum CollaborationStage {
   LEAD
+  NEW
   CONTACTED
+  MEETING
   NEGOTIATING
+  NEGOTIATION
   CONFIRMED
+  WON
   DECLINED
+  LOST
   COMPLETED
 }
 
@@ -772,6 +777,7 @@ model CollaborationLead {
   email            String
   phone            String?
   website          String?
+  cityName         String?
   cityId           String?
   proposedEvent    String?            @db.Text
   resourcesOffered String?            @db.Text

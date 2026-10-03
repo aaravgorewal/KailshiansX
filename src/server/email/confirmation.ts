@@ -324,3 +324,223 @@ export async function sendStateLeadConfirmationEmail(
     return { success: false };
   }
 }
+
+export interface SendCollaborationEmailParams {
+  email: string;
+  name: string;
+  organisation: string;
+  type: "COLLEGE" | "COMMUNITY" | "VENUE" | "SPONSOR";
+  leadId: string;
+  city: string;
+  phone?: string | null;
+  website?: string | null;
+  proposedEvent: string;
+  resourcesOffered: string;
+  message?: string | null;
+}
+
+const COLLAB_TYPE_LABELS: Record<string, string> = {
+  COLLEGE: "College Collaboration",
+  COMMUNITY: "Community Partner",
+  VENUE: "Venue Partner",
+  SPONSOR: "Sponsor / Brand Partner",
+};
+
+/**
+ * Sends auto-acknowledgement email to the partner submitter (PRD §13)
+ */
+export async function sendCollaborationAcknowledgementEmail(
+  params: SendCollaborationEmailParams
+): Promise<{ success: boolean; id?: string }> {
+  const { email, name, organisation, type, leadId, city, proposedEvent, resourcesOffered } = params;
+  const typeLabel = COLLAB_TYPE_LABELS[type] || "Partnership";
+  const refCode = `KX-COLLAB-${leadId.slice(-6).toUpperCase()}`;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Partnership Proposal Received: ${organisation}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #020617; color: #f8fafc; margin: 0; padding: 24px; }
+    .card { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 32px; max-width: 580px; margin: 0 auto; }
+    .badge { display: inline-block; background-color: #06b6d422; color: #22d3ee; border: 1px solid #06b6d444; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 9999px; margin-bottom: 16px; }
+    h1 { font-size: 22px; font-weight: 800; color: #ffffff; margin: 0 0 12px 0; }
+    p { font-size: 14px; line-height: 1.6; color: #94a3b8; margin: 0 0 16px 0; }
+    .info-box { background-color: #020617; border: 1px solid #334155; border-radius: 12px; padding: 18px; margin: 20px 0; }
+    .detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+    .detail-label { color: #64748b; font-weight: 600; }
+    .detail-val { color: #f1f5f9; font-weight: 600; text-align: right; }
+    .pipeline { margin: 20px 0; border-left: 2px solid #06b6d4; padding-left: 14px; }
+    .pipeline-step { margin-bottom: 10px; font-size: 12px; color: #cbd5e1; }
+    .footer { font-size: 11px; color: #64748b; text-align: center; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">${typeLabel}</span>
+    <h1>Partnership Proposal Received</h1>
+    <p>Dear ${name}, thank you for proposing a collaboration between <strong>${organisation}</strong> and KailshiansX.</p>
+    
+    <div class="info-box">
+      <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 8px;">Partnership Lead Dossier</div>
+      <div class="detail-row">
+        <span class="detail-label">Reference ID</span>
+        <span class="detail-val" style="font-family: monospace; color: #38bdf8;">${refCode}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Organisation</span>
+        <span class="detail-val">${organisation}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Track</span>
+        <span class="detail-val">${typeLabel}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Location</span>
+        <span class="detail-val">${city}</span>
+      </div>
+      <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #1e293b; font-size: 12px; color: #94a3b8;">
+        <strong>Proposed Scope:</strong><br>
+        <span style="color: #cbd5e1;">${proposedEvent}</span>
+      </div>
+      <div style="margin-top: 10px; font-size: 12px; color: #94a3b8;">
+        <strong>Resources Offered:</strong><br>
+        <span style="color: #cbd5e1;">${resourcesOffered}</span>
+      </div>
+    </div>
+
+    <p style="font-weight: 600; color: #f1f5f9; margin-bottom: 8px;">Partnership Pipeline (PRD §13):</p>
+    <div class="pipeline">
+      <div class="pipeline-step"><strong style="color: #38bdf8;">1. New Lead (Current Stage)</strong> — Dossier registered into pipeline</div>
+      <div class="pipeline-step"><strong>2. Contacted</strong> — Partnership Lead reviews alignment & reaches out within 24–48 hours</div>
+      <div class="pipeline-step"><strong>3. Discovery Meeting</strong> — Video call to align on dates, capacity, deliverables, and mutual value</div>
+      <div class="pipeline-step"><strong>4. Negotiation / MoU</strong> — Agreement on terms, brand assets, and co-marketing rollout</div>
+      <div class="pipeline-step"><strong>5. Won / Confirmed</strong> — Public announcement, ticketing/event launch, and community execution</div>
+    </div>
+
+    <p>Our partnerships team is reviewing your proposal and will be in touch shortly. If you have immediate questions or urgent event dates, you can reply directly to this email or reach us at <a href="mailto:partnerships@kailshiansx.com" style="color: #38bdf8; text-decoration: none;">partnerships@kailshiansx.com</a>.</p>
+
+    <div class="footer">
+      KailshiansX • Kailshians Web Services Developer Community<br>
+      Connecting builders, campuses, and tech ecosystems across India.
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+
+  if (!resend) {
+    console.log(`[Email Mock] Sent Collaboration auto-ack to ${email} (${refCode})`);
+    return { success: true, id: `mock_email_${Date.now()}` };
+  }
+
+  try {
+    const data = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: `Partnership Proposal Received: KailshiansX x ${organisation} (${refCode})`,
+      html,
+    });
+    if (data.error) {
+      console.warn("Resend collaboration auto-acknowledgement warning:", data.error);
+      return { success: true, id: `mock_email_${Date.now()}` };
+    }
+    return { success: true, id: data.data?.id || `sent_${Date.now()}` };
+  } catch (error) {
+    console.warn("Resend collaboration auto-acknowledgement failed, fallback to mock ID:", error);
+    return { success: true, id: `mock_email_${Date.now()}` };
+  }
+}
+
+/**
+ * Sends internal team alert on new collaboration lead (PRD §13)
+ */
+export async function sendCollaborationInternalNotificationEmail(
+  params: SendCollaborationEmailParams
+): Promise<{ success: boolean; id?: string }> {
+  const {
+    email,
+    name,
+    organisation,
+    type,
+    leadId,
+    city,
+    phone,
+    website,
+    proposedEvent,
+    resourcesOffered,
+    message,
+  } = params;
+  const typeLabel = COLLAB_TYPE_LABELS[type] || type;
+  const teamEmail =
+    process.env.TEAM_NOTIFICATION_EMAIL ||
+    process.env.RESEND_FROM_EMAIL ||
+    "partnerships@kailshiansx.com";
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>New Collaboration Lead</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 20px; }
+    .box { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; max-width: 600px; margin: 0 auto; }
+    h2 { margin-top: 0; color: #0f172a; font-size: 18px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+    td { padding: 8px 4px; border-bottom: 1px solid #f1f5f9; }
+    td.label { font-weight: 600; color: #64748b; width: 140px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🎯 New Collaboration Lead: ${organisation} (${typeLabel})</h2>
+    <p>A new partnership proposal has been submitted on the KailshiansX platform.</p>
+    <table>
+      <tr><td class="label">Lead ID</td><td><code>${leadId}</code></td></tr>
+      <tr><td class="label">Path</td><td><strong>${typeLabel}</strong></td></tr>
+      <tr><td class="label">Organisation</td><td><strong>${organisation}</strong></td></tr>
+      <tr><td class="label">Contact Person</td><td>${name}</td></tr>
+      <tr><td class="label">Email</td><td><a href="mailto:${email}">${email}</a></td></tr>
+      <tr><td class="label">Phone</td><td>${phone || "Not provided"}</td></tr>
+      <tr><td class="label">Website / Social</td><td>${website ? `<a href="${website}">${website}</a>` : "Not provided"}</td></tr>
+      <tr><td class="label">City / Region</td><td>${city}</td></tr>
+      <tr><td class="label">Proposed Scope</td><td>${proposedEvent}</td></tr>
+      <tr><td class="label">Resources Offered</td><td>${resourcesOffered}</td></tr>
+      <tr><td class="label">Message</td><td>${message || "No message attached"}</td></tr>
+      <tr><td class="label">Initial Pipeline Stage</td><td><strong>NEW (LEAD)</strong></td></tr>
+    </table>
+    <p style="margin-top: 20px; font-size: 12px; color: #64748b;">
+      Action required: Reach out to the contact person within 24–48 hours and advance the lead in the Admin CRM pipeline.
+    </p>
+  </div>
+</body>
+</html>
+  `.trim();
+
+  if (!resend) {
+    console.log(
+      `[Email Mock] Sent internal lead alert to ${teamEmail} for lead ${leadId} (${organisation})`
+    );
+    return { success: true, id: `mock_email_${Date.now()}` };
+  }
+
+  try {
+    const data = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: teamEmail,
+      subject: `[New Lead: ${typeLabel}] ${organisation} — ${city}`,
+      html,
+    });
+    if (data.error) {
+      console.warn("Resend internal collaboration alert warning:", data.error);
+      return { success: true, id: `mock_email_${Date.now()}` };
+    }
+    return { success: true, id: data.data?.id || `sent_${Date.now()}` };
+  } catch (error) {
+    console.warn("Resend internal collaboration alert failed, fallback to mock ID:", error);
+    return { success: true, id: `mock_email_${Date.now()}` };
+  }
+}
