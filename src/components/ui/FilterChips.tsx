@@ -94,11 +94,11 @@ export function FilterChips({
             aria-pressed={active}
             onClick={() => handleSelect(option.id)}
             className={cn(
-              "focus-visible:ring-brand-500 focus-visible:ring-offset-surface-950 inline-flex shrink-0 items-center gap-1.5 rounded-full border font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-offset-2",
+              "focus-visible:ring-ring focus-visible:ring-offset-background inline-flex shrink-0 items-center gap-1.5 rounded-full border font-medium whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-offset-2",
               size === "sm" ? "h-7 px-3 text-xs" : "h-8.5 px-3.5 text-xs sm:text-sm",
               active
-                ? "border-brand-500/80 bg-brand-500/15 text-brand-300 font-semibold shadow-[0_0_12px_rgba(61,97,252,0.25)]"
-                : "border-surface-700/80 bg-surface-900/60 text-surface-300 hover:border-surface-600 hover:bg-surface-800 hover:text-surface-100"
+                ? "border-primary bg-muted text-accent-text font-semibold"
+                : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
             )}
           >
             {option.icon && <span className="shrink-0 text-current">{option.icon}</span>}
@@ -106,8 +106,8 @@ export function FilterChips({
             {typeof option.count === "number" && (
               <span
                 className={cn(
-                  "py-0.2 ml-0.5 rounded-full px-1.5 font-mono text-[10px] leading-none tracking-tight",
-                  active ? "bg-brand-500/30 text-brand-200" : "bg-surface-800 text-surface-400"
+                  "ml-0.5 rounded-full px-1.5 font-mono text-xs leading-none tracking-tight",
+                  active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                 )}
               >
                 {option.count}

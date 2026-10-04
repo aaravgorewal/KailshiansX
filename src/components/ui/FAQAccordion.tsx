@@ -72,10 +72,10 @@ export function FAQAccordion({
           <div
             key={item.id}
             className={cn(
-              "overflow-hidden rounded-xl border transition-all duration-200",
+              "overflow-hidden rounded-lg border transition-colors duration-150",
               isOpen
-                ? "border-brand-500/50 bg-surface-900/90 shadow-[0_0_20px_rgba(61,97,252,0.12)]"
-                : "border-surface-800 bg-surface-900/50 hover:border-surface-700 hover:bg-surface-900/80"
+                ? "border-muted-foreground bg-card"
+                : "border-border bg-card hover:border-muted-foreground"
             )}
           >
             <h3>
@@ -89,13 +89,13 @@ export function FAQAccordion({
                 aria-controls={panelId}
                 onClick={() => toggleItem(item.id)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="text-surface-100 focus-visible:ring-brand-500 flex w-full items-center justify-between p-5 text-left text-base font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none sm:text-lg"
+                className="text-foreground focus-visible:ring-ring flex w-full items-center justify-between p-5 text-left text-base font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none sm:text-lg"
               >
                 <span className="pr-4">{item.question}</span>
                 <ChevronDown
                   className={cn(
-                    "text-surface-400 size-5 shrink-0 transition-transform duration-300",
-                    isOpen && "text-brand-400 rotate-180"
+                    "text-muted-foreground size-5 shrink-0 transition-transform duration-200",
+                    isOpen && "text-foreground rotate-180"
                   )}
                   aria-hidden="true"
                 />
@@ -111,10 +111,10 @@ export function FAQAccordion({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  transition={{ duration: 0.18, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="text-surface-300 border-surface-800/60 mt-1 border-t p-5 pt-0 text-sm leading-relaxed sm:text-base">
+                  <div className="text-muted-foreground border-border border-t px-5 pt-3 pb-5 text-sm leading-relaxed sm:text-base">
                     {item.answer}
                   </div>
                 </motion.div>

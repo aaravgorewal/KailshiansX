@@ -24,15 +24,9 @@ export interface TestimonialCarouselProps {
   className?: string;
 }
 
-export function TestimonialCarousel({
-  testimonials,
-  autoPlay = false,
-  intervalMs = 6000,
-  className,
-}: TestimonialCarouselProps) {
+export function TestimonialCarousel({ testimonials, className }: TestimonialCarouselProps) {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [direction, setDirection] = React.useState<number>(0);
-  const [isPaused, setIsPaused] = React.useState(false);
   const touchStartX = React.useRef<number | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -64,7 +58,7 @@ export function TestimonialCarousel({
     }
   };
 
-  // Touch handlers
+  // Touch handlers for swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -82,32 +76,21 @@ export function TestimonialCarousel({
     touchStartX.current = null;
   };
 
-  // AutoPlay effect
-  React.useEffect(() => {
-    if (!autoPlay || isPaused || length <= 1) return;
-
-    const timer = setInterval(() => {
-      nextSlide();
-    }, intervalMs);
-
-    return () => clearInterval(timer);
-  }, [autoPlay, isPaused, intervalMs, length, nextSlide]);
-
   if (length === 0) return null;
 
   const current = testimonials[currentIndex];
 
   const slideVariants = {
-    enter: (direction: number) => ({
-      x: prefersReducedMotion ? 0 : direction > 0 ? 80 : -80,
+    enter: (dir: number) => ({
+      x: prefersReducedMotion ? 0 : dir > 0 ? 30 : -30,
       opacity: 0,
     }),
     center: {
       x: 0,
       opacity: 1,
     },
-    exit: (direction: number) => ({
-      x: prefersReducedMotion ? 0 : direction < 0 ? 80 : -80,
+    exit: (dir: number) => ({
+      x: prefersReducedMotion ? 0 : dir < 0 ? 30 : -30,
       opacity: 0,
     }),
   };
@@ -118,18 +101,16 @@ export function TestimonialCarousel({
       aria-roledescription="carousel"
       aria-label="Community Testimonials"
       onKeyDown={handleKeyDown}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       tabIndex={0}
       className={cn(
-        "border-surface-800 bg-surface-900/80 focus-visible:ring-brand-500 relative mx-auto w-full max-w-4xl rounded-3xl border p-6 shadow-2xl backdrop-blur-md outline-none focus-visible:ring-2 sm:p-10 md:p-12",
+        "border-border bg-card focus-visible:ring-ring focus-visible:ring-offset-background relative mx-auto w-full max-w-4xl rounded-lg border p-6 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:p-10 md:p-12",
         className
       )}
     >
       {/* Decorative quote icon */}
-      <div className="text-surface-800 pointer-events-none absolute top-6 right-8 select-none">
+      <div className="text-muted pointer-events-none absolute top-6 right-8 select-none">
         <Quote className="size-16 opacity-30 sm:size-24" aria-hidden="true" />
       </div>
 
@@ -142,7 +123,7 @@ export function TestimonialCarousel({
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.35, ease: "easeInOut" }}
+            transition={{ duration: 0.18, ease: "easeInOut" }}
             role="group"
             aria-roledescription="slide"
             aria-label={`${currentIndex + 1} of ${length}`}
@@ -152,7 +133,7 @@ export function TestimonialCarousel({
             <div className="mb-4 flex items-center gap-3">
               {current.rating && (
                 <div
-                  className="flex items-center gap-1 text-amber-400"
+                  className="text-foreground flex items-center gap-1"
                   aria-label={`${current.rating} out of 5 stars`}
                 >
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -160,7 +141,7 @@ export function TestimonialCarousel({
                       key={i}
                       className={cn(
                         "size-4",
-                        i < current.rating! ? "fill-amber-400 text-amber-400" : "text-surface-700"
+                        i < current.rating! ? "fill-foreground text-foreground" : "text-border"
                       )}
                       aria-hidden="true"
                     />
@@ -168,14 +149,14 @@ export function TestimonialCarousel({
                 </div>
               )}
               {current.eventTitle && (
-                <span className="bg-brand-500/10 text-brand-300 border-brand-500/20 rounded-full border px-2 py-0.5 font-mono text-xs">
+                <span className="bg-muted text-muted-foreground border-border rounded-full border px-2 py-0.5 font-mono text-xs">
                   {current.eventTitle}
                 </span>
               )}
             </div>
 
             {/* Testimonial quote text */}
-            <blockquote className="text-surface-100 relative z-10 mb-8 text-lg leading-relaxed font-normal italic sm:text-xl md:text-2xl">
+            <blockquote className="text-foreground relative z-10 mb-8 text-lg leading-relaxed font-normal italic sm:text-xl md:text-2xl">
               &ldquo;{current.quote}&rdquo;
             </blockquote>
 
@@ -185,20 +166,20 @@ export function TestimonialCarousel({
                 <img
                   src={current.avatarUrl}
                   alt={current.author}
-                  className="border-brand-500/40 size-12 rounded-full border-2 object-cover sm:size-14"
+                  className="border-border size-12 rounded-full border object-cover sm:size-14"
                 />
               ) : (
-                <div className="from-brand-600 to-accent-600 border-brand-500/40 flex size-12 items-center justify-center rounded-full border-2 bg-gradient-to-tr text-base font-bold text-white sm:size-14">
+                <div className="bg-muted border-border text-foreground flex size-12 items-center justify-center rounded-full border text-base font-bold sm:size-14">
                   {current.author.charAt(0)}
                 </div>
               )}
 
               <div>
-                <div className="text-surface-50 text-base font-semibold sm:text-lg">
+                <div className="text-foreground text-base font-semibold sm:text-lg">
                   {current.author}
                 </div>
-                <div className="text-surface-400 text-xs sm:text-sm">
-                  {current.role} • <span className="text-surface-300">{current.company}</span>
+                <div className="text-muted-foreground text-xs sm:text-sm">
+                  {current.role} • <span className="text-foreground">{current.company}</span>
                 </div>
               </div>
             </div>
@@ -207,21 +188,20 @@ export function TestimonialCarousel({
       </div>
 
       {/* Navigation Controls */}
-      <div className="border-surface-800/80 mt-8 flex items-center justify-between border-t pt-6">
-        {/* Progress dots */}
+      <div className="border-border mt-8 flex items-center justify-between border-t pt-6">
+        {/* Progress dots as buttons with aria-labels */}
         <div className="flex items-center gap-2" role="tablist" aria-label="Testimonial slides">
           {testimonials.map((item, idx) => (
             <button
               key={item.id}
               role="tab"
+              type="button"
               aria-selected={idx === currentIndex}
-              aria-label={`Go to slide ${idx + 1}`}
+              aria-label={`Go to slide ${idx + 1} of ${length}`}
               onClick={() => goToSlide(idx)}
               className={cn(
-                "focus-visible:ring-brand-500 h-2 rounded-full transition-[width,background-color] duration-250 outline-none focus-visible:ring-2",
-                idx === currentIndex
-                  ? "bg-brand-500 w-8"
-                  : "bg-surface-700 hover:bg-surface-600 w-2"
+                "focus-visible:ring-ring h-2 rounded-full transition-[width,background-color] duration-150 outline-none focus-visible:ring-2",
+                idx === currentIndex ? "bg-primary w-8" : "bg-muted hover:bg-muted-foreground w-2"
               )}
             />
           ))}
@@ -233,7 +213,7 @@ export function TestimonialCarousel({
             type="button"
             onClick={prevSlide}
             aria-label="Previous testimonial"
-            className="border-surface-700 bg-surface-800/80 text-surface-300 hover:bg-surface-700 focus-visible:ring-brand-500 flex size-10 items-center justify-center rounded-xl border transition-colors outline-none hover:text-white focus-visible:ring-2"
+            className="border-border bg-card text-foreground hover:bg-muted focus-visible:ring-ring flex size-10 items-center justify-center rounded-lg border transition-colors outline-none focus-visible:ring-2"
           >
             <ChevronLeft className="size-5" aria-hidden="true" />
           </button>
@@ -241,7 +221,7 @@ export function TestimonialCarousel({
             type="button"
             onClick={nextSlide}
             aria-label="Next testimonial"
-            className="border-surface-700 bg-surface-800/80 text-surface-300 hover:bg-surface-700 focus-visible:ring-brand-500 flex size-10 items-center justify-center rounded-xl border transition-colors outline-none hover:text-white focus-visible:ring-2"
+            className="border-border bg-card text-foreground hover:bg-muted focus-visible:ring-ring flex size-10 items-center justify-center rounded-lg border transition-colors outline-none focus-visible:ring-2"
           >
             <ChevronRight className="size-5" aria-hidden="true" />
           </button>

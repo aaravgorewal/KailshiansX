@@ -39,14 +39,14 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
     return (
       <div className="relative flex w-full items-center">
         {prefixAddon && (
-          <span className="border-surface-700 bg-surface-800 text-surface-400 inline-flex h-10 items-center rounded-l-lg border border-r-0 px-3 font-mono text-xs select-none">
+          <span className="border-input bg-muted text-muted-foreground inline-flex h-10 items-center rounded-l-lg border border-r-0 px-3 font-mono text-xs select-none">
             {prefixAddon}
           </span>
         )}
 
         <div className="relative flex flex-1 items-center">
           {leftIcon && (
-            <div className="text-surface-400 pointer-events-none absolute left-3 flex items-center">
+            <div className="text-muted-foreground pointer-events-none absolute left-3 flex items-center">
               {leftIcon}
             </div>
           )}
@@ -57,10 +57,10 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             value={value}
             disabled={disabled}
             className={cn(
-              "bg-surface-900 text-surface-100 placeholder:text-surface-500 focus-visible:ring-brand-500 focus-visible:ring-offset-surface-950 flex h-10 w-full rounded-lg border px-3 py-2 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+              "bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-ring focus-visible:ring-offset-background border-input focus-visible:border-primary disabled:bg-muted disabled:text-muted-foreground flex h-10 w-full rounded-lg border px-3 py-2 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60",
               error
-                ? "border-rose-500/80 focus-visible:ring-rose-500"
-                : "border-surface-700/80 hover:border-surface-600 focus-visible:border-brand-500",
+                ? "border-destructive text-destructive focus-visible:ring-destructive focus-visible:border-destructive"
+                : "hover:border-muted-foreground",
               prefixAddon && "rounded-l-none",
               suffixAddon && "rounded-r-none",
               leftIcon && "pl-9",
@@ -70,14 +70,14 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             {...props}
           />
 
-          <div className="text-surface-400 absolute right-3 flex items-center gap-1.5">
+          <div className="text-muted-foreground absolute right-3 flex items-center gap-1.5">
             {clearable && value && !disabled && (
               <button
                 type="button"
                 onClick={onClear}
                 tabIndex={-1}
                 aria-label="Clear input"
-                className="hover:text-surface-200 rounded p-0.5 focus-visible:outline-none"
+                className="hover:text-foreground focus-visible:ring-ring rounded p-0.5 focus-visible:ring-1 focus-visible:outline-none"
               >
                 <X className="size-3.5" />
               </button>
@@ -88,7 +88,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="hover:text-surface-200 focus-visible:ring-brand-500 rounded p-0.5 focus-visible:ring-1 focus-visible:outline-none"
+                className="hover:text-foreground focus-visible:ring-ring rounded p-0.5 focus-visible:ring-1 focus-visible:outline-none"
               >
                 {showPassword ? (
                   <EyeOff className="size-4" aria-hidden="true" />
@@ -98,14 +98,14 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
               </button>
             )}
 
-            {!isPassword && rightIcon && (
-              <span className="pointer-events-none flex items-center">{rightIcon}</span>
+            {rightIcon && !isPassword && !clearable && (
+              <div className="pointer-events-none flex items-center">{rightIcon}</div>
             )}
           </div>
         </div>
 
         {suffixAddon && (
-          <span className="border-surface-700 bg-surface-800 text-surface-400 inline-flex h-10 items-center rounded-r-lg border border-l-0 px-3 font-mono text-xs select-none">
+          <span className="border-input bg-muted text-muted-foreground inline-flex h-10 items-center rounded-r-lg border border-l-0 px-3 font-mono text-xs select-none">
             {suffixAddon}
           </span>
         )}

@@ -17,8 +17,12 @@ import {
   RefreshCw,
   Shield,
   Layers,
+  Compass,
+  ArrowRight,
 } from "lucide-react";
 import type { MemberDashboardData } from "@/server/users/profile";
+import type { UserRecommendationsPayload } from "@/server/recommendations/service";
+import { RecommendationsClient } from "@/components/recommendations/RecommendationsClient";
 import { DeveloperPassportCard } from "./DeveloperPassportCard";
 import { ProgressionLadder } from "./ProgressionLadder";
 import { BadgesGrid } from "./BadgesGrid";
@@ -31,10 +35,12 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   initialData: MemberDashboardData;
+  recommendations?: UserRecommendationsPayload;
 }
 
 type TabKey =
   | "OVERVIEW"
+  | "RECOMMENDED"
   | "TICKETS"
   | "CERTIFICATES"
   | "WORKSHOPS"
@@ -43,7 +49,7 @@ type TabKey =
   | "ROLE"
   | "SETTINGS";
 
-export function MemberDashboardClient({ initialData }: Props) {
+export function MemberDashboardClient({ initialData, recommendations }: Props) {
   const [data, setData] = useState<MemberDashboardData>(initialData);
   const [activeTab, setActiveTab] = useState<TabKey>("OVERVIEW");
   const [autoLinking, setAutoLinking] = useState(false);
@@ -92,6 +98,17 @@ export function MemberDashboardClient({ initialData }: Props) {
 
   const tabs: { key: TabKey; label: string; count?: number; icon: React.ElementType }[] = [
     { key: "OVERVIEW", label: "Passport & Overview", icon: Sparkles },
+    ...(recommendations
+      ? [
+          {
+            key: "RECOMMENDED" as TabKey,
+            label: "Recommended For You",
+            count:
+              recommendations.recommendedEvents.length + recommendations.recommendedRoles.length,
+            icon: Compass,
+          },
+        ]
+      : []),
     { key: "TICKETS", label: "My Events & Tickets", count: data.stats.ticketsCount, icon: Ticket },
     {
       key: "CERTIFICATES",
@@ -206,10 +223,42 @@ export function MemberDashboardClient({ initialData }: Props) {
       <div className="animate-in fade-in space-y-8 duration-200">
         {activeTab === "OVERVIEW" && (
           <div className="space-y-8">
+            {recommendations && (
+              <div className="border-brand-500/30 from-brand-950/40 via-surface-900/60 flex flex-col justify-between gap-4 rounded-3xl border bg-gradient-to-r to-purple-950/40 p-5 backdrop-blur-md sm:flex-row sm:items-center">
+                <div className="flex items-center gap-3">
+                  <div className="bg-brand-500/20 border-brand-500/30 text-brand-400 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">
+                      {recommendations.recommendedEvents.length} Events &{" "}
+                      {recommendations.recommendedRoles.length} Leadership Roles Recommended For You
+                    </h4>
+                    <p className="text-surface-400 mt-0.5 text-xs">
+                      Tailored to your attendance history, skills, and city (
+                      {recommendations.userContext.city || "your region"}).
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  id="btn-view-recommendations"
+                  onClick={() => setActiveTab("RECOMMENDED")}
+                  className="bg-brand-500 hover:bg-brand-400 inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white transition-colors"
+                >
+                  <span>Explore Matches</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
             <ProgressionLadder progression={data.passport.progression} />
             <BadgesGrid badges={data.passport.badges} />
             <ParticipationTimeline timeline={data.passport.timeline} />
           </div>
+        )}
+
+        {activeTab === "RECOMMENDED" && recommendations && (
+          <RecommendationsClient initialData={recommendations} />
         )}
 
         {activeTab === "TICKETS" && (

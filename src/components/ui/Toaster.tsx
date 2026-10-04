@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2, AlertTriangle, AlertCircle, Info, Sparkles } from "lucide-react";
+import { CheckCircle2, AlertTriangle, AlertCircle, Info } from "lucide-react";
 import {
   Toast,
   ToastClose,
@@ -13,11 +13,13 @@ import {
 import { useToast, type ToastVariant } from "@/components/ui/useToast";
 
 const iconMap: Record<ToastVariant, React.ReactNode> = {
-  default: <Sparkles className="text-surface-300 mt-0.5 size-4 shrink-0" aria-hidden="true" />,
-  success: <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" aria-hidden="true" />,
-  destructive: <AlertCircle className="mt-0.5 size-4 shrink-0 text-rose-400" aria-hidden="true" />,
-  warning: <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-400" aria-hidden="true" />,
-  info: <Info className="text-brand-400 mt-0.5 size-4 shrink-0" aria-hidden="true" />,
+  default: <Info className="text-foreground mt-0.5 size-4 shrink-0" aria-hidden="true" />,
+  success: <CheckCircle2 className="text-success mt-0.5 size-4 shrink-0" aria-hidden="true" />,
+  destructive: (
+    <AlertCircle className="text-destructive mt-0.5 size-4 shrink-0" aria-hidden="true" />
+  ),
+  warning: <AlertTriangle className="text-foreground mt-0.5 size-4 shrink-0" aria-hidden="true" />,
+  info: <Info className="text-foreground mt-0.5 size-4 shrink-0" aria-hidden="true" />,
 };
 
 export function Toaster() {

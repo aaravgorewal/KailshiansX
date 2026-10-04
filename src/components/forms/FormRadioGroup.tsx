@@ -42,10 +42,10 @@ export const FormRadioGroup = React.forwardRef<HTMLDivElement, FormRadioGroupPro
               className={cn(
                 "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors select-none",
                 isSelected
-                  ? "border-brand-500/80 bg-brand-500/10 shadow-sm"
-                  : "border-surface-800 bg-surface-900/40 hover:border-surface-700 hover:bg-surface-900/80",
+                  ? "border-primary bg-muted"
+                  : "border-border bg-card hover:border-muted-foreground",
                 option.disabled && "cursor-not-allowed opacity-50",
-                error && !isSelected && "border-rose-500/40"
+                error && !isSelected && "border-destructive"
               )}
               onClick={() => {
                 if (!option.disabled && onChange) {
@@ -61,31 +61,34 @@ export const FormRadioGroup = React.forwardRef<HTMLDivElement, FormRadioGroupPro
                   value={option.value}
                   checked={isSelected}
                   disabled={option.disabled}
-                  onChange={(e) => onChange?.(e.target.value)}
+                  onChange={() => onChange?.(option.value)}
                   className="peer sr-only"
                 />
                 <div
                   className={cn(
-                    "flex size-4.5 shrink-0 items-center justify-center rounded-full border transition-all",
-                    isSelected
-                      ? "border-brand-500 bg-brand-500"
-                      : "border-surface-600 bg-surface-900 hover:border-surface-500",
-                    "peer-focus-visible:ring-brand-500 peer-focus-visible:ring-offset-surface-950 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2"
+                    "border-input bg-background peer-focus-visible:ring-ring peer-focus-visible:ring-offset-background flex size-4 items-center justify-center rounded-full border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2",
+                    isSelected && "border-primary",
+                    option.disabled && "cursor-not-allowed opacity-60"
                   )}
                 >
-                  {isSelected && <div className="size-2 rounded-full bg-white shadow-sm" />}
+                  {isSelected && <span className="bg-primary size-2 rounded-full" />}
                 </div>
               </div>
 
               <div className="grid gap-0.5">
                 <label
                   htmlFor={optionId}
-                  className="text-surface-200 cursor-pointer text-sm leading-tight font-medium"
+                  className={cn(
+                    "text-foreground cursor-pointer text-sm leading-tight font-medium",
+                    option.disabled && "cursor-not-allowed opacity-60"
+                  )}
                 >
                   {option.label}
                 </label>
                 {option.description && (
-                  <p className="text-surface-400 text-xs leading-normal">{option.description}</p>
+                  <p className="text-muted-foreground text-xs leading-normal">
+                    {option.description}
+                  </p>
                 )}
               </div>
             </div>

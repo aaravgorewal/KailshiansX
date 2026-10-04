@@ -1,24 +1,30 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type PartnerTier =
   "TITLE" | "PLATINUM" | "GOLD" | "SILVER" | "COMMUNITY" | "VENUE" | "ECOSYSTEM";
 
-export interface PartnerItem {
-  id?: string;
+export interface PartnerLogo {
+  id?: string | number;
   name: string;
   logoUrl?: string;
   websiteUrl?: string;
-  tier?: PartnerTier;
-  description?: string;
+  tier?: PartnerTier | string;
 }
 
+export type PartnerItem = PartnerLogo;
+
 export interface PartnerLogoGridProps {
-  partners: PartnerItem[];
+  partners: PartnerLogo[];
   groupByTier?: boolean;
+  title?: string;
   columns?: 2 | 3 | 4 | 5 | 6;
+  grayscale?: boolean;
   className?: string;
 }
 
@@ -45,43 +51,49 @@ const tierLabels: Record<PartnerTier, string> = {
 export function PartnerLogoGrid({
   partners,
   groupByTier = false,
+  title,
   columns = 4,
+  grayscale = true,
   className,
 }: PartnerLogoGridProps) {
-  const gridColClass = {
+  const colClass = {
     2: "grid-cols-2",
     3: "grid-cols-2 sm:grid-cols-3",
     4: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4",
     5: "grid-cols-2 sm:grid-cols-3 md:grid-cols-5",
-    6: "grid-cols-2 sm:grid-cols-4 md:grid-cols-6",
+    6: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6",
   }[columns];
 
-  const renderCard = (partner: PartnerItem) => {
-    const CardContent = (
-      <div className="group border-surface-800 bg-surface-900/60 hover:border-surface-600 hover:bg-surface-850 relative flex h-24 w-full items-center justify-center rounded-xl border p-4 backdrop-blur-sm transition-all duration-300 hover:shadow-lg sm:h-28">
+  const renderCard = (partner: PartnerLogo, idx: number) => {
+    const key = partner.id ?? `${partner.name}-${idx}`;
+    const CardInner = (
+      <div className="border-border bg-card hover:border-muted-foreground relative flex h-24 w-full items-center justify-center rounded-lg border p-4 transition-colors duration-150 sm:h-28">
         {partner.logoUrl ? (
           <Image
             src={partner.logoUrl}
             alt={partner.name}
             width={130}
             height={48}
-            className="max-h-12 max-w-[130px] object-contain opacity-60 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+            className={cn(
+              "max-h-12 max-w-[130px] object-contain transition-opacity duration-150",
+              grayscale
+                ? "opacity-60 grayscale hover:opacity-100 hover:grayscale-0"
+                : "opacity-80 hover:opacity-100"
+            )}
             loading="lazy"
             unoptimized={partner.logoUrl.startsWith("data:")}
           />
         ) : (
           <div className="flex flex-col items-center justify-center text-center">
-            <span className="text-surface-300 group-hover:text-surface-100 text-sm font-semibold transition-colors">
-              {partner.name}
-            </span>
+            <span className="text-foreground text-sm font-semibold">{partner.name}</span>
             {partner.tier && (
-              <span className="text-surface-500 mt-0.5 font-mono text-[10px]">{partner.tier}</span>
+              <span className="text-muted-foreground mt-0.5 font-mono text-xs">{partner.tier}</span>
             )}
           </div>
         )}
 
         {partner.websiteUrl && (
-          <span className="text-surface-400 group-hover:text-brand-400 absolute top-2 right-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <span className="text-muted-foreground hover:text-foreground absolute top-2 right-2 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
             <ExternalLink className="size-3" aria-hidden="true" />
           </span>
         )}
@@ -90,51 +102,63 @@ export function PartnerLogoGrid({
 
     if (partner.websiteUrl) {
       return (
-        <a
-          key={partner.name}
+        <Link
+          key={key}
           href={partner.websiteUrl}
           target="_blank"
           rel="noopener noreferrer"
+          className="group focus-visible:ring-ring block rounded-lg outline-none focus-visible:ring-2"
           aria-label={`Visit ${partner.name} website`}
-          className="focus-visible:ring-brand-500 rounded-xl focus-visible:ring-2 focus-visible:outline-none"
         >
-          {CardContent}
-        </a>
+          {CardInner}
+        </Link>
       );
     }
 
-    return <div key={partner.name}>{CardContent}</div>;
+    return <div key={key}>{CardInner}</div>;
   };
 
-  if (!groupByTier) {
+  if (groupByTier) {
+    const grouped = tierOrder.reduce<Record<string, PartnerLogo[]>>((acc, tier) => {
+      const matched = partners.filter((p) => p.tier === tier);
+      if (matched.length > 0) {
+        acc[tier] = matched;
+      }
+      return acc;
+    }, {});
+
+    const untiered = partners.filter((p) => !p.tier || !tierOrder.includes(p.tier as PartnerTier));
+    if (untiered.length > 0) {
+      grouped.COMMUNITY = [...(grouped.COMMUNITY || []), ...untiered];
+    }
+
     return (
-      <div className={cn("grid gap-4 sm:gap-6", gridColClass, className)}>
-        {partners.map(renderCard)}
+      <div className={cn("w-full space-y-8", className)}>
+        {Object.entries(grouped).map(([tierKey, list]) => (
+          <div key={tierKey} className="space-y-4">
+            <h4 className="text-muted-foreground text-center text-xs font-semibold tracking-wider uppercase">
+              {tierLabels[tierKey as PartnerTier] || tierKey}
+            </h4>
+            <div className={cn("grid gap-4", colClass)}>
+              {list.map((partner, idx) => renderCard(partner, idx))}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
 
-  // Group by tiers
-  const grouped = tierOrder
-    .map((tier) => ({
-      tier,
-      label: tierLabels[tier],
-      items: partners.filter((p) => p.tier === tier),
-    }))
-    .filter((g) => g.items.length > 0);
-
   return (
-    <div className={cn("space-y-10 sm:space-y-12", className)}>
-      {grouped.map(({ tier, label, items }) => (
-        <div key={tier} className="space-y-4">
-          <div className="flex items-center gap-3">
-            <h4 className="text-surface-400 font-mono text-xs tracking-wider uppercase">{label}</h4>
-            <div className="bg-surface-800 h-px flex-1" />
-          </div>
+    <div className={cn("w-full space-y-6", className)}>
+      {title && (
+        <h4 className="text-muted-foreground text-center text-xs font-semibold tracking-wider uppercase">
+          {title}
+        </h4>
+      )}
 
-          <div className={cn("grid gap-4 sm:gap-6", gridColClass)}>{items.map(renderCard)}</div>
-        </div>
-      ))}
+      <div className={cn("grid gap-4", colClass)}>
+        {partners.map((partner, idx) => renderCard(partner, idx))}
+      </div>
     </div>
   );
 }

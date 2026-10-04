@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Search, X, MapPin, Calendar, Layers, RotateCcw } from "lucide-react";
+import { Search, X, Calendar, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -24,11 +24,11 @@ export interface EventsFilterBarProps {
 }
 
 const TYPE_OPTIONS = [
-  { id: "ALL", label: "All Types" },
-  { id: "MEETUP", label: "Meetups" },
-  { id: "HACKATHON", label: "Hackathons" },
-  { id: "WORKSHOP", label: "Workshops" },
-  { id: "TECH_TALK", label: "Tech Talks" },
+  { id: "ALL", label: "All types" },
+  { id: "MEETUP", label: "Meetup" },
+  { id: "HACKATHON", label: "Hackathon" },
+  { id: "WORKSHOP", label: "Workshop" },
+  { id: "TECH_TALK", label: "Tech talk" },
 ];
 
 export function EventsFilterBar({
@@ -99,89 +99,82 @@ export function EventsFilterBar({
   };
 
   return (
-    <div className={cn("space-y-6", className)}>
-      {/* Search Bar & Timeline Tabs */}
-      <div className="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
+    <div className={cn("space-y-4", className)}>
+      {/* Search Input & Timeline Segmented Control */}
+      <div className="flex flex-col items-stretch justify-between gap-3 md:flex-row md:items-center">
         {/* Search Input */}
         <form onSubmit={handleSearchSubmit} className="relative max-w-lg flex-1">
-          <Search className="text-surface-400 pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
+          <Search
+            className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2"
+            aria-hidden="true"
+          />
           <input
             type="search"
             value={searchVal}
             onChange={(e) => setSearchVal(e.target.value)}
             placeholder="Search events, cities, topics, venues..."
             aria-label="Search events"
-            className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 focus:border-brand-500 h-11 w-full rounded-xl border pr-10 pl-10 text-sm shadow-inner transition-all focus:ring-2 focus:outline-none"
+            className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border pr-9 pl-10 text-sm focus:ring-1 focus:outline-none"
           />
           {searchVal && (
             <button
               type="button"
               onClick={handleClearSearch}
               aria-label="Clear search"
-              className="text-surface-400 hover:text-surface-200 absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-1"
+              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 transition-colors"
             >
-              <X className="size-4" />
+              <X className="size-4" aria-hidden="true" />
             </button>
           )}
         </form>
 
-        {/* Timeline Switcher (Upcoming / Past / All) */}
-        <div className="bg-surface-900 border-surface-800 inline-flex items-center self-start rounded-xl border p-1 md:self-auto">
+        {/* Upcoming/Past/All Segmented Control */}
+        <div className="border-border bg-muted inline-flex items-center self-start rounded-lg border p-1 md:self-auto">
           <button
             type="button"
             onClick={() => updateFilters({ timeline: "upcoming" })}
             className={cn(
-              "flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all",
+              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
               initialTimeline === "upcoming"
-                ? "bg-brand-600 font-semibold text-white shadow-sm"
-                : "text-surface-400 hover:text-surface-200"
+                ? "bg-background text-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
-            <Calendar className="size-3.5" />
+            <Calendar className="size-3.5" aria-hidden="true" />
             <span>Upcoming</span>
-            <span
-              className={cn(
-                "py-0.2 rounded-full px-1.5 font-mono text-[10px]",
-                initialTimeline === "upcoming"
-                  ? "bg-brand-700 text-white"
-                  : "bg-surface-800 text-surface-400"
-              )}
-            >
-              {upcomingCount}
-            </span>
+            {Boolean(upcomingCount && upcomingCount > 0) && (
+              <span className="bg-muted py-0.2 text-foreground rounded px-1.5 font-mono text-xs">
+                {upcomingCount}
+              </span>
+            )}
           </button>
 
           <button
             type="button"
             onClick={() => updateFilters({ timeline: "past" })}
             className={cn(
-              "flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all",
+              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
               initialTimeline === "past"
-                ? "bg-brand-600 font-semibold text-white shadow-sm"
-                : "text-surface-400 hover:text-surface-200"
+                ? "bg-background text-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
-            <span>Past Archive</span>
-            <span
-              className={cn(
-                "py-0.2 rounded-full px-1.5 font-mono text-[10px]",
-                initialTimeline === "past"
-                  ? "bg-brand-700 text-white"
-                  : "bg-surface-800 text-surface-400"
-              )}
-            >
-              {pastCount}
-            </span>
+            <span>Past</span>
+            {Boolean(pastCount && pastCount > 0) && (
+              <span className="bg-muted py-0.2 text-foreground rounded px-1.5 font-mono text-xs">
+                {pastCount}
+              </span>
+            )}
           </button>
 
           <button
             type="button"
             onClick={() => updateFilters({ timeline: "all" })}
             className={cn(
-              "rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all",
+              "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
               initialTimeline === "all"
-                ? "bg-brand-600 font-semibold text-white shadow-sm"
-                : "text-surface-400 hover:text-surface-200"
+                ? "bg-background text-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
             <span>All</span>
@@ -190,14 +183,10 @@ export function EventsFilterBar({
       </div>
 
       {/* Type & City Filter Chips */}
-      <div className="flex flex-col gap-3 pt-2">
-        {/* Event Type Filter */}
-        <div className="flex scrollbar-none items-center gap-2 overflow-x-auto py-1">
-          <div className="text-surface-400 mr-1 flex shrink-0 items-center gap-1 text-xs font-medium">
-            <Layers className="text-surface-500 size-3.5" />
-            <span>Format:</span>
-          </div>
-
+      <div className="flex flex-col gap-3 pt-1">
+        {/* Format / Type Chips */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-muted-foreground text-xs font-medium">Format:</span>
           {TYPE_OPTIONS.map((opt) => {
             const active = initialType === opt.id;
             return (
@@ -206,10 +195,10 @@ export function EventsFilterBar({
                 type="button"
                 onClick={() => updateFilters({ type: opt.id })}
                 className={cn(
-                  "shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-all select-none",
+                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
                   active
-                    ? "border-brand-500/80 bg-brand-500/15 text-brand-300 font-semibold shadow-[0_0_12px_rgba(61,97,252,0.25)]"
-                    : "border-surface-800 bg-surface-900/60 text-surface-300 hover:border-surface-700 hover:text-surface-100"
+                    ? "border-primary bg-primary/10 text-foreground font-semibold"
+                    : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
                 )}
               >
                 {opt.label}
@@ -218,27 +207,22 @@ export function EventsFilterBar({
           })}
         </div>
 
-        {/* City Filter */}
+        {/* City Filter Chips */}
         {cities.length > 0 && (
-          <div className="flex scrollbar-none items-center gap-2 overflow-x-auto py-1">
-            <div className="text-surface-400 mr-1 flex shrink-0 items-center gap-1 text-xs font-medium">
-              <MapPin className="text-surface-500 size-3.5" />
-              <span>City:</span>
-            </div>
-
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-muted-foreground text-xs font-medium">City:</span>
             <button
               type="button"
               onClick={() => updateFilters({ city: "ALL" })}
               className={cn(
-                "shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-all select-none",
+                "rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
                 initialCity === "ALL"
-                  ? "border-accent-500/80 bg-accent-500/15 text-accent-300 font-semibold shadow-[0_0_12px_rgba(139,61,255,0.25)]"
-                  : "border-surface-800 bg-surface-900/60 text-surface-300 hover:border-surface-700 hover:text-surface-100"
+                  ? "border-primary bg-primary/10 text-foreground font-semibold"
+                  : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
               )}
             >
-              All Cities
+              All cities
             </button>
-
             {cities.map((city) => {
               const active = initialCity.toLowerCase() === city.name.toLowerCase();
               return (
@@ -247,23 +231,16 @@ export function EventsFilterBar({
                   type="button"
                   onClick={() => updateFilters({ city: city.name })}
                   className={cn(
-                    "flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all select-none",
+                    "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
                     active
-                      ? "border-accent-500/80 bg-accent-500/15 text-accent-300 font-semibold shadow-[0_0_12px_rgba(139,61,255,0.25)]"
-                      : "border-surface-800 bg-surface-900/60 text-surface-300 hover:border-surface-700 hover:text-surface-100"
+                      ? "border-primary bg-primary/10 text-foreground font-semibold"
+                      : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
                   )}
                 >
                   <span>{city.name}</span>
-                  <span
-                    className={cn(
-                      "py-0.2 rounded-full px-1.5 font-mono text-[10px]",
-                      active
-                        ? "bg-accent-500/30 text-accent-200"
-                        : "bg-surface-800 text-surface-400"
-                    )}
-                  >
-                    {city.count}
-                  </span>
+                  {Boolean(city.count && city.count > 0) && (
+                    <span className="font-mono text-xs opacity-70">({city.count})</span>
+                  )}
                 </button>
               );
             })}
@@ -271,27 +248,27 @@ export function EventsFilterBar({
         )}
       </div>
 
-      {/* Filter Status Summary & Reset Button */}
-      <div className="border-surface-800/80 text-surface-400 flex items-center justify-between border-t pt-2 text-xs">
+      {/* Filter Status Summary & Clear Filters */}
+      <div className="border-border text-muted-foreground flex flex-wrap items-center justify-between gap-3 border-t pt-3 text-xs">
         <div>
-          Showing <span className="text-surface-100 font-semibold">{totalResults}</span>{" "}
-          {totalResults === 1 ? "gathering" : "gatherings"}
+          Showing <span className="text-foreground font-semibold">{totalResults}</span>{" "}
+          {totalResults === 1 ? "event" : "events"}
           {initialCity !== "ALL" && (
             <span>
               {" "}
-              in <strong className="text-surface-200 font-medium">{initialCity}</strong>
+              in <strong className="text-foreground font-medium">{initialCity}</strong>
             </span>
           )}
           {initialType !== "ALL" && (
             <span>
               {" "}
-              matching <strong className="text-surface-200 font-medium">{initialType}</strong>
+              matching <strong className="text-foreground font-medium">{initialType}</strong>
             </span>
           )}
           {initialSearch && (
             <span>
               {" "}
-              for &ldquo;<strong className="text-surface-200 font-medium">{initialSearch}</strong>
+              for &ldquo;<strong className="text-foreground font-medium">{initialSearch}</strong>
               &rdquo;
             </span>
           )}
@@ -303,10 +280,10 @@ export function EventsFilterBar({
             variant="ghost"
             size="sm"
             onClick={clearAllFilters}
-            className="text-brand-400 hover:text-brand-300 h-8 gap-1.5 text-xs"
+            className="text-foreground hover:bg-muted h-7 gap-1.5 text-xs"
           >
-            <RotateCcw className="size-3.5" />
-            <span>Reset Filters</span>
+            <RotateCcw className="size-3.5" aria-hidden="true" />
+            <span>Clear filters</span>
           </Button>
         )}
       </div>

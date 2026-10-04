@@ -8,7 +8,7 @@ export interface EmptyStateAction {
   label: string;
   onClick?: () => void;
   href?: string;
-  variant?: "default" | "secondary" | "outline" | "accent";
+  variant?: "primary" | "secondary" | "ghost" | "default" | "outline" | "accent";
 }
 
 export interface EmptyStateProps {
@@ -35,18 +35,18 @@ export function EmptyState({
       role="status"
       aria-live="polite"
       className={cn(
-        "border-surface-800 bg-surface-900/60 mx-auto flex max-w-lg flex-col items-center justify-center rounded-2xl border p-8 text-center backdrop-blur-sm sm:p-12",
+        "border-border bg-card mx-auto flex max-w-lg flex-col items-center justify-center rounded-lg border p-8 text-center sm:p-12",
         className
       )}
     >
-      <div className="bg-surface-800/80 border-surface-700/80 text-brand-400 mb-4 flex size-14 items-center justify-center rounded-2xl border shadow-inner sm:size-16">
+      <div className="bg-muted border-border text-foreground mb-4 flex size-14 items-center justify-center rounded-lg border sm:size-16">
         {icon || <FolderSearch className="size-7 sm:size-8" aria-hidden="true" />}
       </div>
 
-      <h3 className="text-surface-50 mb-2 text-lg font-semibold sm:text-xl">{title}</h3>
+      <h3 className="text-foreground mb-2 text-lg font-semibold sm:text-xl">{title}</h3>
 
       {description && (
-        <p className="text-surface-400 mb-6 max-w-sm text-sm leading-relaxed">{description}</p>
+        <p className="text-muted-foreground mb-6 max-w-sm text-sm leading-relaxed">{description}</p>
       )}
 
       {children}
@@ -55,22 +55,25 @@ export function EmptyState({
         <div className="flex flex-wrap items-center justify-center gap-3">
           {action &&
             (action.href ? (
-              <Button asChild variant={action.variant || "default"}>
+              <Button asChild variant={action.variant || "primary"}>
                 <Link href={action.href}>{action.label}</Link>
               </Button>
             ) : (
-              <Button variant={action.variant || "default"} onClick={action.onClick}>
+              <Button onClick={action.onClick} variant={action.variant || "primary"}>
                 {action.label}
               </Button>
             ))}
 
           {secondaryAction &&
             (secondaryAction.href ? (
-              <Button asChild variant="outline">
+              <Button asChild variant={secondaryAction.variant || "secondary"}>
                 <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
               </Button>
             ) : (
-              <Button variant="outline" onClick={secondaryAction.onClick}>
+              <Button
+                onClick={secondaryAction.onClick}
+                variant={secondaryAction.variant || "secondary"}
+              >
                 {secondaryAction.label}
               </Button>
             ))}

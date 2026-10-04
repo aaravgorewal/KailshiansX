@@ -3,20 +3,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "rounded-xl border text-surface-100 transition-all duration-200 overflow-hidden",
+  "rounded-lg border border-border bg-card text-card-foreground transition-[border-color] duration-150 overflow-hidden",
   {
     variants: {
       variant: {
-        default: "bg-surface-900/90 border-surface-700/80 backdrop-blur-sm",
-        elevated: "bg-surface-800/90 border-surface-700 shadow-xl shadow-black/50 backdrop-blur-sm",
-        outline: "bg-surface-950/40 border-surface-700/80",
-        glow: "bg-surface-900/90 border-surface-700/80 hover:border-brand-500/40 hover:-translate-y-0.5",
-        accentGlow:
-          "bg-surface-900/90 border-surface-700/80 hover:border-accent-500/40 hover:-translate-y-0.5",
-        glass: "bg-surface-900/60 border-surface-700/60 backdrop-blur-md",
+        default: "",
+        elevated: "",
+        outline: "",
+        glow: "",
+        accentGlow: "",
+        glass: "",
       },
       interactive: {
-        true: "hover:-translate-y-0.5 hover:border-brand-500/40 cursor-pointer",
+        true: "hover:border-muted-foreground cursor-pointer",
         false: "",
       },
     },
@@ -57,7 +56,7 @@ const CardTitle = React.forwardRef<
   <Component
     ref={ref}
     className={cn(
-      "text-surface-50 text-lg leading-snug font-semibold tracking-tight sm:text-xl",
+      "text-foreground text-lg leading-snug font-semibold tracking-tight sm:text-xl",
       className
     )}
     {...props}
@@ -69,7 +68,11 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn("text-surface-400 text-sm leading-relaxed", className)} {...props} />
+  <p
+    ref={ref}
+    className={cn("text-muted-foreground text-sm leading-relaxed", className)}
+    {...props}
+  />
 ));
 CardDescription.displayName = "CardDescription";
 
@@ -84,10 +87,7 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        "border-surface-800/80 mt-auto flex items-center border-t p-5 pt-0 pt-4 sm:p-6",
-        className
-      )}
+      className={cn("border-border mt-auto flex items-center border-t p-5 pt-4 sm:p-6", className)}
       {...props}
     />
   )

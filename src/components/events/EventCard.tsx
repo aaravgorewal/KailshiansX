@@ -1,10 +1,12 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, MapPin, Users, ArrowRight, Clock, Mic } from "lucide-react";
+import { Calendar, MapPin, Users, ArrowRight, Clock, Mic, Terminal, Trophy } from "lucide-react";
+import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { formatDate, formatTime } from "@/lib/format-date";
 
 export type EventType = "MEETUP" | "HACKATHON" | "WORKSHOP" | "TECH_TALK" | "OTHER";
 
@@ -26,40 +28,29 @@ export interface EventCardProps {
   attendeeCount?: number;
   speakerCount?: number;
   tags?: string[];
+  priority?: boolean;
   onRegister?: () => void;
   className?: string;
 }
 
-const typeConfig: Record<
-  EventType,
-  { label: string; variant: "brand" | "accent" | "success" | "warning" | "default" }
-> = {
-  HACKATHON: { label: "Hackathon", variant: "accent" },
-  MEETUP: { label: "Meetup", variant: "brand" },
-  WORKSHOP: { label: "Workshop", variant: "success" },
-  TECH_TALK: { label: "Tech Talk", variant: "warning" },
-  OTHER: { label: "Event", variant: "default" },
+const TYPE_LABELS: Record<EventType, string> = {
+  HACKATHON: "Hackathon",
+  MEETUP: "Meetup",
+  WORKSHOP: "Workshop",
+  TECH_TALK: "Tech talk",
+  OTHER: "Event",
 };
 
-function formatDate(dateInput: string | Date): { date: string; time: string } {
-  try {
-    const d = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
-    return {
-      date: d.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      time: d.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }),
-    };
-  } catch {
-    return { date: String(dateInput), time: "" };
-  }
-}
+const TYPE_ICONS: Record<
+  EventType,
+  React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
+> = {
+  HACKATHON: Trophy,
+  MEETUP: Users,
+  WORKSHOP: Terminal,
+  TECH_TALK: Mic,
+  OTHER: Calendar,
+};
 
 export function EventCard({
   title,
@@ -75,110 +66,107 @@ export function EventCard({
   attendeeCount,
   speakerCount,
   tags = [],
+  priority = false,
   onRegister,
   className,
 }: EventCardProps) {
-  const typeInfo = typeConfig[type] || typeConfig.OTHER;
-  const { date, time } = formatDate(startDate);
+  const typeLabel = TYPE_LABELS[type] || TYPE_LABELS.OTHER;
+  const TypeIcon = TYPE_ICONS[type] || TYPE_ICONS.OTHER;
+  const dateStr = formatDate(startDate);
+  const timeStr = formatTime(startDate);
   const href = `/events/${slug}`;
+  const priceDisplay = isFree || !price || price === 0 ? "Free" : `₹${price}`;
+
+  const hasCounts =
+    (attendeeCount !== undefined && attendeeCount > 0) ||
+    (speakerCount !== undefined && speakerCount > 0);
 
   return (
-    <article
+    <Card
       className={cn(
-        "group border-surface-800 bg-surface-900/70 hover:border-brand-500/40 relative flex flex-col justify-between overflow-hidden rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5",
+        "group border-border bg-card hover:border-primary/50 relative flex flex-col justify-between overflow-hidden border transition-colors",
         className
       )}
     >
       {/* Cover Media Container */}
-      <div className="bg-surface-950 relative aspect-[16/9] w-full overflow-hidden">
+      <div className="bg-muted relative aspect-[16/9] w-full overflow-hidden">
         {coverUrl ? (
           <Image
             src={coverUrl}
             alt={title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
+            priority={priority}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover"
+            loading={priority ? undefined : "lazy"}
             unoptimized={coverUrl.startsWith("data:")}
           />
         ) : (
-          <div className="from-surface-900 via-surface-950 to-brand-950/40 relative flex h-full w-full items-center justify-center bg-gradient-to-br p-6">
-            <div className="bg-grid absolute inset-0 opacity-30" />
-            <div className="relative z-10 text-center">
-              <span className="text-surface-700/60 text-3xl font-black tracking-widest uppercase select-none">
-                {type}
-              </span>
-            </div>
+          <div className="bg-muted text-muted-foreground flex size-full items-center justify-center">
+            <TypeIcon className="size-10 stroke-[1.5]" aria-hidden="true" />
           </div>
         )}
 
         {/* Top Badges */}
         <div className="pointer-events-none absolute top-3 right-3 left-3 flex items-center justify-between">
-          <Badge variant={typeInfo.variant} size="sm">
-            {typeInfo.label}
+          <Badge variant="neutral" size="sm">
+            {typeLabel}
           </Badge>
 
-          {status === "LIVE" ? (
-            <Badge variant="destructive" size="sm" dot dotPulse>
-              LIVE NOW
-            </Badge>
-          ) : status === "COMPLETED" ? (
-            <Badge variant="surface" size="sm">
-              Past Event
-            </Badge>
-          ) : (
-            <span className="bg-surface-900/80 text-surface-200 border-surface-700/60 rounded-full border px-2 py-0.5 text-[11px] font-medium backdrop-blur-md">
-              {isFree ? "Free" : price ? `₹${price}` : "Paid"}
-            </span>
-          )}
+          <span className="border-border bg-card/90 text-foreground rounded border px-2 py-0.5 text-xs font-medium backdrop-blur-sm">
+            {priceDisplay}
+          </span>
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+      <div className="flex flex-1 flex-col justify-between p-5">
         <div>
           {/* Date & Time info */}
-          <div className="text-brand-300 mb-2.5 flex items-center gap-3 font-mono text-xs">
+          <div className="text-muted-foreground mb-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
             <div className="flex items-center gap-1.5">
-              <Calendar className="size-3.5" aria-hidden="true" />
-              <span>{date}</span>
+              <Calendar className="text-foreground size-3.5" aria-hidden="true" />
+              <span>{dateStr}</span>
             </div>
-            {time && (
-              <div className="text-surface-400 flex items-center gap-1.5">
-                <Clock className="size-3.5" aria-hidden="true" />
-                <span>{time}</span>
+            {timeStr && (
+              <div className="flex items-center gap-1.5">
+                <Clock className="text-muted-foreground size-3.5" aria-hidden="true" />
+                <span>{timeStr}</span>
               </div>
             )}
           </div>
 
-          {/* Title with link */}
-          <h3 className="text-surface-50 group-hover:text-brand-300 line-clamp-2 text-lg leading-snug font-bold transition-colors sm:text-xl">
-            <Link href={href} className="focus-visible:underline focus-visible:outline-none">
+          {/* Title with full card clickable ::after overlay */}
+          <h3 className="text-foreground hover:text-accent-text line-clamp-2 text-base font-bold transition-colors sm:text-lg">
+            <Link
+              href={href}
+              className="after:absolute after:inset-0 after:z-0 focus-visible:underline focus-visible:outline-none"
+            >
               {title}
             </Link>
           </h3>
 
           {/* Location */}
-          <div className="text-surface-400 mt-3 line-clamp-1 flex items-center gap-1.5 text-xs">
-            <MapPin className="text-surface-500 size-3.5 shrink-0" aria-hidden="true" />
-            <span>
+          <div className="text-muted-foreground mt-2.5 flex items-center gap-1.5 text-xs">
+            <MapPin className="text-muted-foreground size-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate">
               {venue ? `${venue}, ` : ""}
-              <strong className="text-surface-300 font-medium">{city || "India"}</strong>
+              <strong className="text-foreground font-medium">{city || "India"}</strong>
             </span>
           </div>
 
-          {/* Attendees / Speakers metadata */}
-          {(attendeeCount || speakerCount) && (
-            <div className="text-surface-400 border-surface-800/80 mt-4 flex items-center gap-4 border-t pt-3 text-xs">
-              {attendeeCount && (
+          {/* Attendees / Speakers metadata (rendered ONLY when > 0) */}
+          {hasCounts && (
+            <div className="border-border text-muted-foreground mt-3.5 flex items-center gap-4 border-t pt-3 text-xs">
+              {attendeeCount !== undefined && attendeeCount > 0 && (
                 <div className="flex items-center gap-1.5">
-                  <Users className="text-surface-500 size-3.5" aria-hidden="true" />
+                  <Users className="text-muted-foreground size-3.5" aria-hidden="true" />
                   <span>{attendeeCount} registered</span>
                 </div>
               )}
-              {speakerCount && (
+              {speakerCount !== undefined && speakerCount > 0 && (
                 <div className="flex items-center gap-1.5">
-                  <Mic className="text-surface-500 size-3.5" aria-hidden="true" />
+                  <Mic className="text-muted-foreground size-3.5" aria-hidden="true" />
                   <span>{speakerCount} speakers</span>
                 </div>
               )}
@@ -191,7 +179,7 @@ export function EventCard({
               {tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="bg-surface-800/80 text-surface-400 rounded px-1.5 py-0.5 font-mono text-[10px]"
+                  className="border-border bg-muted text-muted-foreground rounded border px-2 py-0.5 font-mono text-xs"
                 >
                   #{tag}
                 </span>
@@ -200,31 +188,28 @@ export function EventCard({
           )}
         </div>
 
-        {/* Footer Actions */}
-        <div className="border-surface-800/80 mt-5 flex items-center justify-between gap-3 border-t pt-4">
-          <Link
-            href={href}
-            className="text-surface-300 group-hover:text-brand-400 flex items-center gap-1 text-xs font-medium transition-colors"
-          >
+        {/* Footer Actions (Register button has relative z-10 so it stays clickable above the ::after overlay) */}
+        <div className="border-border mt-4 flex items-center justify-between gap-3 border-t pt-3.5">
+          <div className="text-muted-foreground group-hover:text-foreground flex items-center gap-1 text-xs font-medium transition-colors">
             <span>Details</span>
-            <ArrowRight
-              className="size-3 transition-transform group-hover:translate-x-0.5"
-              aria-hidden="true"
-            />
-          </Link>
+            <ArrowRight className="size-3" aria-hidden="true" />
+          </div>
 
-          {status !== "COMPLETED" &&
-            (onRegister ? (
-              <Button size="sm" onClick={onRegister}>
-                Register
-              </Button>
-            ) : (
-              <Button asChild size="sm">
-                <Link href={href}>Register</Link>
-              </Button>
-            ))}
+          {status !== "COMPLETED" && (
+            <div className="relative z-10">
+              {onRegister ? (
+                <Button size="sm" variant="secondary" onClick={onRegister}>
+                  Register
+                </Button>
+              ) : (
+                <Button asChild size="sm" variant="secondary">
+                  <Link href={`/events/${slug}/register`}>Register</Link>
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
-    </article>
+    </Card>
   );
 }

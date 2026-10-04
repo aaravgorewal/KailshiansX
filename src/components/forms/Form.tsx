@@ -9,6 +9,7 @@ import {
   type FieldPath,
   type FieldValues,
 } from "react-hook-form";
+import { AlertCircle } from "lucide-react";
 import { Slot } from "radix-ui";
 import { cn } from "@/lib/utils";
 
@@ -89,7 +90,7 @@ const FormLabel = React.forwardRef<
       ref={ref}
       className={cn(
         "flex items-center gap-1 text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-        error ? "text-rose-400" : "text-surface-200",
+        error ? "text-destructive" : "text-foreground",
         className
       )}
       htmlFor={formItemId}
@@ -97,7 +98,7 @@ const FormLabel = React.forwardRef<
     >
       <span>{children}</span>
       {required && (
-        <span className="font-bold text-rose-400" aria-hidden="true">
+        <span className="text-destructive font-bold" aria-hidden="true">
           *
         </span>
       )}
@@ -134,7 +135,7 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-surface-400 text-xs leading-normal", className)}
+      className={cn("text-muted-foreground text-xs leading-normal", className)}
       {...props}
     />
   );
@@ -157,10 +158,14 @@ const FormMessage = React.forwardRef<
       ref={ref}
       id={formMessageId}
       role="alert"
-      className={cn("text-xs leading-tight font-medium text-rose-400", className)}
+      className={cn(
+        "text-destructive flex items-center gap-1.5 text-xs leading-tight font-medium",
+        className
+      )}
       {...props}
     >
-      {body}
+      <AlertCircle className="size-3.5 shrink-0" />
+      <span>{body}</span>
     </p>
   );
 });

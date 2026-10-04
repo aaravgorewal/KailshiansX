@@ -2,6 +2,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Globe, Mic, Award, Compass } from "lucide-react";
+import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,6 @@ export interface SpeakerCardProps {
   className?: string;
 }
 
-// Crisp inline SVGs for dev socials without needing heavy icon packages
 function GithubIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -72,50 +72,43 @@ export function SpeakerCard({
   className,
 }: SpeakerCardProps) {
   const roleBadge = {
-    SPEAKER: { label: "Speaker", variant: "brand" as const, icon: <Mic className="size-3" /> },
-    JUDGE: { label: "Judge", variant: "accent" as const, icon: <Award className="size-3" /> },
-    MENTOR: { label: "Mentor", variant: "success" as const, icon: <Compass className="size-3" /> },
+    SPEAKER: { label: "Speaker", icon: <Mic className="size-3" /> },
+    JUDGE: { label: "Judge", icon: <Award className="size-3" /> },
+    MENTOR: { label: "Mentor", icon: <Compass className="size-3" /> },
   }[speakerRole];
 
   return (
-    <div
-      className={cn(
-        "group border-surface-800 bg-surface-900/80 hover:border-surface-700 relative flex flex-col items-center rounded-2xl border p-6 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl",
-        className
-      )}
-    >
+    <Card className={cn("group relative flex flex-col items-center p-6 text-center", className)}>
       {/* Role badge top right */}
       <div className="absolute top-4 right-4">
-        <Badge variant={roleBadge.variant} size="sm" icon={roleBadge.icon}>
+        <Badge variant="neutral" size="sm" icon={roleBadge.icon}>
           {roleBadge.label}
         </Badge>
       </div>
 
-      {/* Avatar with gradient ring */}
+      {/* Avatar */}
       <div className="relative mt-2 mb-4">
-        <div className="from-brand-500 via-accent-500 to-brand-400 size-24 rounded-full bg-gradient-to-tr p-1 transition-shadow group-hover:shadow-[0_0_20px_rgba(61,97,252,0.3)] sm:size-28">
+        <div className="border-border bg-muted relative size-24 overflow-hidden rounded-full border sm:size-28">
           {avatarUrl ? (
-            <div className="relative size-full overflow-hidden rounded-full">
-              <Image
-                src={avatarUrl}
-                alt={name}
-                fill
-                sizes="112px"
-                className="bg-surface-950 size-full rounded-full object-cover"
-                loading="lazy"
-                unoptimized={avatarUrl.startsWith("data:")}
-              />
-            </div>
+            <Image
+              src={avatarUrl}
+              alt={name}
+              fill
+              sizes="112px"
+              className="size-full rounded-full object-cover"
+              loading="lazy"
+              unoptimized={avatarUrl.startsWith("data:")}
+            />
           ) : (
-            <div className="bg-surface-950 text-surface-200 flex size-full items-center justify-center rounded-full text-xl font-bold">
+            <div className="text-foreground flex size-full items-center justify-center text-xl font-bold">
               {name.charAt(0)}
             </div>
           )}
         </div>
 
-        {sessionsCount && (
+        {Boolean(sessionsCount && sessionsCount > 0) && (
           <span
-            className="bg-surface-900 border-surface-700 text-brand-300 absolute -right-1 -bottom-1 rounded-full border px-2 py-0.5 font-mono text-[10px] shadow-sm"
+            className="border-border bg-card text-muted-foreground absolute -right-1 -bottom-1 rounded-full border px-2 py-0.5 font-mono text-xs shadow-sm"
             title={`${sessionsCount} community sessions`}
           >
             {sessionsCount} talks
@@ -124,7 +117,7 @@ export function SpeakerCard({
       </div>
 
       {/* Name and headline */}
-      <h3 className="text-surface-50 group-hover:text-brand-300 text-lg font-bold transition-colors">
+      <h3 className="text-foreground hover:text-accent-text text-base font-bold transition-colors sm:text-lg">
         {href ? (
           <Link href={href} className="focus-visible:underline focus-visible:outline-none">
             {name}
@@ -134,12 +127,12 @@ export function SpeakerCard({
         )}
       </h3>
 
-      <div className="text-surface-300 mt-1 text-xs font-medium sm:text-sm">{role}</div>
-      <div className="text-brand-400 mt-0.5 font-mono text-xs">@{company}</div>
+      <div className="text-muted-foreground mt-1 text-xs font-medium sm:text-sm">{role}</div>
+      <div className="text-foreground mt-0.5 font-mono text-xs">@{company}</div>
 
       {/* Bio snippet */}
       {bio && (
-        <p className="text-surface-400 mt-3 line-clamp-3 max-w-[260px] text-xs leading-relaxed">
+        <p className="text-muted-foreground mt-3 line-clamp-3 max-w-[260px] text-xs leading-relaxed">
           {bio}
         </p>
       )}
@@ -150,7 +143,7 @@ export function SpeakerCard({
           {topics.slice(0, 3).map((topic) => (
             <span
               key={topic}
-              className="bg-surface-800/80 text-surface-300 border-surface-700/60 rounded-full border px-2 py-0.5 text-[10px]"
+              className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-0.5 text-xs"
             >
               {topic}
             </span>
@@ -160,14 +153,14 @@ export function SpeakerCard({
 
       {/* Social links */}
       {socials && (
-        <div className="border-surface-800/80 mt-5 flex w-full items-center justify-center gap-3 border-t pt-4">
+        <div className="border-border mt-5 flex w-full items-center justify-center gap-3 border-t pt-4">
           {socials.github && (
             <a
               href={socials.github}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${name}'s GitHub profile`}
-              className="text-surface-400 focus-visible:ring-brand-500 rounded-md p-1 transition-colors hover:text-white focus-visible:ring-1"
+              className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded-md p-1 transition-colors focus-visible:ring-1"
             >
               <GithubIcon className="size-4" />
             </a>
@@ -178,7 +171,7 @@ export function SpeakerCard({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${name}'s X / Twitter profile`}
-              className="text-surface-400 focus-visible:ring-brand-500 rounded-md p-1 transition-colors hover:text-white focus-visible:ring-1"
+              className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded-md p-1 transition-colors focus-visible:ring-1"
             >
               <TwitterIcon className="size-4" />
             </a>
@@ -189,7 +182,7 @@ export function SpeakerCard({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${name}'s LinkedIn profile`}
-              className="text-surface-400 focus-visible:ring-brand-500 rounded-md p-1 transition-colors hover:text-white focus-visible:ring-1"
+              className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded-md p-1 transition-colors focus-visible:ring-1"
             >
               <LinkedinIcon className="size-4" />
             </a>
@@ -200,13 +193,13 @@ export function SpeakerCard({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${name}'s Website`}
-              className="text-surface-400 focus-visible:ring-brand-500 rounded-md p-1 transition-colors hover:text-white focus-visible:ring-1"
+              className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded-md p-1 transition-colors focus-visible:ring-1"
             >
               <Globe className="size-4" />
             </a>
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

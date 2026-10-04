@@ -17,7 +17,7 @@ export interface SectionHeaderProps {
 
 export function SectionHeader({
   badge,
-  badgeVariant = "brand",
+  badgeVariant = "default",
   title,
   highlight,
   description,
@@ -39,21 +39,19 @@ export function SectionHeader({
     lg: "text-4xl sm:text-5xl md:text-6xl tracking-tighter",
   }[size];
 
-  // Helper to highlight parts of the title if highlight is provided and exists in title
+  // Helper to highlight parts of the title if highlight is provided and exists in title.
+  // Guard: if highlight is not found in title, render title once as plain text.
   const renderTitle = () => {
-    if (!highlight) {
+    if (!highlight || !title.includes(highlight)) {
       return title;
     }
     const parts = title.split(highlight);
-    if (parts.length <= 1) {
-      return title;
-    }
     return (
       <>
         {parts.map((part, index) => (
           <React.Fragment key={index}>
             {part}
-            {index < parts.length - 1 && <span className="text-brand-300">{highlight}</span>}
+            {index < parts.length - 1 && <span className="text-accent-text">{highlight}</span>}
           </React.Fragment>
         ))}
       </>
@@ -75,13 +73,16 @@ export function SectionHeader({
       )}
 
       <Component
-        className={cn("text-surface-50 font-sans leading-[1.15] font-bold", sizeHeadingClass)}
+        className={cn(
+          "text-foreground text-left font-sans leading-[1.15] font-semibold",
+          sizeHeadingClass
+        )}
       >
         {renderTitle()}
       </Component>
 
       {description && (
-        <p className="text-surface-300 max-w-2xl text-base leading-relaxed sm:text-lg">
+        <p className="text-muted-foreground max-w-2xl text-base leading-relaxed sm:text-lg">
           {description}
         </p>
       )}

@@ -17,3 +17,6 @@ export * from "./EmptyState";
 export * from "./Skeleton";
 export * from "./Pagination";
 export * from "./FilterChips";
+export * from "./Dialog";
+export * from "./DropdownMenu";
+export * from "./Tabs";

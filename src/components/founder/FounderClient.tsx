@@ -132,7 +132,7 @@ export function FounderClient({ founder }: FounderClientProps) {
         <h3 className="text-surface-50 mb-4 text-xl font-bold sm:text-2xl">
           A Personal Message to Every Builder
         </h3>
-        <blockquote className="text-surface-200 space-y-4 font-serif text-sm leading-relaxed italic sm:text-base">
+        <blockquote className="text-surface-200 space-y-4 text-sm leading-relaxed italic sm:text-base">
           <p>“{founder.message}”</p>
         </blockquote>
         <div className="text-brand-300 mt-6 flex items-center gap-3 font-mono text-xs">

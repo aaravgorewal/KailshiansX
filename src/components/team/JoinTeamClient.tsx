@@ -1,10 +1,9 @@
-// src/components/team/JoinTeamClient.tsx
-// Interactive client for exploring team openings, viewing the 5-stage selection workflow, and applying
-
 "use client";
 
 import * as React from "react";
-import { Clock, MapPin, CheckCircle2, ArrowRight, Send, ChevronDown, Check } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Clock, MapPin, Check, ArrowRight, AlertCircle } from "lucide-react";
 import {
   OPENINGS,
   TEAM_AREAS,
@@ -15,35 +14,50 @@ import {
 } from "@/lib/team-constants";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { useToast } from "@/components/ui/useToast";
-import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/Card";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+} from "@/components/forms";
+import {
+  teamApplicationSchema,
+  type TeamApplicationFormData,
+} from "@/lib/validations/team-application";
 import { trackApplicationSubmit } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
 
 export function JoinTeamClient() {
   const [selectedArea, setSelectedArea] = React.useState<string>("ALL");
-  const formRef = React.useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-
-  // Form State
-  const [formData, setFormData] = React.useState({
-    name: "",
-    email: "",
-    phone: "",
-    area: "Technology" as TeamArea,
-    roleApplied: "",
-    linkedin: "",
-    portfolio: "",
-    resumeUrl: "",
-    experience: "",
-    motivation: "",
-    honeypot: "",
-  });
-
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [serverError, setServerError] = React.useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = React.useState<{
     id: string;
     message: string;
   } | null>(null);
+  const formRef = React.useRef<HTMLDivElement>(null);
+
+  const form = useForm<TeamApplicationFormData>({
+    resolver: zodResolver(teamApplicationSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      area: "Technology",
+      roleApplied: "",
+      linkedin: "",
+      portfolio: "",
+      resumeUrl: "",
+      experience: "",
+      motivation: "",
+      honeypot: "",
+    },
+  });
 
   // Filter openings
   const filteredOpenings = React.useMemo(() => {
@@ -52,26 +66,21 @@ export function JoinTeamClient() {
   }, [selectedArea]);
 
   const handleApplyClick = (opening: TeamOpening) => {
-    setFormData((prev) => ({
-      ...prev,
-      area: opening.area,
-      roleApplied: opening.title,
-    }));
+    form.setValue("area", opening.area);
+    form.setValue("roleApplied", opening.title);
 
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  const onSubmit = async (values: TeamApplicationFormData) => {
+    setServerError(null);
     try {
       const res = await fetch("/api/applications/team", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(values),
       });
 
       const data = await res.json();
@@ -82,55 +91,47 @@ export function JoinTeamClient() {
 
       setSubmissionSuccess({
         id: data.id,
-        message: data.message,
+        message: data.message || "Application submitted successfully.",
       });
 
       trackApplicationSubmit({
         type: "team",
-        roleOrTrack: `${formData.roleApplied} (${formData.area})`,
+        roleOrTrack: `${values.roleApplied} (${values.area})`,
       });
 
-      toast({
-        title: "Application Submitted!",
-        description: "Your application has been received and entered our review queue.",
-      });
+      form.reset();
     } catch (err: unknown) {
-      toast({
-        title: "Submission Error",
-        description:
-          err instanceof Error ? err.message : "Failed to submit. Please check required fields.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
+      setServerError(
+        err instanceof Error ? err.message : "Failed to submit. Please check required fields."
+      );
     }
   };
 
   return (
-    <div className="space-y-20">
-      {/* ─── 1. ROLE-WISE OPENINGS DIRECTORY (PRD §14) ────────────────────── */}
+    <div className="space-y-16">
+      {/* ─── 1. Role-Wise Openings Directory ──────────────────────────────── */}
       <section className="space-y-8" id="openings">
         <div>
-          <h2 className="text-surface-50 text-2xl font-bold tracking-tight sm:text-3xl">
+          <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
             Open Core Volunteer & Leadership Positions
           </h2>
-          <p className="text-surface-400 mt-2 max-w-3xl text-sm">
+          <p className="text-muted-foreground mt-2 max-w-3xl text-sm">
             We are actively recruiting passionate builders across 11 functional domains. Whether you
-            want to write platform code, host 500-person summits, or orchestrate university
-            partnerships, there is an ownership seat waiting for you.
+            want to write platform code, host summits, or orchestrate university partnerships, there
+            is an ownership seat waiting for you.
           </p>
         </div>
 
-        {/* Filter Pills across 11 Areas */}
+        {/* Filter Pills */}
         <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-2">
           <button
             type="button"
             onClick={() => setSelectedArea("ALL")}
             className={cn(
-              "shrink-0 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all duration-200",
+              "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[border-color,background-color] duration-150",
               selectedArea === "ALL"
-                ? "border-brand-500/80 bg-brand-500/15 text-brand-300 font-semibold"
-                : "border-surface-800 bg-surface-900/60 text-surface-400 hover:border-surface-700 hover:text-surface-200"
+                ? "border-primary bg-primary text-primary-foreground font-semibold"
+                : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
             )}
           >
             All Areas ({OPENINGS.length})
@@ -144,20 +145,20 @@ export function JoinTeamClient() {
                 type="button"
                 onClick={() => setSelectedArea(area)}
                 className={cn(
-                  "shrink-0 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all duration-200",
+                  "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[border-color,background-color] duration-150",
                   isSelected
-                    ? "border-brand-500/80 bg-brand-500/15 text-brand-300 font-semibold"
-                    : "border-surface-800 bg-surface-900/60 text-surface-400 hover:border-surface-700 hover:text-surface-200"
+                    ? "border-primary bg-primary text-primary-foreground font-semibold"
+                    : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
                 )}
               >
                 <span>{area}</span>
                 {count > 0 && (
                   <span
                     className={cn(
-                      "py-0.2 ml-1.5 rounded-full px-1.5 font-mono text-[10px]",
+                      "ml-1.5 rounded-full px-1.5 py-0.5 font-mono text-xs",
                       isSelected
-                        ? "bg-brand-500/30 text-brand-200"
-                        : "bg-surface-800 text-surface-400"
+                        ? "bg-primary-foreground/20 text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
                     )}
                   >
                     {count}
@@ -171,29 +172,26 @@ export function JoinTeamClient() {
         {/* Openings Grid */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {filteredOpenings.map((opening) => (
-            <article
-              key={opening.id}
-              className="border-surface-800 bg-surface-900/60 hover:border-brand-500/40 hover:bg-surface-900/80 flex flex-col justify-between rounded-2xl border p-6 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5"
-            >
+            <Card key={opening.id} className="flex flex-col justify-between p-6">
               <div className="space-y-4">
                 {/* Header Row */}
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <Badge variant="brand" size="sm">
+                    <Badge variant="outline" size="sm">
                       {opening.area}
                     </Badge>
-                    <Badge variant="surface" size="sm">
+                    <Badge variant="neutral" size="sm">
                       {opening.type}
                     </Badge>
                   </div>
-                  <div className="text-surface-400 flex items-center gap-3 font-mono text-xs">
+                  <div className="text-muted-foreground flex items-center gap-3 font-mono text-xs">
                     <span className="flex items-center gap-1">
-                      <MapPin className="text-surface-500 size-3" />
+                      <MapPin className="text-muted-foreground size-3" />
                       {opening.location}
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
-                      <Clock className="text-brand-400 size-3" />
+                      <Clock className="text-muted-foreground size-3" />
                       {opening.commitment}
                     </span>
                   </div>
@@ -201,19 +199,21 @@ export function JoinTeamClient() {
 
                 {/* Title & Summary */}
                 <div>
-                  <h3 className="text-surface-50 text-xl font-bold">{opening.title}</h3>
-                  <p className="text-surface-300 mt-2 text-xs leading-relaxed">{opening.summary}</p>
+                  <h3 className="text-foreground text-lg font-bold">{opening.title}</h3>
+                  <p className="text-muted-foreground mt-2 text-xs leading-relaxed">
+                    {opening.summary}
+                  </p>
                 </div>
 
-                {/* What You'll Do */}
-                <div className="border-surface-800/80 space-y-2 border-t pt-3">
-                  <h4 className="text-surface-400 font-mono text-[11px] font-semibold tracking-wider uppercase">
+                {/* Key Responsibilities */}
+                <div className="border-border space-y-2 border-t pt-3">
+                  <h4 className="text-muted-foreground font-mono text-xs font-semibold uppercase">
                     Key Responsibilities
                   </h4>
-                  <ul className="text-surface-300 space-y-1.5 text-xs">
+                  <ul className="text-muted-foreground space-y-1.5 text-xs">
                     {opening.responsibilities.map((resp, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="text-brand-400 mt-0.5 size-3.5 shrink-0" />
+                        <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
                         <span>{resp}</span>
                       </li>
                     ))}
@@ -221,14 +221,14 @@ export function JoinTeamClient() {
                 </div>
 
                 {/* Requirements */}
-                <div className="border-surface-800/80 space-y-2 border-t pt-3">
-                  <h4 className="text-surface-400 font-mono text-[11px] font-semibold tracking-wider uppercase">
+                <div className="border-border space-y-2 border-t pt-3">
+                  <h4 className="text-muted-foreground font-mono text-xs font-semibold uppercase">
                     What We Look For
                   </h4>
-                  <ul className="text-surface-400 space-y-1.5 text-xs">
+                  <ul className="text-muted-foreground space-y-1.5 text-xs">
                     {opening.requirements.map((req, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="bg-surface-500 mt-1.5 size-1 shrink-0 rounded-full" />
+                        <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
                         <span>{req}</span>
                       </li>
                     ))}
@@ -237,292 +237,282 @@ export function JoinTeamClient() {
               </div>
 
               {/* Action Button */}
-              <div className="border-surface-800/80 mt-6 border-t pt-4">
+              <div className="border-border mt-6 border-t pt-4">
                 <Button
                   type="button"
-                  variant="default"
+                  variant="primary"
                   size="sm"
                   className="w-full sm:w-auto"
                   onClick={() => handleApplyClick(opening)}
-                  rightIcon={<ArrowRight className="size-4" />}
                 >
-                  Apply for this Role
+                  <span>Apply for this Role</span>
+                  <ArrowRight className="ml-1.5 size-4" />
                 </Button>
               </div>
-            </article>
+            </Card>
           ))}
         </div>
       </section>
 
-      {/* ─── 2. 5-STAGE SELECTION WORKFLOW TIMELINE (PRD §14) ─────────────── */}
-      <section className="border-surface-800 bg-surface-900/40 space-y-8 rounded-3xl border p-8 sm:p-10">
-        <div className="mx-auto max-w-2xl space-y-2 text-center">
-          <Badge variant="accent" size="default">
-            Transparent Workflow
-          </Badge>
-          <h2 className="text-surface-50 text-2xl font-black tracking-tight sm:text-3xl">
-            Our 5-Stage Selection Pipeline
-          </h2>
-          <p className="text-surface-400 text-xs leading-relaxed">
-            Every candidate is respected with honest timelines and feedback. We review applications
-            weekly in structured batches.
-          </p>
-        </div>
+      {/* ─── 2. 5-Stage Selection Workflow Timeline ────────────────────────── */}
+      <section className="border-border bg-card -mx-4 border-y px-4 py-16 sm:-mx-6 sm:px-6">
+        <div className="mx-auto max-w-6xl space-y-8">
+          <div className="max-w-2xl space-y-2">
+            <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+              Pipeline
+            </p>
+            <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
+              Our 5-Stage Selection Pipeline
+            </h2>
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              Every candidate is respected with honest timelines and feedback. We review
+              applications weekly in structured batches.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {TEAM_APPLICATION_STATUSES.map((statusKey, index) => {
-            const config = STATUS_CONFIG[statusKey];
-            return (
-              <div
-                key={statusKey}
-                className="border-surface-800 bg-surface-950/60 relative flex flex-col justify-between rounded-2xl border p-5 backdrop-blur-sm"
-              >
-                <div>
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-brand-400 font-mono text-xs font-bold">
-                      Step {index + 1}
-                    </span>
-                    <Badge variant={config.variant} size="sm">
-                      {statusKey}
-                    </Badge>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {TEAM_APPLICATION_STATUSES.map((statusKey, index) => {
+              const config = STATUS_CONFIG[statusKey];
+              return (
+                <Card key={statusKey} className="flex flex-col justify-between p-5">
+                  <div>
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="text-primary font-mono text-xs font-bold">
+                        Step {index + 1}
+                      </span>
+                      <span className="text-muted-foreground text-xs font-medium">{statusKey}</span>
+                    </div>
+                    <h4 className="text-foreground text-sm font-semibold">{config.label}</h4>
+                    <p className="text-muted-foreground mt-2 text-xs leading-relaxed">
+                      {config.description}
+                    </p>
                   </div>
-                  <h4 className="text-surface-100 text-sm font-bold">{config.label}</h4>
-                  <p className="text-surface-400 mt-2 text-xs leading-relaxed">
-                    {config.description}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* ─── 3. APPLICATION FORM (PRD §14) ─────────────────────────────────── */}
-      <section
-        ref={formRef}
-        className="border-surface-800 bg-surface-900/70 space-y-8 rounded-3xl border p-8 sm:p-12"
-      >
+      {/* ─── 3. Application Form ───────────────────────────────────────────── */}
+      <section ref={formRef} className="space-y-6">
         <div>
-          <Badge variant="brand" size="default">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
             Application Portal
-          </Badge>
-          <h2 className="text-surface-50 mt-2 text-2xl font-black tracking-tight sm:text-3xl">
+          </p>
+          <h2 className="text-foreground mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
             Submit Your Core Team Application
           </h2>
-          <p className="text-surface-400 mt-1 text-xs">
+          <p className="text-muted-foreground mt-1 text-xs">
             Tell us about your background, projects you have shipped, and where you want to make an
             impact.
           </p>
         </div>
 
-        {submissionSuccess ? (
-          <div className="animate-in fade-in space-y-4 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-8 text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
-              <Check className="size-6" />
+        <Card className="p-6 sm:p-8">
+          {submissionSuccess ? (
+            <div className="border-border bg-muted/30 space-y-4 rounded-lg border p-8 text-center">
+              <div className="border-border bg-background text-success mx-auto flex size-12 items-center justify-center rounded-full border">
+                <Check className="size-6" />
+              </div>
+              <h3 className="text-foreground text-lg font-bold">Application Received!</h3>
+              <p className="text-muted-foreground mx-auto max-w-md text-xs leading-relaxed">
+                {submissionSuccess.message}
+              </p>
+              <div className="border-border bg-background text-foreground mx-auto max-w-sm rounded-md border p-3 font-mono text-xs select-all">
+                Application Reference: {submissionSuccess.id}
+              </div>
+              <div className="pt-2">
+                <Button variant="secondary" size="sm" onClick={() => setSubmissionSuccess(null)}>
+                  Submit Another Application
+                </Button>
+              </div>
             </div>
-            <h3 className="text-xl font-bold text-emerald-300">Application Received!</h3>
-            <p className="text-surface-300 mx-auto max-w-md text-xs leading-relaxed">
-              {submissionSuccess.message}
-            </p>
-            <div className="text-surface-400 font-mono text-xs">
-              Application Reference:{" "}
-              <span className="text-surface-100">{submissionSuccess.id}</span>
-            </div>
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSubmissionSuccess(null);
-                  setFormData({
-                    name: "",
-                    email: "",
-                    phone: "",
-                    area: "Technology",
-                    roleApplied: "",
-                    linkedin: "",
-                    portfolio: "",
-                    resumeUrl: "",
-                    experience: "",
-                    motivation: "",
-                    honeypot: "",
-                  });
-                }}
-              >
-                Submit Another Application
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Honeypot Spam Trap (Hidden) */}
-            <input
-              type="text"
-              name="honeypot"
-              value={formData.honeypot}
-              onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
-              className="hidden"
-              tabIndex={-1}
-              autoComplete="off"
-            />
+          ) : (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {serverError && (
+                  <div className="border-destructive/40 bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border p-3 text-xs">
+                    <AlertCircle className="size-4 shrink-0" />
+                    <span>{serverError}</span>
+                  </div>
+                )}
 
-            {/* Row 1: Name & Email */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-surface-200 text-xs font-semibold">Full Name *</label>
                 <input
                   type="text"
-                  required
-                  placeholder="e.g. Aarav Sharma"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
+                  {...form.register("honeypot")}
+                  className="hidden"
+                  tabIndex={-1}
+                  autoComplete="off"
                 />
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-surface-200 text-xs font-semibold">Email Address *</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="aarav@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
-                />
-              </div>
-            </div>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required>Full Name</FormLabel>
+                        <FormControl>
+                          <FormInput placeholder="e.g. Aarav Sharma" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-            {/* Row 2: Phone & Area */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-surface-200 text-xs font-semibold">Phone (WhatsApp) *</label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="+91 98765 43210"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
-                />
-              </div>
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required>Email Address</FormLabel>
+                        <FormControl>
+                          <FormInput type="email" placeholder="aarav@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <div className="space-y-2">
-                <label className="text-surface-200 text-xs font-semibold">Functional Area *</label>
-                <div className="relative">
-                  <select
-                    value={formData.area}
-                    onChange={(e) => setFormData({ ...formData, area: e.target.value as TeamArea })}
-                    className="border-surface-700/80 bg-surface-950 text-surface-100 focus:border-brand-500 w-full cursor-pointer appearance-none rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
-                  >
-                    {TEAM_AREAS.map((a) => (
-                      <option key={a} value={a}>
-                        {a}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="text-surface-400 pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2" />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number (WhatsApp)</FormLabel>
+                        <FormControl>
+                          <FormInput placeholder="+91 98765 43210" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="area"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required>Functional Area</FormLabel>
+                        <FormControl>
+                          <FormSelect
+                            options={TEAM_AREAS.map((a) => ({ value: a, label: a }))}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-              </div>
-            </div>
 
-            {/* Row 3: Role Applied */}
-            <div className="space-y-2">
-              <label className="text-surface-200 text-xs font-semibold">
-                Specific Role / Position Applied For *
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Platform Engineer, Stage Producer, Campus Chapter Lead..."
-                value={formData.roleApplied}
-                onChange={(e) => setFormData({ ...formData, roleApplied: e.target.value })}
-                className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
-              />
-            </div>
-
-            {/* Row 4: Links (LinkedIn, Portfolio / GitHub, Resume) */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-              <div className="space-y-2">
-                <label className="text-surface-200 text-xs font-semibold">LinkedIn Profile</label>
-                <input
-                  type="text"
-                  placeholder="https://linkedin.com/in/username"
-                  value={formData.linkedin}
-                  onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                  className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
+                <FormField
+                  control={form.control}
+                  name="roleApplied"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel required>Role / Position Applied For</FormLabel>
+                      <FormControl>
+                        <FormInput
+                          placeholder="e.g. Platform Engineer, Stage Producer, Campus Chapter Lead"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-surface-200 text-xs font-semibold">
-                  GitHub / Portfolio URL
-                </label>
-                <input
-                  type="text"
-                  placeholder="https://github.com/username"
-                  value={formData.portfolio}
-                  onChange={(e) => setFormData({ ...formData, portfolio: e.target.value })}
-                  className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name="linkedin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>LinkedIn Profile</FormLabel>
+                        <FormControl>
+                          <FormInput placeholder="https://linkedin.com/in/username" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="portfolio"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>GitHub / Portfolio URL</FormLabel>
+                        <FormControl>
+                          <FormInput placeholder="https://github.com/username" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="resumeUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Resume / CV Link</FormLabel>
+                        <FormControl>
+                          <FormInput placeholder="Public Google Drive or Notion link" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="experience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel required>Relevant Experience & Projects Shipped</FormLabel>
+                      <FormControl>
+                        <FormTextarea
+                          placeholder="Detail technical stacks used, events organized, communities managed, or campaigns executed..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-surface-200 text-xs font-semibold">Resume / CV Link</label>
-                <input
-                  type="text"
-                  placeholder="Google Drive / Notion public link"
-                  value={formData.resumeUrl}
-                  onChange={(e) => setFormData({ ...formData, resumeUrl: e.target.value })}
-                  className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border px-4 py-2.5 text-xs focus:outline-none"
+                <FormField
+                  control={form.control}
+                  name="motivation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel required>
+                        Why KailshiansX? What Drives You to Build Here?
+                      </FormLabel>
+                      <FormControl>
+                        <FormTextarea
+                          placeholder="What excites you about our mission? What unique commitment will you bring to the core team?"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </div>
 
-            {/* Row 5: Experience */}
-            <div className="space-y-2">
-              <label className="text-surface-200 text-xs font-semibold">
-                Your Relevant Experience & Projects Shipped *
-              </label>
-              <textarea
-                required
-                rows={4}
-                placeholder="Detail technical stacks used, events organized, communities managed, or campaigns executed. Focus on tangible results."
-                value={formData.experience}
-                onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border p-4 text-xs focus:outline-none"
-              />
-            </div>
-
-            {/* Row 6: Motivation */}
-            <div className="space-y-2">
-              <label className="text-surface-200 text-xs font-semibold">
-                Why KailshiansX? What Drives You to Build Here? *
-              </label>
-              <textarea
-                required
-                rows={4}
-                placeholder="What excites you about our mission? What unique perspective or commitment will you bring to the core team?"
-                value={formData.motivation}
-                onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
-                className="border-surface-700/80 bg-surface-950 text-surface-100 placeholder:text-surface-600 focus:border-brand-500 w-full rounded-xl border p-4 text-xs focus:outline-none"
-              />
-            </div>
-
-            {/* Submit CTA */}
-            <div className="pt-4">
-              <Button
-                type="submit"
-                variant="default"
-                size="lg"
-                isLoading={isSubmitting}
-                rightIcon={<Send className="size-4" />}
-              >
-                {isSubmitting ? "Submitting Application..." : "Submit Application"}
-              </Button>
-            </div>
-          </form>
-        )}
+                <div className="pt-2">
+                  <Button type="submit" variant="primary" isLoading={form.formState.isSubmitting}>
+                    Submit Application
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          )}
+        </Card>
       </section>
     </div>
   );

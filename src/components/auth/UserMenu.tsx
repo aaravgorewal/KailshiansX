@@ -1,13 +1,13 @@
 "use client";
 // src/components/auth/UserMenu.tsx
 // Minimal user menu shown in the Navbar when signed in.
-// Displays avatar/initials, name, role badge, and sign-out button.
+// Restyled to semantic design tokens (no hardcoded palette colors).
 
 import { signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { LogOut, Settings, ChevronDown, Sparkles, Ticket } from "lucide-react";
+import { LogOut, Settings, ChevronDown, User, Ticket, Compass } from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
 interface Props {
@@ -19,17 +19,17 @@ interface Props {
   };
 }
 
-const ROLE_BADGE: Record<UserRole, { label: string; className: string }> = {
-  SUPER_ADMIN: { label: "Super Admin", className: "bg-red-500/20 text-red-400" },
-  ADMIN: { label: "Admin", className: "bg-orange-500/20 text-orange-400" },
-  JUDGE: { label: "Judge", className: "bg-purple-500/20 text-purple-400" },
-  EVENT_MANAGER: { label: "Event Manager", className: "bg-yellow-500/20 text-yellow-400" },
-  CAMPUS_LEAD: { label: "Campus Lead", className: "bg-green-500/20 text-green-400" },
-  STATE_LEAD: { label: "State Lead", className: "bg-teal-500/20 text-teal-400" },
-  CHAPTER_LEAD: { label: "Chapter Lead", className: "bg-emerald-500/20 text-emerald-400" },
-  PARTNER: { label: "Partner", className: "bg-blue-500/20 text-blue-400" },
-  MEMBER: { label: "Member", className: "bg-brand-500/20 text-brand-400" },
-  VIEWER: { label: "Viewer", className: "bg-surface-700 text-surface-400" },
+const ROLE_LABELS: Record<UserRole, string> = {
+  SUPER_ADMIN: "Super Admin",
+  ADMIN: "Admin",
+  JUDGE: "Judge",
+  EVENT_MANAGER: "Event Manager",
+  CAMPUS_LEAD: "Campus Lead",
+  STATE_LEAD: "State Lead",
+  CHAPTER_LEAD: "Chapter Lead",
+  PARTNER: "Partner",
+  MEMBER: "Member",
+  VIEWER: "Viewer",
 };
 
 function getInitials(name?: string | null) {
@@ -45,7 +45,7 @@ function getInitials(name?: string | null) {
 export function UserMenu({ user }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const badge = ROLE_BADGE[user.role];
+  const roleLabel = ROLE_LABELS[user.role] ?? user.role;
   const isAdmin = ["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"].includes(user.role);
 
   // Close on outside click
@@ -65,12 +65,12 @@ export function UserMenu({ user }: Props) {
       <button
         id="user-menu-trigger"
         onClick={() => setOpen((o) => !o)}
-        className="hover:bg-surface-800 flex items-center gap-2 rounded-xl px-2 py-1.5 transition-colors"
+        className="text-foreground hover:bg-muted flex items-center gap-2 rounded-lg px-2 py-1.5 transition-[background-color] duration-150"
         aria-expanded={open}
         aria-haspopup="true"
       >
         {/* Avatar */}
-        <div className="bg-brand-500/20 ring-surface-700 relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full ring-2">
+        <div className="border-border bg-muted relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border">
           {user.image ? (
             <Image
               src={user.image}
@@ -80,29 +80,27 @@ export function UserMenu({ user }: Props) {
               sizes="32px"
             />
           ) : (
-            <span className="text-brand-400 text-xs font-bold">{getInitials(user.name)}</span>
+            <span className="text-foreground text-xs font-semibold">{getInitials(user.name)}</span>
           )}
         </div>
-        <span className="text-surface-200 hidden max-w-[120px] truncate text-sm font-medium sm:block">
+        <span className="text-foreground hidden max-w-[120px] truncate text-sm font-medium sm:block">
           {user.name ?? user.email ?? "Account"}
         </span>
         <ChevronDown
           size={14}
-          className={`text-surface-400 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`text-muted-foreground transition-transform duration-150 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div className="border-surface-700 bg-surface-900 animate-in fade-in slide-in-from-top-1 absolute top-full right-0 z-50 mt-2 w-64 rounded-xl border py-1 shadow-[var(--shadow-card)] duration-150">
+        <div className="border-border bg-card text-card-foreground animate-in fade-in-0 absolute top-full right-0 z-50 mt-2 w-64 rounded-lg border p-1 duration-150">
           {/* User info */}
-          <div className="border-surface-800 border-b px-4 py-3">
-            <p className="text-surface-100 truncate text-sm font-semibold">{user.name ?? "User"}</p>
-            <p className="text-surface-400 mt-0.5 truncate text-xs">{user.email}</p>
-            <span
-              className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${badge.className}`}
-            >
-              {badge.label}
+          <div className="border-border border-b px-3 py-2.5">
+            <p className="text-foreground truncate text-sm font-semibold">{user.name ?? "User"}</p>
+            <p className="text-muted-foreground mt-0.5 truncate text-xs">{user.email}</p>
+            <span className="border-border bg-muted text-muted-foreground mt-2 inline-block rounded-full border px-2 py-0.5 text-xs font-medium">
+              {roleLabel}
             </span>
           </div>
 
@@ -112,18 +110,18 @@ export function UserMenu({ user }: Props) {
               href="/me"
               id="link-user-me"
               onClick={() => setOpen(false)}
-              className="text-surface-200 hover:bg-surface-800 flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors hover:text-white"
+              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
             >
-              <Sparkles size={16} className="text-brand-400" />
+              <User size={15} className="text-muted-foreground" />
               <span>Developer Passport (/me)</span>
             </Link>
 
             <Link
               href="/me?tab=tickets"
               onClick={() => setOpen(false)}
-              className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
+              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
             >
-              <Ticket size={15} />
+              <Ticket size={15} className="text-muted-foreground" />
               <span>My Tickets & Events</span>
             </Link>
 
@@ -131,9 +129,9 @@ export function UserMenu({ user }: Props) {
               href="/me/bookings"
               id="link-user-bookings"
               onClick={() => setOpen(false)}
-              className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
+              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
             >
-              <Ticket size={15} className="text-brand-400" />
+              <Ticket size={15} className="text-muted-foreground" />
               <span>Mentor Bookings</span>
             </Link>
 
@@ -141,9 +139,9 @@ export function UserMenu({ user }: Props) {
               href="/me/mentor"
               id="link-user-mentor"
               onClick={() => setOpen(false)}
-              className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
+              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
             >
-              <Sparkles size={15} className="text-emerald-400" />
+              <Compass size={15} className="text-muted-foreground" />
               <span>Mentor Cockpit</span>
             </Link>
 
@@ -151,26 +149,26 @@ export function UserMenu({ user }: Props) {
               <Link
                 href="/admin"
                 onClick={() => setOpen(false)}
-                className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
+                className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
               >
-                <Settings size={15} />
-                Admin Dashboard
+                <Settings size={15} className="text-muted-foreground" />
+                <span>Admin Dashboard</span>
               </Link>
             )}
           </div>
 
           {/* Sign out */}
-          <div className="border-surface-800 border-t py-1">
+          <div className="border-border mt-1 border-t pt-1">
             <button
               id="btn-signout"
               onClick={() => {
                 setOpen(false);
                 signOut({ callbackUrl: "/" });
               }}
-              className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-400 transition-colors hover:bg-red-500/10"
+              className="text-destructive hover:bg-muted flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
             >
               <LogOut size={15} />
-              Sign Out
+              <span>Sign Out</span>
             </button>
           </div>
         </div>

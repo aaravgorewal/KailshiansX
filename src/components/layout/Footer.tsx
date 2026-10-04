@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
 
 const FOOTER_COLUMNS = [
   {
@@ -20,7 +19,6 @@ const FOOTER_COLUMNS = [
       { label: "State Leads", href: "/state-leads" },
       { label: "Collaborations", href: "/collaborations" },
       { label: "Join Team", href: "/join-team" },
-      { label: "Verify Certificate", href: "/verify" },
     ],
   },
   {
@@ -46,7 +44,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-surface-800 bg-surface-950 mt-24 border-t">
+    <footer className="border-border bg-background mt-24 border-t">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Top grid */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -54,21 +52,16 @@ export function Footer() {
           <div className="space-y-4">
             <Link
               href="/"
-              className="flex items-center gap-2 text-xl font-bold tracking-tight"
+              className="text-foreground text-base font-semibold tracking-tight transition-opacity hover:opacity-80"
               aria-label="KailshiansX home"
             >
-              <span className="bg-brand-500 flex h-8 w-8 items-center justify-center rounded-lg text-white">
-                <Zap size={16} strokeWidth={2.5} />
-              </span>
-              <span className="text-surface-50">
-                Kailshians<span className="text-brand-400">X</span>
-              </span>
+              KailshiansX
             </Link>
-            <p className="text-surface-400 max-w-[220px] text-sm leading-relaxed">
+            <p className="text-muted-foreground max-w-[240px] text-sm leading-relaxed">
               Developer events &amp; community platform by Kailshians Web Services.
             </p>
             {/* Socials */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {SOCIALS.map(({ label, href }) => (
                 <a
                   key={href}
@@ -76,7 +69,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-surface-400 hover:text-brand-400 text-xs font-medium transition-colors"
+                  className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors"
                 >
                   {label.split(" ")[0]}
                 </a>
@@ -84,10 +77,10 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
+          {/* 3 Link columns */}
           {FOOTER_COLUMNS.map((col) => (
             <div key={col.heading}>
-              <h3 className="text-surface-400 mb-4 text-xs font-semibold tracking-widest uppercase">
+              <h3 className="text-foreground mb-4 text-xs font-semibold tracking-wider uppercase">
                 {col.heading}
               </h3>
               <ul className="space-y-2.5">
@@ -95,7 +88,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-surface-300 hover:text-surface-50 text-sm transition-colors"
+                      className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -107,14 +100,20 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-surface-800 text-surface-500 mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs sm:flex-row">
+        <div className="border-border text-muted-foreground mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs sm:flex-row">
           <p>&copy; {year} Kailshians Web Services. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <Link href="/privacy" className="hover:text-surface-300 transition-colors">
+          <div className="flex flex-wrap items-center gap-4">
+            <Link href="/privacy" className="hover:text-foreground transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-surface-300 transition-colors">
+            <Link href="/terms" className="hover:text-foreground transition-colors">
               Terms of Service
+            </Link>
+            <Link href="/refunds" className="hover:text-foreground transition-colors">
+              Refund &amp; Cancellation
+            </Link>
+            <Link href="/contact" className="hover:text-foreground transition-colors">
+              Contact
             </Link>
           </div>
         </div>

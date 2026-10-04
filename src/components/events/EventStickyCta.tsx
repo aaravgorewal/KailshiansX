@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/useToast";
 import { cn } from "@/lib/utils";
 import { trackRegisterClick } from "@/lib/analytics";
+import { formatDate } from "@/lib/format-date";
 
 export interface EventStickyCtaProps {
   slug: string;
@@ -82,7 +83,7 @@ export function EventStickyCta({
       toast({
         title: "Link copied to clipboard!",
         description: "Share it with your developer friends and team.",
-        variant: "success",
+        variant: "default",
       });
       setTimeout(() => setCopied(false), 2500);
     }
@@ -101,70 +102,64 @@ export function EventStickyCta({
     }
   };
 
+  const priceDisplay = isFree || lowestPrice === 0 ? "Free" : `₹${lowestPrice}`;
+
   return (
     <>
       {/* ─── DESKTOP SIDEBAR CARD ────────────────────────────────────────── */}
       <div
         className={cn(
-          "border-surface-700/80 bg-surface-900/90 sticky top-24 space-y-6 rounded-2xl border p-6 shadow-2xl backdrop-blur-md sm:p-7",
+          "border-border bg-card sticky top-20 space-y-6 rounded-lg border p-6",
           className
         )}
       >
         {/* Pricing & Status */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-surface-400 font-mono text-xs tracking-wider uppercase">
+            <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
               Pass Price
             </div>
             <div className="mt-1 flex items-baseline gap-2">
-              {isFree ? (
-                <span className="text-3xl font-extrabold text-emerald-400">Free</span>
-              ) : (
-                <span className="text-surface-50 text-3xl font-extrabold">
-                  ₹{lowestPrice}
-                  {highestPrice && highestPrice > lowestPrice && (
-                    <span className="text-surface-400 text-lg font-normal"> - ₹{highestPrice}</span>
-                  )}
-                </span>
+              <span className="text-foreground text-2xl font-bold">
+                {priceDisplay}
+                {!isFree && highestPrice && highestPrice > lowestPrice && (
+                  <span className="text-muted-foreground text-base font-normal">
+                    {" "}
+                    – ₹{highestPrice}
+                  </span>
+                )}
+              </span>
+              {isFree && (
+                <span className="text-muted-foreground font-mono text-xs">RSVP required</span>
               )}
-              {isFree && <span className="text-surface-400 font-mono text-xs">RSVP Required</span>}
             </div>
           </div>
 
-          <Badge variant={isRegistrationClosed ? "destructive" : "brand"} size="sm" dot>
-            {isRegistrationClosed
-              ? isPast
-                ? "Event Ended"
-                : "Registration Closed"
-              : "Registrations Open"}
+          <Badge variant={isRegistrationClosed ? "destructive" : "neutral"} size="sm">
+            {isRegistrationClosed ? (isPast ? "Event Ended" : "Closed") : "Open"}
           </Badge>
         </div>
 
         {/* Capacity & Registrations Meter */}
-        <div className="border-surface-800 bg-surface-950/60 space-y-2 rounded-xl border p-3.5 text-xs">
-          <div className="text-surface-300 flex items-center justify-between">
+        <div className="border-border bg-muted/40 space-y-2 rounded-md border p-3 text-xs">
+          <div className="text-muted-foreground flex items-center justify-between">
             <span className="flex items-center gap-1.5">
-              <Users className="text-brand-400 size-3.5" />
-              <span>Confirmed Registrations</span>
+              <Users className="text-foreground size-3.5" aria-hidden="true" />
+              <span>Registrations</span>
             </span>
-            <span className="text-surface-100 font-mono font-semibold">
-              {attendeeCount}
+            <span className="text-foreground font-mono font-semibold">
+              {attendeeCount > 0 ? attendeeCount : 0}
               {maxCapacity ? ` / ${maxCapacity}` : "+"}
             </span>
           </div>
 
           {registrationDeadline && !isPast && (
-            <div className="text-surface-400 border-surface-800/60 flex items-center justify-between border-t pt-2 text-[11px]">
+            <div className="border-border text-muted-foreground flex items-center justify-between border-t pt-2 text-xs">
               <span className="flex items-center gap-1">
-                <Clock className="size-3 text-amber-400" />
+                <Clock className="text-muted-foreground size-3" aria-hidden="true" />
                 <span>Deadline:</span>
               </span>
-              <span className="text-surface-300 font-mono">
-                {new Date(registrationDeadline).toLocaleDateString("en-IN", {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
+              <span className="text-foreground font-mono">{formatDate(registrationDeadline)}</span>
             </div>
           )}
         </div>
@@ -172,59 +167,54 @@ export function EventStickyCta({
         {/* Primary Register CTA Button */}
         <div>
           {isRegistrationClosed ? (
-            <Button disabled variant="outline" size="lg" className="w-full">
+            <Button disabled variant="secondary" size="lg" className="w-full">
               Registration Closed
             </Button>
           ) : (
-            <Button
-              asChild
-              variant="default"
-              size="lg"
-              className="shadow-brand-500/25 w-full shadow-lg"
-              rightIcon={<ArrowRight className="size-4" />}
-            >
+            <Button asChild variant="primary" size="lg" className="w-full justify-center gap-2">
               <a href="#tickets" onClick={handleScrollToTickets}>
-                Select Pass &amp; Register
+                <span>Select Pass &amp; Register</span>
+                <ArrowRight className="size-4" aria-hidden="true" />
               </a>
             </Button>
           )}
         </div>
 
         {/* Action Buttons: Calendar & Share */}
-        <div className="grid grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-2 gap-3">
           {/* Add to Calendar Button with dropdown */}
           <div className="relative">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={() => setCalendarOpen(!calendarOpen)}
               className="w-full gap-1.5 text-xs"
             >
-              <Calendar className="text-brand-400 size-3.5" />
+              <Calendar className="text-foreground size-3.5" aria-hidden="true" />
               <span>Calendar</span>
             </Button>
 
             {calendarOpen && (
-              <div className="border-surface-700 bg-surface-900 absolute bottom-full left-0 z-30 mb-2 w-48 space-y-1 rounded-xl border p-2 shadow-xl">
+              <div className="border-border bg-card absolute bottom-full left-0 z-30 mb-2 w-48 space-y-1 rounded-md border p-1 text-xs">
                 <a
                   href={googleCalendarUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-surface-200 hover:bg-surface-800 flex items-center justify-between rounded-lg px-3 py-2 text-xs transition-colors hover:text-white"
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground flex items-center justify-between rounded px-2.5 py-1.5 transition-colors"
                   onClick={() => setCalendarOpen(false)}
                 >
                   <span>Google Calendar</span>
-                  <ExternalLink className="text-surface-400 size-3" />
+                  <ExternalLink className="size-3" aria-hidden="true" />
                 </a>
                 <a
                   href={icsDownloadUrl}
                   download
-                  className="text-surface-200 hover:bg-surface-800 flex items-center justify-between rounded-lg px-3 py-2 text-xs transition-colors hover:text-white"
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground flex items-center justify-between rounded px-2.5 py-1.5 transition-colors"
                   onClick={() => setCalendarOpen(false)}
                 >
-                  <span>Apple / Outlook (.ics)</span>
-                  <Download className="text-surface-400 size-3" />
+                  <span>Apple / Outlook</span>
+                  <Download className="size-3" aria-hidden="true" />
                 </a>
               </div>
             )}
@@ -233,19 +223,19 @@ export function EventStickyCta({
           {/* Share Button */}
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={handleShare}
             className="w-full gap-1.5 text-xs"
           >
             {copied ? (
               <>
-                <Check className="size-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied!</span>
+                <Check className="text-foreground size-3.5" aria-hidden="true" />
+                <span>Copied!</span>
               </>
             ) : (
               <>
-                <Share2 className="text-accent-400 size-3.5" />
+                <Share2 className="text-foreground size-3.5" aria-hidden="true" />
                 <span>Share</span>
               </>
             )}
@@ -253,52 +243,50 @@ export function EventStickyCta({
         </div>
 
         {/* Perks Micro-list */}
-        <div className="border-surface-800/80 text-surface-400 space-y-2 border-t pt-4 text-xs">
+        <div className="border-border text-muted-foreground space-y-2 border-t pt-4 text-xs">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="text-brand-400 size-3.5 shrink-0" />
+            <CheckCircle2 className="text-foreground size-3.5 shrink-0" aria-hidden="true" />
             <span>Verifiable digital completion certificate</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="text-accent-400 size-3.5 shrink-0" />
+            <CheckCircle2 className="text-foreground size-3.5 shrink-0" aria-hidden="true" />
             <span>Direct access to mentor &amp; speaker discussions</span>
           </div>
         </div>
       </div>
 
       {/* ─── MOBILE STICKY BOTTOM BAR ────────────────────────────────────── */}
-      <div className="bg-surface-950/95 border-surface-800/90 fixed inset-x-0 bottom-0 z-40 border-t p-3.5 shadow-2xl backdrop-blur-md md:hidden">
+      <div className="border-border bg-background/95 fixed inset-x-0 bottom-0 z-40 border-t p-3 backdrop-blur-sm lg:hidden">
         <div className="container-page flex items-center justify-between gap-4">
           <div>
-            <div className="text-surface-400 font-mono text-[11px]">Pass Price</div>
-            <div className="text-surface-50 text-lg font-bold">
-              {isFree ? <span className="text-emerald-400">Free</span> : `₹${lowestPrice}`}
-            </div>
+            <div className="text-muted-foreground font-mono text-xs">Pass Price</div>
+            <div className="text-foreground text-base font-bold">{priceDisplay}</div>
           </div>
 
           <div className="flex items-center gap-2">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={handleShare}
               aria-label="Share event"
-              className="size-10 p-0"
+              className="size-9 p-0"
             >
               {copied ? (
-                <Check className="size-4 text-emerald-400" />
+                <Check className="text-foreground size-4" aria-hidden="true" />
               ) : (
-                <Share2 className="text-surface-300 size-4" />
+                <Share2 className="text-foreground size-4" aria-hidden="true" />
               )}
             </Button>
 
             {isRegistrationClosed ? (
-              <Button disabled variant="outline" size="sm">
+              <Button disabled variant="secondary" size="sm">
                 Closed
               </Button>
             ) : (
-              <Button asChild variant="default" size="sm" className="shadow-brand-500/30 shadow-md">
+              <Button asChild variant="primary" size="sm">
                 <a href="#tickets" onClick={handleScrollToTickets}>
-                  Register Now
+                  Register now
                 </a>
               </Button>
             )}

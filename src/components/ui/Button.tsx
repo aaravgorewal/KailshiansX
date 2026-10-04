@@ -5,24 +5,13 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-[background-color,border-color,transform,box-shadow] duration-200 select-none outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-950 focus-visible:transition-none disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-[background-color,border-color] duration-150 select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default:
-          "bg-brand-600 text-white hover:bg-brand-500 shadow-sm shadow-brand-950 hover:shadow-brand-500/20 hover:shadow-md",
-        // Alias — identical to `default`; kept for backward compat with existing callers
-        primary:
-          "bg-brand-600 text-white hover:bg-brand-500 shadow-sm shadow-brand-950 hover:shadow-brand-500/20 hover:shadow-md",
-        secondary:
-          "bg-surface-800 text-surface-100 hover:bg-surface-700 border border-surface-700 hover:border-surface-600",
-        accent: "bg-accent-600 text-white hover:bg-accent-500 shadow-sm shadow-accent-950",
-        outline:
-          "border border-surface-700 bg-surface-900/50 text-surface-200 hover:bg-surface-800 hover:text-white hover:border-surface-600",
-        ghost: "text-surface-300 hover:bg-surface-800/80 hover:text-white",
-        destructive:
-          "bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25 hover:border-red-500/50 focus-visible:ring-red-500",
-        link: "text-brand-400 hover:text-brand-300 underline-offset-4 hover:underline p-0 h-auto active:scale-100",
+        primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
+        secondary: "border border-border bg-background text-foreground hover:bg-muted",
+        ghost: "text-foreground hover:bg-muted",
       },
       size: {
         xs: "h-7 px-2.5 text-xs rounded-md [&_svg]:size-3.5",
@@ -36,25 +25,37 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "primary",
       size: "default",
     },
   }
 );
 
+export type AllowedButtonVariant = "primary" | "secondary" | "ghost";
+export type LegacyButtonVariant = "default" | "outline" | "accent" | "destructive" | "link";
+
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  extends
+    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color">,
+    Omit<VariantProps<typeof buttonVariants>, "variant"> {
+  variant?: AllowedButtonVariant | LegacyButtonVariant;
   asChild?: boolean;
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
 
+function resolveVariant(v?: AllowedButtonVariant | LegacyButtonVariant): AllowedButtonVariant {
+  if (v === "secondary" || v === "outline") return "secondary";
+  if (v === "ghost" || v === "link") return "ghost";
+  return "primary";
+}
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
-      variant,
+      variant = "primary",
       size,
       asChild = false,
       isLoading = false,
@@ -66,11 +67,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    const effectiveVariant = resolveVariant(variant);
+
     if (asChild) {
       return (
         <Slot.Root
           ref={ref}
-          className={cn(buttonVariants({ variant, size, className }))}
+          className={cn(buttonVariants({ variant: effectiveVariant, size, className }))}
           aria-disabled={disabled || isLoading ? true : undefined}
           {...props}
         >
@@ -85,7 +88,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type={props.type || "button"}
         disabled={disabled || isLoading}
         aria-busy={isLoading ? "true" : undefined}
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant: effectiveVariant, size, className }))}
         {...props}
       >
         {isLoading ? (
@@ -99,7 +102,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-
 Button.displayName = "Button";
 
 export { Button, buttonVariants };

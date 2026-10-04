@@ -26,7 +26,6 @@ export function StatCounter({
   duration = 2,
   decimals = 0,
   icon,
-  variant = "default",
   className,
 }: StatCounterProps) {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -60,41 +59,34 @@ export function StatCounter({
     return `${prefix}${formatted}${suffix}`;
   }, [currentVal, decimals, prefix, suffix]);
 
-  const colorVariants = {
-    default: "text-surface-50",
-    brand: "text-brand-400 drop-shadow-[0_0_12px_rgba(61,97,252,0.35)]",
-    accent: "gradient-text drop-shadow-[0_0_12px_rgba(139,61,255,0.35)]",
-  }[variant];
-
   return (
     <div
       ref={ref}
       className={cn(
-        "border-surface-800 bg-surface-900/60 hover:border-surface-700 flex flex-col items-center rounded-2xl border p-6 text-center backdrop-blur-sm transition-all duration-300 hover:shadow-lg",
+        "border-border bg-card hover:border-muted-foreground flex flex-col items-center rounded-lg border p-6 text-center transition-colors duration-150",
         className
       )}
       aria-label={`${prefix}${value}${suffix} ${label}`}
     >
       {icon && (
-        <div className="bg-surface-800/90 border-surface-700/80 text-brand-400 mb-3 flex size-12 items-center justify-center rounded-xl border shadow-inner">
+        <div className="bg-muted border-border text-foreground mb-3 flex size-12 items-center justify-center rounded-lg border">
           {icon}
         </div>
       )}
 
       <div
-        className={cn(
-          "font-mono text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl",
-          colorVariants
-        )}
+        className="text-foreground font-mono text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl"
         aria-hidden="true"
       >
         {formattedNumber}
       </div>
 
-      <div className="text-surface-200 mt-2 text-sm font-semibold sm:text-base">{label}</div>
+      <div className="text-foreground mt-2 text-sm font-semibold sm:text-base">{label}</div>
 
       {description && (
-        <p className="text-surface-400 mt-1 max-w-[220px] text-xs leading-normal">{description}</p>
+        <p className="text-muted-foreground mt-1 max-w-[220px] text-xs leading-normal">
+          {description}
+        </p>
       )}
     </div>
   );

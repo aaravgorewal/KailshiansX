@@ -243,7 +243,7 @@ export function CertificateDesignerCanvas({
                   <div className="text-brand-400 text-[10px] font-bold tracking-widest uppercase">
                     KailshiansX · Developer Platform &amp; Builder Ecosystem
                   </div>
-                  <div className="mt-1 font-serif text-xl font-black tracking-wide text-white sm:text-2xl">
+                  <div className="mt-1 text-xl font-black tracking-wide text-white sm:text-2xl">
                     CERTIFICATE OF EXCELLENCE
                   </div>
                   <div className="text-surface-400 mt-1 text-[11px] font-medium tracking-wider uppercase">
@@ -292,7 +292,7 @@ export function CertificateDesignerCanvas({
                   color: fields.recipientName.color || "#ffffff",
                   fontSize: `clamp(14px, ${(fields.recipientName.fontSize || 32) * 0.45}px, 32px)`,
                   fontWeight: 800,
-                  fontFamily: "Inter, sans-serif",
+                  fontFamily: "var(--font-sans), sans-serif",
                 }}
               >
                 <span>{sampleRecipientName}</span>

@@ -14,7 +14,7 @@ export interface FormCheckboxProps extends Omit<
 }
 
 export const FormCheckbox = React.forwardRef<HTMLInputElement, FormCheckboxProps>(
-  ({ className, label, description, error = false, checked, id, ...props }, ref) => {
+  ({ className, label, description, error = false, checked, disabled, id, ...props }, ref) => {
     const generatedId = React.useId();
     const checkboxId = id || generatedId;
 
@@ -26,6 +26,7 @@ export const FormCheckbox = React.forwardRef<HTMLInputElement, FormCheckboxProps
             id={checkboxId}
             type="checkbox"
             checked={checked}
+            disabled={disabled}
             aria-invalid={error}
             className="peer sr-only"
             {...props}
@@ -33,11 +34,10 @@ export const FormCheckbox = React.forwardRef<HTMLInputElement, FormCheckboxProps
           <label
             htmlFor={checkboxId}
             className={cn(
-              "flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-md border transition-all select-none",
-              error
-                ? "bg-surface-900 border-rose-500"
-                : "border-surface-700 bg-surface-900 hover:border-surface-600 peer-focus-visible:ring-brand-500 peer-focus-visible:ring-offset-surface-950 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2",
-              checked && "border-brand-500 bg-brand-600 shadow-brand-500/30 text-white shadow-sm",
+              "border-input bg-background peer-focus-visible:ring-ring peer-focus-visible:ring-offset-background flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-md border transition-colors select-none peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2",
+              error ? "border-destructive text-destructive" : "hover:border-muted-foreground",
+              checked && "border-primary bg-primary text-primary-foreground",
+              disabled && "bg-muted cursor-not-allowed opacity-60",
               className
             )}
           >
@@ -50,13 +50,16 @@ export const FormCheckbox = React.forwardRef<HTMLInputElement, FormCheckboxProps
             {label && (
               <label
                 htmlFor={checkboxId}
-                className="text-surface-200 cursor-pointer text-sm leading-tight font-medium select-none"
+                className={cn(
+                  "text-foreground cursor-pointer text-sm leading-tight font-medium select-none",
+                  disabled && "cursor-not-allowed opacity-60"
+                )}
               >
                 {label}
               </label>
             )}
             {description && (
-              <p className="text-surface-400 text-xs leading-normal">{description}</p>
+              <p className="text-muted-foreground text-xs leading-normal">{description}</p>
             )}
           </div>
         )}

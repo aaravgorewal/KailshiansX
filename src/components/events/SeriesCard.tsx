@@ -1,6 +1,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ArrowRight, Layers, MapPin, Trophy } from "lucide-react";
+import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +29,6 @@ export function SeriesCard({
   citiesCount,
   cities = [],
   attendeesCount,
-  coverUrl,
   href = `/series/${name.toLowerCase()}`,
   badgeText,
   className,
@@ -36,32 +36,12 @@ export function SeriesCard({
   const isHackathon = kind === "HACKATHON";
 
   return (
-    <div
-      className={cn(
-        "group border-surface-800 bg-surface-900/80 hover:border-accent-500/50 relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 backdrop-blur-sm transition-[border-color,transform] duration-200 hover:-translate-y-1 sm:p-7",
-        className
-      )}
-    >
-      {coverUrl && (
-        <div
-          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-10 mix-blend-luminosity transition-opacity duration-300 group-hover:opacity-20"
-          style={{ backgroundImage: `url(${coverUrl})` }}
-          aria-hidden="true"
-        />
-      )}
-      {/* Background glow orb */}
-      <div
-        className={cn(
-          "pointer-events-none absolute -top-16 -right-16 size-48 rounded-full opacity-20 blur-3xl transition-opacity duration-300 group-hover:opacity-30",
-          isHackathon ? "bg-accent-500" : "bg-brand-500"
-        )}
-      />
-
+    <Card className={cn("group relative flex flex-col justify-between p-6 sm:p-7", className)}>
       <div>
         {/* Top badges */}
         <div className="mb-4 flex items-center justify-between gap-2">
           <Badge
-            variant={isHackathon ? "accent" : "brand"}
+            variant="neutral"
             size="sm"
             icon={isHackathon ? <Trophy className="size-3" /> : <Layers className="size-3" />}
           >
@@ -69,23 +49,23 @@ export function SeriesCard({
           </Badge>
 
           {badgeText && (
-            <span className="text-surface-400 bg-surface-800/80 border-surface-700/60 rounded-full border px-2 py-0.5 font-mono text-[11px]">
+            <span className="border-border bg-muted text-muted-foreground rounded-full border px-2 py-0.5 font-mono text-xs">
               {badgeText}
             </span>
           )}
         </div>
 
         {/* Series Name & Tagline */}
-        <h3 className="text-surface-50 group-hover:text-accent-300 text-2xl font-extrabold tracking-tight transition-colors sm:text-3xl">
+        <h3 className="text-foreground hover:text-accent-text text-xl font-bold tracking-tight transition-colors sm:text-2xl">
           <Link href={href} className="focus-visible:underline focus-visible:outline-none">
             {name}
           </Link>
         </h3>
 
-        <p className="text-brand-300/90 mt-1 font-mono text-sm font-medium">{tagline}</p>
+        <p className="text-muted-foreground mt-1 font-mono text-xs font-medium">{tagline}</p>
 
         {description && (
-          <p className="text-surface-300 mt-3 line-clamp-3 text-xs leading-relaxed sm:text-sm">
+          <p className="text-muted-foreground mt-3 line-clamp-3 text-xs leading-relaxed sm:text-sm">
             {description}
           </p>
         )}
@@ -96,9 +76,9 @@ export function SeriesCard({
             {cities.map((city) => (
               <span
                 key={city}
-                className="bg-surface-800/70 border-surface-700/50 text-surface-300 inline-flex items-center gap-1 rounded border px-2 py-0.5 text-[11px]"
+                className="border-border bg-muted text-muted-foreground inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs"
               >
-                <MapPin className="text-surface-500 size-2.5" aria-hidden="true" />
+                <MapPin className="text-muted-foreground size-2.5" aria-hidden="true" />
                 {city}
               </span>
             ))}
@@ -107,20 +87,20 @@ export function SeriesCard({
       </div>
 
       {/* Footer statistics and link */}
-      <div className="border-surface-800/80 mt-6 flex items-center justify-between border-t pt-4">
-        <div className="text-surface-400 flex items-center gap-4 font-mono text-xs">
+      <div className="border-border mt-6 flex items-center justify-between border-t pt-4">
+        <div className="text-muted-foreground flex items-center gap-4 font-mono text-xs">
           <div>
-            <span className="text-surface-100 font-bold">{editionsCount}</span>{" "}
+            <span className="text-foreground font-bold">{editionsCount}</span>{" "}
             {editionsCount === 1 ? "Edition" : "Editions"}
           </div>
-          {citiesCount && (
+          {Boolean(citiesCount && citiesCount > 0) && (
             <div>
-              <span className="text-surface-100 font-bold">{citiesCount}</span> Cities
+              <span className="text-foreground font-bold">{citiesCount}</span> Cities
             </div>
           )}
-          {attendeesCount && (
+          {Boolean(attendeesCount && attendeesCount > 0) && (
             <div className="hidden sm:block">
-              <span className="text-surface-100 font-bold">{attendeesCount}+</span> Builders
+              <span className="text-foreground font-bold">{attendeesCount}+</span> Builders
             </div>
           )}
         </div>
@@ -128,11 +108,11 @@ export function SeriesCard({
         <Link
           href={href}
           aria-label={`Explore ${name} series`}
-          className="bg-surface-800/80 text-surface-200 border-surface-700 hover:bg-brand-600 hover:border-brand-500 focus-visible:ring-brand-500 inline-flex size-9 items-center justify-center rounded-xl border transition-[background-color,border-color] duration-200 hover:text-white focus-visible:ring-2"
+          className="border-border bg-background text-foreground hover:bg-muted focus-visible:ring-ring inline-flex size-8 items-center justify-center rounded-md border transition-colors focus-visible:ring-2 focus-visible:outline-none"
         >
           <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       </div>
-    </div>
+    </Card>
   );
 }
