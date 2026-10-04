@@ -40,11 +40,11 @@ export async function getCollaborationOverview(): Promise<CollaborationOverviewD
 
     return {
       stats: {
-        totalColleges: Math.max(collegesCount, 15),
-        totalPartners: Math.max(partnersCount, 40),
-        totalVenues: Math.max(venuesCount, 12),
-        totalSponsors: Math.max(sponsorsCount, 25),
-        activeCities: Math.max(citiesCount, 8),
+        totalColleges: collegesCount,
+        totalPartners: partnersCount,
+        totalVenues: venuesCount,
+        totalSponsors: sponsorsCount,
+        activeCities: citiesCount,
       },
       featuredPartners: partners,
     };
@@ -52,11 +52,11 @@ export async function getCollaborationOverview(): Promise<CollaborationOverviewD
     console.error("Failed to load collaboration overview:", error);
     return {
       stats: {
-        totalColleges: 15,
-        totalPartners: 40,
-        totalVenues: 12,
-        totalSponsors: 25,
-        activeCities: 8,
+        totalColleges: 0,
+        totalPartners: 0,
+        totalVenues: 0,
+        totalSponsors: 0,
+        activeCities: 0,
       },
       featuredPartners: [],
     };

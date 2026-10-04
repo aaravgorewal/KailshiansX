@@ -135,12 +135,12 @@ export async function getCommunityOverview(): Promise<CommunityOverviewData> {
 
   return {
     stats: {
-      totalBuilders: Math.max(totalRegistrations + totalUsers, 1250),
-      totalCities: Math.max(citiesCount, 8),
-      totalCampusLeads: Math.max(campusLeadsCount, 4),
-      totalStateLeads: Math.max(stateLeadsCount, 2),
-      totalColleges: Math.max(collegesCount, 12),
-      totalEventsHosted: Math.max(eventsCount, 15),
+      totalBuilders: totalRegistrations + totalUsers,
+      totalCities: citiesCount,
+      totalCampusLeads: campusLeadsCount,
+      totalStateLeads: stateLeadsCount,
+      totalColleges: collegesCount,
+      totalEventsHosted: eventsCount,
     },
     stateLeads,
     campusLeads,
