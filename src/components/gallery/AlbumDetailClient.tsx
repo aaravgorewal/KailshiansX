@@ -1,5 +1,5 @@
 // src/components/gallery/AlbumDetailClient.tsx
-// Interactive album photo grid with lightbox, sharing, admin ZIP download, and S3 upload
+// Interactive album photo grid with lightbox, sharing, admin ZIP download, and upload modal
 
 "use client";
 
@@ -16,13 +16,16 @@ import {
   Images,
   Maximize2,
   Check,
+  ImageIcon,
 } from "lucide-react";
 import { Lightbox, LightboxImage } from "./Lightbox";
 import { UploadPhotosModal } from "./UploadPhotosModal";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/useToast";
+import { formatDate } from "@/lib/format-date";
 import { GALLERY_CATEGORIES } from "@/lib/gallery";
+import { cn } from "@/lib/utils";
 
 interface SerializedImage {
   id: string;
@@ -55,6 +58,62 @@ interface AlbumDetailClientProps {
   isAdmin: boolean;
 }
 
+function PhotoCard({
+  img,
+  idx,
+  albumTitle,
+  onClick,
+}: {
+  img: SerializedImage;
+  idx: number;
+  albumTitle: string;
+  onClick: () => void;
+}) {
+  const [hasError, setHasError] = React.useState(false);
+  const isPriority = idx < 4;
+
+  return (
+    <figure
+      onClick={onClick}
+      className="group border-border bg-muted hover:border-primary/50 relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-lg border transition-colors duration-150"
+    >
+      {hasError ? (
+        <div className="bg-muted text-muted-foreground flex size-full items-center justify-center">
+          <ImageIcon className="size-8" />
+        </div>
+      ) : (
+        <Image
+          src={img.url}
+          alt={img.altText || img.caption || `${albumTitle} photo ${idx + 1}`}
+          fill
+          priority={isPriority}
+          loading={isPriority ? "eager" : "lazy"}
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover"
+          onError={() => setHasError(true)}
+        />
+      )}
+
+      {/* Subtle Hover Overlay */}
+      <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+
+      <div className="absolute inset-x-3 bottom-3 flex items-end justify-between opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+        <span className="line-clamp-1 max-w-[80%] text-xs font-medium text-white">
+          {img.caption || `Photo ${idx + 1}`}
+        </span>
+        <div className="rounded bg-black/60 p-1.5 text-white backdrop-blur-sm">
+          <Maximize2 className="size-3.5" />
+        </div>
+      </div>
+
+      {/* Index Pill in Top Right */}
+      <span className="absolute top-2 right-2 rounded bg-black/60 px-1.5 py-0.5 font-mono text-xs text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+        #{idx + 1}
+      </span>
+    </figure>
+  );
+}
+
 export function AlbumDetailClient({ album, isAdmin }: AlbumDetailClientProps) {
   const [lightboxIndex, setLightboxIndex] = React.useState<number | null>(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
@@ -64,17 +123,9 @@ export function AlbumDetailClient({ album, isAdmin }: AlbumDetailClientProps) {
 
   const catConfig = GALLERY_CATEGORIES.find((c) => c.key === album.category.toLowerCase()) || {
     label: album.category,
-    badgeVariant: "brand" as const,
   };
 
-  const eventDate = album.event?.startDate
-    ? new Date(album.event.startDate).toLocaleDateString("en-IN", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : null;
+  const eventDate = album.event?.startDate ? formatDate(album.event.startDate) : null;
 
   // Share Album handler
   const handleShare = async () => {
@@ -167,47 +218,47 @@ export function AlbumDetailClient({ album, isAdmin }: AlbumDetailClientProps) {
   return (
     <div className="space-y-8">
       {/* ─── HEADER / ACTION CONTROLS ─────────────────────────────────────── */}
-      <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-6 backdrop-blur-md sm:p-8">
+      <div className="border-border bg-card rounded-lg border p-6 sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl space-y-4">
             {/* Badges & Category */}
             <div className="flex flex-wrap items-center gap-2.5">
-              <Badge variant={catConfig.badgeVariant} size="default">
+              <Badge variant="outline" size="default">
                 {catConfig.label}
               </Badge>
 
-              <span className="border-surface-700/80 bg-surface-950/60 text-surface-300 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs">
-                <Images className="text-brand-400 size-3.5" />
+              <span className="border-border bg-muted text-muted-foreground inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs">
+                <Images className="size-3.5" />
                 <span>{album.images.length} photos</span>
               </span>
 
               {album.event && (
                 <Link
                   href={`/events/${album.event.slug}`}
-                  className="border-brand-500/30 bg-brand-500/10 text-brand-300 hover:bg-brand-500/20 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors"
+                  className="border-border bg-muted text-foreground hover:border-primary/50 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors"
                 >
                   <span>Event: {album.event.title}</span>
-                  <ExternalLink className="size-3" />
+                  <ExternalLink className="text-muted-foreground size-3" />
                 </Link>
               )}
             </div>
 
             {/* Album Title */}
-            <h1 className="text-surface-50 text-2xl leading-[1.15] font-black tracking-tight sm:text-4xl md:text-5xl">
+            <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
               {album.title}
             </h1>
 
             {/* Event Metadata details */}
-            <div className="text-surface-400 flex flex-wrap items-center gap-4 font-mono text-xs">
+            <div className="text-muted-foreground flex flex-wrap items-center gap-4 font-mono text-xs">
               {eventDate && (
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="text-brand-400 size-3.5" />
+                  <Calendar className="size-3.5" />
                   <span>{eventDate}</span>
                 </div>
               )}
               {album.event?.venue && (
                 <div className="flex items-center gap-1.5">
-                  <MapPin className="text-surface-500 size-3.5" />
+                  <MapPin className="size-3.5" />
                   <span>
                     {album.event.venue}
                     {album.event.city?.name ? `, ${album.event.city.name}` : ""}
@@ -222,12 +273,12 @@ export function AlbumDetailClient({ album, isAdmin }: AlbumDetailClientProps) {
             {/* Share Button */}
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={handleShare}
               leftIcon={
                 copiedLink ? (
-                  <Check className="size-4 text-emerald-400" />
+                  <Check className="text-success size-4" />
                 ) : (
                   <Share2 className="size-4" />
                 )
@@ -255,7 +306,7 @@ export function AlbumDetailClient({ album, isAdmin }: AlbumDetailClientProps) {
             {isAdmin && (
               <Button
                 type="button"
-                variant="default"
+                variant="primary"
                 size="sm"
                 onClick={() => setIsUploadModalOpen(true)}
                 leftIcon={<UploadCloud className="size-4" />}
@@ -269,20 +320,22 @@ export function AlbumDetailClient({ album, isAdmin }: AlbumDetailClientProps) {
 
       {/* ─── PHOTOS MASONRY / GRID ────────────────────────────────────────── */}
       {album.images.length === 0 ? (
-        <div className="border-surface-800 bg-surface-900/40 rounded-2xl border border-dashed p-16 text-center">
-          <div className="border-surface-800 bg-surface-900 text-surface-400 mx-auto flex size-12 items-center justify-center rounded-2xl border">
+        <div className="border-border bg-card/40 rounded-lg border border-dashed p-16 text-center">
+          <div className="border-border bg-muted text-muted-foreground mx-auto flex size-12 items-center justify-center rounded-lg border">
             <Images className="size-6" />
           </div>
-          <h3 className="text-surface-100 mt-4 text-base font-bold">No Photos In This Album Yet</h3>
-          <p className="text-surface-400 mt-1 text-xs">
+          <h3 className="text-foreground mt-4 text-base font-semibold">
+            No Photos In This Album Yet
+          </h3>
+          <p className="text-muted-foreground mt-1 text-xs">
             {isAdmin
               ? "As an administrator, click 'Upload Photos' above to add images via S3 presigned upload."
-              : "Check back soon as our photography team uploads high-resolution event captures."}
+              : "Check back soon as our photography team uploads event captures."}
           </p>
           {isAdmin && (
             <div className="mt-6">
               <Button
-                variant="default"
+                variant="primary"
                 size="sm"
                 onClick={() => setIsUploadModalOpen(true)}
                 leftIcon={<UploadCloud className="size-4" />}
@@ -294,43 +347,15 @@ export function AlbumDetailClient({ album, isAdmin }: AlbumDetailClientProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {album.images.map((img, idx) => {
-            const isPriority = idx < 4;
-            return (
-              <figure
-                key={img.id}
-                onClick={() => setLightboxIndex(idx)}
-                className="group border-surface-800 bg-surface-950 hover:border-brand-500/50 relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-xl border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                <Image
-                  src={img.url}
-                  alt={img.altText || img.caption || `${album.title} photo ${idx + 1}`}
-                  fill
-                  priority={isPriority}
-                  loading={isPriority ? "eager" : "lazy"}
-                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                />
-
-                {/* Subtle Hover Gradient & Overlay */}
-                <div className="from-surface-950/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-
-                <div className="absolute inset-x-3 bottom-3 flex items-end justify-between opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                  <span className="line-clamp-1 max-w-[80%] text-xs font-medium text-white drop-shadow">
-                    {img.caption || `Photo ${idx + 1}`}
-                  </span>
-                  <div className="bg-surface-900/80 text-surface-200 rounded-lg p-1.5 backdrop-blur-md">
-                    <Maximize2 className="size-3.5" />
-                  </div>
-                </div>
-
-                {/* Index Pill in Top Right */}
-                <span className="bg-surface-950/70 text-surface-300 absolute top-2 right-2 rounded-md px-1.5 py-0.5 font-mono text-[10px] opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100">
-                  #{idx + 1}
-                </span>
-              </figure>
-            );
-          })}
+          {album.images.map((img, idx) => (
+            <PhotoCard
+              key={img.id}
+              img={img}
+              idx={idx}
+              albumTitle={album.title}
+              onClick={() => setLightboxIndex(idx)}
+            />
+          ))}
         </div>
       )}
 

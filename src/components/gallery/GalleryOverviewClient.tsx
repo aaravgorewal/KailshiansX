@@ -11,6 +11,7 @@ import { AlbumCard } from "./AlbumCard";
 import { GALLERY_CATEGORIES } from "@/lib/gallery";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { formatDate } from "@/lib/format-date";
 import { cn } from "@/lib/utils";
 
 interface SerializedAlbum {
@@ -140,10 +141,10 @@ export function GalleryOverviewClient({
   }, [filteredAlbums]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* ─── CONTROLS BAR: CATEGORY PILLS + SEARCH + EVENT DROPDOWN ──────── */}
-      <div className="space-y-5">
-        {/* Category Pills Bar */}
+      <div className="space-y-4">
+        {/* Category Neutral Chips Bar */}
         <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-1">
           {GALLERY_CATEGORIES.map((cat) => {
             const isSelected =
@@ -159,19 +160,19 @@ export function GalleryOverviewClient({
                 type="button"
                 onClick={() => updateUrlFilters(cat.key)}
                 className={cn(
-                  "inline-flex shrink-0 items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all duration-200",
+                  "inline-flex shrink-0 items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
                   isSelected
-                    ? "border-brand-500/80 bg-brand-500/15 text-brand-300 font-semibold"
-                    : "border-surface-800 bg-surface-900/60 text-surface-400 hover:border-surface-700 hover:text-surface-200"
+                    ? "border-primary bg-primary text-primary-foreground font-semibold"
+                    : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
                 <span>{cat.label}</span>
                 <span
                   className={cn(
-                    "py-0.2 rounded-full px-1.5 font-mono text-[10px]",
+                    "rounded-full px-1.5 py-0.5 font-mono text-xs",
                     isSelected
-                      ? "bg-brand-500/30 text-brand-200"
-                      : "bg-surface-800 text-surface-400"
+                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      : "bg-muted text-muted-foreground"
                   )}
                 >
                   {count}
@@ -186,7 +187,7 @@ export function GalleryOverviewClient({
           <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
             {/* Search Input */}
             <div className="relative max-w-md flex-1">
-              <Search className="text-surface-500 pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
+              <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search by album title, event, or city..."
@@ -195,7 +196,7 @@ export function GalleryOverviewClient({
                   setSearchQuery(e.target.value);
                   updateUrlFilters(undefined, undefined, e.target.value);
                 }}
-                className="border-surface-800 bg-surface-900/80 text-surface-100 placeholder:text-surface-500 focus:border-brand-500/50 focus:bg-surface-900 w-full rounded-xl border py-2.5 pr-4 pl-10 text-xs focus:outline-none"
+                className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring w-full rounded-md border py-2 pr-4 pl-9 text-xs focus:ring-1 focus:outline-none"
               />
             </div>
 
@@ -205,7 +206,7 @@ export function GalleryOverviewClient({
                 <select
                   value={currentEventId}
                   onChange={(e) => updateUrlFilters(undefined, e.target.value)}
-                  className="border-surface-800 bg-surface-900/80 text-surface-200 focus:border-brand-500/50 w-full cursor-pointer appearance-none rounded-xl border py-2.5 pr-10 pl-4 text-xs focus:outline-none"
+                  className="border-input bg-background text-foreground focus:border-primary focus:ring-ring w-full cursor-pointer appearance-none rounded-md border py-2 pr-10 pl-3 text-xs focus:ring-1 focus:outline-none"
                 >
                   <option value="ALL">All Associated Events</option>
                   {eventsWithAlbums.map((ev) => (
@@ -214,21 +215,21 @@ export function GalleryOverviewClient({
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="text-surface-400 pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2" />
+                <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2" />
               </div>
             )}
           </div>
 
           {/* View Toggle */}
-          <div className="border-surface-800 bg-surface-900/60 flex items-center gap-1.5 rounded-xl border p-1">
+          <div className="border-border bg-card flex items-center gap-1 rounded-md border p-1">
             <button
               type="button"
               onClick={() => setViewGrouping("grid")}
               className={cn(
-                "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
+                "flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors",
                 viewGrouping === "grid"
-                  ? "bg-surface-800 text-surface-50 shadow-sm"
-                  : "text-surface-400 hover:text-surface-200"
+                  ? "bg-muted text-foreground font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               <Images className="size-3.5" />
@@ -238,10 +239,10 @@ export function GalleryOverviewClient({
               type="button"
               onClick={() => setViewGrouping("byEvent")}
               className={cn(
-                "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
+                "flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors",
                 viewGrouping === "byEvent"
-                  ? "bg-surface-800 text-surface-50 shadow-sm"
-                  : "text-surface-400 hover:text-surface-200"
+                  ? "bg-muted text-foreground font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               <Layers className="size-3.5" />
@@ -253,17 +254,17 @@ export function GalleryOverviewClient({
 
       {/* ─── ALBUMS CONTENT DISPLAY ───────────────────────────────────────── */}
       {filteredAlbums.length === 0 ? (
-        <div className="border-surface-800 bg-surface-900/40 rounded-2xl border border-dashed p-12 text-center">
-          <div className="border-surface-800 bg-surface-900 text-surface-400 mx-auto flex size-12 items-center justify-center rounded-2xl border">
+        <div className="border-border bg-card/40 rounded-lg border border-dashed p-12 text-center">
+          <div className="border-border bg-muted text-muted-foreground mx-auto flex size-12 items-center justify-center rounded-lg border">
             <Images className="size-6" />
           </div>
-          <h3 className="text-surface-100 mt-4 text-base font-bold">No Albums Found</h3>
-          <p className="text-surface-400 mt-1 text-xs">
+          <h3 className="text-foreground mt-4 text-base font-semibold">No Albums Found</h3>
+          <p className="text-muted-foreground mt-1 text-xs">
             Try adjusting your category filter, event filter, or search query.
           </p>
           <div className="mt-6">
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={() => {
                 setSearchQuery("");
@@ -275,7 +276,7 @@ export function GalleryOverviewClient({
           </div>
         </div>
       ) : viewGrouping === "grid" ? (
-        /* Standard Albums Grid */
+        /* Standard Albums Grid (Flat Cards) */
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredAlbums.map((album, idx) => (
             <AlbumCard
@@ -293,27 +294,21 @@ export function GalleryOverviewClient({
         </div>
       ) : (
         /* Grouped By Event View */
-        <div className="space-y-12">
+        <div className="space-y-10">
           {groupedByEvent.eventGroups.map((group) => {
             const ev = group.event!;
             return (
-              <section key={ev.id} className="space-y-5">
-                <div className="border-surface-800 flex flex-wrap items-center justify-between gap-3 border-b pb-3">
+              <section key={ev.id} className="space-y-4">
+                <div className="border-border flex flex-wrap items-center justify-between gap-3 border-b pb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="brand" size="sm">
+                      <Badge variant="outline" size="sm">
                         {ev.type.replace("_", " ")}
                       </Badge>
-                      <h3 className="text-surface-50 text-lg font-bold">{ev.title}</h3>
+                      <h3 className="text-foreground text-base font-semibold">{ev.title}</h3>
                     </div>
-                    <div className="text-surface-400 mt-1 flex items-center gap-3 font-mono text-xs">
-                      <span>
-                        {new Date(ev.startDate).toLocaleDateString("en-IN", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </span>
+                    <div className="text-muted-foreground mt-1 flex items-center gap-3 font-mono text-xs">
+                      <span>{formatDate(ev.startDate)}</span>
                       {ev.city?.name && (
                         <>
                           <span>•</span>
@@ -325,7 +320,7 @@ export function GalleryOverviewClient({
 
                   <Link
                     href={`/events/${ev.slug}`}
-                    className="text-brand-400 hover:text-brand-300 inline-flex items-center gap-1 text-xs font-semibold"
+                    className="text-primary inline-flex items-center gap-1 text-xs font-medium hover:underline"
                   >
                     <span>View Event Details</span>
                     <ArrowRight className="size-3" />
@@ -351,18 +346,18 @@ export function GalleryOverviewClient({
           })}
 
           {groupedByEvent.communityAlbums.length > 0 && (
-            <section className="space-y-5">
-              <div className="border-surface-800 border-b pb-3">
+            <section className="space-y-4">
+              <div className="border-border border-b pb-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant="accent" size="sm">
-                    COMMUNITY & BTS
+                  <Badge variant="outline" size="sm">
+                    COMMUNITY
                   </Badge>
-                  <h3 className="text-surface-50 text-lg font-bold">
-                    Community Chapters & Behind The Scenes
+                  <h3 className="text-foreground text-base font-semibold">
+                    Community Chapters &amp; Behind The Scenes
                   </h3>
                 </div>
-                <p className="text-surface-400 mt-1 text-xs">
-                  Candid moments, campus chapter orientations, and team setup rituals.
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Candid moments, campus chapter orientations, and team rituals.
                 </p>
               </div>
 

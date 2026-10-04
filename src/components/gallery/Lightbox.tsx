@@ -1,5 +1,5 @@
 // src/components/gallery/Lightbox.tsx
-// High-performance, accessible image lightbox with keyboard navigation & filmstrip
+// High-performance, accessible image lightbox with keyboard navigation, focus trap, swipe, and filmstrip
 
 "use client";
 
@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Maximize2,
   Minimize2,
+  ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -36,37 +37,75 @@ export interface LightboxProps {
 
 export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: LightboxProps) {
   const [isFullscreen, setIsFullscreen] = React.useState(false);
-  const [isLoaded, setIsLoaded] = React.useState(false);
+  // Track loadedIndex so loaded state resets synchronously when currentIndex changes — no setState in useEffect
+  const [loadedIndex, setLoadedIndex] = React.useState<number | null>(null);
+  const [hasError, setHasError] = React.useState(false);
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
   const filmstripRef = React.useRef<HTMLDivElement>(null);
+  const touchStartXRef = React.useRef<number | null>(null);
 
   const activeImage = images[currentIndex];
   const hasMultiple = images.length > 1;
+  const isLoaded = loadedIndex === currentIndex;
 
-  // Handle keyboard events
+  // Handle keyboard events (Arrow keys + Escape + Focus Trap)
   React.useEffect(() => {
     if (!isOpen) return;
 
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        e.preventDefault();
         onClose();
       } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
         if (hasMultiple) {
+          setHasError(false);
           onNavigate((currentIndex - 1 + images.length) % images.length);
         }
       } else if (e.key === "ArrowRight") {
+        e.preventDefault();
         if (hasMultiple) {
+          setHasError(false);
           onNavigate((currentIndex + 1) % images.length);
+        }
+      } else if (e.key === "Tab") {
+        // Focus trap inside lightbox container
+        if (!containerRef.current) return;
+        const focusableElements = containerRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href]:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    // Lock body scroll
+    const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
+      document.body.style.overflow = originalOverflow;
+      previouslyFocused?.focus();
     };
   }, [isOpen, currentIndex, images.length, hasMultiple, onClose, onNavigate]);
 
@@ -83,7 +122,28 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
     }
   }, [currentIndex, isOpen]);
 
-  // isLoaded resets via key={currentIndex} on the <img> below — no effect needed
+  // Touch Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartXRef.current;
+    touchStartXRef.current = null;
+
+    if (Math.abs(deltaX) > 50 && hasMultiple) {
+      setHasError(false);
+      if (deltaX < 0) {
+        // Swiped left -> next
+        onNavigate((currentIndex + 1) % images.length);
+      } else {
+        // Swiped right -> prev
+        onNavigate((currentIndex - 1 + images.length) % images.length);
+      }
+    }
+  };
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -119,64 +179,68 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
 
   return (
     <div
+      ref={containerRef}
       role="dialog"
       aria-modal="true"
       aria-label="Image Lightbox"
-      className="bg-surface-950/95 animate-in fade-in fixed inset-0 z-50 flex flex-col justify-between backdrop-blur-xl duration-200"
+      className="animate-in fade-in fixed inset-0 z-50 flex flex-col justify-between bg-black/95 text-white duration-150"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* ─── TOP BAR ──────────────────────────────────────────────────────── */}
-      <header className="border-surface-800/80 bg-surface-950/60 relative z-20 flex items-center justify-between border-b px-4 py-3 sm:px-6">
+      <header className="relative z-20 flex items-center justify-between border-b border-white/10 bg-black/40 px-4 py-2 sm:px-6">
         <div className="flex items-center gap-3">
-          <span className="text-surface-300 font-mono text-xs font-semibold tracking-wider">
-            {currentIndex + 1} <span className="text-surface-600">/</span> {images.length}
+          <span className="font-mono text-xs font-semibold tracking-wider text-white/80">
+            {currentIndex + 1} <span className="text-white/40">/</span> {images.length}
           </span>
           {activeImage.caption && (
-            <span className="text-surface-400 hidden max-w-md truncate text-xs sm:inline-block">
+            <span className="hidden max-w-md truncate text-xs text-white/70 sm:inline-block">
               {activeImage.caption}
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* Direct Download */}
+        <div className="flex items-center gap-1">
+          {/* Direct Download — 44px hit area */}
           <button
             type="button"
             onClick={downloadCurrentImage}
-            className="text-surface-400 hover:bg-surface-800 hover:text-surface-100 rounded-lg p-2 transition-colors"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             title="Download full image"
             aria-label="Download image"
           >
             <Download className="size-4" />
           </button>
 
-          {/* Fullscreen Toggle */}
+          {/* Fullscreen Toggle — 44px hit area */}
           <button
             type="button"
             onClick={toggleFullscreen}
-            className="text-surface-400 hover:bg-surface-800 hover:text-surface-100 hidden rounded-lg p-2 transition-colors sm:block"
+            className="hidden min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:flex"
             title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
             aria-label="Toggle fullscreen"
           >
             {isFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
           </button>
 
-          {/* Open Original */}
+          {/* Open Original — 44px hit area */}
           <a
             href={activeImage.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-surface-400 hover:bg-surface-800 hover:text-surface-100 rounded-lg p-2 transition-colors"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             title="Open original in new tab"
             aria-label="Open original"
           >
             <ExternalLink className="size-4" />
           </a>
 
-          {/* Close */}
+          {/* Close — 44px hit area */}
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="text-surface-300 hover:bg-surface-800 rounded-lg p-2 transition-colors hover:text-white"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             title="Close (Esc)"
             aria-label="Close lightbox"
           >
@@ -187,12 +251,15 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
 
       {/* ─── MAIN VIEWPORT ────────────────────────────────────────────────── */}
       <main className="relative flex flex-1 items-center justify-center p-4 sm:p-8">
-        {/* Navigation Prev */}
+        {/* Navigation Prev — 44px hit area */}
         {hasMultiple && (
           <button
             type="button"
-            onClick={() => onNavigate((currentIndex - 1 + images.length) % images.length)}
-            className="border-surface-700/80 bg-surface-900/80 text-surface-200 hover:border-brand-500/50 hover:bg-surface-800 absolute left-3 z-20 flex size-12 items-center justify-center rounded-full border backdrop-blur-md transition-all hover:scale-105 hover:text-white sm:left-6"
+            onClick={() => {
+              setHasError(false);
+              onNavigate((currentIndex - 1 + images.length) % images.length);
+            }}
+            className="absolute left-3 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-white/20 sm:left-6"
             aria-label="Previous photo"
           >
             <ChevronLeft className="size-6" />
@@ -200,38 +267,49 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
         )}
 
         {/* The Image Container */}
-        <div className="relative flex size-full max-h-[80vh] max-w-6xl items-center justify-center overflow-hidden">
-          {!isLoaded && (
+        <div className="relative flex size-full max-h-[75vh] max-w-6xl items-center justify-center overflow-hidden">
+          {!isLoaded && !hasError && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="border-brand-500 size-8 animate-spin rounded-full border-2 border-t-transparent" />
+              <div className="size-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
             </div>
           )}
 
-          <div className="relative size-full">
-            <Image
-              key={currentIndex}
-              src={activeImage.url}
-              alt={
-                activeImage.altText || activeImage.caption || `Gallery photo ${currentIndex + 1}`
-              }
-              fill
-              priority
-              sizes="(max-width: 1280px) 100vw, 1280px"
-              className={cn(
-                "object-contain transition-opacity duration-300",
-                isLoaded ? "opacity-100" : "opacity-0"
-              )}
-              onLoad={() => setIsLoaded(true)}
-            />
-          </div>
+          {hasError ? (
+            <div className="flex flex-col items-center justify-center gap-2 text-white/60">
+              <ImageIcon className="size-12" />
+              <p className="text-xs">Photo could not be loaded</p>
+            </div>
+          ) : (
+            <div className="relative size-full">
+              <Image
+                key={currentIndex}
+                src={activeImage.url}
+                alt={
+                  activeImage.altText || activeImage.caption || `Gallery photo ${currentIndex + 1}`
+                }
+                fill
+                priority
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                className={cn(
+                  "object-contain transition-opacity duration-200",
+                  isLoaded ? "opacity-100" : "opacity-0"
+                )}
+                onLoad={() => setLoadedIndex(currentIndex)}
+                onError={() => setHasError(true)}
+              />
+            </div>
+          )}
         </div>
 
-        {/* Navigation Next */}
+        {/* Navigation Next — 44px hit area */}
         {hasMultiple && (
           <button
             type="button"
-            onClick={() => onNavigate((currentIndex + 1) % images.length)}
-            className="border-surface-700/80 bg-surface-900/80 text-surface-200 hover:border-brand-500/50 hover:bg-surface-800 absolute right-3 z-20 flex size-12 items-center justify-center rounded-full border backdrop-blur-md transition-all hover:scale-105 hover:text-white sm:right-6"
+            onClick={() => {
+              setHasError(false);
+              onNavigate((currentIndex + 1) % images.length);
+            }}
+            className="absolute right-3 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-white/20 sm:right-6"
             aria-label="Next photo"
           >
             <ChevronRight className="size-6" />
@@ -240,15 +318,15 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
       </main>
 
       {/* ─── BOTTOM BAR & FILMSTRIP ────────────────────────────────────────── */}
-      <footer className="border-surface-800/80 bg-surface-950/80 relative z-20 border-t px-4 py-3 backdrop-blur-md sm:px-6">
+      <footer className="relative z-20 border-t border-white/10 bg-black/40 px-4 py-3 sm:px-6">
         {/* Caption */}
         {activeImage.caption && (
-          <div className="text-surface-200 mb-2 text-center text-xs font-medium sm:text-sm">
+          <div className="mb-2 text-center text-xs font-medium text-white/90 sm:text-sm">
             {activeImage.caption}
           </div>
         )}
 
-        {/* Thumbnails filmstrip */}
+        {/* Thumbnails filmstrip — 44px+ hit area each */}
         {hasMultiple && (
           <div
             ref={filmstripRef}
@@ -260,12 +338,15 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
                 <button
                   key={img.id || idx}
                   type="button"
-                  onClick={() => onNavigate(idx)}
+                  onClick={() => {
+                    setHasError(false);
+                    onNavigate(idx);
+                  }}
                   className={cn(
-                    "relative size-12 shrink-0 overflow-hidden rounded-lg border transition-all duration-200 sm:size-14",
+                    "relative size-12 shrink-0 overflow-hidden rounded-md border transition-all sm:size-14",
                     isActive
-                      ? "border-brand-500 ring-brand-500/50 scale-105 ring-2"
-                      : "border-surface-800 hover:border-surface-600 opacity-50 hover:opacity-100"
+                      ? "border-primary ring-primary opacity-100 ring-2"
+                      : "border-white/20 opacity-50 hover:border-white/50 hover:opacity-100"
                   )}
                   aria-label={`View photo ${idx + 1}`}
                 >

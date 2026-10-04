@@ -6,9 +6,16 @@
 import * as React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { UploadCloud, X, CheckCircle2, AlertCircle, Loader2, Trash2 } from "lucide-react";
+import { UploadCloud, CheckCircle2, AlertCircle, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/useToast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/Dialog";
 
 interface UploadPhotosModalProps {
   albumId: string;
@@ -26,6 +33,11 @@ interface QueuedFile {
   error?: string;
 }
 
+interface PresignedResponse {
+  uploadUrl: string;
+  fileUrl: string;
+}
+
 export function UploadPhotosModal({
   albumId,
   albumTitle,
@@ -39,10 +51,6 @@ export function UploadPhotosModal({
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const router = useRouter();
-
-  // State is reset automatically when isOpen becomes false because the component returns null (unmounts)
-
-  if (!isOpen) return null;
 
   const handleFilesAdded = (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -129,10 +137,10 @@ export function UploadPhotosModal({
           throw new Error("Failed to get presigned upload URL from server");
         }
 
-        const { uploadUrl, fileUrl } = await presignedRes.json();
+        const data: PresignedResponse = await presignedRes.json();
 
         // Step 2: Directly upload binary blob to S3 via presigned PUT
-        const uploadRes = await fetch(uploadUrl, {
+        const uploadRes = await fetch(data.uploadUrl, {
           method: "PUT",
           headers: {
             "Content-Type": item.file.type || "image/jpeg",
@@ -145,7 +153,7 @@ export function UploadPhotosModal({
         }
 
         uploadedPayload.push({
-          url: fileUrl,
+          url: data.fileUrl,
           caption: item.caption,
           altText: item.caption,
         });
@@ -202,37 +210,41 @@ export function UploadPhotosModal({
     setIsUploading(false);
   };
 
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="upload-modal-title"
-      className="bg-surface-950/80 animate-in fade-in fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm duration-200"
-    >
-      <div className="border-surface-800 bg-surface-900 relative w-full max-w-2xl overflow-hidden rounded-2xl border shadow-2xl">
-        {/* Header */}
-        <div className="border-surface-800/80 flex items-center justify-between border-b p-5 sm:p-6">
-          <div>
-            <h2 id="upload-modal-title" className="text-surface-50 text-lg font-bold">
-              Upload Photos to Album
-            </h2>
-            <p className="text-surface-400 mt-0.5 text-xs">
-              Target: <span className="text-brand-300 font-medium">{albumTitle}</span>
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isUploading}
-            className="text-surface-400 hover:bg-surface-800 rounded-lg p-2 hover:text-white disabled:opacity-50"
-            aria-label="Close"
-          >
-            <X className="size-5" />
-          </button>
-        </div>
+  const uploadPercent =
+    uploadProgress.total > 0
+      ? Math.round((uploadProgress.completed / uploadProgress.total) * 100)
+      : 0;
 
-        {/* Content */}
-        <div className="max-h-[60vh] space-y-4 overflow-y-auto p-5 sm:p-6">
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && !isUploading && onClose()}>
+      <DialogContent className="flex max-h-[85vh] max-w-2xl flex-col overflow-hidden p-6">
+        <DialogHeader>
+          <DialogTitle>Upload Photos to Album</DialogTitle>
+          <DialogDescription>
+            Target album: <span className="text-foreground font-medium">{albumTitle}</span>
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* Progress Bar (bg-primary) */}
+        {isUploading && (
+          <div className="space-y-1.5 py-1">
+            <div className="text-muted-foreground flex items-center justify-between text-xs">
+              <span>Uploading photos...</span>
+              <span>
+                {uploadProgress.completed} of {uploadProgress.total} ({uploadPercent}%)
+              </span>
+            </div>
+            <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
+              <div
+                className="bg-primary h-full transition-all duration-300"
+                style={{ width: `${uploadPercent}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Content Body */}
+        <div className="max-h-[50vh] space-y-4 overflow-y-auto pr-1">
           {/* Dropzone */}
           <div
             onClick={() => fileInputRef.current?.click()}
@@ -241,7 +253,7 @@ export function UploadPhotosModal({
               e.preventDefault();
               handleFilesAdded(e.dataTransfer.files);
             }}
-            className="group border-surface-700/80 bg-surface-950/50 hover:border-brand-500/50 hover:bg-surface-950/80 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 text-center transition-all"
+            className="group border-border bg-muted/40 hover:border-primary/50 hover:bg-muted/70 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors"
           >
             <input
               ref={fileInputRef}
@@ -251,36 +263,31 @@ export function UploadPhotosModal({
               className="hidden"
               onChange={(e) => handleFilesAdded(e.target.files)}
             />
-            <div className="border-brand-500/20 bg-brand-500/10 text-brand-400 flex size-12 items-center justify-center rounded-xl border transition-transform group-hover:scale-110">
+            <div className="border-border bg-card text-muted-foreground group-hover:text-primary flex size-12 items-center justify-center rounded-lg border transition-colors">
               <UploadCloud className="size-6" />
             </div>
-            <p className="text-surface-200 mt-3 text-sm font-semibold">
+            <p className="text-foreground mt-3 text-xs font-semibold">
               Click to select or drag and drop photos
             </p>
-            <p className="text-surface-400 mt-1 text-xs">
-              PNG, JPG, WebP supported • Direct S3 presigned upload
+            <p className="text-muted-foreground mt-1 text-xs">
+              PNG, JPG, WebP supported • Direct presigned upload
             </p>
           </div>
 
           {/* Queue List */}
           {queuedFiles.length > 0 && (
             <div className="space-y-2.5">
-              <div className="text-surface-300 flex items-center justify-between text-xs font-semibold">
+              <div className="text-foreground flex items-center justify-between text-xs font-medium">
                 <span>Selected Photos ({queuedFiles.length})</span>
-                {isUploading && (
-                  <span className="text-brand-300">
-                    Uploaded {uploadProgress.completed} of {uploadProgress.total}
-                  </span>
-                )}
               </div>
 
               <div className="space-y-2">
                 {queuedFiles.map((item, idx) => (
                   <div
                     key={idx}
-                    className="border-surface-800 bg-surface-950/60 flex items-center gap-3 rounded-xl border p-2.5 text-xs"
+                    className="border-border bg-card flex items-center gap-3 rounded-lg border p-2.5 text-xs"
                   >
-                    <div className="border-surface-800 bg-surface-900 relative size-12 shrink-0 overflow-hidden rounded-lg border">
+                    <div className="border-border bg-muted relative size-12 shrink-0 overflow-hidden rounded border">
                       <Image src={item.previewUrl} alt="Preview" fill className="object-cover" />
                     </div>
 
@@ -291,9 +298,9 @@ export function UploadPhotosModal({
                         onChange={(e) => updateCaption(idx, e.target.value)}
                         placeholder="Add caption / label"
                         disabled={isUploading}
-                        className="border-surface-800 bg-surface-900 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-md border px-2.5 py-1 text-xs focus:outline-none"
+                        className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded border px-2.5 py-1 text-xs focus:outline-none"
                       />
-                      <div className="text-surface-400 flex items-center gap-2 font-mono text-[10px]">
+                      <div className="text-muted-foreground flex items-center gap-2 font-mono text-xs">
                         <span>{(item.file.size / (1024 * 1024)).toFixed(2)} MB</span>
                         <span>•</span>
                         <span className="max-w-[200px] truncate">{item.file.name}</span>
@@ -302,22 +309,26 @@ export function UploadPhotosModal({
 
                     <div className="flex shrink-0 items-center gap-1.5">
                       {item.status === "uploading" && (
-                        <Loader2 className="text-brand-400 size-4 animate-spin" />
+                        <Loader2 className="text-primary size-4 animate-spin" />
                       )}
                       {item.status === "success" && (
-                        <CheckCircle2 className="size-4 text-emerald-400" />
+                        <CheckCircle2 className="text-success size-4" />
                       )}
                       {item.status === "error" && (
-                        <span title={item.error}>
-                          <AlertCircle className="size-4 text-rose-400" />
+                        <span
+                          title={item.error}
+                          className="text-destructive flex items-center gap-1"
+                        >
+                          <AlertCircle className="size-4" />
+                          <span className="text-xs">Failed</span>
                         </span>
                       )}
                       {item.status === "pending" && !isUploading && (
                         <button
                           type="button"
                           onClick={() => removeQueuedFile(idx)}
-                          className="text-surface-500 rounded p-1 hover:text-rose-400"
-                          aria-label="Remove"
+                          className="text-muted-foreground hover:text-destructive rounded p-1"
+                          aria-label="Remove photo"
                         >
                           <Trash2 className="size-4" />
                         </button>
@@ -331,14 +342,14 @@ export function UploadPhotosModal({
         </div>
 
         {/* Footer */}
-        <div className="border-surface-800/80 bg-surface-950/40 flex items-center justify-between border-t p-4 sm:p-5">
+        <div className="border-border flex items-center justify-between border-t pt-4">
           <Button type="button" variant="ghost" size="sm" onClick={onClose} disabled={isUploading}>
             Cancel
           </Button>
 
           <Button
             type="button"
-            variant="default"
+            variant="primary"
             size="sm"
             disabled={queuedFiles.length === 0 || isUploading}
             onClick={handleUploadAll}
@@ -350,7 +361,7 @@ export function UploadPhotosModal({
               : `Upload ${queuedFiles.length} Photos`}
           </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

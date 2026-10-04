@@ -1,11 +1,12 @@
 // src/components/gallery/AlbumCard.tsx
-// Hallmark-aligned album preview card with Next.js image optimization
+// Album preview card with Next.js image optimization and error fallback
 
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, MapPin, Images, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Images, ArrowRight, ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { formatDate } from "@/lib/format-date";
 import { GALLERY_CATEGORIES } from "@/lib/gallery";
 import { cn } from "@/lib/utils";
 
@@ -38,9 +39,10 @@ export function AlbumCard({
   priority = false,
   className,
 }: AlbumCardProps) {
+  const [hasError, setHasError] = React.useState(false);
+
   const catConfig = GALLERY_CATEGORIES.find((c) => c.key === category.toLowerCase()) || {
     label: category,
-    badgeVariant: "brand" as const,
   };
 
   const displayCover =
@@ -48,79 +50,69 @@ export function AlbumCard({
     previewImages[0]?.url ||
     "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80";
 
-  const eventDate = event?.startDate
-    ? new Date(event.startDate).toLocaleDateString("en-IN", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : null;
+  const eventDate = event?.startDate ? formatDate(event.startDate) : null;
 
   return (
     <article
       className={cn(
-        "group border-surface-800 bg-surface-900/60 hover:border-brand-500/40 hover:bg-surface-900/80 relative flex flex-col justify-between overflow-hidden rounded-2xl border backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5",
+        "group border-border bg-card hover:border-primary/50 relative flex flex-col justify-between overflow-hidden rounded-lg border transition-colors duration-150",
         className
       )}
     >
-      {/* ─── Media Container ──────────────────────────────────────────────── */}
-      <div className="bg-surface-950 relative aspect-[16/10] w-full overflow-hidden">
-        <Image
-          src={displayCover}
-          alt={title}
-          fill
-          priority={priority}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover"
-        />
-
-        <div className="from-surface-950/90 via-surface-950/20 absolute inset-0 bg-gradient-to-t to-transparent opacity-80" />
+      {/* ─── Media Container (3:2 aspect ratio) ─────────────────────────── */}
+      <div className="bg-muted relative aspect-[3/2] w-full overflow-hidden">
+        {hasError || !displayCover ? (
+          <div className="bg-muted text-muted-foreground flex size-full items-center justify-center">
+            <ImageIcon className="size-8" />
+          </div>
+        ) : (
+          <Image
+            src={displayCover}
+            alt={title}
+            fill
+            priority={priority}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover"
+            onError={() => setHasError(true)}
+          />
+        )}
 
         {/* Top Badges */}
         <div className="pointer-events-none absolute inset-x-3 top-3 flex items-center justify-between">
-          <Badge variant={catConfig.badgeVariant} size="sm">
+          <Badge variant="outline" size="sm" className="bg-card/90 backdrop-blur-sm">
             {catConfig.label}
           </Badge>
 
-          <span className="border-surface-700/60 bg-surface-900/80 text-surface-200 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-medium backdrop-blur-md">
-            <Images className="text-brand-400 size-3" />
+          <span className="border-border bg-card/90 text-foreground inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-xs font-medium backdrop-blur-sm">
+            <Images className="text-muted-foreground size-3" />
             <span>
               {photoCount} {photoCount === 1 ? "photo" : "photos"}
             </span>
           </span>
         </div>
-
-        {/* Event Association Badge (if any) */}
-        {event && (
-          <div className="absolute right-3 bottom-3 left-3">
-            <span className="text-surface-300 inline-block max-w-full truncate text-[11px] font-medium backdrop-blur-sm">
-              Linked to <strong className="font-semibold text-white">{event.title}</strong>
-            </span>
-          </div>
-        )}
       </div>
 
       {/* ─── Body Details ─────────────────────────────────────────────────── */}
       <div className="flex flex-1 flex-col justify-between p-5">
         <div>
-          {/* Metadata Row */}
-          <div className="text-surface-400 mb-2 flex flex-wrap items-center gap-3 font-mono text-xs">
+          {/* Metadata Row: Date & City */}
+          <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-3 font-mono text-xs">
             {eventDate && (
               <div className="flex items-center gap-1.5">
-                <Calendar className="text-brand-400 size-3" />
+                <Calendar className="size-3" />
                 <span>{eventDate}</span>
               </div>
             )}
             {event?.city?.name && (
               <div className="flex items-center gap-1">
-                <MapPin className="text-surface-500 size-3" />
+                <MapPin className="size-3" />
                 <span>{event.city.name}</span>
               </div>
             )}
           </div>
 
           {/* Title */}
-          <h3 className="text-surface-50 group-hover:text-brand-300 line-clamp-2 text-base leading-snug font-bold transition-colors sm:text-lg">
+          <h3 className="text-foreground group-hover:text-primary line-clamp-2 text-base font-semibold transition-colors">
             <Link
               href={`/gallery/${id}`}
               className="after:absolute after:inset-0 focus-visible:underline focus-visible:outline-none"
@@ -131,11 +123,9 @@ export function AlbumCard({
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-surface-800/80 mt-4 flex items-center justify-between border-t pt-3 text-xs">
-          <span className="text-surface-400 group-hover:text-surface-200 font-medium">
-            View Album
-          </span>
-          <div className="text-brand-400 flex items-center gap-1 font-semibold transition-transform group-hover:translate-x-0.5">
+        <div className="border-border mt-4 flex items-center justify-between border-t pt-3 text-xs">
+          <span className="text-muted-foreground group-hover:text-foreground">View Album</span>
+          <div className="text-primary flex items-center gap-1 font-medium">
             <span>Explore</span>
             <ArrowRight className="size-3.5" />
           </div>

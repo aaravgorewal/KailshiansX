@@ -1,5 +1,5 @@
 // src/components/team/CoreTeamClient.tsx
-// Interactive core team directory grouped by category with rich profile cards (PRD §15)
+// Interactive core team directory grouped by category with profile cards
 
 "use client";
 
@@ -33,6 +33,36 @@ interface CoreTeamClientProps {
   members: SerializedCoreTeamMember[];
 }
 
+function MemberAvatar({ name, photo }: { name: string; photo?: string | null }) {
+  const [hasError, setHasError] = React.useState(false);
+
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  if (!photo || hasError) {
+    return (
+      <div className="bg-muted text-muted-foreground flex size-full items-center justify-center font-mono text-sm font-semibold">
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={photo}
+      alt={name}
+      fill
+      sizes="56px"
+      className="object-cover"
+      onError={() => setHasError(true)}
+    />
+  );
+}
+
 export function CoreTeamClient({ members }: CoreTeamClientProps) {
   const [selectedCategory, setSelectedCategory] = React.useState<string>("ALL");
 
@@ -42,17 +72,17 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
   }, [members, selectedCategory]);
 
   return (
-    <div className="space-y-12">
-      {/* ─── CATEGORY FILTER TABS ─────────────────────────────────────────── */}
+    <div className="space-y-8">
+      {/* ─── CATEGORY FILTER TABS (NEUTRAL) ───────────────────────────────── */}
       <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-2">
         <button
           type="button"
           onClick={() => setSelectedCategory("ALL")}
           className={cn(
-            "shrink-0 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all duration-200",
+            "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
             selectedCategory === "ALL"
-              ? "border-brand-500/80 bg-brand-500/15 text-brand-300 font-semibold"
-              : "border-surface-800 bg-surface-900/60 text-surface-400 hover:border-surface-700 hover:text-surface-200"
+              ? "border-primary bg-primary text-primary-foreground font-semibold"
+              : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
           )}
         >
           All Members ({members.length})
@@ -69,20 +99,20 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
               type="button"
               onClick={() => setSelectedCategory(cat.key)}
               className={cn(
-                "shrink-0 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all duration-200",
+                "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
                 isSelected
-                  ? "border-brand-500/80 bg-brand-500/15 text-brand-300 font-semibold"
-                  : "border-surface-800 bg-surface-900/60 text-surface-400 hover:border-surface-700 hover:text-surface-200"
+                  ? "border-primary bg-primary text-primary-foreground font-semibold"
+                  : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               <span>{cat.label}</span>
               {count > 0 && (
                 <span
                   className={cn(
-                    "py-0.2 ml-1.5 rounded-full px-1.5 font-mono text-[10px]",
+                    "ml-1.5 rounded-full px-1.5 py-0.5 font-mono text-xs",
                     isSelected
-                      ? "bg-brand-500/30 text-brand-200"
-                      : "bg-surface-800 text-surface-400"
+                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      : "bg-muted text-muted-foreground"
                   )}
                 >
                   {count}
@@ -95,8 +125,8 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
 
       {/* ─── PROFILE CARDS GRID ───────────────────────────────────────────── */}
       {filteredMembers.length === 0 ? (
-        <div className="border-surface-800 bg-surface-900/40 rounded-2xl border border-dashed p-12 text-center">
-          <p className="text-surface-400 text-sm">
+        <div className="border-border bg-card/40 rounded-lg border border-dashed p-12 text-center">
+          <p className="text-muted-foreground text-sm">
             No team members listed in this category yet. Check back soon!
           </p>
         </div>
@@ -110,76 +140,55 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
             return (
               <article
                 key={member.id}
-                className="group border-surface-800 bg-surface-900/60 hover:border-brand-500/40 hover:bg-surface-900/80 relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5"
+                className="group border-border bg-card hover:border-primary/50 relative flex flex-col justify-between rounded-lg border p-5 transition-colors duration-150"
               >
                 <div className="space-y-4">
                   {/* Top: Avatar + Category Badge */}
                   <div className="flex items-start justify-between gap-4">
-                    <div className="border-surface-700/80 bg-surface-800 relative size-16 shrink-0 overflow-hidden rounded-2xl border">
-                      {member.photo ? (
-                        <Image
-                          src={member.photo}
-                          alt={member.name}
-                          fill
-                          sizes="64px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="text-surface-400 flex size-full items-center justify-center text-lg font-bold">
-                          {member.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </div>
-                      )}
+                    <div className="border-border bg-muted relative size-14 shrink-0 overflow-hidden rounded-md border">
+                      <MemberAvatar name={member.name} photo={member.photo} />
                     </div>
 
-                    <Badge variant="brand" size="sm">
+                    <Badge variant="outline" size="sm">
                       {categoryInfo?.label.split("&")[0].trim() || member.category}
                     </Badge>
                   </div>
 
                   {/* Name & Role */}
                   <div>
-                    <h3 className="text-surface-50 group-hover:text-brand-300 text-lg font-bold transition-colors">
-                      {member.name}
-                    </h3>
-                    <p className="text-brand-400 mt-0.5 font-mono text-xs font-semibold">
-                      {member.role}
-                    </p>
+                    <h3 className="text-foreground text-base font-semibold">{member.name}</h3>
+                    <p className="text-muted-foreground mt-0.5 text-xs">{member.role}</p>
                   </div>
 
                   {/* Bio */}
                   {member.bio && (
-                    <p className="text-surface-300 line-clamp-4 text-xs leading-relaxed">
+                    <p className="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
                       {member.bio}
                     </p>
                   )}
 
-                  {/* Area of Ownership Badge / Box (PRD §15) */}
-                  <div className="border-surface-800 bg-surface-950/60 space-y-1 rounded-xl border p-3 text-[11px]">
-                    <span className="text-surface-400 block font-mono text-[10px] font-semibold tracking-wider uppercase">
-                      Core Ownership
+                  {/* Area of Ownership */}
+                  <div className="border-border bg-muted/40 space-y-1 rounded-md border p-2.5">
+                    <span className="text-muted-foreground block font-mono text-xs uppercase">
+                      Ownership
                     </span>
-                    <p className="text-surface-200 font-medium">
+                    <p className="text-foreground text-xs font-medium">
                       {categoryInfo?.description || `${member.role} initiatives`}
                     </p>
                   </div>
                 </div>
 
                 {/* Bottom: Professional Links Row */}
-                <div className="border-surface-800/80 mt-6 flex items-center justify-between border-t pt-4">
-                  <div className="flex items-center gap-2">
+                <div className="border-border mt-5 flex items-center justify-between border-t pt-3">
+                  <div className="flex items-center gap-1.5">
                     {member.linkedin && (
                       <a
                         href={member.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-surface-400 hover:bg-surface-800 hover:text-brand-400 rounded-lg p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
                         title="LinkedIn Profile"
-                        aria-label="LinkedIn"
+                        aria-label={`LinkedIn profile of ${member.name}`}
                       >
                         <LinkedinIcon className="size-4" />
                       </a>
@@ -189,9 +198,9 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                         href={member.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-surface-400 hover:bg-surface-800 hover:text-brand-400 rounded-lg p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
                         title="Twitter / X Profile"
-                        aria-label="Twitter"
+                        aria-label={`Twitter profile of ${member.name}`}
                       >
                         <TwitterIcon className="size-4" />
                       </a>
@@ -201,9 +210,9 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                         href={member.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-surface-400 hover:bg-surface-800 hover:text-surface-100 rounded-lg p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
                         title="GitHub Profile"
-                        aria-label="GitHub"
+                        aria-label={`GitHub profile of ${member.name}`}
                       >
                         <GithubIcon className="size-4" />
                       </a>
@@ -213,9 +222,9 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                         href={member.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-surface-400 hover:bg-surface-800 hover:text-surface-100 rounded-lg p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
                         title="Personal Website"
-                        aria-label="Website"
+                        aria-label={`Personal website of ${member.name}`}
                       >
                         <Globe className="size-4" />
                       </a>
@@ -223,16 +232,16 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                     {member.email && (
                       <a
                         href={`mailto:${member.email}`}
-                        className="text-surface-400 hover:bg-surface-800 hover:text-surface-100 rounded-lg p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
                         title="Email"
-                        aria-label="Email"
+                        aria-label={`Send email to ${member.name}`}
                       >
                         <Mail className="size-4" />
                       </a>
                     )}
                   </div>
 
-                  <span className="text-surface-500 font-mono text-[10px]">Verified Lead</span>
+                  <span className="text-muted-foreground font-mono text-xs">Verified Lead</span>
                 </div>
               </article>
             );
@@ -241,24 +250,16 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
       )}
 
       {/* ─── JOIN TEAM CTA ─────────────────────────────────────────────────── */}
-      <section className="border-surface-800 from-surface-900 via-surface-900/60 to-surface-950 space-y-4 rounded-3xl border bg-gradient-to-br p-8 text-center sm:p-12">
-        <Badge variant="accent" size="default">
-          We Are Expanding
-        </Badge>
-        <h2 className="text-surface-50 text-2xl font-black tracking-tight sm:text-3xl">
+      <section className="border-border bg-card space-y-4 rounded-lg border p-6 text-center sm:p-8">
+        <h2 className="text-foreground text-xl font-bold tracking-tight sm:text-2xl">
           Want to Join the KailshiansX Core Team?
         </h2>
-        <p className="text-surface-300 mx-auto max-w-xl text-xs leading-relaxed sm:text-sm">
+        <p className="text-muted-foreground mx-auto max-w-xl text-xs leading-relaxed sm:text-sm">
           We are recruiting across Technology, Events, Community, Partnerships, Design, and
           Marketing. Move from attendee to steering organizer.
         </p>
         <div className="pt-2">
-          <Button
-            asChild
-            size="default"
-            variant="default"
-            rightIcon={<ArrowRight className="size-4" />}
-          >
+          <Button asChild size="sm" variant="primary" rightIcon={<ArrowRight className="size-4" />}>
             <Link href="/join-team">View Open Positions &amp; Apply</Link>
           </Button>
         </div>
