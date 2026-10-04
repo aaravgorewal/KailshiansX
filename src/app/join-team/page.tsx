@@ -1,8 +1,4 @@
-// src/app/join-team/page.tsx
-// Public Join Team page with role-wise openings across 11 areas & application workflow (PRD §14)
-
 import type { Metadata } from "next";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { JoinTeamClient } from "@/components/team/JoinTeamClient";
 
 export const metadata: Metadata = {
@@ -30,39 +26,40 @@ export const metadata: Metadata = {
 
 export default function JoinTeamPage() {
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
-      {/* ─── HERO HEADER BANNER ────────────────────────────────────────────── */}
-      <section className="border-surface-800 from-surface-900 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-14">
-        <div
-          className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-          aria-hidden="true"
-        />
+    <div className="bg-background text-foreground min-h-screen pb-20">
+      {/* ─── Hero Header Banner ────────────────────────────────────────────── */}
+      <section className="border-border border-b pt-24 pb-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+            Core Team Recruitment
+          </p>
 
-        <div className="container-page relative z-10 text-center">
-          <SectionHeader
-            badge="Core Team Recruitment"
-            title="Build the Infrastructure for India's Developers"
-            highlight="India's Developers"
-            description="We are not just hosting events — we are constructing a durable, developer-owned ecosystem. Join the core team shaping national hackathons, technical masterclasses, and campus chapters."
-            align="center"
-          />
+          <h1 className="text-foreground mt-3 max-w-4xl text-3xl font-bold tracking-tight sm:text-5xl">
+            Build the Infrastructure for India&apos;s Developers
+          </h1>
+
+          <p className="text-muted-foreground mt-4 max-w-2xl text-base">
+            We are not just hosting events — we are constructing a durable, developer-owned
+            ecosystem. Join the core team shaping national hackathons, technical masterclasses, and
+            campus chapters.
+          </p>
 
           {/* Value Props Row */}
-          <div className="text-surface-400 mt-8 flex flex-wrap items-center justify-center gap-6 font-mono text-xs">
+          <div className="text-muted-foreground mt-8 flex flex-wrap items-center gap-6 font-mono text-xs">
             <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-500" />
+              <span className="bg-primary size-2 rounded-full" />
               <span>11 Functional Domains</span>
             </div>
-            <span className="text-surface-700">•</span>
+            <span>•</span>
             <div>5-Stage Transparent Pipeline</div>
-            <span className="text-surface-700">•</span>
+            <span>•</span>
             <div>High-Impact Responsibility</div>
           </div>
         </div>
       </section>
 
-      {/* ─── MAIN CONTENT: OPENINGS & APPLICATION FORM ─────────────────────── */}
-      <main className="container-page mt-12">
+      {/* ─── Main Content: Openings & Application Form ─────────────────────── */}
+      <main className="mx-auto mt-12 max-w-6xl px-4 sm:px-6">
         <JoinTeamClient />
       </main>
     </div>

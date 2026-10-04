@@ -4,13 +4,10 @@ import * as React from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
-  Trophy,
-  Zap,
   Calendar,
   Clock,
   MapPin,
   Users,
-  CheckCircle2,
   ExternalLink,
   ArrowRight,
   ShieldAlert,
@@ -18,6 +15,8 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { formatDate, formatTime } from "@/lib/format-date";
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -151,7 +150,6 @@ export function HackathonSeriesClient({
   const searchParams = useSearchParams();
 
   const activeEditionNo = Number(searchParams.get("edition")) || initialEditionNo;
-
   const currentEdition = editions.find((e) => e.editionNo === activeEditionNo) || editions[0];
 
   const handleSelectEdition = (editionNo: number) => {
@@ -164,24 +162,24 @@ export function HackathonSeriesClient({
 
   const event = currentEdition.event;
   const detail = event.hackathonDetail;
-  const startDate = new Date(event.startDate);
-  const isPast = startDate < new Date();
+  const isPast = new Date(event.startDate) < new Date();
 
   const judges = event.speakers.filter((s) => s.role === "JUDGE");
   const mentors = event.speakers.filter((s) => s.role === "MENTOR");
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-12">
       {/* Edition Selector Bar */}
-      <div className="border-surface-800 flex flex-col items-stretch justify-between gap-4 border-b pb-5 sm:flex-row sm:items-center">
-        <div className="space-y-1">
-          <h2 className="text-surface-100 text-xl font-bold">Select Hackathon Season</h2>
-          <p className="text-surface-400 text-xs">
-            Browse rules, problem statements, prizes, and results by edition
+      <div className="border-border flex flex-col gap-4 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-foreground text-lg font-bold">Hackathon Editions</h2>
+          <p className="text-muted-foreground text-xs">
+            Select an edition to view problem statements, prizes, and schedule
           </p>
         </div>
 
-        <div className="bg-surface-900 border-surface-800 inline-flex rounded-2xl border p-1.5">
+        {/* Neutral Chips: selected = border-primary */}
+        <div className="inline-flex flex-wrap gap-2">
           {editions.map((ed) => {
             const isSelected = ed.editionNo === activeEditionNo;
             const edIsPast = new Date(ed.event.startDate) < new Date();
@@ -191,19 +189,15 @@ export function HackathonSeriesClient({
                 key={ed.id}
                 type="button"
                 onClick={() => handleSelectEdition(ed.editionNo)}
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
+                className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
                   isSelected
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
-                    : "text-surface-400 hover:text-surface-200"
+                    ? "border-primary bg-background text-foreground"
+                    : "border-border bg-background text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <span>Season {String(ed.editionNo).padStart(2, "0")}</span>
-                <span
-                  className={`rounded px-1.5 py-0.5 text-[10px] ${
-                    edIsPast ? "text-surface-400 bg-black/40" : "bg-emerald-500/20 text-emerald-300"
-                  }`}
-                >
-                  {edIsPast ? "Results" : "Upcoming"}
+                <span className="text-muted-foreground ml-1.5">
+                  ({edIsPast ? "Past" : "Upcoming"})
                 </span>
               </button>
             );
@@ -211,77 +205,57 @@ export function HackathonSeriesClient({
         </div>
       </div>
 
-      {/* Active Edition Hero Card */}
-      <section className="from-surface-900 via-surface-900/90 relative space-y-6 overflow-hidden rounded-3xl border border-purple-500/30 bg-gradient-to-br to-purple-950/20 p-6 shadow-2xl sm:p-9">
-        <div className="pointer-events-none absolute -right-12 -bottom-12 size-60 rounded-full bg-purple-500/10 blur-3xl" />
-
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <Badge variant="brand" className="gap-1.5 py-1 text-xs">
-              <Zap className="size-3.5 text-purple-400" />
-              <span>Season {String(currentEdition.editionNo).padStart(2, "0")}</span>
-            </Badge>
+      {/* Active Edition Card */}
+      <Card className="space-y-5 p-6 sm:p-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-foreground text-xs font-semibold">
+              Season {String(currentEdition.editionNo).padStart(2, "0")}
+            </span>
 
             {currentEdition.theme && (
-              <Badge variant="outline" className="border-purple-500/40 text-xs text-purple-300">
-                Theme: {currentEdition.theme}
-              </Badge>
-            )}
-
-            {isPast ? (
-              <Badge variant="surface" className="text-xs">
-                Season Completed
-              </Badge>
-            ) : (
-              <Badge variant="success" className="animate-pulse text-xs">
-                Registrations Open
-              </Badge>
+              <span className="text-muted-foreground text-xs">• Theme: {currentEdition.theme}</span>
             )}
           </div>
 
-          {/* Team Size Pill */}
-          {detail && (
-            <div className="bg-surface-950/80 border-surface-800 text-surface-200 inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs font-medium">
-              <Users className="text-brand-400 size-3.5" />
-              <span>
-                Team Size: {detail.minTeamSize} – {detail.maxTeamSize} Builders
-              </span>
-            </div>
-          )}
+          <div className="text-muted-foreground flex items-center gap-4 text-xs">
+            {detail && (
+              <div className="flex items-center gap-1.5">
+                <Users className="size-3.5" />
+                <span>
+                  Teams: {detail.minTeamSize}–{detail.maxTeamSize} builders
+                </span>
+              </div>
+            )}
+            <span className="text-foreground font-medium">
+              {isPast ? "Season Concluded" : "Registrations Open"}
+            </span>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <h3 className="text-surface-50 text-2xl font-extrabold tracking-tight sm:text-4xl">
-            {event.title}
-          </h3>
+        <div className="space-y-1.5">
+          <h3 className="text-foreground text-xl font-bold sm:text-2xl">{event.title}</h3>
           {event.overview && (
-            <p className="text-surface-300 max-w-3xl text-xs leading-relaxed sm:text-sm">
+            <p className="text-muted-foreground max-w-3xl text-xs leading-relaxed sm:text-sm">
               {event.overview}
             </p>
           )}
         </div>
 
         {/* Date, Venue, City */}
-        <div className="text-surface-300 flex flex-wrap items-center gap-6 pt-1 text-xs">
+        <div className="border-border text-muted-foreground flex flex-wrap items-center gap-6 border-t pt-3 text-xs">
           <div className="flex items-center gap-2">
-            <Calendar className="size-4 shrink-0 text-purple-400" />
-            <span>
-              {new Date(event.startDate).toLocaleDateString("en-IN", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </span>
+            <Calendar className="size-4 shrink-0" />
+            <span>{formatDate(event.startDate)}</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <Clock className="text-surface-400 size-4 shrink-0" />
-            <span>36 Continuous Hours of Engineering</span>
+            <Clock className="size-4 shrink-0" />
+            <span>36 Continuous Hours</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <MapPin className="size-4 shrink-0 text-rose-400" />
+            <MapPin className="size-4 shrink-0" />
             <span>
               {event.venue || "Convention Centre"},{" "}
               {event.city ? `${event.city.name}, ${event.city.state}` : "India"}
@@ -289,244 +263,207 @@ export function HackathonSeriesClient({
           </div>
         </div>
 
-        {/* CTAs Bar */}
-        <div className="border-surface-800/80 flex flex-wrap items-center gap-3 border-t pt-4">
+        {/* Action Buttons */}
+        <div className="border-border flex flex-wrap items-center gap-3 border-t pt-4">
           {!isPast ? (
-            <Button asChild variant="primary" size="lg" className="shadow-lg shadow-purple-500/25">
+            <Button asChild variant="primary" size="md">
               <Link href={`/events/${event.slug}/register`}>
                 <span>Register Team Pass</span>
-                <ArrowRight className="ml-2 size-4" />
+                <ArrowRight className="ml-1.5 size-4" />
               </Link>
             </Button>
           ) : (
             <Button asChild variant="secondary" size="md">
               <a href="#results">
-                <Trophy className="mr-2 size-4 text-amber-400" />
-                <span>View Winners & Projects</span>
+                <span>View Results & Projects</span>
               </a>
             </Button>
           )}
 
           {detail?.submissionUrl && (
-            <Button asChild variant="outline" size="md">
+            <Button asChild variant="secondary" size="md">
               <a href={detail.submissionUrl} target="_blank" rel="noopener noreferrer">
-                <GithubIcon className="mr-2 size-4" />
-                <span>Submissions Repository</span>
-                <ExternalLink className="text-surface-400 ml-1.5 size-3.5" />
+                <GithubIcon className="mr-1.5 size-3.5" />
+                <span>Submissions Repo</span>
+                <ExternalLink className="ml-1 size-3" />
               </a>
             </Button>
           )}
 
-          <Button asChild variant="secondary" size="md">
+          <Button asChild variant="ghost" size="md">
             <Link href={`/events/${event.slug}`}>
-              <span>View Full Event Page</span>
+              <span>Full Event Page</span>
             </Link>
           </Button>
         </div>
-      </section>
+      </Card>
 
-      {/* Tracks Section (PRD §9) */}
+      {/* Tracks Section */}
       {event.tracks.length > 0 && (
-        <section className="space-y-6">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Hackathon Tracks</h3>
-            <p className="text-surface-400 text-xs">
-              Pick a domain and build solutions tailored to the core problem themes
+        <section className="space-y-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Hackathon Tracks</h3>
+            <p className="text-muted-foreground text-xs">
+              Select a track tailored to your product build focus
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {event.tracks.map((track) => (
-              <div
-                key={track.id}
-                className="border-surface-800 bg-surface-900/60 hover:border-surface-700 space-y-3 rounded-3xl border p-6 backdrop-blur-sm transition"
-              >
-                <div className="flex items-center gap-2">
-                  <span
-                    className="size-3 rounded-full"
-                    style={{ backgroundColor: track.color || "#8b5cf6" }}
-                  />
-                  <h4 className="text-surface-100 text-base font-bold">{track.name}</h4>
-                </div>
+              <Card key={track.id} className="space-y-2 p-5">
+                <h4 className="text-foreground text-sm font-semibold">{track.name}</h4>
                 {track.description && (
-                  <p className="text-surface-400 text-xs leading-relaxed">{track.description}</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed">
+                    {track.description}
+                  </p>
                 )}
-              </div>
+              </Card>
             ))}
           </div>
         </section>
       )}
 
-      {/* Problem Statements Section (PRD §9) */}
+      {/* Problem Statements */}
       {detail?.problemStatements && detail.problemStatements.length > 0 && (
-        <section className="space-y-6">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Industry Problem Statements</h3>
-            <p className="text-surface-400 text-xs">
-              Vetted engineering challenges submitted by partner unicorns and tech collectives
+        <section className="space-y-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Problem Statements</h3>
+            <p className="text-muted-foreground text-xs">
+              Industry problem statements and engineering challenges
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {detail.problemStatements.map((ps) => (
-              <div
-                key={ps.id}
-                className="border-surface-800 bg-surface-900/80 flex flex-col justify-between space-y-4 rounded-3xl border p-6 shadow-lg transition hover:border-purple-500/40"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Badge
-                      variant="outline"
-                      className="border-purple-500/40 text-xs text-purple-300"
-                    >
-                      {ps.track}
-                    </Badge>
-                    <span className="text-surface-500 font-mono text-xs">{ps.id}</span>
+              <Card key={ps.id} className="flex flex-col justify-between space-y-4 p-5">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-foreground font-medium">{ps.track}</span>
+                    <span className="text-muted-foreground font-mono">{ps.id}</span>
                   </div>
 
-                  <h4 className="text-surface-50 text-base leading-snug font-bold">{ps.title}</h4>
-                  <p className="text-surface-300 text-xs leading-relaxed">{ps.description}</p>
+                  <h4 className="text-foreground text-sm font-semibold">{ps.title}</h4>
+                  <p className="text-muted-foreground text-xs leading-relaxed">{ps.description}</p>
                 </div>
 
                 {ps.criteria && ps.criteria.length > 0 && (
-                  <div className="border-surface-800 space-y-2 border-t pt-3">
-                    <span className="text-surface-400 block text-[10px] font-bold tracking-wider uppercase">
-                      Evaluation Criteria:
-                    </span>
-                    <ul className="space-y-1">
+                  <div className="border-border space-y-1 border-t pt-3">
+                    <span className="text-foreground block text-xs font-medium">Criteria:</span>
+                    <ul className="text-muted-foreground list-inside list-disc space-y-0.5 text-xs">
                       {ps.criteria.map((c, i) => (
-                        <li key={i} className="text-surface-300 flex items-start gap-2 text-xs">
-                          <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-400" />
-                          <span>{c}</span>
-                        </li>
+                        <li key={i}>{c}</li>
                       ))}
                     </ul>
                   </div>
                 )}
-              </div>
+              </Card>
             ))}
           </div>
         </section>
       )}
 
-      {/* Prizes Section (PRD §9) */}
+      {/* Prizes Section: Table Format */}
       {detail?.prizes && detail.prizes.length > 0 && (
-        <section className="space-y-6">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Prize Pool & Bounties</h3>
-            <p className="text-surface-400 text-xs">
-              Direct cash rewards, compute credits, and seed incubation backing
+        <section className="space-y-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Prize Pool</h3>
+            <p className="text-muted-foreground text-xs">
+              Bounties, awards, and cloud compute rewards
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {detail.prizes.map((prize, idx) => {
-              const isFirst = idx === 0;
+          <div className="border-border overflow-x-auto rounded-lg border">
+            <table className="w-full text-left text-xs">
+              <thead className="border-border bg-muted/60 text-muted-foreground border-b">
+                <tr>
+                  <th className="p-3.5 font-medium">Tier / Standing</th>
+                  <th className="p-3.5 font-medium">Prize Category</th>
+                  <th className="p-3.5 font-medium">Reward / Amount</th>
+                  <th className="p-3.5 font-medium">Perks & Bounties</th>
+                </tr>
+              </thead>
+              <tbody className="divide-border bg-card divide-y">
+                {detail.prizes.map((prize, idx) => (
+                  <tr key={idx} className="hover:bg-muted/40 transition-colors">
+                    <td className="text-muted-foreground p-3.5 font-mono">Tier {idx + 1}</td>
+                    <td className="text-foreground p-3.5 font-medium">{prize.title}</td>
+                    <td className="text-foreground p-3.5 font-bold">{prize.amount}</td>
+                    <td className="text-muted-foreground p-3.5">
+                      {prize.perks && prize.perks.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {prize.perks.map((p, pIdx) => (
+                            <span
+                              key={pIdx}
+                              className="border-border bg-muted text-foreground rounded border px-2 py-0.5 text-xs"
+                            >
+                              {p}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* Rules Section */}
+      {detail?.rules && (
+        <section className="space-y-3">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Rules & Guidelines</h3>
+            <p className="text-muted-foreground text-xs">
+              Submission guidelines, commit deadlines, and code policies
+            </p>
+          </div>
+
+          <Card className="space-y-3 p-5 sm:p-6">
+            <div className="text-foreground flex items-center gap-2 text-xs font-semibold">
+              <ShieldAlert className="size-4" />
+              <span>Official Rules</span>
+            </div>
+            <pre className="text-muted-foreground font-sans text-xs leading-relaxed whitespace-pre-wrap">
+              {detail.rules}
+            </pre>
+          </Card>
+        </section>
+      )}
+
+      {/* Timeline: Simple Vertical List */}
+      {event.scheduleItems.length > 0 && (
+        <section className="space-y-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Timeline</h3>
+            <p className="text-muted-foreground text-xs">
+              Checkpoints, submission freeze, and judging schedule
+            </p>
+          </div>
+
+          <div className="space-y-2.5">
+            {event.scheduleItems.map((slot) => {
+              const start = new Date(slot.startTime);
+              const timeStr = formatTime(slot.startTime);
+              const dateStr = formatDate(slot.startTime);
 
               return (
                 <div
-                  key={idx}
-                  className={`flex flex-col justify-between space-y-4 rounded-3xl border p-6 shadow-xl sm:p-7 ${
-                    isFirst
-                      ? "via-surface-900 to-surface-950 border-amber-500/40 bg-gradient-to-b from-amber-950/20"
-                      : "border-surface-800 bg-surface-900/60"
-                  }`}
+                  key={slot.id}
+                  className="border-border bg-card flex flex-col gap-1 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Trophy
-                        className={`size-6 ${isFirst ? "text-amber-400" : "text-purple-400"}`}
-                      />
-                      <Badge variant={isFirst ? "accent" : "surface"} className="text-xs">
-                        Tier {idx + 1}
-                      </Badge>
-                    </div>
-
-                    <div>
-                      <h4 className="text-surface-200 text-sm font-bold">{prize.title}</h4>
-                      <p className="text-surface-50 mt-1 text-2xl font-black">{prize.amount}</p>
-                    </div>
-
-                    {prize.perks && prize.perks.length > 0 && (
-                      <div className="border-surface-800/80 space-y-1.5 border-t pt-3">
-                        {prize.perks.map((perk, pIdx) => (
-                          <div
-                            key={pIdx}
-                            className="text-surface-300 flex items-start gap-2 text-xs"
-                          >
-                            <CheckCircle2 className="mt-0.5 size-3 shrink-0 text-amber-400" />
-                            <span>{perk}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* Rules & Eligibility Section (PRD §9) */}
-      {detail?.rules && (
-        <section className="space-y-4">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Rules & Code of Conduct</h3>
-            <p className="text-surface-400 text-xs">
-              Fair play, commit timelines, and submission integrity guidelines
-            </p>
-          </div>
-
-          <div className="border-surface-800 bg-surface-900/40 space-y-4 rounded-3xl border p-6 sm:p-8">
-            <div className="text-brand-300 flex items-center gap-2 text-xs font-semibold">
-              <ShieldAlert className="size-4" />
-              <span>Official Participation Rules</span>
-            </div>
-            <pre className="text-surface-300 font-sans text-xs leading-relaxed whitespace-pre-wrap">
-              {detail.rules}
-            </pre>
-          </div>
-        </section>
-      )}
-
-      {/* 36-Hour Timeline Section (PRD §9) */}
-      {event.scheduleItems.length > 0 && (
-        <section className="space-y-6">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Hackathon Schedule & Timeline</h3>
-            <p className="text-surface-400 text-xs">
-              Key checkpoints, mentorship slots, submission freeze, and judging rounds
-            </p>
-          </div>
-
-          <div className="border-surface-800 relative space-y-6 border-l pl-6 sm:pl-8">
-            {event.scheduleItems.map((slot) => {
-              const start = new Date(slot.startTime);
-              const timeStr = start.toLocaleTimeString("en-IN", {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              });
-
-              return (
-                <div key={slot.id} className="group relative">
-                  <div className="border-surface-950 absolute top-1 -left-[31px] size-3.5 rounded-full border-2 bg-purple-500 sm:-left-[39px]" />
-                  <div className="border-surface-800 bg-surface-900/60 space-y-1 rounded-2xl border p-5">
-                    <div className="flex items-center justify-between text-xs font-semibold text-purple-300">
-                      <span>{timeStr}</span>
-                      <span className="text-surface-500 text-[11px]">
-                        {start.toLocaleDateString("en-IN", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </div>
-                    <h4 className="text-surface-100 text-sm font-bold">{slot.title}</h4>
+                  <div className="space-y-0.5">
+                    <h4 className="text-foreground text-xs font-semibold">{slot.title}</h4>
                     {slot.description && (
-                      <p className="text-surface-400 text-xs">{slot.description}</p>
+                      <p className="text-muted-foreground text-xs">{slot.description}</p>
                     )}
+                  </div>
+                  <div className="text-muted-foreground shrink-0 text-xs sm:text-right">
+                    <span className="text-foreground font-medium">{timeStr}</span>
+                    <span className="ml-2">• {dateStr}</span>
                   </div>
                 </div>
               );
@@ -535,51 +472,43 @@ export function HackathonSeriesClient({
         </section>
       )}
 
-      {/* Judges & Mentors (PRD §9) */}
+      {/* Judges & Mentors */}
       {(judges.length > 0 || mentors.length > 0) && (
-        <section className="space-y-8">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Judges & Technical Mentors</h3>
-            <p className="text-surface-400 text-xs">
-              Industry architects reviewing code, architecture, and live product demos
+        <section className="space-y-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Judges & Mentors</h3>
+            <p className="text-muted-foreground text-xs">
+              Architects reviewing project code, architecture, and live demos
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
             {[...judges, ...mentors].map((item, idx) => (
-              <div
-                key={idx}
-                className="border-surface-800 bg-surface-900/60 flex flex-col justify-between space-y-3 rounded-2xl border p-4"
-              >
-                <div className="space-y-3">
+              <Card key={idx} className="flex flex-col justify-between space-y-3 p-4">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-xs font-bold text-white">
+                    <div className="border-border bg-muted text-foreground flex size-10 items-center justify-center rounded-lg border text-xs font-semibold">
                       {item.speaker.name.slice(0, 2).toUpperCase()}
                     </div>
-                    <Badge
-                      variant={item.role === "JUDGE" ? "brand" : "accent"}
-                      className="text-[10px]"
-                    >
-                      {item.role === "JUDGE" ? "Judge" : "Mentor"}
-                    </Badge>
+                    <Badge variant="neutral">{item.role === "JUDGE" ? "Judge" : "Mentor"}</Badge>
                   </div>
 
                   <div>
-                    <h4 className="text-surface-100 text-sm font-bold">{item.speaker.name}</h4>
-                    <p className="truncate text-xs text-purple-300">
-                      {item.speaker.designation}{" "}
-                      {item.speaker.organisation ? `@ ${item.speaker.organisation}` : ""}
+                    <h4 className="text-foreground text-xs font-semibold">{item.speaker.name}</h4>
+                    <p className="text-muted-foreground truncate text-xs">
+                      {item.speaker.designation}
+                      {item.speaker.organisation ? ` @ ${item.speaker.organisation}` : ""}
                     </p>
                   </div>
                 </div>
 
-                <div className="border-surface-800 flex items-center gap-2 border-t pt-2">
+                <div className="border-border text-muted-foreground flex items-center gap-3 border-t pt-2 text-xs">
                   {item.speaker.linkedin && (
                     <a
                       href={item.speaker.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-surface-400 text-[11px] hover:text-purple-300"
+                      className="hover:text-foreground transition-colors"
                     >
                       LinkedIn
                     </a>
@@ -589,126 +518,105 @@ export function HackathonSeriesClient({
                       href={item.speaker.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-surface-400 text-[11px] hover:text-purple-300"
+                      className="hover:text-foreground transition-colors"
                     >
                       GitHub
                     </a>
                   )}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </section>
       )}
 
-      {/* Sponsors & Partners (PRD §9) */}
+      {/* Sponsors & Partners */}
       {event.partners.length > 0 && (
-        <section className="space-y-6">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Hackathon Sponsors & Partners</h3>
-            <p className="text-surface-400 text-xs">
-              Infrastructure and cloud credits provided by our ecosystem partners
+        <section className="space-y-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Sponsors & Partners</h3>
+            <p className="text-muted-foreground text-xs">
+              Infrastructure and prizes provided by our ecosystem partners
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {event.partners.map((item, idx) => (
-              <div
+              <Card
                 key={idx}
-                className="border-surface-800 bg-surface-900/40 flex flex-col items-center justify-center space-y-1.5 rounded-2xl border p-4 text-center"
+                className="flex flex-col items-center justify-center space-y-1.5 p-4 text-center"
               >
-                <Building className="text-surface-500 size-6" />
-                <span className="text-surface-200 text-xs font-bold">{item.partner.name}</span>
-                <Badge variant="surface" className="text-[9px]">
-                  {item.tier || "Partner"}
-                </Badge>
-              </div>
+                <Building className="text-muted-foreground size-5" />
+                <span className="text-foreground text-xs font-semibold">{item.partner.name}</span>
+                <span className="text-muted-foreground text-xs">{item.tier || "Partner"}</span>
+              </Card>
             ))}
           </div>
         </section>
       )}
 
-      {/* Results & Winning Projects Showcase (PRD §9) */}
+      {/* Results & Winning Projects Showcase */}
       {detail?.results && detail.results.length > 0 && (
-        <section id="results" className="space-y-6 pt-6">
-          <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-            <div>
-              <h3 className="text-surface-100 text-xl font-bold">Winner Showcase & Results</h3>
-              <p className="text-surface-400 text-xs">
-                Official podium teams and verified open-source project repositories
-              </p>
-            </div>
-            <Badge variant="success">Verified Winners</Badge>
+        <section id="results" className="space-y-4 pt-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Results & Podium Teams</h3>
+            <p className="text-muted-foreground text-xs">
+              Verified winners and project repositories
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {detail.results.map((result) => {
-              const isWinner = result.rank === 1;
-
-              return (
-                <div
-                  key={result.rank}
-                  className={`flex flex-col justify-between space-y-4 rounded-3xl border p-6 shadow-2xl sm:p-7 ${
-                    isWinner
-                      ? "via-surface-900 to-surface-950 border-amber-500/50 bg-gradient-to-b from-amber-950/20"
-                      : "border-surface-800 bg-surface-900/70"
-                  }`}
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-bold text-amber-400">
-                        Rank #{result.rank}
-                      </span>
-                      <Badge variant={isWinner ? "accent" : "surface"} className="text-xs">
-                        {result.title}
-                      </Badge>
-                    </div>
-
-                    <div>
-                      <h4 className="text-surface-50 text-lg font-bold">{result.projectName}</h4>
-                      <p className="text-xs font-medium text-purple-300">by {result.teamName}</p>
-                    </div>
-
-                    {result.description && (
-                      <p className="text-surface-300 text-xs leading-relaxed">
-                        {result.description}
-                      </p>
-                    )}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {detail.results.map((result) => (
+              <Card key={result.rank} className="flex flex-col justify-between space-y-3 p-5">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-foreground font-semibold">Rank #{result.rank}</span>
+                    <span className="text-muted-foreground">{result.title}</span>
                   </div>
 
-                  {/* Links */}
-                  <div className="border-surface-800 flex items-center gap-3 border-t pt-3">
-                    {result.repoUrl && (
-                      <Button asChild variant="outline" size="sm">
-                        <a href={result.repoUrl} target="_blank" rel="noopener noreferrer">
-                          <GithubIcon className="mr-1.5 size-3.5" />
-                          <span>Code</span>
-                        </a>
-                      </Button>
-                    )}
-                    {result.demoUrl && (
-                      <Button asChild variant="secondary" size="sm">
-                        <a href={result.demoUrl} target="_blank" rel="noopener noreferrer">
-                          <span>Live Demo</span>
-                          <ExternalLink className="ml-1 size-3" />
-                        </a>
-                      </Button>
-                    )}
+                  <div>
+                    <h4 className="text-foreground text-sm font-semibold">{result.projectName}</h4>
+                    <p className="text-muted-foreground text-xs">by {result.teamName}</p>
                   </div>
+
+                  {result.description && (
+                    <p className="text-muted-foreground text-xs leading-relaxed">
+                      {result.description}
+                    </p>
+                  )}
                 </div>
-              );
-            })}
+
+                <div className="border-border flex items-center gap-2 border-t pt-3">
+                  {result.repoUrl && (
+                    <Button asChild variant="secondary" size="sm">
+                      <a href={result.repoUrl} target="_blank" rel="noopener noreferrer">
+                        <GithubIcon className="mr-1.5 size-3.5" />
+                        <span>Code</span>
+                      </a>
+                    </Button>
+                  )}
+                  {result.demoUrl && (
+                    <Button asChild variant="ghost" size="sm">
+                      <a href={result.demoUrl} target="_blank" rel="noopener noreferrer">
+                        <span>Demo</span>
+                        <ExternalLink className="ml-1 size-3" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            ))}
           </div>
         </section>
       )}
 
-      {/* Photo Gallery (PRD §9) */}
+      {/* Photo Gallery */}
       {event.galleryAlbums.length > 0 && event.galleryAlbums[0].images.length > 0 && (
-        <section className="space-y-6">
-          <div className="border-surface-800 border-b pb-3">
-            <h3 className="text-surface-100 text-xl font-bold">Edition Gallery Highlights</h3>
-            <p className="text-surface-400 text-xs">
-              Photographs captured across hacking, pitch demos, and awards
+        <section className="space-y-4">
+          <div className="border-border border-b pb-3">
+            <h3 className="text-foreground text-lg font-bold">Highlights Gallery</h3>
+            <p className="text-muted-foreground text-xs">
+              Photographs captured across hackathon sprints and presentations
             </p>
           </div>
 
@@ -716,17 +624,17 @@ export function HackathonSeriesClient({
             {event.galleryAlbums[0].images.map((img) => (
               <div
                 key={img.id}
-                className="group border-surface-800 bg-surface-900 relative aspect-video overflow-hidden rounded-2xl border shadow-md"
+                className="border-border bg-muted relative aspect-video overflow-hidden rounded-lg border"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={img.url}
                   alt={img.caption || "Hackathon highlight"}
-                  className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="size-full object-cover"
                 />
                 {img.caption && (
-                  <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent p-3.5">
-                    <p className="truncate text-xs font-medium text-white">{img.caption}</p>
+                  <div className="bg-scrim absolute inset-0 flex flex-col justify-end p-3">
+                    <p className="text-foreground truncate text-xs font-medium">{img.caption}</p>
                   </div>
                 )}
               </div>

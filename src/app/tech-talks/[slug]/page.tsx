@@ -11,7 +11,6 @@ import {
   Video,
   FileText,
   Lightbulb,
-  Radio,
   School,
   Tag,
 } from "lucide-react";
@@ -47,6 +46,8 @@ function LinkedinIcon({ className }: { className?: string }) {
 import { getTechTalkBySlug } from "@/server/events/tech-talks";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Card } from "@/components/ui/Card";
+import { formatDate, formatTime } from "@/lib/format-date";
 
 export const dynamic = "force-dynamic";
 
@@ -101,28 +102,10 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
   }
 
   const { talk, relatedTalks } = data;
-  const startDate = new Date(talk.startDate);
-  const isUpcoming = startDate >= new Date();
-
-  const dateStr = startDate.toLocaleDateString("en-IN", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const timeStr = `${startDate.toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  })}${
-    talk.endDate
-      ? ` - ${new Date(talk.endDate).toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })}`
-      : ""
+  const isUpcoming = new Date(talk.startDate) >= new Date();
+  const dateStr = formatDate(talk.startDate);
+  const timeStr = `${formatTime(talk.startDate)}${
+    talk.endDate ? ` – ${formatTime(talk.endDate)}` : ""
   }`;
 
   const primarySpeaker = talk.speakers[0]?.speaker;
@@ -132,7 +115,6 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
     ? (resource.keyTakeaways as string[])
     : [];
 
-  // Helper for YouTube embed
   const getEmbedUrl = (url: string) => {
     try {
       if (url.includes("youtube.com/watch?v=")) {
@@ -184,83 +166,72 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
   };
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
-      {/* Inject SEO JSON-LD */}
+    <div className="bg-background text-foreground min-h-screen pb-24">
+      {/* Schema.org JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
       {/* Top Breadcrumb Header */}
-      <div className="border-surface-800/80 bg-surface-900/60 border-b py-4">
-        <div className="container-page text-surface-400 flex items-center justify-between px-4 text-xs">
+      <div className="border-border bg-background border-b py-3.5">
+        <div className="mx-auto max-w-5xl px-4 text-xs">
           <Link
             href="/tech-talks"
-            className="hover:text-surface-100 inline-flex items-center gap-1.5 transition-colors"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
           >
             <ArrowLeft className="size-3.5" />
-            <span>Back to Tech Talks Archive</span>
+            <span>Back to Tech Talks</span>
           </Link>
-
-          <div className="flex items-center gap-2">
-            <span className="text-surface-500">PRD §7 Knowledge Session</span>
-          </div>
         </div>
       </div>
 
       {/* Hero Header */}
-      <section className="border-surface-800 from-surface-900 via-surface-950 to-surface-950 relative border-b bg-gradient-to-b py-12 sm:py-16">
-        <div className="container-page max-w-5xl space-y-6 px-4">
-          {/* Institution & Status Badge */}
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge variant="outline" className="text-brand-300 border-brand-500/40 gap-1.5 py-1">
-              <School className="text-brand-400 size-3.5" />
-              <span>{hostPartner?.name || "Kailshians Community"}</span>
-            </Badge>
-
-            <Badge variant={isUpcoming ? "brand" : "surface"} className="py-1">
-              {isUpcoming ? (
-                <span className="flex items-center gap-1.5">
-                  <Radio className="size-3 animate-pulse text-emerald-400" />
-                  Upcoming Live Session
-                </span>
-              ) : (
-                "Knowledge Archive"
-              )}
-            </Badge>
-
-            {talk.category && (
-              <Badge variant="surface" className="text-surface-300">
-                {talk.category}
+      <section className="border-border bg-background border-b py-10 sm:py-14">
+        <div className="mx-auto max-w-5xl space-y-5 px-4">
+          {/* Metadata chips */}
+          <div className="flex flex-wrap items-center gap-2">
+            {hostPartner && (
+              <Badge variant="neutral" className="gap-1.5">
+                <School className="text-muted-foreground size-3.5" />
+                <span>{hostPartner.name}</span>
               </Badge>
             )}
+
+            <span className="text-muted-foreground text-xs font-medium">
+              {isUpcoming ? "Upcoming Session" : "Archived Session"}
+            </span>
+
+            {talk.category && <Badge variant="neutral">{talk.category}</Badge>}
           </div>
 
-          <h1 className="text-surface-50 text-2xl leading-tight font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-4xl">
             {talk.title}
           </h1>
 
-          <p className="text-surface-300 max-w-3xl text-sm leading-relaxed sm:text-base">
-            {talk.overview}
-          </p>
+          {talk.overview && (
+            <p className="text-muted-foreground max-w-3xl text-sm leading-relaxed sm:text-base">
+              {talk.overview}
+            </p>
+          )}
 
           {/* Quick Date, Time & Venue Bar */}
-          <div className="text-surface-300 flex flex-wrap items-center gap-6 pt-2 text-xs">
+          <div className="text-muted-foreground flex flex-wrap items-center gap-6 pt-2 text-xs">
             <div className="flex items-center gap-2">
-              <Calendar className="text-brand-400 size-4 shrink-0" />
-              <span className="text-surface-200 font-semibold">{dateStr}</span>
+              <Calendar className="size-4 shrink-0" />
+              <span className="text-foreground font-medium">{dateStr}</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <Clock className="text-surface-400 size-4 shrink-0" />
+              <Clock className="size-4 shrink-0" />
               <span>{timeStr}</span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <MapPin className="size-4 shrink-0 text-rose-400" />
+            <div className="flex items-center gap-2 truncate">
+              <MapPin className="size-4 shrink-0" />
               <span>
                 {talk.attendanceMode === "VIRTUAL"
-                  ? "Virtual Livestream & Discord Stage"
+                  ? "Virtual Livestream"
                   : `${talk.venue || "Campus Venue"}, ${talk.city?.name || "India"}`}
               </span>
             </div>
@@ -269,7 +240,7 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
           {/* Main Action CTAs */}
           <div className="flex flex-wrap items-center gap-3 pt-4">
             {isUpcoming ? (
-              <Button asChild variant="primary" size="lg">
+              <Button asChild variant="primary" size="md">
                 <Link href={`/events/${talk.slug}/register`}>
                   <span>Register Free Community Pass</span>
                   <ArrowRight className="ml-2 size-4" />
@@ -289,12 +260,12 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                   <Button asChild variant="secondary" size="md">
                     <a href={resource.slideUrl} target="_blank" rel="noopener noreferrer">
                       <FileText className="mr-2 size-4" />
-                      <span>Download Slide Deck</span>
+                      <span>Download Slides</span>
                     </a>
                   </Button>
                 )}
                 {resource?.repoUrl && (
-                  <Button asChild variant="outline" size="md">
+                  <Button asChild variant="secondary" size="md">
                     <a href={resource.repoUrl} target="_blank" rel="noopener noreferrer">
                       <GithubIcon className="mr-2 size-4" />
                       <span>Source Code</span>
@@ -308,41 +279,40 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
       </section>
 
       {/* Main Content Layout */}
-      <div className="container-page max-w-5xl space-y-12 px-4 pt-12">
+      <div className="mx-auto max-w-5xl space-y-10 px-4 pt-10">
         {/* Speaker Profile Spotlight */}
         {primarySpeaker && (
-          <section className="border-surface-800 bg-surface-900/60 space-y-6 rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8">
-            <div className="text-surface-400 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
-              <Badge variant="brand">Speaker Profile</Badge>
-              <span>Featured Practitioner</span>
-            </div>
+          <Card className="space-y-4 p-6 sm:p-8">
+            <div className="text-muted-foreground text-xs font-medium">Featured Speaker</div>
 
-            <div className="flex flex-col items-start gap-6 sm:flex-row">
-              <div className="from-brand-600 to-accent-600 border-surface-700 flex size-20 shrink-0 items-center justify-center rounded-2xl border-2 bg-gradient-to-tr via-indigo-600 text-2xl font-bold text-white shadow-xl sm:size-24">
+            <div className="flex flex-col items-start gap-5 sm:flex-row">
+              <div className="border-border bg-muted text-foreground flex size-16 shrink-0 items-center justify-center rounded-lg border text-xl font-semibold sm:size-20">
                 {primarySpeaker.name.slice(0, 2).toUpperCase()}
               </div>
 
-              <div className="min-w-0 flex-1 space-y-3">
+              <div className="min-w-0 flex-1 space-y-2">
                 <div>
-                  <h3 className="text-surface-50 text-xl font-bold">{primarySpeaker.name}</h3>
-                  <p className="text-brand-300 text-xs font-medium">
-                    {primarySpeaker.designation}{" "}
-                    {primarySpeaker.organisation ? `@ ${primarySpeaker.organisation}` : ""}
+                  <h2 className="text-foreground text-lg font-bold">{primarySpeaker.name}</h2>
+                  <p className="text-muted-foreground text-xs">
+                    {primarySpeaker.designation}
+                    {primarySpeaker.organisation ? ` @ ${primarySpeaker.organisation}` : ""}
                   </p>
                 </div>
 
                 {primarySpeaker.bio && (
-                  <p className="text-surface-300 text-xs leading-relaxed">{primarySpeaker.bio}</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed">
+                    {primarySpeaker.bio}
+                  </p>
                 )}
 
                 {/* Speaker Social Links */}
-                <div className="flex items-center gap-3 pt-1">
+                <div className="text-muted-foreground flex items-center gap-3 pt-1">
                   {primarySpeaker.linkedin && (
                     <a
                       href={primarySpeaker.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-surface-400 hover:text-brand-400 transition"
+                      className="hover:text-foreground transition-colors"
                       aria-label="Speaker LinkedIn"
                     >
                       <LinkedinIcon className="size-4" />
@@ -353,7 +323,7 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                       href={primarySpeaker.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-surface-400 hover:text-brand-400 transition"
+                      className="hover:text-foreground transition-colors"
                       aria-label="Speaker Twitter"
                     >
                       <TwitterIcon className="size-4" />
@@ -364,7 +334,7 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                       href={primarySpeaker.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-surface-400 hover:text-brand-400 transition"
+                      className="hover:text-foreground transition-colors"
                       aria-label="Speaker GitHub"
                     >
                       <GithubIcon className="size-4" />
@@ -373,21 +343,21 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                 </div>
               </div>
             </div>
-          </section>
+          </Card>
         )}
 
         {/* Post-Event Knowledge Archive */}
         {resource && (
-          <div className="space-y-10 pt-4">
+          <div className="space-y-8">
             {/* Embedded Video Recording */}
-            <div id="recording" className="space-y-4">
+            <div id="recording" className="space-y-3">
               <div className="flex items-center gap-2">
-                <Video className="size-5 text-rose-400" />
-                <h3 className="text-surface-50 text-xl font-bold">Session Recording</h3>
+                <Video className="text-muted-foreground size-4" />
+                <h2 className="text-foreground text-lg font-bold">Session Recording</h2>
               </div>
 
               {embedUrl ? (
-                <div className="border-surface-800 aspect-video w-full overflow-hidden rounded-3xl border bg-black shadow-2xl">
+                <div className="border-border bg-background aspect-video w-full overflow-hidden rounded-lg border">
                   <iframe
                     src={embedUrl}
                     title={talk.title}
@@ -397,50 +367,47 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                   />
                 </div>
               ) : resource.videoUrl ? (
-                <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-8 text-center">
-                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-400">
-                    <Video className="size-8" />
+                <Card className="space-y-4 p-8 text-center">
+                  <div className="border-border bg-muted text-muted-foreground mx-auto flex size-12 items-center justify-center rounded-lg border">
+                    <Video className="size-6" />
                   </div>
-                  <div className="space-y-1">
-                    <h4 className="text-surface-100 text-base font-bold">Watch Session Stream</h4>
-                    <p className="text-surface-400 mx-auto max-w-md text-xs">
-                      The recording for this session is hosted externally on our media channel.
+                  <div>
+                    <h3 className="text-foreground text-sm font-semibold">External Video Stream</h3>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      The recording for this session is hosted externally.
                     </p>
                   </div>
-                  <Button asChild variant="primary" size="md">
+                  <Button asChild variant="primary" size="sm">
                     <a href={resource.videoUrl} target="_blank" rel="noopener noreferrer">
                       <span>Open Recording on YouTube</span>
-                      <ExternalLink className="ml-2 size-4" />
+                      <ExternalLink className="ml-1.5 size-3.5" />
                     </a>
                   </Button>
-                </div>
+                </Card>
               ) : null}
             </div>
 
-            {/* Key Takeaways Grid */}
+            {/* Key Takeaways */}
             {keyTakeaways.length > 0 && (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Lightbulb className="size-5 text-amber-400" />
-                  <h3 className="text-surface-50 text-xl font-bold">Core Key Takeaways</h3>
+                  <Lightbulb className="text-muted-foreground size-4" />
+                  <h2 className="text-foreground text-lg font-bold">Key Takeaways</h2>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {keyTakeaways.map((point, idx) => (
-                    <div
-                      key={idx}
-                      className="border-surface-800 bg-surface-900/40 hover:border-surface-700 space-y-2 rounded-2xl border p-5 transition"
-                    >
+                    <Card key={idx} className="space-y-1.5 p-4">
                       <div className="flex items-center gap-2">
-                        <span className="flex size-6 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 font-mono text-xs font-bold text-amber-400">
+                        <span className="border-border bg-muted text-foreground flex size-5 items-center justify-center rounded border text-xs font-semibold">
                           {idx + 1}
                         </span>
-                        <span className="text-surface-200 text-xs font-semibold">
-                          Takeaway Concept
+                        <span className="text-foreground text-xs font-medium">
+                          Takeaway #{idx + 1}
                         </span>
                       </div>
-                      <p className="text-surface-300 text-xs leading-relaxed">{point}</p>
-                    </div>
+                      <p className="text-muted-foreground text-xs leading-relaxed">{point}</p>
+                    </Card>
                   ))}
                 </div>
               </div>
@@ -449,17 +416,15 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
             {/* Resources Downloads & GitHub */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {resource.slideUrl && (
-                <div className="border-surface-800 bg-surface-900/60 flex items-center justify-between gap-4 rounded-2xl border p-6">
+                <Card className="flex items-center justify-between gap-4 p-5">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
-                      <FileText className="size-6" />
+                    <div className="border-border bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg border">
+                      <FileText className="size-5" />
                     </div>
                     <div>
-                      <h4 className="text-surface-100 text-sm font-bold">
-                        Official Presentation Deck
-                      </h4>
-                      <p className="text-surface-400 text-xs">
-                        PDF slides with diagrams and code samples
+                      <h3 className="text-foreground text-xs font-semibold">Presentation Slides</h3>
+                      <p className="text-muted-foreground text-xs">
+                        PDF deck with diagrams and notes
                       </p>
                     </div>
                   </div>
@@ -470,18 +435,18 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                       <ExternalLink className="ml-1 size-3.5" />
                     </a>
                   </Button>
-                </div>
+                </Card>
               )}
 
               {resource.repoUrl && (
-                <div className="border-surface-800 bg-surface-900/60 flex items-center justify-between gap-4 rounded-2xl border p-6">
+                <Card className="flex items-center justify-between gap-4 p-5">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
-                      <GithubIcon className="size-6" />
+                    <div className="border-border bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-lg border">
+                      <GithubIcon className="size-5" />
                     </div>
                     <div>
-                      <h4 className="text-surface-100 text-sm font-bold">Live Code Repository</h4>
-                      <p className="text-surface-400 text-xs">Clone and reproduce the examples</p>
+                      <h3 className="text-foreground text-xs font-semibold">Code Repository</h3>
+                      <p className="text-muted-foreground text-xs">Clone and run the samples</p>
                     </div>
                   </div>
 
@@ -491,14 +456,14 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                       <ExternalLink className="ml-1 size-3.5" />
                     </a>
                   </Button>
-                </div>
+                </Card>
               )}
             </div>
 
             {/* Knowledge Tags */}
             {resource.tags && resource.tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 pt-2">
-                <span className="text-surface-400 flex items-center gap-1 text-xs">
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <span className="text-muted-foreground flex items-center gap-1 text-xs">
                   <Tag className="size-3" />
                   <span>Topics:</span>
                 </span>
@@ -506,7 +471,7 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
                   <Link
                     key={tag}
                     href={`/tech-talks?q=${encodeURIComponent(tag)}`}
-                    className="bg-surface-900 border-surface-800 text-surface-300 hover:border-brand-500 hover:text-brand-300 rounded-lg border px-2.5 py-1 text-xs transition"
+                    className="border-border bg-muted/50 text-muted-foreground hover:border-primary hover:text-foreground rounded border px-2 py-0.5 text-xs transition-colors"
                   >
                     #{tag}
                   </Link>
@@ -518,38 +483,41 @@ export default async function TechTalkDetailPage({ params }: TechTalkDetailPageP
 
         {/* Related Tech Talks */}
         {relatedTalks.length > 0 && (
-          <section className="border-surface-800 space-y-6 border-t pt-12">
-            <h3 className="text-surface-50 text-xl font-bold">More Knowledge Sessions</h3>
+          <section className="border-border space-y-4 border-t pt-8">
+            <h2 className="text-foreground text-lg font-bold">Related Sessions</h2>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {relatedTalks.map((rt) => (
-                <div
+                <Card
                   key={rt.id}
-                  className="border-surface-800 bg-surface-900/50 hover:border-surface-700 flex flex-col justify-between space-y-3 rounded-2xl border p-5 transition"
+                  className="hover:border-muted-foreground flex flex-col justify-between space-y-3 p-5 transition-[border-color] duration-150"
                 >
-                  <div className="space-y-2">
-                    <span className="text-brand-400 text-[11px] font-semibold">
+                  <div className="space-y-1.5">
+                    <span className="text-muted-foreground text-xs">
                       {rt.partners[0]?.partner.name || "KailshiansX"}
                     </span>
                     <Link
                       href={`/tech-talks/${rt.slug}`}
-                      className="text-surface-100 hover:text-brand-300 line-clamp-2 block text-sm font-bold transition"
+                      className="text-foreground hover:text-primary line-clamp-2 block text-sm font-semibold transition-colors"
                     >
                       {rt.title}
                     </Link>
-                    <p className="text-surface-400 line-clamp-2 text-xs">{rt.overview}</p>
+                    {rt.overview && (
+                      <p className="text-muted-foreground line-clamp-2 text-xs">{rt.overview}</p>
+                    )}
                   </div>
 
-                  <div className="border-surface-800 text-surface-400 flex items-center justify-between border-t pt-2 text-xs">
+                  <div className="border-border text-muted-foreground flex items-center justify-between border-t pt-3 text-xs">
                     <span>{rt.speakers[0]?.speaker.name}</span>
                     <Link
                       href={`/tech-talks/${rt.slug}`}
-                      className="text-brand-400 hover:text-brand-300 inline-flex items-center gap-1 font-medium"
+                      className="text-foreground hover:text-primary inline-flex items-center gap-1 font-medium transition-colors"
                     >
-                      View <ArrowRight className="size-3" />
+                      <span>View</span>
+                      <ArrowRight className="size-3" />
                     </Link>
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
           </section>

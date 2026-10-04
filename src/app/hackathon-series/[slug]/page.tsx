@@ -29,7 +29,7 @@ export async function generateMetadata({
   }
 
   const { series } = data;
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansX.com";
   const ogImage = series.coverImage || "/og-image.png";
 
   return {
@@ -43,7 +43,7 @@ export async function generateMetadata({
     },
     openGraph: {
       title: `${series.name} — National Hackathon Series`,
-      description: series.purpose || `36-hour product hackathon by KailshiansX.`,
+      description: series.purpose || "36-hour product hackathon by KailshiansX.",
       url: `${APP_URL}/hackathon-series/${series.slug}`,
       siteName: "KailshiansX",
       type: "website",
@@ -52,7 +52,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: series.name,
-      description: series.tagline || series.purpose || `Hackathon series by KailshiansX.`,
+      description: series.tagline || series.purpose || "Hackathon series by KailshiansX.",
       images: [ogImage],
     },
   };
@@ -164,13 +164,13 @@ export default async function HackathonSeriesDetailPage({
   }));
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
+    <div className="bg-background text-foreground min-h-screen pb-24">
       {/* Top Breadcrumbs */}
-      <div className="border-surface-800 bg-surface-950/60 border-b backdrop-blur-md">
-        <div className="container-page mx-auto max-w-5xl px-4 py-3">
+      <div className="border-border bg-background border-b py-3.5">
+        <div className="mx-auto max-w-5xl px-4 text-xs">
           <Link
             href="/hackathon-series"
-            className="text-surface-400 hover:text-surface-100 inline-flex items-center gap-1.5 text-xs font-semibold transition"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
           >
             <ArrowLeft className="size-3.5" />
             <span>All Hackathon Series</span>
@@ -179,42 +179,28 @@ export default async function HackathonSeriesDetailPage({
       </div>
 
       {/* Series Hero Section */}
-      <section className="border-surface-800/80 from-surface-900/80 via-surface-950 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-12 pb-14 sm:pt-20 sm:pb-20">
-        <div
-          className="pointer-events-none absolute -top-32 left-1/2 size-[500px] -translate-x-1/2 rounded-full opacity-20 blur-3xl"
-          style={{ background: "#7928ca" }}
-        />
-
-        <div className="container-page relative z-10 mx-auto max-w-5xl space-y-8 px-4">
-          {/* Identity & Scale */}
+      <section className="border-border bg-background border-b py-10 sm:py-14">
+        <div className="mx-auto max-w-5xl space-y-6 px-4">
+          {/* Identity & Badges */}
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-4 sm:gap-6">
-              <div className="border-surface-700 flex size-20 shrink-0 items-center justify-center rounded-3xl border-2 bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-600 text-3xl font-black text-white shadow-2xl sm:size-24">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="border-border bg-muted text-foreground flex size-16 shrink-0 items-center justify-center rounded-lg border text-2xl font-bold sm:size-20">
                 {series.name.slice(0, 2).toUpperCase()}
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="brand" className="text-xs">
-                    Recurring Hackathon Property
-                  </Badge>
-                  {series.region && (
-                    <Badge
-                      variant="outline"
-                      className="border-purple-500/40 text-xs text-purple-300"
-                    >
-                      {series.region}
-                    </Badge>
-                  )}
+                  <Badge variant="neutral">Hackathon Series</Badge>
+                  {series.region && <Badge variant="neutral">{series.region}</Badge>}
                 </div>
 
-                <h1 className="text-surface-50 text-3xl font-extrabold tracking-tight sm:text-5xl">
+                <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-4xl">
                   {series.name}
                 </h1>
 
                 {series.city && (
-                  <p className="text-surface-400 flex items-center gap-1.5 text-xs font-medium sm:text-sm">
-                    <MapPin className="size-3.5 shrink-0 text-rose-400" />
+                  <p className="text-muted-foreground flex items-center gap-1.5 text-xs sm:text-sm">
+                    <MapPin className="size-3.5 shrink-0" />
                     <span>Hosted in {series.city}, India</span>
                   </p>
                 )}
@@ -222,12 +208,7 @@ export default async function HackathonSeriesDetailPage({
             </div>
 
             {nextEdition && (
-              <Button
-                asChild
-                variant="primary"
-                size="md"
-                className="shadow-lg shadow-purple-500/20"
-              >
+              <Button asChild variant="primary" size="md">
                 <Link href={`/events/${nextEdition.event.slug}/register`}>
                   <span>Register Season {nextEdition.editionNo}</span>
                   <ArrowRight className="ml-1.5 size-4" />
@@ -236,59 +217,44 @@ export default async function HackathonSeriesDetailPage({
             )}
           </div>
 
-          {/* Purpose & Vision Narrative */}
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6 backdrop-blur-md sm:p-8">
+          {/* Tagline & Description */}
+          <div className="space-y-2">
             {series.tagline && (
-              <h2 className="text-lg font-bold text-purple-300">{series.tagline}</h2>
+              <h2 className="text-foreground text-base font-semibold">{series.tagline}</h2>
             )}
-            <p className="text-surface-300 max-w-4xl text-xs leading-relaxed sm:text-sm">
-              {series.purpose || series.description}
-            </p>
+            {series.purpose && (
+              <p className="text-muted-foreground max-w-3xl text-sm leading-relaxed">
+                {series.purpose}
+              </p>
+            )}
           </div>
 
-          {/* Auto-Computed Impact Metrics Bar */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-2xl font-black text-purple-400 sm:text-3xl">
-                {stats.totalEditions}
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Completed Seasons
-              </p>
-            </div>
-
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-2xl font-black text-emerald-400 sm:text-3xl">
-                {stats.totalAttendees}+
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Hackers Hosted
-              </p>
-            </div>
-
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-2xl font-black text-amber-400 sm:text-3xl">
-                {series.slug === "nirmanx" ? "₹5,00,000+" : "₹1,50,000+"}
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Prize Pool
-              </p>
-            </div>
-
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-2xl font-black text-indigo-400 sm:text-3xl">
-                {stats.totalSpeakers}+
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Judges & Mentors
-              </p>
-            </div>
+          {/* Plain Stat Row */}
+          <div className="flex flex-wrap items-center gap-6 pt-2 sm:gap-10">
+            {stats.totalEditions > 0 && (
+              <div>
+                <span className="text-foreground text-2xl font-bold">{stats.totalEditions}</span>
+                <span className="text-muted-foreground ml-2 text-xs">Completed Seasons</span>
+              </div>
+            )}
+            {stats.totalAttendees > 0 && (
+              <div>
+                <span className="text-foreground text-2xl font-bold">{stats.totalAttendees}+</span>
+                <span className="text-muted-foreground ml-2 text-xs">Hackers Hosted</span>
+              </div>
+            )}
+            {stats.totalSpeakers > 0 && (
+              <div>
+                <span className="text-foreground text-2xl font-bold">{stats.totalSpeakers}+</span>
+                <span className="text-muted-foreground ml-2 text-xs">Judges & Mentors</span>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Interactive Hackathon Editions Viewer (PRD §9) */}
-      <section className="container-page mx-auto max-w-5xl px-4 pt-14">
+      {/* Interactive Hackathon Editions Viewer */}
+      <section className="mx-auto max-w-5xl px-4 pt-10">
         <HackathonSeriesClient
           series={{
             id: series.id,

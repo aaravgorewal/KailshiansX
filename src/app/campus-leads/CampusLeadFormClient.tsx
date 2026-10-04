@@ -3,19 +3,20 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Sparkles,
-  CheckCircle2,
-  AlertCircle,
-  GraduationCap,
-  Building,
-  MapPin,
-  Send,
-  Loader2,
-  Clock,
-  ArrowRight,
-} from "lucide-react";
+import { Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+} from "@/components/forms";
 import { trackApplicationSubmit } from "@/lib/analytics";
 import {
   campusLeadApplicationSchema,
@@ -27,12 +28,7 @@ export function CampusLeadFormClient() {
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [successAppId, setSuccessAppId] = React.useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<CampusLeadApplicationInput>({
+  const form = useForm<CampusLeadApplicationInput>({
     resolver: zodResolver(campusLeadApplicationSchema),
     defaultValues: {
       name: "",
@@ -61,7 +57,7 @@ export function CampusLeadFormClient() {
           roleOrTrack: values.college,
         });
         setSuccessAppId(res.applicationId);
-        reset();
+        form.reset();
       } else {
         setServerError(res.error || "Unable to submit application. Please check your inputs.");
       }
@@ -72,325 +68,273 @@ export function CampusLeadFormClient() {
 
   if (successAppId) {
     return (
-      <div className="space-y-6 rounded-3xl border border-emerald-500/30 bg-emerald-950/20 p-8 text-center shadow-2xl backdrop-blur-md sm:p-12">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/20 text-emerald-400">
-          <CheckCircle2 className="size-8" />
+      <Card className="space-y-6 p-8 text-center sm:p-12">
+        <div className="border-border bg-muted text-success mx-auto flex size-14 items-center justify-center rounded-full border">
+          <Check className="size-7" />
         </div>
-        <div className="space-y-2">
-          <span className="text-xs font-bold tracking-wider text-emerald-400 uppercase">
+        <div className="space-y-1">
+          <p className="text-muted-foreground text-xs font-semibold uppercase">
             Stage 1: Application Logged
-          </span>
-          <h3 className="text-surface-50 text-2xl font-bold">You&apos;re in the Pipeline!</h3>
-          <p className="text-surface-300 mx-auto max-w-lg text-sm">
-            Your Campus Lead application has been registered. A confirmation email has been
-            dispatched to your inbox.
+          </p>
+          <h3 className="text-foreground text-xl font-bold">You&apos;re in the Pipeline!</h3>
+          <p className="text-success text-sm font-medium">
+            Your Campus Lead application has been registered.
           </p>
         </div>
 
-        <div className="bg-surface-950/80 border-surface-800 mx-auto max-w-md space-y-2 rounded-2xl border p-4 text-left">
-          <div className="text-surface-400 text-[11px] font-semibold tracking-wider uppercase">
+        <div className="border-border bg-muted mx-auto max-w-md space-y-1 rounded-md border p-4 text-left">
+          <div className="text-muted-foreground text-xs font-medium uppercase">
             Application Reference
           </div>
-          <div className="text-brand-300 font-mono text-base font-bold select-all">
+          <div className="text-foreground font-mono text-sm font-bold select-all">
             {successAppId}
           </div>
         </div>
 
-        {/* Workflow indicator */}
-        <div className="border-surface-800/80 bg-surface-900/60 mx-auto max-w-lg space-y-3 rounded-2xl border p-5 text-left">
-          <p className="text-surface-200 text-xs font-semibold">What Happens Next?</p>
-          <div className="text-surface-400 space-y-2 text-xs">
-            <div className="flex items-center gap-2 font-medium text-emerald-400">
-              <CheckCircle2 className="size-3.5 shrink-0" />
-              <span>1. Application Received (Logged)</span>
-            </div>
-            <div className="text-surface-300 flex items-center gap-2">
-              <Clock className="text-brand-400 size-3.5 shrink-0" />
-              <span>2. Profile & Campus Standing Screening (2–3 days)</span>
-            </div>
-            <div className="text-surface-400 flex items-center gap-2">
-              <ArrowRight className="text-surface-600 size-3.5 shrink-0" />
-              <span>3. 1:1 Video Interview with Community Core Team</span>
-            </div>
-            <div className="text-surface-400 flex items-center gap-2">
-              <ArrowRight className="text-surface-600 size-3.5 shrink-0" />
-              <span>4. Final Selection, Induction Kit & Lead Badge</span>
-            </div>
-          </div>
+        <div className="border-border bg-muted/40 text-muted-foreground mx-auto max-w-md space-y-2 rounded-md border p-4 text-left text-xs">
+          <p className="text-foreground font-semibold">What Happens Next?</p>
+          <ol className="list-decimal space-y-1 pl-4">
+            <li>Application Received (Logged)</li>
+            <li>Profile & Campus Standing Screening (2–3 business days)</li>
+            <li>1:1 Video Interview with Community Core Team</li>
+            <li>Final Selection, Induction Kit & Lead Badge</li>
+          </ol>
         </div>
 
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
           onClick={() => setSuccessAppId(null)}
           className="text-xs"
         >
           Submit Another Application
         </Button>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="border-surface-800 bg-surface-900/90 space-y-8 rounded-3xl border p-6 shadow-2xl backdrop-blur-sm sm:p-10"
-    >
-      <div className="border-surface-800 border-b pb-5">
-        <h3 className="text-surface-50 flex items-center gap-2.5 text-xl font-bold">
-          <GraduationCap className="text-brand-400 size-5" />
-          Campus Lead Application Form
-        </h3>
-        <p className="text-surface-400 mt-1 text-xs">
-          Fill out all fields thoughtfully. We evaluate genuine builder passion, club involvement,
-          and leadership initiative.
-        </p>
-      </div>
-
-      {serverError && (
-        <div className="flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-300">
-          <AlertCircle className="mt-0.5 size-4 shrink-0" />
-          <span>{serverError}</span>
-        </div>
-      )}
-
-      {/* Honeypot Spam Trap (Hidden) */}
-      <input
-        type="text"
-        {...register("honeypot")}
-        tabIndex={-1}
-        autoComplete="off"
-        className="hidden"
-        aria-hidden="true"
-      />
-
-      {/* Section 1: Personal Details */}
-      <div className="space-y-4">
-        <h4 className="text-surface-200 text-xs font-bold tracking-wider uppercase">
-          1. Personal Information
-        </h4>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Full Name <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="text"
-              {...register("name")}
-              placeholder="e.g. Aayush Negi"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:ring-2 focus:outline-none"
-            />
-            {errors.name && <p className="text-[11px] text-rose-400">{errors.name.message}</p>}
+    <Card className="p-6 sm:p-8">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="border-border border-b pb-4">
+            <h3 className="text-foreground text-lg font-bold">Campus Lead Application Form</h3>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Fill out all fields thoughtfully. We evaluate builder passion, club involvement, and
+              leadership initiative.
+            </p>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Email Address <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="email"
-              {...register("email")}
-              placeholder="aayush@geu.ac.in"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:ring-2 focus:outline-none"
-            />
-            {errors.email && <p className="text-[11px] text-rose-400">{errors.email.message}</p>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Phone / WhatsApp Number <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="tel"
-              {...register("phone")}
-              placeholder="+91 9876543210"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:ring-2 focus:outline-none"
-            />
-            {errors.phone && <p className="text-[11px] text-rose-400">{errors.phone.message}</p>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              LinkedIn Profile or GitHub <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="text"
-              {...register("linkedin")}
-              placeholder="linkedin.com/in/username"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:ring-2 focus:outline-none"
-            />
-            {errors.linkedin && (
-              <p className="text-[11px] text-rose-400">{errors.linkedin.message}</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Section 2: College & Campus Standing */}
-      <div className="space-y-4">
-        <h4 className="text-surface-200 text-xs font-bold tracking-wider uppercase">
-          2. College & Academic Information
-        </h4>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="space-y-1.5 sm:col-span-2">
-            <label className="text-surface-200 text-xs font-semibold">
-              College / University Name <span className="text-rose-400">*</span>
-            </label>
-            <div className="relative">
-              <Building className="text-surface-500 pointer-events-none absolute top-2.5 left-3 size-4" />
-              <input
-                type="text"
-                {...register("college")}
-                placeholder="e.g. Graphic Era University"
-                className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border py-2.5 pr-3.5 pl-9 text-xs transition focus:ring-2 focus:outline-none"
-              />
+          {serverError && (
+            <div className="border-destructive/40 bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border p-3 text-xs">
+              <AlertCircle className="size-4 shrink-0" />
+              <span>{serverError}</span>
             </div>
-            {errors.college && (
-              <p className="text-[11px] text-rose-400">{errors.college.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              City <span className="text-rose-400">*</span>
-            </label>
-            <div className="relative">
-              <MapPin className="text-surface-500 pointer-events-none absolute top-2.5 left-3 size-4" />
-              <input
-                type="text"
-                {...register("city")}
-                placeholder="e.g. Dehradun"
-                className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border py-2.5 pr-3.5 pl-9 text-xs transition focus:ring-2 focus:outline-none"
-              />
-            </div>
-            {errors.city && <p className="text-[11px] text-rose-400">{errors.city.message}</p>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Degree Course & Year <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="text"
-              {...register("courseYear")}
-              placeholder="e.g. B.Tech Computer Science - 3rd Year"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:ring-2 focus:outline-none"
-            />
-            {errors.courseYear && (
-              <p className="text-[11px] text-rose-400">{errors.courseYear.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Weekly Availability <span className="text-rose-400">*</span>
-            </label>
-            <select
-              {...register("availability")}
-              className="bg-surface-950 border-surface-800 text-surface-100 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:ring-2 focus:outline-none"
-            >
-              <option value="5-10 hours/week">5–10 hours / week (Recommended)</option>
-              <option value="10-15 hours/week">10–15 hours / week</option>
-              <option value="15+ hours/week">15+ hours / week (Deep commitment)</option>
-            </select>
-            {errors.availability && (
-              <p className="text-[11px] text-rose-400">{errors.availability.message}</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Section 3: Technical Background & Leadership */}
-      <div className="space-y-4">
-        <h4 className="text-surface-200 text-xs font-bold tracking-wider uppercase">
-          3. Technical Background & Community Experience
-        </h4>
-
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            Technical & Project Experience <span className="text-rose-400">*</span>
-          </label>
-          <textarea
-            rows={3}
-            {...register("experience")}
-            placeholder="What technologies, stacks, or tools have you built with? (e.g. Next.js, Rust, Docker, Python AI models, etc.)"
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full resize-none rounded-xl border p-3.5 text-xs transition focus:ring-2 focus:outline-none"
-          />
-          {errors.experience && (
-            <p className="text-[11px] text-rose-400">{errors.experience.message}</p>
           )}
-        </div>
 
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            Campus Club / Community Involvement <span className="text-rose-400">*</span>
-          </label>
-          <textarea
-            rows={3}
-            {...register("communityInvolvement")}
-            placeholder="Have you led, organized, or participated in coding clubs, hackathons, or student societies?"
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full resize-none rounded-xl border p-3.5 text-xs transition focus:ring-2 focus:outline-none"
-          />
-          {errors.communityInvolvement && (
-            <p className="text-[11px] text-rose-400">{errors.communityInvolvement.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            Why do you want to lead KailshiansX at your campus?{" "}
-            <span className="text-rose-400">*</span>
-          </label>
-          <textarea
-            rows={3}
-            {...register("whyKailshiansX")}
-            placeholder="What will you change about the developer culture at your college? What kind of hackathons and tech talks do you envision?"
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full resize-none rounded-xl border p-3.5 text-xs transition focus:ring-2 focus:outline-none"
-          />
-          {errors.whyKailshiansX && (
-            <p className="text-[11px] text-rose-400">{errors.whyKailshiansX.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">Referred By (Optional)</label>
           <input
             type="text"
-            {...register("referredBy")}
-            placeholder="Name or email of current Lead or Core Team member (if applicable)"
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500/20 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:ring-2 focus:outline-none"
+            {...form.register("honeypot")}
+            className="hidden"
+            tabIndex={-1}
+            autoComplete="off"
           />
-        </div>
-      </div>
 
-      <div className="border-surface-800 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
-        <p className="text-surface-400 flex items-center gap-1.5 text-[11px]">
-          <Sparkles className="text-brand-400 size-3.5 shrink-0" />
-          <span>Applications are screened on a rolling weekly basis.</span>
-        </p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Full Name</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. Aarav Sharma" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          disabled={isSubmitting}
-          className="w-full min-w-[200px] sm:w-auto"
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 size-4 animate-spin" />
-              Submitting Application...
-            </>
-          ) : (
-            <>
-              <Send className="mr-2 size-4" />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Email Address</FormLabel>
+                  <FormControl>
+                    <FormInput type="email" placeholder="aarav@college.edu" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Phone Number (WhatsApp)</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="+91 98765 43210" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="college"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>College / University</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. Graphic Era Hill University" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>City</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. Dehradun" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="courseYear"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Course & Year of Study</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. B.Tech CSE - 3rd Year" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="linkedin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>LinkedIn Profile</FormLabel>
+                <FormControl>
+                  <FormInput placeholder="https://linkedin.com/in/username" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="experience"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Technical Background & Projects Shipped</FormLabel>
+                <FormControl>
+                  <FormTextarea
+                    placeholder="Describe your tech stack, hackathons built, open-source repositories, or apps deployed..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="communityInvolvement"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Campus Club & Community Involvement</FormLabel>
+                <FormControl>
+                  <FormTextarea
+                    placeholder="Mention any existing tech club leadership, volunteer work, or workshops organized..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="whyKailshiansX"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Why do you want to lead KailshiansX at your campus?</FormLabel>
+                <FormControl>
+                  <FormTextarea
+                    placeholder="What vision do you have for the student developers in your college? How will you build the culture?"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="availability"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Weekly Time Commitment</FormLabel>
+                  <FormControl>
+                    <FormSelect
+                      options={[
+                        { value: "3-5 hours/week", label: "3–5 hours / week" },
+                        { value: "5-10 hours/week", label: "5–10 hours / week (Recommended)" },
+                        { value: "10+ hours/week", label: "10+ hours / week" },
+                      ]}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="referredBy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Referral Code / Member Name (Optional)</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="Who referred you to this program?" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="pt-2">
+            <Button type="submit" variant="primary" isLoading={form.formState.isSubmitting}>
               Submit Campus Lead Application
-            </>
-          )}
-        </Button>
-      </div>
-    </form>
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </Card>
   );
 }

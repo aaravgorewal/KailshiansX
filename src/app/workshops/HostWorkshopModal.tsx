@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   X,
-  Sparkles,
   CheckCircle2,
   AlertCircle,
   RefreshCw,
@@ -37,6 +36,7 @@ function LinkedinIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -102,13 +102,13 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
   };
 
   return (
-    <div className="animate-fadeIn fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-md sm:p-6">
-      <div className="border-surface-700/80 bg-surface-900 text-surface-100 relative my-8 w-full max-w-2xl rounded-3xl border p-6 shadow-2xl sm:p-9">
+    <div className="bg-scrim fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 backdrop-blur-sm sm:p-6">
+      <div className="border-border bg-card text-foreground relative my-8 w-full max-w-2xl rounded-lg border p-6 sm:p-8">
         {/* Close Button */}
         <button
           type="button"
           onClick={handleClose}
-          className="text-surface-400 hover:text-surface-100 hover:bg-surface-800 absolute top-5 right-5 rounded-xl p-2 transition"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground absolute top-5 right-5 rounded-md p-1.5 transition"
           aria-label="Close modal"
         >
           <X className="size-5" />
@@ -116,21 +116,21 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
 
         {isSuccess ? (
           <div className="space-y-5 py-8 text-center">
-            <div className="mx-auto inline-flex size-16 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
-              <CheckCircle2 className="size-8" />
+            <div className="border-border bg-muted text-success mx-auto inline-flex size-12 items-center justify-center rounded-lg border">
+              <CheckCircle2 className="size-6" />
             </div>
 
             <div className="space-y-2">
-              <Badge variant="success">Proposal Submitted</Badge>
-              <h2 className="text-surface-50 text-2xl font-bold tracking-tight">
-                Thank You for Stepping Up!
+              <Badge variant="neutral">Proposal Submitted</Badge>
+              <h2 className="text-foreground text-2xl font-bold tracking-tight">
+                Thank You for Stepping Up
               </h2>
-              <p className="text-surface-300 mx-auto max-w-md text-sm">{successMessage}</p>
+              <p className="text-muted-foreground mx-auto max-w-md text-sm">{successMessage}</p>
             </div>
 
-            <div className="border-surface-800 bg-surface-950/60 text-surface-400 mx-auto max-w-md rounded-2xl border p-4 text-xs">
-              Our Developer Relations team reviews all curriculum proposals and will coordinate
-              speaker honorarium, venue setup, and participant outreach.
+            <div className="border-border bg-muted/50 text-muted-foreground mx-auto max-w-md rounded-md border p-4 text-xs">
+              Our team reviews all curriculum proposals and coordinates venue setup, materials, and
+              participant outreach.
             </div>
 
             <Button variant="primary" onClick={handleClose}>
@@ -140,21 +140,18 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
         ) : (
           <div className="space-y-6">
             <div className="space-y-1.5 pr-8">
-              <div className="flex items-center gap-2">
-                <Sparkles className="text-brand-400 size-4" />
-                <Badge variant="brand">Speaker & Mentor Funnel</Badge>
-              </div>
-              <h2 className="text-surface-50 text-2xl font-bold tracking-tight">
-                Host a Technical Workshop
+              <Badge variant="neutral">Host a Workshop</Badge>
+              <h2 className="text-foreground text-2xl font-bold tracking-tight">
+                Propose a Technical Workshop
               </h2>
-              <p className="text-surface-400 text-xs">
-                Share your engineering expertise with hundreds of hungry developers across India. We
-                provide the venue, audience, equipment, and logistical support.
+              <p className="text-muted-foreground text-xs">
+                Share your engineering expertise with developers across India. We provide the venue,
+                audience, and logistical support.
               </p>
             </div>
 
             {serverError && (
-              <div className="flex items-center gap-3 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-300">
+              <div className="border-destructive/30 bg-destructive/10 text-destructive flex items-center gap-3 rounded-md border p-3 text-xs">
                 <AlertCircle className="size-4 shrink-0" />
                 <span>{serverError}</span>
               </div>
@@ -176,34 +173,32 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
               {/* Personal Info Grid */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">Your Full Name *</label>
+                  <label className="text-foreground text-xs font-medium">Your Full Name *</label>
                   <div className="relative">
-                    <User className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <User className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <input
                       type="text"
                       {...register("name")}
                       placeholder="e.g. Rahul Sharma"
-                      className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     />
                   </div>
-                  {errors.name && (
-                    <p className="text-[11px] text-rose-400">{errors.name.message}</p>
-                  )}
+                  {errors.name && <p className="text-destructive text-xs">{errors.name.message}</p>}
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">Email Address *</label>
+                  <label className="text-foreground text-xs font-medium">Email Address *</label>
                   <div className="relative">
-                    <Mail className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <Mail className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <input
                       type="email"
                       {...register("email")}
                       placeholder="you@company.com"
-                      className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-[11px] text-rose-400">{errors.email.message}</p>
+                    <p className="text-destructive text-xs">{errors.email.message}</p>
                   )}
                 </div>
               </div>
@@ -211,52 +206,46 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
               {/* Contact & Profiles */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">
-                    WhatsApp / Phone *
-                  </label>
+                  <label className="text-foreground text-xs font-medium">WhatsApp / Phone *</label>
                   <div className="relative">
-                    <Phone className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <Phone className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <input
                       type="tel"
                       {...register("phone")}
                       placeholder="+91 98765 43210"
-                      className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     />
                   </div>
                   {errors.phone && (
-                    <p className="text-[11px] text-rose-400">{errors.phone.message}</p>
+                    <p className="text-destructive text-xs">{errors.phone.message}</p>
                   )}
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">
-                    LinkedIn Profile *
-                  </label>
+                  <label className="text-foreground text-xs font-medium">LinkedIn Profile *</label>
                   <div className="relative">
-                    <LinkedinIcon className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <LinkedinIcon className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <input
                       type="text"
                       {...register("linkedin")}
                       placeholder="linkedin.com/in/username"
-                      className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     />
                   </div>
                   {errors.linkedin && (
-                    <p className="text-[11px] text-rose-400">{errors.linkedin.message}</p>
+                    <p className="text-destructive text-xs">{errors.linkedin.message}</p>
                   )}
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">
-                    GitHub (Optional)
-                  </label>
+                  <label className="text-foreground text-xs font-medium">GitHub (Optional)</label>
                   <div className="relative">
-                    <GithubIcon className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <GithubIcon className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <input
                       type="text"
                       {...register("github")}
                       placeholder="github.com/username"
-                      className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     />
                   </div>
                 </div>
@@ -265,30 +254,30 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
               {/* Topic & Category */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">
+                  <label className="text-foreground text-xs font-medium">
                     Proposed Workshop Topic *
                   </label>
                   <div className="relative">
-                    <BookOpen className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <BookOpen className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <input
                       type="text"
                       {...register("topic")}
                       placeholder="e.g. Distributed Caching with Redis & Go"
-                      className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     />
                   </div>
                   {errors.topic && (
-                    <p className="text-[11px] text-rose-400">{errors.topic.message}</p>
+                    <p className="text-destructive text-xs">{errors.topic.message}</p>
                   )}
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">Category *</label>
+                  <label className="text-foreground text-xs font-medium">Category *</label>
                   <div className="relative">
-                    <Layers className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <Layers className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <select
                       {...register("category")}
-                      className="border-surface-700 bg-surface-950 text-surface-100 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     >
                       {WORKSHOP_CATEGORIES.map((cat) => (
                         <option key={cat} value={cat}>
@@ -298,7 +287,7 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
                     </select>
                   </div>
                   {errors.category && (
-                    <p className="text-[11px] text-rose-400">{errors.category.message}</p>
+                    <p className="text-destructive text-xs">{errors.category.message}</p>
                   )}
                 </div>
               </div>
@@ -306,10 +295,10 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
               {/* Format, Audience & Duration */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">Format *</label>
+                  <label className="text-foreground text-xs font-medium">Format *</label>
                   <select
                     {...register("format")}
-                    className="border-surface-700 bg-surface-950 text-surface-100 focus:border-brand-500 w-full rounded-xl border px-3 py-2.5 text-xs outline-none"
+                    className="border-input bg-background text-foreground focus:border-primary w-full rounded-md border px-3 py-2 text-xs focus:outline-none"
                   >
                     <option value="IN_PERSON">In-Person (Campus / Tech Park)</option>
                     <option value="VIRTUAL">Virtual Livestream</option>
@@ -318,10 +307,10 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">Audience Level *</label>
+                  <label className="text-foreground text-xs font-medium">Audience Level *</label>
                   <select
                     {...register("audienceLevel")}
-                    className="border-surface-700 bg-surface-950 text-surface-100 focus:border-brand-500 w-full rounded-xl border px-3 py-2.5 text-xs outline-none"
+                    className="border-input bg-background text-foreground focus:border-primary w-full rounded-md border px-3 py-2 text-xs focus:outline-none"
                   >
                     <option value="ALL_LEVELS">All Levels</option>
                     <option value="BEGINNER">Beginner</option>
@@ -331,71 +320,71 @@ export function HostWorkshopModal({ isOpen, onClose }: HostWorkshopModalProps) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-surface-300 text-xs font-semibold">Duration *</label>
+                  <label className="text-foreground text-xs font-medium">Duration *</label>
                   <div className="relative">
-                    <Clock className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                    <Clock className="text-muted-foreground absolute top-3 left-3 size-4" />
                     <input
                       type="text"
                       {...register("expectedDuration")}
                       placeholder="e.g. 4 Hours / Half-Day"
-                      className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                      className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                     />
                   </div>
                   {errors.expectedDuration && (
-                    <p className="text-[11px] text-rose-400">{errors.expectedDuration.message}</p>
+                    <p className="text-destructive text-xs">{errors.expectedDuration.message}</p>
                   )}
                 </div>
               </div>
 
               {/* City */}
               <div className="space-y-1.5">
-                <label className="text-surface-300 text-xs font-semibold">
+                <label className="text-foreground text-xs font-medium">
                   Preferred City (If In-Person)
                 </label>
                 <div className="relative">
-                  <MapPin className="text-surface-500 absolute top-3 left-3.5 size-4" />
+                  <MapPin className="text-muted-foreground absolute top-3 left-3 size-4" />
                   <input
                     type="text"
                     {...register("city")}
                     placeholder="e.g. Jaipur, Chandigarh, Delhi NCR, Bangalore, or Remote"
-                    className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-10 text-xs outline-none"
+                    className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-3 pl-9 text-xs focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Curriculum Outline */}
               <div className="space-y-1.5">
-                <label className="text-surface-300 text-xs font-semibold">
+                <label className="text-foreground text-xs font-medium">
                   Curriculum Outline & Hands-on Deliverables *
                 </label>
                 <textarea
                   rows={3}
                   {...register("curriculum")}
                   placeholder="Outline the modules, what project attendees will build, prerequisites, and key learning outcomes..."
-                  className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border p-3 text-xs outline-none"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border p-3 text-xs focus:outline-none"
                 />
                 {errors.curriculum && (
-                  <p className="text-[11px] text-rose-400">{errors.curriculum.message}</p>
+                  <p className="text-destructive text-xs">{errors.curriculum.message}</p>
                 )}
               </div>
 
               {/* Prior Experience */}
               <div className="space-y-1.5">
-                <label className="text-surface-300 text-xs font-semibold">
+                <label className="text-foreground text-xs font-medium">
                   Prior Speaking or Engineering Background *
                 </label>
                 <textarea
                   rows={2}
                   {...register("experience")}
                   placeholder="Share a short bio, current role/company, or past talks/mentorship experience..."
-                  className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border p-3 text-xs outline-none"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border p-3 text-xs focus:outline-none"
                 />
                 {errors.experience && (
-                  <p className="text-[11px] text-rose-400">{errors.experience.message}</p>
+                  <p className="text-destructive text-xs">{errors.experience.message}</p>
                 )}
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-2">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-3">
                 <Button type="button" variant="ghost" onClick={onClose} disabled={isSubmitting}>
                   Cancel
                 </Button>

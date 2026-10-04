@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Crown, MapPin, ArrowRight, ShieldCheck, Globe, Award } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
+import { Crown, MapPin, ArrowRight, ShieldCheck, Globe, Award, Check } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { FAQAccordion } from "@/components/ui/FAQAccordion";
 import { StateLeadFormClient } from "./StateLeadFormClient";
 import { getCommunityOverview } from "@/server/community/queries";
@@ -37,42 +38,42 @@ export const metadata: Metadata = {
 const STATE_WORKFLOW_STEPS = [
   {
     step: "01",
-    status: "APPLIED",
+    status: "Applied",
     title: "Executive Dossier Logged",
     description:
       "Submit your engineering background, community organizing track record, and state expansion roadmap.",
   },
   {
     step: "02",
-    status: "SCREENING",
+    status: "Screening",
     title: "Executive Review",
     description:
       "The Founder & Steering Committee assess your proven ability to lead across multiple cities and institutions.",
   },
   {
     step: "03",
-    status: "INTERVIEW",
+    status: "Interview",
     title: "Strategic Vision Interview",
     description:
       "A deep-dive strategy conversation with the Founder to align on regional milestones, chapters, and budgets.",
   },
   {
     step: "04",
-    status: "SELECTED",
+    status: "Selected",
     title: "Jurisdiction & Charter",
     description:
       "Sign the State Lead Charter, receive official jurisdiction mandate, budget allocation, and executive credentials.",
   },
   {
     step: "05",
-    status: "ACTIVE",
+    status: "Active",
     title: "Active State Lead",
     description:
       "Identify & interview campus leads, lead regional meetup series, manage sponsor partnerships, and report metrics.",
   },
   {
     step: "06",
-    status: "ALUMNI",
+    status: "Alumni",
     title: "Senior Advisory Board",
     description:
       "Transition into the KailshiansX National Advisory Board to shape platform strategy and mentor state successors.",
@@ -96,7 +97,7 @@ const STATE_LEAD_FAQS = [
     id: "faq-state-3",
     question: "What budget and sponsorship support does KailshiansX provide?",
     answer:
-      "State Leads are provided centralized event operational budgets, national sponsor collateral, custom regional sub-domains and brand identities, and direct access to national tech partner programs (AWS, GitHub, Razorpay, etc.).",
+      "State Leads are provided centralized event operational budgets, national sponsor collateral, custom regional brand identities, and direct access to national tech partner programs.",
   },
   {
     id: "faq-state-4",
@@ -110,140 +111,160 @@ export default async function StateLeadsPage() {
   const { stateLeads, stats } = await getCommunityOverview();
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
+    <div className="bg-background text-foreground min-h-screen pb-20">
       {/* Hero Section */}
-      <section className="border-surface-800 via-surface-950 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b from-purple-950/20 pt-16 pb-20 sm:pt-24 sm:pb-28">
-        <div className="pointer-events-none absolute -top-40 left-1/2 size-96 -translate-x-1/2 rounded-full bg-purple-500/10 blur-3xl" />
+      <section className="border-border border-b pt-24 pb-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+            Regional Leadership
+          </p>
 
-        <div className="container-page relative mx-auto max-w-5xl space-y-6 px-4 text-center">
-          <Badge
-            variant="surface"
-            className="border-purple-500/30 font-mono text-xs tracking-wider text-purple-300 uppercase"
-          >
-            PRD §12 • Regional Command
-          </Badge>
-
-          <h1 className="text-surface-50 mx-auto max-w-4xl text-3xl leading-tight font-black tracking-tight sm:text-5xl sm:leading-tight md:text-6xl">
-            Direct Regional Developer Ecosystem Expansion Across{" "}
-            <span className="text-accent-300">Your State</span>
+          <h1 className="text-foreground mt-3 max-w-4xl text-3xl font-bold tracking-tight sm:text-5xl">
+            Direct Regional Developer Ecosystem Expansion Across Your State
           </h1>
 
-          <p className="text-surface-300 mx-auto max-w-2xl text-sm leading-relaxed sm:text-base">
+          <p className="text-muted-foreground mt-4 max-w-2xl text-base">
             Coordinate city communities and university chapters. Identify campus leads, foster
             regional meetup series, build sponsor alliances, and represent KailshiansX across your
             territory.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <a
-              href="#apply"
-              className="inline-flex items-center gap-2 rounded-2xl bg-purple-600 px-6 py-3 text-xs font-bold text-white shadow-xl shadow-purple-500/20 transition hover:bg-purple-500 hover:shadow-purple-500/30 active:scale-95"
-            >
-              <Crown className="size-4" />
-              <span>Apply for State Lead</span>
-            </a>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button asChild variant="primary">
+              <a href="#apply">
+                <Crown className="mr-2 size-4" />
+                <span>Apply for State Lead</span>
+              </a>
+            </Button>
 
-            <Link
-              href="/community"
-              className="border-surface-700 bg-surface-900/80 text-surface-200 hover:bg-surface-800 inline-flex items-center gap-2 rounded-2xl border px-6 py-3 text-xs font-semibold transition hover:text-white"
-            >
-              <span>View Community Hierarchy</span>
-              <ArrowRight className="size-3.5" />
-            </Link>
+            <Button asChild variant="secondary">
+              <Link href="/community">
+                <span>View Community Hierarchy</span>
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
+            </Button>
           </div>
 
           {/* Quick Metrics */}
-          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 pt-8 sm:grid-cols-4">
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-purple-400">{stats.totalStateLeads}</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Active States
-              </p>
+          <div className="border-border mt-10 grid grid-cols-2 gap-4 border-t pt-8 sm:grid-cols-4">
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalStateLeads}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Active States</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-brand-400 text-2xl font-black">{stats.totalCities}+</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Cities Covered
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalCities > 0 ? `${stats.totalCities}+` : "0"}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Cities Covered</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-emerald-400">
-                {stats.totalCampusLeads}+
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Campus Chapters
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalCampusLeads > 0 ? `${stats.totalCampusLeads}+` : "0"}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Campus Chapters</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-indigo-400">100%</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Autonomous Budgets
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">100%</div>
+              <div className="text-muted-foreground mt-1 text-xs">Autonomous Budgets</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* State Lead Role Pillars */}
-      <section className="container-page mx-auto max-w-5xl space-y-12 px-4 py-16">
-        <div className="space-y-2 text-center">
-          <Badge variant="surface" className="font-mono text-[11px]">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
             Executive Pillars
-          </Badge>
-          <h2 className="text-surface-100 text-2xl font-bold sm:text-3xl">
+          </p>
+          <h2 className="text-foreground mt-1 text-2xl font-bold sm:text-3xl">
             Responsibilities & Strategic Ownership
           </h2>
-          <p className="text-surface-400 mx-auto max-w-xl text-xs sm:text-sm">
+          <p className="text-muted-foreground mt-2 text-sm">
             State Leads hold regional executive autonomy, driving multi-city initiatives with direct
             backing from the KailshiansX foundation.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6">
-            <div className="flex size-10 items-center justify-center rounded-2xl border border-purple-500/30 bg-purple-500/20 text-purple-400">
+          <Card className="space-y-4 p-6">
+            <div className="border-border bg-muted text-foreground flex size-10 items-center justify-center rounded-lg border">
               <Globe className="size-5" />
             </div>
-            <h3 className="text-surface-100 text-base font-bold">Multi-City Expansion</h3>
-            <p className="text-surface-400 text-xs leading-relaxed">
+            <h3 className="text-foreground text-base font-semibold">Multi-City Expansion</h3>
+            <p className="text-muted-foreground text-xs leading-relaxed">
               Identify emerging tech corridors within your state, connect with local developer
               groups, and turn isolated meetups into unified community chapters.
             </p>
-          </div>
+            <ul className="text-muted-foreground space-y-1.5 pt-2 text-xs">
+              <li className="flex items-start gap-2">
+                <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                <span>Launch city chapters across tier-1 & tier-2 cities</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                <span>Establish regional venue partnerships</span>
+              </li>
+            </ul>
+          </Card>
 
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6">
-            <div className="bg-brand-500/20 text-brand-400 border-brand-500/30 flex size-10 items-center justify-center rounded-2xl border">
+          <Card className="space-y-4 p-6">
+            <div className="border-border bg-muted text-foreground flex size-10 items-center justify-center rounded-lg border">
               <ShieldCheck className="size-5" />
             </div>
-            <h3 className="text-surface-100 text-base font-bold">Campus Lead Onboarding</h3>
-            <p className="text-surface-400 text-xs leading-relaxed">
+            <h3 className="text-foreground text-base font-semibold">Campus Lead Onboarding</h3>
+            <p className="text-muted-foreground text-xs leading-relaxed">
               Screen, interview, and mentor university campus leads across colleges in your state,
               conducting monthly reviews to support their growth.
             </p>
-          </div>
+            <ul className="text-muted-foreground space-y-1.5 pt-2 text-xs">
+              <li className="flex items-start gap-2">
+                <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                <span>Interview and appoint university campus leads</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                <span>Coordinate state-wide hackathon delegations</span>
+              </li>
+            </ul>
+          </Card>
 
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6">
-            <div className="flex size-10 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/20 text-emerald-400">
+          <Card className="space-y-4 p-6">
+            <div className="border-border bg-muted text-foreground flex size-10 items-center justify-center rounded-lg border">
               <Award className="size-5" />
             </div>
-            <h3 className="text-surface-100 text-base font-bold">Meetup Series Custodianship</h3>
-            <p className="text-surface-400 text-xs leading-relaxed">
+            <h3 className="text-foreground text-base font-semibold">Meetup Series Custodianship</h3>
+            <p className="text-muted-foreground text-xs leading-relaxed">
               Oversee the flagship regional meetup brand for your state (like RaibarX in Uttarakhand
               or PadharoX in Rajasthan), curating speakers and sponsors.
             </p>
-          </div>
+            <ul className="text-muted-foreground space-y-1.5 pt-2 text-xs">
+              <li className="flex items-start gap-2">
+                <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                <span>Monthly curated tech panels and keynotes</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                <span>Manage regional sponsor relationships</span>
+              </li>
+            </ul>
+          </Card>
         </div>
       </section>
 
-      {/* Selection Workflow Timeline (PRD §12) */}
-      <section className="border-surface-800 bg-surface-900/40 border-y py-16">
-        <div className="container-page mx-auto max-w-5xl space-y-10 px-4">
-          <div className="space-y-2 text-center">
-            <Badge variant="surface" className="font-mono text-[11px]">
-              Executive Pipeline
-            </Badge>
-            <h2 className="text-surface-100 text-2xl font-bold">State Lead Selection Roadmap</h2>
-            <p className="text-surface-400 mx-auto max-w-md text-xs">
+      {/* Selection Workflow Timeline */}
+      <section className="border-border bg-card border-y py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="mb-10 max-w-2xl">
+            <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+              Pipeline
+            </p>
+            <h2 className="text-foreground mt-1 text-2xl font-bold">
+              State Lead Selection Roadmap
+            </h2>
+            <p className="text-muted-foreground mt-2 text-sm">
               How executive candidates are evaluated, chartered, and empowered across their
               jurisdiction.
             </p>
@@ -251,19 +272,14 @@ export default async function StateLeadsPage() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             {STATE_WORKFLOW_STEPS.map((step) => (
-              <div
-                key={step.step}
-                className="border-surface-800 bg-surface-950/70 space-y-2 rounded-2xl border p-5 transition-colors hover:border-purple-500/40"
-              >
+              <Card key={step.step} className="space-y-2 p-5">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-purple-400">{step.step}</span>
-                  <Badge variant="surface" className="font-mono text-[10px]">
-                    {step.status}
-                  </Badge>
+                  <span className="text-primary font-mono text-xs font-bold">{step.step}</span>
+                  <span className="text-muted-foreground text-xs">{step.status}</span>
                 </div>
-                <h3 className="text-surface-100 text-sm font-bold">{step.title}</h3>
-                <p className="text-surface-400 text-xs leading-relaxed">{step.description}</p>
-              </div>
+                <h3 className="text-foreground text-sm font-semibold">{step.title}</h3>
+                <p className="text-muted-foreground text-xs leading-relaxed">{step.description}</p>
+              </Card>
             ))}
           </div>
         </div>
@@ -271,67 +287,60 @@ export default async function StateLeadsPage() {
 
       {/* Active State Leads Directory */}
       {stateLeads.length > 0 && (
-        <section className="container-page mx-auto max-w-5xl space-y-8 px-4 py-16">
-          <div className="border-surface-800 flex items-center justify-between border-b pb-4">
+        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+          <div className="border-border flex items-center justify-between border-b pb-4">
             <div>
-              <h2 className="text-surface-100 text-xl font-bold">Current Appointed State Leads</h2>
-              <p className="text-surface-400 text-xs">
+              <h2 className="text-foreground text-xl font-bold">Current Appointed State Leads</h2>
+              <p className="text-muted-foreground text-xs">
                 Ecosystem architects directing operations across regions
               </p>
             </div>
-            <Badge variant="surface" className="font-mono text-xs">
+            <span className="text-muted-foreground font-mono text-xs">
               {stateLeads.length} Territories
-            </Badge>
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
             {stateLeads.map((sl) => (
-              <div
-                key={sl.id}
-                className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6 transition hover:border-purple-500/40"
-              >
+              <Card key={sl.id} className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-purple-500/30 bg-purple-950/60 text-lg font-bold text-purple-300">
+                  <div className="border-border bg-muted text-foreground flex size-12 shrink-0 items-center justify-center rounded-lg border font-mono text-sm font-bold">
                     {sl.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0 space-y-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-surface-100 truncate text-base font-bold">{sl.name}</h3>
-                      <Badge variant="success" className="text-[10px]">
-                        ACTIVE
-                      </Badge>
+                      <h3 className="text-foreground truncate text-base font-semibold">
+                        {sl.name}
+                      </h3>
+                      <span className="border-border bg-muted text-muted-foreground rounded border px-1.5 py-0.5 text-xs">
+                        Active
+                      </span>
                     </div>
-                    <p className="flex items-center gap-1.5 text-xs font-semibold text-purple-300">
-                      <Crown className="size-3.5 shrink-0" />
-                      <span>State Lead • {sl.state}</span>
-                    </p>
+                    <p className="text-foreground text-xs font-medium">State Lead • {sl.state}</p>
                     {sl.citiesCovered && (
-                      <p className="text-surface-400 flex items-center gap-1 truncate text-xs">
-                        <MapPin className="size-3 shrink-0 text-rose-400" />
+                      <p className="text-muted-foreground flex items-center gap-1 truncate text-xs">
+                        <MapPin className="text-muted-foreground size-3 shrink-0" />
                         <span>Coverage: {sl.citiesCovered}</span>
                       </p>
                     )}
                   </div>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </section>
       )}
 
       {/* Application Form Anchor */}
-      <section id="apply" className="container-page mx-auto max-w-3xl space-y-6 px-4 py-8">
-        <div className="space-y-2 text-center">
-          <Badge
-            variant="surface"
-            className="border-purple-500/30 font-mono text-xs text-purple-300"
-          >
+      <section id="apply" className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+        <div className="mb-8 text-center">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
             Executive Submission
-          </Badge>
-          <h2 className="text-surface-50 text-2xl font-bold sm:text-3xl">
+          </p>
+          <h2 className="text-foreground mt-1 text-2xl font-bold sm:text-3xl">
             Submit Your State Lead Application
           </h2>
-          <p className="text-surface-400 text-xs sm:text-sm">
+          <p className="text-muted-foreground mt-2 text-xs sm:text-sm">
             Ready to lead regional engineering culture? Submit your leadership background below.
           </p>
         </div>
@@ -340,10 +349,10 @@ export default async function StateLeadsPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="container-page mx-auto max-w-3xl space-y-6 px-4 pt-16">
-        <div className="space-y-1.5 text-center">
-          <h2 className="text-surface-100 text-xl font-bold">Frequently Asked Questions</h2>
-          <p className="text-surface-400 text-xs">
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
+        <div className="mb-8 text-center">
+          <h2 className="text-foreground text-xl font-bold">Frequently Asked Questions</h2>
+          <p className="text-muted-foreground mt-1 text-xs">
             Clarifications on the State Lead role and commitments
           </p>
         </div>

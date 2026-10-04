@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Radio } from "lucide-react";
 
 import { getTechTalks } from "@/server/events/tech-talks";
 import { TechTalksSearchClient } from "./TechTalksSearchClient";
@@ -12,7 +11,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
 export const metadata: Metadata = {
   title: "Tech Talks & Engineering Archive | KailshiansX",
   description:
-    "Expert technical sessions and searchable knowledge archive. Deep-dives on Distributed Systems, AI, Postgres internals, Rust, and Next.js with slides and video recordings.",
+    "Expert technical sessions and searchable knowledge archive with slides and video recordings.",
   alternates: {
     canonical: `${APP_URL}/tech-talks`,
   },
@@ -93,75 +92,50 @@ export default async function TechTalksPage({ searchParams }: TechTalksPageProps
   }));
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
+    <div className="bg-background text-foreground min-h-screen pb-24">
       {/* Hero Header */}
-      <section className="border-surface-800/80 from-surface-900/80 via-surface-950 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-12 sm:pt-24 sm:pb-16">
-        <div
-          className="pointer-events-none absolute -top-24 left-1/2 size-96 -translate-x-1/2 rounded-full opacity-20 blur-3xl"
-          style={{ background: "#4f46e5" }}
-        />
+      <section className="border-border bg-background border-b py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl space-y-4">
+            <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">
+              Tech Talks
+            </h1>
+            <p className="text-muted-foreground text-base">
+              Technical deep dives and knowledge archive with slides, code, and recorded sessions.
+            </p>
 
-        <div className="container-page relative z-10 mx-auto max-w-4xl space-y-6 px-4 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold text-indigo-300 backdrop-blur-md">
-            <Radio className="size-3.5 animate-pulse text-emerald-400" />
-            <span>PRD §7 Expert Knowledge Archive</span>
-          </div>
-
-          <h1 className="text-surface-50 text-3xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-            Tech Talks &amp;{" "}
-            <span className="via-brand-300 to-accent-400 bg-gradient-to-r from-indigo-400 bg-clip-text text-transparent">
-              Searchable Knowledge Archive.
-            </span>
-          </h1>
-
-          <p className="text-surface-300 mx-auto max-w-2xl text-sm leading-relaxed sm:text-base">
-            Focused, zero-fluff technical deep dives hosted across premier Indian engineering
-            colleges. Access video recordings, slide decks, and code repos for past talks.
-          </p>
-
-          {/* Quick Metrics */}
-          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 pt-6 sm:grid-cols-4">
-            <div className="border-surface-800 bg-surface-900/50 rounded-2xl border p-3.5 backdrop-blur-xs">
-              <span className="text-surface-100 block text-xl font-bold sm:text-2xl">
-                {counts.total}
-              </span>
-              <span className="text-surface-400 text-[11px] tracking-wider uppercase">
-                Expert Talks
-              </span>
-            </div>
-            <div className="border-surface-800 bg-surface-900/50 rounded-2xl border p-3.5 backdrop-blur-xs">
-              <span className="block text-xl font-bold text-indigo-400 sm:text-2xl">
-                Postgres FTS
-              </span>
-              <span className="text-surface-400 text-[11px] tracking-wider uppercase">
-                Searchable Archive
-              </span>
-            </div>
-            <div className="border-surface-800 bg-surface-900/50 rounded-2xl border p-3.5 backdrop-blur-xs">
-              <span className="block text-xl font-bold text-emerald-400 sm:text-2xl">
-                Free Open
-              </span>
-              <span className="text-surface-400 text-[11px] tracking-wider uppercase">
-                Community Access
-              </span>
-            </div>
-            <div className="border-surface-800 bg-surface-900/50 rounded-2xl border p-3.5 backdrop-blur-xs">
-              <span className="text-surface-100 block text-xl font-bold sm:text-2xl">
-                {counts.past}
-              </span>
-              <span className="text-surface-400 text-[11px] tracking-wider uppercase">
-                Resource Decks
-              </span>
+            {/* Plain Stat Row */}
+            <div className="flex flex-wrap items-center gap-6 pt-2 sm:gap-10">
+              {counts.total > 0 && (
+                <div>
+                  <span className="text-foreground text-2xl font-bold">{counts.total}</span>
+                  <span className="text-muted-foreground ml-2 text-xs">Total Talks</span>
+                </div>
+              )}
+              {counts.upcoming > 0 && (
+                <div>
+                  <span className="text-foreground text-2xl font-bold">{counts.upcoming}</span>
+                  <span className="text-muted-foreground ml-2 text-xs">Upcoming</span>
+                </div>
+              )}
+              {counts.past > 0 && (
+                <div>
+                  <span className="text-foreground text-2xl font-bold">{counts.past}</span>
+                  <span className="text-muted-foreground ml-2 text-xs">Archive Recordings</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
       {/* Main Search & Listing Section */}
-      <section className="container-page px-4 pt-10">
+      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
         <Suspense
           fallback={
-            <div className="text-surface-500 py-20 text-center text-sm">Loading tech talks...</div>
+            <div className="text-muted-foreground py-20 text-center text-sm">
+              Loading tech talks...
+            </div>
           }
         >
           <TechTalksSearchClient

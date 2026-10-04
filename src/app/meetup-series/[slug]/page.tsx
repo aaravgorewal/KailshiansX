@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Calendar, Clock, MapPin, Sparkles, ArrowRight, Building } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MapPin, ArrowRight, Building } from "lucide-react";
 import { getSeriesBySlug } from "@/server/events/series";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { formatDate, formatTime } from "@/lib/format-date";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +37,7 @@ export async function generateMetadata({ params }: MeetupSeriesDetailPageProps):
     },
     openGraph: {
       title: `${series.name} — ${series.region || series.city || "Developer Meetup"}`,
-      description: series.purpose || `Developer events, talks, and community by KailshiansX.`,
+      description: series.purpose || "Developer events, talks, and community by KailshiansX.",
       url: `${APP_URL}/meetup-series/${series.slug}`,
       siteName: "KailshiansX",
       type: "website",
@@ -44,7 +46,7 @@ export async function generateMetadata({ params }: MeetupSeriesDetailPageProps):
     twitter: {
       card: "summary_large_image",
       title: series.name,
-      description: series.tagline || series.purpose || `Meetup series by KailshiansX.`,
+      description: series.tagline || series.purpose || "Meetup series by KailshiansX.",
       images: [ogImage],
     },
   };
@@ -61,13 +63,13 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
   const { series, editions, stats, nextEdition, allSpeakers, allPartners, allGalleryImages } = data;
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
+    <div className="bg-background text-foreground min-h-screen pb-24">
       {/* Top Breadcrumb Header */}
-      <div className="border-surface-800 bg-surface-950/60 border-b backdrop-blur-md">
-        <div className="container-page mx-auto max-w-5xl px-4 py-3">
+      <div className="border-border bg-background border-b py-3.5">
+        <div className="mx-auto max-w-5xl px-4 text-xs">
           <Link
             href="/meetup-series"
-            className="text-surface-400 hover:text-surface-100 inline-flex items-center gap-1.5 text-xs font-semibold transition"
+            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
           >
             <ArrowLeft className="size-3.5" />
             <span>All Meetup Series</span>
@@ -76,42 +78,28 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
       </div>
 
       {/* Hero Section */}
-      <section className="border-surface-800/80 from-surface-900/80 via-surface-950 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-12 pb-14 sm:pt-20 sm:pb-20">
-        <div
-          className="pointer-events-none absolute -top-32 left-1/2 size-[500px] -translate-x-1/2 rounded-full opacity-20 blur-3xl"
-          style={{ background: "#3d61fc" }}
-        />
-
-        <div className="container-page relative z-10 mx-auto max-w-5xl space-y-8 px-4">
-          {/* Identity & Badges */}
+      <section className="border-border bg-background border-b py-10 sm:py-14">
+        <div className="mx-auto max-w-5xl space-y-6 px-4">
+          {/* Identity & City */}
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-4 sm:gap-6">
-              <div className="from-brand-600 to-accent-600 border-surface-700 flex size-20 shrink-0 items-center justify-center rounded-3xl border-2 bg-gradient-to-tr via-indigo-600 text-3xl font-black text-white shadow-2xl sm:size-24">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="border-border bg-muted text-foreground flex size-16 shrink-0 items-center justify-center rounded-lg border text-2xl font-bold sm:size-20">
                 {series.name.slice(0, 2).toUpperCase()}
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="brand" className="text-xs">
-                    Meetup Brand Property
-                  </Badge>
-                  {series.region && (
-                    <Badge
-                      variant="outline"
-                      className="border-surface-700 text-surface-300 text-xs"
-                    >
-                      {series.region}
-                    </Badge>
-                  )}
+                  <Badge variant="neutral">Meetup Series</Badge>
+                  {series.region && <Badge variant="neutral">{series.region}</Badge>}
                 </div>
 
-                <h1 className="text-surface-50 text-3xl font-extrabold tracking-tight sm:text-5xl">
+                <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-4xl">
                   {series.name}
                 </h1>
 
                 {series.city && (
-                  <p className="text-surface-400 flex items-center gap-1.5 text-xs font-medium sm:text-sm">
-                    <MapPin className="size-3.5 shrink-0 text-rose-400" />
+                  <p className="text-muted-foreground flex items-center gap-1.5 text-xs sm:text-sm">
+                    <MapPin className="size-3.5 shrink-0" />
                     <span>Anchored in {series.city}, India</span>
                   </p>
                 )}
@@ -119,7 +107,7 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
             </div>
 
             {nextEdition && (
-              <Button asChild variant="primary" size="md" className="shadow-brand-500/20 shadow-lg">
+              <Button asChild variant="primary" size="md">
                 <Link href={`/events/${nextEdition.event.slug}/register`}>
                   <span>RSVP for Edition {nextEdition.editionNo}</span>
                   <ArrowRight className="ml-1.5 size-4" />
@@ -128,143 +116,116 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
             )}
           </div>
 
-          {/* Tagline & Deep Purpose Narrative */}
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6 backdrop-blur-md sm:p-8">
+          {/* Tagline & Purpose */}
+          <div className="space-y-2">
             {series.tagline && (
-              <h2 className="text-brand-300 text-lg font-bold">{series.tagline}</h2>
+              <h2 className="text-foreground text-base font-semibold">{series.tagline}</h2>
             )}
-            <p className="text-surface-300 max-w-4xl text-xs leading-relaxed sm:text-sm">
-              {series.purpose || series.description}
-            </p>
+            {series.purpose && (
+              <p className="text-muted-foreground max-w-3xl text-sm leading-relaxed">
+                {series.purpose}
+              </p>
+            )}
           </div>
 
-          {/* Impact Stats Grid */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-brand-400 text-2xl font-black sm:text-3xl">
-                {stats.totalEditions}
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Editions Held
-              </p>
-            </div>
-
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-2xl font-black text-emerald-400 sm:text-3xl">
-                {stats.totalAttendees}+
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Builders Engaged
-              </p>
-            </div>
-
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-2xl font-black text-indigo-400 sm:text-3xl">
-                {stats.totalSpeakers}
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Speakers Featured
-              </p>
-            </div>
-
-            <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-4">
-              <span className="text-surface-100 text-2xl font-black sm:text-3xl">
-                {stats.totalPartners}
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[11px] font-medium tracking-wider uppercase">
-                Ecosystem Partners
-              </p>
-            </div>
+          {/* Impact Stats Grid (Plain Row) */}
+          <div className="flex flex-wrap items-center gap-6 pt-2 sm:gap-10">
+            {stats.totalEditions > 0 && (
+              <div>
+                <span className="text-foreground text-2xl font-bold">{stats.totalEditions}</span>
+                <span className="text-muted-foreground ml-2 text-xs">Editions Held</span>
+              </div>
+            )}
+            {stats.totalAttendees > 0 && (
+              <div>
+                <span className="text-foreground text-2xl font-bold">{stats.totalAttendees}+</span>
+                <span className="text-muted-foreground ml-2 text-xs">Builders Engaged</span>
+              </div>
+            )}
+            {stats.totalSpeakers > 0 && (
+              <div>
+                <span className="text-foreground text-2xl font-bold">{stats.totalSpeakers}</span>
+                <span className="text-muted-foreground ml-2 text-xs">Speakers Featured</span>
+              </div>
+            )}
+            {stats.totalPartners > 0 && (
+              <div>
+                <span className="text-foreground text-2xl font-bold">{stats.totalPartners}</span>
+                <span className="text-muted-foreground ml-2 text-xs">Ecosystem Partners</span>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* Main Content Layout */}
-      <div className="container-page mx-auto max-w-5xl space-y-16 px-4 pt-14">
+      <div className="mx-auto max-w-5xl space-y-12 px-4 pt-10">
         {/* Next Edition Highlight Card */}
         {nextEdition ? (
-          <section className="border-brand-500/40 from-surface-900 via-surface-900/90 to-brand-950/20 relative overflow-hidden rounded-3xl border bg-gradient-to-br p-6 shadow-2xl sm:p-9">
-            <div className="bg-brand-500/10 pointer-events-none absolute -right-10 -bottom-10 size-52 rounded-full blur-3xl" />
+          <Card className="space-y-4 p-6 sm:p-8">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-foreground text-xs font-semibold">
+                Next Gathering — Edition {String(nextEdition.editionNo).padStart(2, "0")}
+              </span>
+              <span className="text-muted-foreground text-xs">Registrations Open</span>
+            </div>
 
-            <div className="relative z-10 space-y-4">
+            <div className="space-y-1.5">
+              <h3 className="text-foreground text-xl font-bold sm:text-2xl">
+                {nextEdition.event.title}
+              </h3>
+              {nextEdition.theme && (
+                <p className="text-muted-foreground text-xs font-medium">
+                  Theme: {nextEdition.theme}
+                </p>
+              )}
+              {nextEdition.event.overview && (
+                <p className="text-muted-foreground max-w-3xl text-xs leading-relaxed sm:text-sm">
+                  {nextEdition.event.overview}
+                </p>
+              )}
+            </div>
+
+            {/* Date, Time & Venue */}
+            <div className="border-border text-muted-foreground flex flex-wrap items-center gap-6 border-t pt-3 text-xs">
               <div className="flex items-center gap-2">
-                <Badge variant="brand" className="gap-1.5 py-1">
-                  <Sparkles className="size-3" />
-                  <span>
-                    Next Gathering — Edition {String(nextEdition.editionNo).padStart(2, "0")}
-                  </span>
-                </Badge>
-                <Badge variant="success">Registrations Open</Badge>
+                <Calendar className="size-4" />
+                <span>{formatDate(nextEdition.event.startDate)}</span>
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-surface-50 text-2xl font-bold sm:text-3xl">
-                  {nextEdition.event.title}
-                </h3>
-                {nextEdition.theme && (
-                  <p className="text-brand-300 text-xs font-semibold">Theme: {nextEdition.theme}</p>
-                )}
-                {nextEdition.event.overview && (
-                  <p className="text-surface-300 max-w-3xl text-xs leading-relaxed sm:text-sm">
-                    {nextEdition.event.overview}
-                  </p>
-                )}
+              <div className="flex items-center gap-2">
+                <Clock className="size-4" />
+                <span>{formatTime(nextEdition.event.startDate)}</span>
               </div>
 
-              {/* Date, Time & Venue */}
-              <div className="text-surface-300 flex flex-wrap items-center gap-6 pt-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <Calendar className="text-brand-400 size-4" />
-                  <span>
-                    {new Date(nextEdition.event.startDate).toLocaleDateString("en-IN", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Clock className="text-surface-400 size-4" />
-                  <span>
-                    {new Date(nextEdition.event.startDate).toLocaleTimeString("en-IN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <MapPin className="size-4 text-rose-400" />
-                  <span>
-                    {nextEdition.event.venue || "Community Space"},{" "}
-                    {nextEdition.event.city?.name || "India"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 pt-4">
-                <Button asChild variant="primary" size="md">
-                  <Link href={`/events/${nextEdition.event.slug}/register`}>
-                    <span>Claim Your Free Pass</span>
-                    <ArrowRight className="ml-1.5 size-4" />
-                  </Link>
-                </Button>
-
-                <Button asChild variant="secondary" size="md">
-                  <Link href={`/events/${nextEdition.event.slug}`}>
-                    <span>View Agenda & Speakers</span>
-                  </Link>
-                </Button>
+              <div className="flex items-center gap-2">
+                <MapPin className="size-4" />
+                <span>
+                  {nextEdition.event.venue || "Community Space"},{" "}
+                  {nextEdition.event.city?.name || "India"}
+                </span>
               </div>
             </div>
-          </section>
+
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Button asChild variant="primary" size="md">
+                <Link href={`/events/${nextEdition.event.slug}/register`}>
+                  <span>Register Free Pass</span>
+                  <ArrowRight className="ml-1.5 size-4" />
+                </Link>
+              </Button>
+
+              <Button asChild variant="secondary" size="md">
+                <Link href={`/events/${nextEdition.event.slug}`}>
+                  <span>View Details & Agenda</span>
+                </Link>
+              </Button>
+            </div>
+          </Card>
         ) : (
-          <section className="border-surface-800 bg-surface-900/40 space-y-3 rounded-3xl border p-8 text-center">
-            <h3 className="text-surface-100 text-base font-bold">Next Edition in Planning</h3>
-            <p className="text-surface-400 mx-auto max-w-md text-xs">
+          <Card className="space-y-3 p-8 text-center">
+            <h3 className="text-foreground text-sm font-semibold">Next Edition in Planning</h3>
+            <p className="text-muted-foreground mx-auto max-w-md text-xs">
               Our community team is curating the agenda and venue for the upcoming edition. Want to
               propose a tech talk or host this series at your college auditorium?
             </p>
@@ -275,97 +236,84 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
                 </Link>
               </Button>
             </div>
-          </section>
+          </Card>
         )}
 
-        {/* Editions Timeline (PRD §8) */}
+        {/* Editions List */}
         <section className="space-y-6">
-          <div className="border-surface-800 flex items-center justify-between border-b pb-3">
+          <div className="border-border flex items-center justify-between border-b pb-3">
             <div>
-              <h2 className="text-surface-100 text-xl font-bold">Editions Timeline</h2>
-              <p className="text-surface-400 text-xs">
-                The chronological history of {series.name} gatherings
+              <h2 className="text-foreground text-lg font-bold">Editions List</h2>
+              <p className="text-muted-foreground text-xs">
+                Chronological history of {series.name} gatherings
               </p>
             </div>
-            <span className="text-surface-500 font-mono text-xs">
+            <span className="text-muted-foreground text-xs">
               {editions.length} Recorded Editions
             </span>
           </div>
 
-          <div className="border-surface-800 relative space-y-8 border-l pl-6 sm:pl-8">
+          <div className="space-y-4">
             {editions.map((edition) => {
-              const startDate = new Date(edition.event.startDate);
-              const dateStr = startDate.toLocaleDateString("en-IN", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              });
-              const isPast = startDate < new Date();
+              const isPast = new Date(edition.event.startDate) < new Date();
+              const dateStr = formatDate(edition.event.startDate);
 
               return (
-                <div key={edition.id} className="group relative">
-                  {/* Timeline Node Dot */}
-                  <div
-                    className={`absolute top-1.5 -left-[31px] size-4 rounded-full border-2 transition-all sm:-left-[39px] ${
-                      isPast
-                        ? "bg-surface-950 border-surface-600 group-hover:border-brand-500"
-                        : "bg-brand-500 border-surface-950 shadow-brand-500/50 shadow-md"
-                    }`}
-                  />
-
-                  <div className="border-surface-800 bg-surface-900/60 group-hover:border-surface-700 space-y-4 rounded-3xl border p-6 backdrop-blur-sm transition-all sm:p-7">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="surface" className="font-mono text-xs">
-                          Edition {String(edition.editionNo).padStart(2, "0")}
-                        </Badge>
-                        {edition.theme && (
-                          <Badge variant="outline" className="border-brand-500/30 text-brand-300">
-                            {edition.theme}
-                          </Badge>
-                        )}
-                        {!isPast && <Badge variant="success">Upcoming</Badge>}
-                      </div>
-
-                      <span className="text-surface-400 text-xs font-medium">{dateStr}</span>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <h3 className="text-surface-100 group-hover:text-brand-300 text-lg font-bold transition-colors">
-                        {edition.event.title}
-                      </h3>
-                      {edition.event.overview && (
-                        <p className="text-surface-400 line-clamp-2 text-xs leading-relaxed">
-                          {edition.event.overview}
-                        </p>
+                <Card
+                  key={edition.id}
+                  className="hover:border-muted-foreground space-y-3 p-5 transition-[border-color] duration-150 sm:p-6"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-foreground font-semibold">
+                        Edition {String(edition.editionNo).padStart(2, "0")}
+                      </span>
+                      {edition.theme && (
+                        <span className="text-muted-foreground">• {edition.theme}</span>
                       )}
                     </div>
 
-                    {/* Venue & Speaker Teasers */}
-                    <div className="border-surface-800/80 text-surface-400 flex flex-wrap items-center justify-between gap-4 border-t pt-2 text-xs">
-                      <div className="flex items-center gap-2 truncate">
-                        <MapPin className="size-3.5 shrink-0 text-rose-400" />
-                        <span className="truncate">
-                          {edition.event.venue || "Campus Lab"},{" "}
-                          {edition.event.city?.name || "India"}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <span className="text-surface-500">
-                          {edition.event.speakers.length} Speakers
-                        </span>
-                        <Link
-                          href={`/events/${edition.event.slug}`}
-                          className="text-brand-400 hover:text-brand-300 inline-flex items-center gap-1 font-semibold"
-                        >
-                          <span>{isPast ? "View Recap & Slides" : "View Agenda"}</span>
-                          <ArrowRight className="size-3" />
-                        </Link>
-                      </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-muted-foreground">{dateStr}</span>
+                      <span className="text-muted-foreground font-medium">
+                        {isPast ? "Completed" : "Upcoming"}
+                      </span>
                     </div>
                   </div>
-                </div>
+
+                  <div className="space-y-1">
+                    <h3 className="text-foreground text-base font-semibold">
+                      {edition.event.title}
+                    </h3>
+                    {edition.event.overview && (
+                      <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
+                        {edition.event.overview}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="border-border text-muted-foreground flex flex-wrap items-center justify-between gap-4 border-t pt-3 text-xs">
+                    <div className="flex items-center gap-2 truncate">
+                      <MapPin className="size-3.5 shrink-0" />
+                      <span className="truncate">
+                        {edition.event.venue || "Campus Lab"}, {edition.event.city?.name || "India"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      {edition.event.speakers.length > 0 && (
+                        <span>{edition.event.speakers.length} Speakers</span>
+                      )}
+                      <Link
+                        href={`/events/${edition.event.slug}`}
+                        className="text-foreground hover:text-primary inline-flex items-center gap-1 font-medium transition-colors"
+                      >
+                        <span>{isPast ? "View Recap" : "View Agenda"}</span>
+                        <ArrowRight className="size-3" />
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
               );
             })}
           </div>
@@ -374,46 +322,43 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
         {/* Speakers Pool Across Editions */}
         {allSpeakers.length > 0 && (
           <section className="space-y-6">
-            <div className="border-surface-800 border-b pb-3">
-              <h2 className="text-surface-100 text-xl font-bold">Featured Series Speakers</h2>
-              <p className="text-surface-400 text-xs">
-                Practitioners and engineers who have shared knowledge at {series.name}
+            <div className="border-border border-b pb-3">
+              <h2 className="text-foreground text-lg font-bold">Series Speakers</h2>
+              <p className="text-muted-foreground text-xs">
+                Engineers and practitioners who have presented at {series.name}
               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
               {allSpeakers.map((speaker) => (
-                <div
-                  key={speaker.id}
-                  className="border-surface-800 bg-surface-900/60 flex flex-col justify-between space-y-3 rounded-2xl border p-4"
-                >
-                  <div className="space-y-3">
-                    <div className="from-brand-600 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-tr to-indigo-600 text-sm font-bold text-white shadow-inner">
+                <Card key={speaker.id} className="flex flex-col justify-between space-y-3 p-4">
+                  <div className="space-y-2">
+                    <div className="border-border bg-muted text-foreground flex size-11 items-center justify-center rounded-lg border text-sm font-semibold">
                       {speaker.name.slice(0, 2).toUpperCase()}
                     </div>
 
                     <div>
-                      <h4 className="text-surface-100 text-sm font-bold">{speaker.name}</h4>
-                      <p className="text-brand-300 truncate text-xs">
-                        {speaker.designation}{" "}
-                        {speaker.organisation ? `@ ${speaker.organisation}` : ""}
+                      <h3 className="text-foreground text-xs font-semibold">{speaker.name}</h3>
+                      <p className="text-muted-foreground truncate text-xs">
+                        {speaker.designation}
+                        {speaker.organisation ? ` @ ${speaker.organisation}` : ""}
                       </p>
                     </div>
 
                     {speaker.bio && (
-                      <p className="text-surface-400 line-clamp-2 text-[11px] leading-relaxed">
+                      <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
                         {speaker.bio}
                       </p>
                     )}
                   </div>
 
-                  <div className="border-surface-800 flex items-center gap-2 border-t pt-2">
+                  <div className="border-border text-muted-foreground flex items-center gap-3 border-t pt-2 text-xs">
                     {speaker.linkedin && (
                       <a
                         href={speaker.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-surface-400 hover:text-brand-400 text-[11px] transition"
+                        className="hover:text-foreground transition-colors"
                       >
                         LinkedIn
                       </a>
@@ -423,40 +368,38 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
                         href={speaker.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-surface-400 hover:text-brand-400 text-[11px] transition"
+                        className="hover:text-foreground transition-colors"
                       >
                         GitHub
                       </a>
                     )}
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
           </section>
         )}
 
-        {/* Partners & Sponsors */}
+        {/* Partners & Supporters */}
         {allPartners.length > 0 && (
           <section className="space-y-6">
-            <div className="border-surface-800 border-b pb-3">
-              <h2 className="text-surface-100 text-xl font-bold">Series Partners & Supporters</h2>
-              <p className="text-surface-400 text-xs">
-                Companies and communities supporting {series.name} editions
+            <div className="border-border border-b pb-3">
+              <h2 className="text-foreground text-lg font-bold">Series Partners & Supporters</h2>
+              <p className="text-muted-foreground text-xs">
+                Organizations supporting {series.name} editions
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {allPartners.map((partner) => (
-                <div
+                <Card
                   key={partner.id}
-                  className="border-surface-800 bg-surface-900/40 flex flex-col items-center justify-center space-y-1.5 rounded-2xl border p-4 text-center"
+                  className="flex flex-col items-center justify-center space-y-1.5 p-4 text-center"
                 >
-                  <Building className="text-surface-500 size-6" />
-                  <span className="text-surface-200 text-xs font-bold">{partner.name}</span>
-                  <Badge variant="surface" className="text-[9px]">
-                    {partner.tier || "Partner"}
-                  </Badge>
-                </div>
+                  <Building className="text-muted-foreground size-5" />
+                  <span className="text-foreground text-xs font-semibold">{partner.name}</span>
+                  <span className="text-muted-foreground text-xs">{partner.tier || "Partner"}</span>
+                </Card>
               ))}
             </div>
           </section>
@@ -465,10 +408,10 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
         {/* Photo Gallery Highlights */}
         {allGalleryImages.length > 0 && (
           <section className="space-y-6">
-            <div className="border-surface-800 border-b pb-3">
-              <h2 className="text-surface-100 text-xl font-bold">Moments & Highlights</h2>
-              <p className="text-surface-400 text-xs">
-                Recap gallery from across all {series.name} editions
+            <div className="border-border border-b pb-3">
+              <h2 className="text-foreground text-lg font-bold">Moments & Highlights</h2>
+              <p className="text-muted-foreground text-xs">
+                Recap gallery from across {series.name} editions
               </p>
             </div>
 
@@ -476,20 +419,20 @@ export default async function MeetupSeriesDetailPage({ params }: MeetupSeriesDet
               {allGalleryImages.map((img) => (
                 <div
                   key={img.id}
-                  className="group border-surface-800 bg-surface-900 relative aspect-video overflow-hidden rounded-2xl border shadow-md"
+                  className="border-border bg-muted relative aspect-video overflow-hidden rounded-lg border"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={img.url}
                     alt={img.caption || "Meetup moment"}
-                    className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="size-full object-cover"
                   />
-                  <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent p-3.5">
-                    <span className="text-brand-300 font-mono text-[10px]">
+                  <div className="bg-scrim absolute inset-0 flex flex-col justify-end p-3">
+                    <span className="text-muted-foreground text-xs">
                       Edition {String(img.editionNo).padStart(2, "0")}
                     </span>
                     {img.caption && (
-                      <p className="truncate text-xs font-medium text-white">{img.caption}</p>
+                      <p className="text-foreground truncate text-xs font-medium">{img.caption}</p>
                     )}
                   </div>
                 </div>

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { getMemberDashboardData } from "@/server/users/profile";
+import { getPersonalizedRecommendations } from "@/server/recommendations/service";
 import { MemberDashboardClient } from "@/components/profile/MemberDashboardClient";
 
 export const metadata: Metadata = {
@@ -25,7 +26,10 @@ export default async function MemberProfilePage() {
     redirect("/signin?callbackUrl=/me");
   }
 
-  const dashboardData = await getMemberDashboardData(session.user.id);
+  const [dashboardData, recommendations] = await Promise.all([
+    getMemberDashboardData(session.user.id),
+    getPersonalizedRecommendations(session.user.id),
+  ]);
 
   if (!dashboardData) {
     redirect("/signin");
@@ -34,7 +38,7 @@ export default async function MemberProfilePage() {
   return (
     <main className="bg-surface-950 min-h-screen px-4 pt-24 pb-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <MemberDashboardClient initialData={dashboardData} />
+        <MemberDashboardClient initialData={dashboardData} recommendations={recommendations} />
       </div>
     </main>
   );

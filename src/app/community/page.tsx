@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Crown, ArrowRight, MapPin, Building, ChevronDown, CheckCircle2 } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
+import { ArrowRight, MapPin, Building } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { getCommunityOverview } from "@/server/community/queries";
 import { CommunityCtaGrid } from "./CommunityCtaButtons";
 import { CommunityModalsClient } from "./CommunityModalsClient";
@@ -30,12 +30,11 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Developer Community & Ecosystem | KailshiansX",
-    description: "Join 1,200+ builders across India. Move from attendee to leader.",
+    description: "Join builders across India. Move from attendee to leader.",
     images: ["/og-image.png"],
   },
 };
 
-// PRD §10 Community Hierarchy Architecture Nodes
 const HIERARCHY_TIERS = [
   {
     tier: "01",
@@ -44,8 +43,6 @@ const HIERARCHY_TIERS = [
     scope: "National Platform & Ecosystem Architecture",
     description:
       "Coordinates national flagship hackathons (NirmanX), curriculum standards, funding allocations, industry partner programs, and platform infrastructure.",
-    color: "from-brand-500 to-indigo-600",
-    badgeColor: "border-brand-500/30 text-brand-300",
     perks: "National leadership, ecosystem governance, multi-state sponsorship coordination",
   },
   {
@@ -55,8 +52,6 @@ const HIERARCHY_TIERS = [
     scope: "State & Regional Jurisdictions (e.g. Uttarakhand, Rajasthan, Punjab & Chandigarh)",
     description:
       "Executive leaders driving expansion across cities, onboarding and mentoring Campus Leads, overseeing regional meetup properties, and managing state event budgets.",
-    color: "from-purple-500 to-pink-600",
-    badgeColor: "border-purple-500/30 text-purple-300",
     perks:
       "Regional executive mandate, direct founder council seat, independent operational budget",
   },
@@ -67,8 +62,6 @@ const HIERARCHY_TIERS = [
     scope: "Flagship Urban Tech Hubs (Dehradun, Jaipur, Chandigarh, Delhi NCR)",
     description:
       "City-wide developer communities built around flagship recurring meetup brands like RaibarX, PadharoX, and TricityX connecting professionals, startups, and students.",
-    color: "from-amber-500 to-rose-600",
-    badgeColor: "border-amber-500/30 text-amber-300",
     perks: "Monthly expert panels, hiring networking, founder keynotes, venue partnerships",
   },
   {
@@ -78,8 +71,6 @@ const HIERARCHY_TIERS = [
     scope: "College & University Campuses",
     description:
       "Student developers representing KailshiansX on the ground. They lead university hackathon delegations, organize hands-on technical workshops, and mentor freshmen.",
-    color: "from-brand-500 to-emerald-600",
-    badgeColor: "border-brand-500/30 text-brand-300",
     perks: "Official leadership credential, VIP hackathon passes, 1:1 founder mentorship, swag",
   },
   {
@@ -89,8 +80,6 @@ const HIERARCHY_TIERS = [
     scope: "Academic Institutions & Student Clubs",
     description:
       "Officially recognized developer chapters embedded inside engineering colleges running study circles, project buildathons, and preparing for national hackathons.",
-    color: "from-emerald-500 to-teal-600",
-    badgeColor: "border-emerald-500/30 text-emerald-300",
     perks: "Official event backing, KailshiansX curriculum, cloud credits, guest speakers",
   },
   {
@@ -100,13 +89,10 @@ const HIERARCHY_TIERS = [
     scope: "Developers, Students, Engineers & Hackers",
     description:
       "The lifeblood of KailshiansX. Software engineers, university students, and open-source contributors attending meetups, building prototypes, and solving real-world challenges.",
-    color: "from-blue-500 to-cyan-600",
-    badgeColor: "border-cyan-500/30 text-cyan-300",
     perks: "Event access, team matchmaking, certificate verification, project showcase",
   },
 ];
 
-// PRD §30 Progression Loop Steps
 const PROGRESSION_STAGES = [
   {
     step: "01",
@@ -144,192 +130,148 @@ export default async function CommunityPage() {
   const { stats, stateLeads, campusLeads, cityHubs } = await getCommunityOverview();
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
+    <div className="bg-background text-foreground min-h-screen pb-20">
       {/* Global Interactive Modals Manager */}
       <CommunityModalsClient />
 
       {/* Hero Section */}
-      <section className="border-surface-800 from-brand-950/20 via-surface-950 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-20 sm:pt-24 sm:pb-28">
-        <div className="bg-brand-500/10 pointer-events-none absolute -top-40 left-1/2 size-96 -translate-x-1/2 rounded-full blur-3xl" />
+      <section className="border-border border-b pt-24 pb-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+            Community Architecture
+          </p>
 
-        <div className="container-page relative mx-auto max-w-5xl space-y-6 px-4 text-center">
-          <Badge variant="brand" className="font-mono text-xs tracking-wider uppercase">
-            PRD §10 • Community Architecture
-          </Badge>
-
-          <h1 className="text-surface-50 mx-auto max-w-4xl text-3xl leading-tight font-black tracking-tight sm:text-5xl sm:leading-tight md:text-6xl">
-            A Living Network of Engineers, Leads &{" "}
-            <span className="from-brand-400 via-accent-300 bg-gradient-to-r to-indigo-400 bg-clip-text text-transparent">
-              Regional Builders
-            </span>
+          <h1 className="text-foreground mt-3 max-w-4xl text-3xl font-bold tracking-tight sm:text-5xl">
+            A Living Network of Engineers, Leads & Regional Builders
           </h1>
 
-          <p className="text-surface-300 mx-auto max-w-2xl text-sm leading-relaxed sm:text-base">
+          <p className="text-muted-foreground mt-4 max-w-2xl text-base">
             KailshiansX is not a static events calendar. It is a hierarchical, distributed developer
             movement operating across states, cities, and campus chapters.
           </p>
 
           {/* Impact Counters */}
-          <div className="mx-auto grid max-w-4xl grid-cols-2 gap-3 pt-6 sm:grid-cols-3 lg:grid-cols-6">
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-brand-400 text-2xl font-black">{stats.totalBuilders}+</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Builders
-              </p>
+          <div className="border-border mt-10 grid grid-cols-2 gap-4 border-t pt-8 sm:grid-cols-3 lg:grid-cols-6">
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalBuilders > 0 ? `${stats.totalBuilders}+` : "0"}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Builders</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-purple-400">{stats.totalStateLeads}</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                State Leads
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalStateLeads}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">State Leads</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-amber-400">{stats.totalCities}+</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Cities Active
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalCities > 0 ? `${stats.totalCities}+` : "0"}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Cities Active</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-emerald-400">
-                {stats.totalCampusLeads}+
-              </span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Campus Leads
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalCampusLeads > 0 ? `${stats.totalCampusLeads}+` : "0"}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Campus Leads</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-indigo-400">{stats.totalColleges}+</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Colleges
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalColleges > 0 ? `${stats.totalColleges}+` : "0"}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Colleges</div>
             </div>
-            <div className="border-surface-800/80 bg-surface-900/60 rounded-2xl border p-3.5 backdrop-blur-sm">
-              <span className="text-2xl font-black text-rose-400">{stats.totalEventsHosted}+</span>
-              <p className="text-surface-400 mt-0.5 text-[10px] font-semibold tracking-wider uppercase">
-                Events Hosted
-              </p>
+            <div>
+              <div className="text-foreground text-2xl font-bold sm:text-3xl">
+                {stats.totalEventsHosted > 0 ? `${stats.totalEventsHosted}+` : "0"}
+              </div>
+              <div className="text-muted-foreground mt-1 text-xs">Events Hosted</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── PRD §10: Hierarchy Visual Section ────────────────────────────────── */}
-      <section className="container-page mx-auto max-w-5xl space-y-12 px-4 py-16">
-        <div className="space-y-2 text-center">
-          <Badge variant="surface" className="font-mono text-[11px]">
-            Structural Architecture
-          </Badge>
-          <h2 className="text-surface-100 text-2xl font-bold sm:text-3xl">
-            The KailshiansX Community Hierarchy
+      {/* ─── Community Hierarchy: Simple vertical stepper with border-l border-border ─── */}
+      <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+        <div className="mb-10">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+            Structural Hierarchy
+          </p>
+          <h2 className="text-foreground mt-1 text-2xl font-bold sm:text-3xl">
+            Community Hierarchy
           </h2>
-          <p className="text-surface-400 mx-auto max-w-xl text-xs sm:text-sm">
-            PRD §10 specifies our clear, decentralized hierarchy: from the foundational platform
-            council to regional states, city hubs, campus chapters, and individual builders.
+          <p className="text-muted-foreground mt-2 text-sm">
+            A clear, decentralized structure: from platform governance to states, city hubs, campus
+            chapters, and individual builders.
           </p>
         </div>
 
-        {/* Visual Flow Diagram */}
-        <div className="relative mx-auto max-w-3xl space-y-4">
-          {HIERARCHY_TIERS.map((tier, index) => {
-            const isLast = index === HIERARCHY_TIERS.length - 1;
-
-            return (
-              <div key={tier.tier} className="group relative">
-                <div className="border-surface-800 bg-surface-900/90 hover:border-surface-600 relative z-10 space-y-4 rounded-3xl border p-6 shadow-xl backdrop-blur-sm transition-all duration-300 sm:p-7">
-                  {/* Top Header */}
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`size-10 rounded-2xl bg-gradient-to-tr ${tier.color} flex items-center justify-center font-mono text-xs font-bold text-white shadow-md`}
-                      >
-                        {tier.tier}
-                      </div>
-                      <div>
-                        <h3 className="text-surface-50 flex items-center gap-2 text-base font-bold sm:text-lg">
-                          <span>{tier.role}</span>
-                          <span className="text-surface-500 text-xs font-normal">
-                            • {tier.entity}
-                          </span>
-                        </h3>
-                        <p className="text-surface-400 text-xs">{tier.scope}</p>
-                      </div>
-                    </div>
-
-                    <Badge variant="surface" className={`font-mono text-[10px] ${tier.badgeColor}`}>
-                      Level {tier.tier}
-                    </Badge>
-                  </div>
-
-                  {/* Body */}
-                  <p className="text-surface-300 text-xs leading-relaxed">{tier.description}</p>
-
-                  {/* Perks & Powers */}
-                  <div className="border-surface-800/80 text-surface-400 flex items-center gap-2 border-t pt-3 text-[11px]">
-                    <CheckCircle2 className="text-brand-400 size-3.5 shrink-0" />
-                    <span>
-                      <strong>Key Mandate:</strong> {tier.perks}
-                    </span>
-                  </div>
+        {/* Vertical Stepper List */}
+        <div className="border-border relative ml-4 space-y-8 border-l pl-6">
+          {HIERARCHY_TIERS.map((tier) => (
+            <div key={tier.tier} className="relative">
+              {/* Stepper Node */}
+              <span className="border-border bg-background text-foreground absolute top-0 -left-[37px] flex size-6 items-center justify-center rounded-full border font-mono text-xs font-semibold">
+                {tier.tier}
+              </span>
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <h3 className="text-foreground text-base font-semibold">{tier.role}</h3>
+                  <span className="text-muted-foreground text-xs">• {tier.entity}</span>
                 </div>
-
-                {/* Downward Connector Arrow */}
-                {!isLast && (
-                  <div className="relative z-0 flex justify-center py-2">
-                    <div className="flex flex-col items-center">
-                      <div className="from-surface-700 to-brand-500/50 h-4 w-0.5 bg-gradient-to-b" />
-                      <ChevronDown className="text-brand-400 -mt-1 size-4" />
-                    </div>
-                  </div>
-                )}
+                <p className="text-muted-foreground text-xs font-medium">{tier.scope}</p>
+                <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                  {tier.description}
+                </p>
+                <div className="text-muted-foreground pt-2 text-xs">
+                  <strong className="text-foreground">Key Mandate:</strong> {tier.perks}
+                </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* ─── PRD §30: The Progression Pathway ───────────────────────────────── */}
-      <section className="border-surface-800 bg-surface-900/40 border-y py-16">
-        <div className="container-page mx-auto max-w-5xl space-y-10 px-4">
-          <div className="space-y-2 text-center">
-            <Badge variant="brand" className="font-mono text-[11px]">
-              Product Principle §30
-            </Badge>
-            <h2 className="text-surface-100 text-2xl font-bold sm:text-3xl">
-              The Lifelong Builder Progression Journey
+      {/* ─── Progression Pathway ────────────────────────────────────────────── */}
+      <section className="border-border bg-card border-y py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="mb-10 max-w-2xl">
+            <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+              Progression Loop
+            </p>
+            <h2 className="text-foreground mt-1 text-2xl font-bold sm:text-3xl">
+              Builder Progression Journey
             </h2>
-            <p className="text-surface-400 mx-auto max-w-xl text-xs sm:text-sm">
-              Every feature on KailshiansX is engineered to move a person toward deeper
-              participation. No one stays just an attendee.
+            <p className="text-muted-foreground mt-2 text-sm">
+              Every initiative is designed to move people toward deeper involvement and leadership.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {PROGRESSION_STAGES.map((stage) => (
-              <div
-                key={stage.step}
-                className="border-surface-800 bg-surface-950/80 hover:border-brand-500/40 space-y-2 rounded-2xl border p-4 transition"
-              >
-                <span className="text-brand-400 font-mono text-xs font-bold">{stage.step}</span>
-                <h3 className="text-surface-100 text-sm font-bold">{stage.title}</h3>
-                <p className="text-surface-400 text-[11px] leading-relaxed">{stage.desc}</p>
-              </div>
+              <Card key={stage.step} className="space-y-2 p-4">
+                <span className="text-primary font-mono text-xs font-bold">{stage.step}</span>
+                <h3 className="text-foreground text-sm font-semibold">{stage.title}</h3>
+                <p className="text-muted-foreground text-xs leading-relaxed">{stage.desc}</p>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── PRD §10: 6 Core Action CTAs ─────────────────────────────────────── */}
-      <section className="container-page mx-auto max-w-5xl space-y-10 px-4 py-16">
-        <div className="space-y-2 text-center">
-          <Badge variant="surface" className="font-mono text-[11px]">
+      {/* ─── Core Action CTAs ─────────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
             Action Funnels
-          </Badge>
-          <h2 className="text-surface-100 text-2xl font-bold sm:text-3xl">
-            Take Your Next Step in the Ecosystem
+          </p>
+          <h2 className="text-foreground mt-1 text-2xl font-bold sm:text-3xl">
+            Take Your Next Step
           </h2>
-          <p className="text-surface-400 mx-auto max-w-xl text-xs sm:text-sm">
-            Choose your path: apply for state or campus leadership, start an accredited college
-            chapter, join as a mentor, or take the speaking stage.
+          <p className="text-muted-foreground mt-2 text-sm">
+            Apply for state or campus leadership, start a recognized chapter, mentor builders, or
+            take the stage.
           </p>
         </div>
 
@@ -338,141 +280,145 @@ export default async function CommunityPage() {
 
       {/* ─── State Leads Directory ───────────────────────────────────────────── */}
       {stateLeads.length > 0 && (
-        <section className="container-page mx-auto max-w-5xl space-y-8 px-4 py-12">
-          <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-            <div>
-              <h2 className="text-surface-100 text-xl font-bold">State Leadership Directorate</h2>
-              <p className="text-surface-400 text-xs">
-                Regional directors overseeing multi-city developer operations
-              </p>
-            </div>
-            <Button asChild variant="outline" size="sm" className="text-xs">
-              <Link href="/state-leads">
-                <span>View Program</span>
-                <ArrowRight className="ml-1 size-3" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {stateLeads.map((sl) => (
-              <div
-                key={sl.id}
-                className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6 transition hover:border-purple-500/40"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-purple-500/30 bg-purple-950/60 text-lg font-bold text-purple-300">
-                    {sl.name.slice(0, 2).toUpperCase()}
-                  </div>
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-surface-100 truncate text-base font-bold">{sl.name}</h3>
-                      <Badge variant="success" className="text-[10px]">
-                        ACTIVE
-                      </Badge>
-                    </div>
-                    <p className="flex items-center gap-1.5 text-xs font-semibold text-purple-300">
-                      <Crown className="size-3.5 shrink-0" />
-                      <span>State Lead • {sl.state}</span>
-                    </p>
-                    {sl.citiesCovered && (
-                      <p className="text-surface-400 flex items-center gap-1 truncate text-xs">
-                        <MapPin className="size-3 shrink-0 text-rose-400" />
-                        <span>Coverage: {sl.citiesCovered}</span>
-                      </p>
-                    )}
-                  </div>
-                </div>
+        <section className="border-border border-t py-16">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <div>
+                <h2 className="text-foreground text-xl font-bold">State Leadership Directorate</h2>
+                <p className="text-muted-foreground text-xs">
+                  Regional directors overseeing multi-city developer operations
+                </p>
               </div>
-            ))}
+              <Button asChild variant="secondary" size="sm">
+                <Link href="/state-leads">
+                  <span>View Program</span>
+                  <ArrowRight className="ml-1 size-3.5" />
+                </Link>
+              </Button>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+              {stateLeads.map((sl) => (
+                <Card key={sl.id} className="p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="border-border bg-muted text-foreground flex size-11 shrink-0 items-center justify-center rounded-lg border font-mono text-sm font-bold">
+                      {sl.name.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-foreground truncate text-sm font-semibold">
+                          {sl.name}
+                        </h3>
+                        <span className="border-border bg-muted text-muted-foreground rounded border px-1.5 py-0.5 text-xs">
+                          Active
+                        </span>
+                      </div>
+                      <p className="text-foreground text-xs font-medium">State Lead • {sl.state}</p>
+                      {sl.citiesCovered && (
+                        <p className="text-muted-foreground flex items-center gap-1 truncate text-xs">
+                          <MapPin className="text-muted-foreground size-3 shrink-0" />
+                          <span>Coverage: {sl.citiesCovered}</span>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* ─── Campus Leads Directory ─────────────────────────────────────────── */}
       {campusLeads.length > 0 && (
-        <section className="container-page mx-auto max-w-5xl space-y-8 px-4 py-12">
-          <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-            <div>
-              <h2 className="text-surface-100 text-xl font-bold">Campus Leads & Chapters</h2>
-              <p className="text-surface-400 text-xs">
-                University student leaders spearheading campus coding cultures
-              </p>
-            </div>
-            <Button asChild variant="outline" size="sm" className="text-xs">
-              <Link href="/campus-leads">
-                <span>View Program</span>
-                <ArrowRight className="ml-1 size-3" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-            {campusLeads.map((lead) => (
-              <div
-                key={lead.id}
-                className="border-surface-800 bg-surface-900/60 hover:border-surface-700 space-y-4 rounded-2xl border p-5 transition"
-              >
-                <div className="flex items-start gap-3.5">
-                  <div className="bg-surface-800 border-surface-700 text-brand-300 flex size-11 shrink-0 items-center justify-center rounded-2xl border text-sm font-bold">
-                    {lead.name.slice(0, 2).toUpperCase()}
-                  </div>
-                  <div className="min-w-0 space-y-0.5">
-                    <h3 className="text-surface-100 truncate text-sm font-bold">{lead.name}</h3>
-                    <p className="text-surface-400 flex items-center gap-1 truncate text-xs">
-                      <Building className="text-surface-500 size-3 shrink-0" />
-                      <span>{lead.collegeName}</span>
-                    </p>
-                    <p className="text-surface-500 flex items-center gap-1 truncate text-[11px]">
-                      <MapPin className="size-2.5 shrink-0 text-rose-400" />
-                      <span>{lead.cityName}</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border-surface-800 grid grid-cols-2 gap-2 border-t pt-3 text-center text-xs">
-                  <div className="bg-surface-950/60 border-surface-800/50 rounded-xl border p-2">
-                    <span className="text-brand-300 font-bold">{lead.eventsSupported}</span>
-                    <span className="text-surface-500 block text-[9px] uppercase">Events Ran</span>
-                  </div>
-                  <div className="bg-surface-950/60 border-surface-800/50 rounded-xl border p-2">
-                    <span className="font-bold text-emerald-400">{lead.referrals}+</span>
-                    <span className="text-surface-500 block text-[9px] uppercase">Builders</span>
-                  </div>
-                </div>
+        <section className="border-border border-t py-16">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <div>
+                <h2 className="text-foreground text-xl font-bold">Campus Leads & Chapters</h2>
+                <p className="text-muted-foreground text-xs">
+                  University student leaders spearheading campus coding cultures
+                </p>
               </div>
-            ))}
+              <Button asChild variant="secondary" size="sm">
+                <Link href="/campus-leads">
+                  <span>View Program</span>
+                  <ArrowRight className="ml-1 size-3.5" />
+                </Link>
+              </Button>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              {campusLeads.map((lead) => (
+                <Card key={lead.id} className="space-y-3 p-5">
+                  <div className="flex items-start gap-3">
+                    <div className="border-border bg-muted text-foreground flex size-10 shrink-0 items-center justify-center rounded-lg border font-mono text-sm font-bold">
+                      {lead.name.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 space-y-0.5">
+                      <h3 className="text-foreground truncate text-sm font-semibold">
+                        {lead.name}
+                      </h3>
+                      <p className="text-muted-foreground flex items-center gap-1 truncate text-xs">
+                        <Building className="text-muted-foreground size-3 shrink-0" />
+                        <span>{lead.collegeName}</span>
+                      </p>
+                      <p className="text-muted-foreground flex items-center gap-1 truncate text-xs">
+                        <MapPin className="text-muted-foreground size-2.5 shrink-0" />
+                        <span>{lead.cityName}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="border-border grid grid-cols-2 gap-2 border-t pt-3 text-center text-xs">
+                    <div className="border-border bg-muted rounded border p-2">
+                      <span className="text-foreground font-bold">{lead.eventsSupported}</span>
+                      <span className="text-muted-foreground block text-xs uppercase">
+                        Events Ran
+                      </span>
+                    </div>
+                    <div className="border-border bg-muted rounded border p-2">
+                      <span className="text-foreground font-bold">
+                        {lead.referrals > 0 ? `${lead.referrals}+` : "0"}
+                      </span>
+                      <span className="text-muted-foreground block text-xs uppercase">
+                        Builders
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* ─── Active City Communities ────────────────────────────────────────── */}
       {cityHubs.length > 0 && (
-        <section className="container-page mx-auto max-w-5xl space-y-8 px-4 py-12">
-          <div className="border-surface-800 border-b pb-4">
-            <h2 className="text-surface-100 text-xl font-bold">Active City Communities & Hubs</h2>
-            <p className="text-surface-400 text-xs">
-              Cities with recurring meetups, workshops, and college chapters
-            </p>
-          </div>
+        <section className="border-border border-t py-16">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="border-border border-b pb-4">
+              <h2 className="text-foreground text-xl font-bold">Active City Communities & Hubs</h2>
+              <p className="text-muted-foreground text-xs">
+                Cities with recurring meetups, workshops, and college chapters
+              </p>
+            </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {cityHubs.map((city) => (
-              <div
-                key={city.id}
-                className="border-surface-800 bg-surface-900/60 hover:border-brand-500/40 space-y-1 rounded-2xl border p-4 transition"
-              >
-                <div className="text-surface-100 flex items-center gap-1.5 text-xs font-bold">
-                  <MapPin className="size-3 shrink-0 text-rose-400" />
-                  <span className="truncate">{city.name}</span>
-                </div>
-                <p className="text-surface-400 truncate text-[11px]">{city.state}</p>
-                <div className="text-surface-500 border-surface-800/60 flex items-center justify-between border-t pt-2 text-[10px]">
-                  <span>{city.collegesCount} Colleges</span>
-                  <span>{city.eventsCount} Events</span>
-                </div>
-              </div>
-            ))}
+            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {cityHubs.map((city) => (
+                <Card key={city.id} className="space-y-1.5 p-4">
+                  <div className="text-foreground flex items-center gap-1.5 text-xs font-semibold">
+                    <MapPin className="text-muted-foreground size-3.5 shrink-0" />
+                    <span className="truncate">{city.name}</span>
+                  </div>
+                  <p className="text-muted-foreground truncate text-xs">{city.state}</p>
+                  <div className="border-border text-muted-foreground flex items-center justify-between border-t pt-2 text-xs">
+                    <span>{city.collegesCount} Colleges</span>
+                    <span>{city.eventsCount} Events</span>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </section>
       )}

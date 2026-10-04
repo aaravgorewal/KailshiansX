@@ -12,11 +12,11 @@ import {
   Lightbulb,
   ArrowRight,
   School,
-  Radio,
   X,
 } from "lucide-react";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { formatDate, formatTime } from "@/lib/format-date";
 
 export interface SerializedTechTalk {
   id: string;
@@ -67,6 +67,15 @@ interface TechTalksSearchClientProps {
   initialTab?: "all" | "upcoming" | "past";
   initialQuery?: string;
 }
+
+const POPULAR_TOPICS = [
+  "Next.js",
+  "PostgreSQL",
+  "AI Agents",
+  "System Design",
+  "Microservices",
+  "Rust",
+];
 
 export function TechTalksSearchClient({
   talks,
@@ -134,40 +143,41 @@ export function TechTalksSearchClient({
   };
 
   return (
-    <div className="space-y-10">
-      {/* Search Bar & Tab Controls */}
-      <div className="border-surface-800 bg-surface-900/80 space-y-6 rounded-3xl border p-6 shadow-2xl backdrop-blur-md">
-        <div className="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
-          {/* Postgres Full-Text Search Input */}
+    <div className="space-y-8">
+      {/* Controls Container */}
+      <div className="border-border bg-card space-y-4 rounded-lg border p-4 sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="text-surface-400 absolute top-3.5 left-4 size-4" />
+            <Search className="text-muted-foreground absolute top-2.5 left-3 size-4" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => handleQueryChange(e.target.value)}
-              placeholder="Search talks by topic, speaker, host college, PostgreSQL, AI, Next.js..."
-              className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500 w-full rounded-2xl border py-3 pr-10 pl-11 text-sm transition outline-none focus:ring-1"
+              placeholder="Search talks by topic, speaker, or keyword..."
+              className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-md border py-2 pr-9 pl-9 text-sm focus:outline-none"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={handleClearSearch}
-                className="text-surface-400 hover:text-surface-100 absolute top-3.5 right-3.5"
+                className="text-muted-foreground hover:text-foreground absolute top-2.5 right-3"
+                aria-label="Clear search"
               >
                 <X className="size-4" />
               </button>
             )}
           </div>
 
-          {/* Segmented Switcher */}
-          <div className="bg-surface-950 border-surface-800 inline-flex shrink-0 rounded-2xl border p-1">
+          {/* Neutral Tab Chips */}
+          <div className="inline-flex shrink-0 flex-wrap gap-2">
             <button
               type="button"
               onClick={() => handleTabChange("all")}
-              className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
                 activeTab === "all"
-                  ? "bg-brand-600 text-white shadow-sm"
-                  : "text-surface-400 hover:text-surface-200"
+                  ? "border-primary bg-background text-foreground"
+                  : "border-border bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
               All Talks ({counts.total})
@@ -175,10 +185,10 @@ export function TechTalksSearchClient({
             <button
               type="button"
               onClick={() => handleTabChange("upcoming")}
-              className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
                 activeTab === "upcoming"
-                  ? "bg-brand-600 text-white shadow-sm"
-                  : "text-surface-400 hover:text-surface-200"
+                  ? "border-primary bg-background text-foreground"
+                  : "border-border bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
               Upcoming ({counts.upcoming})
@@ -186,82 +196,69 @@ export function TechTalksSearchClient({
             <button
               type="button"
               onClick={() => handleTabChange("past")}
-              className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
                 activeTab === "past"
-                  ? "bg-brand-600 text-white shadow-sm"
-                  : "text-surface-400 hover:text-surface-200"
+                  ? "border-primary bg-background text-foreground"
+                  : "border-border bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
-              Past Knowledge Archive ({counts.past})
+              Archive ({counts.past})
             </button>
           </div>
         </div>
 
-        {/* Search status / keywords suggestions */}
-        <div className="border-surface-800/80 flex flex-wrap items-center justify-between gap-2 border-t pt-2 text-xs">
-          <div className="text-surface-400 flex items-center gap-2">
-            <span className="text-surface-300 font-medium">
-              {searchQuery
-                ? `Searching Postgres archive for "${searchQuery}"`
-                : "Search knowledge base:"}
-            </span>
-            {isSearching && (
-              <span className="text-brand-400 animate-pulse text-[11px]">• Searching...</span>
-            )}
-          </div>
-
-          <div className="text-surface-400 flex flex-wrap items-center gap-1.5">
-            <span className="text-surface-500 text-[11px]">Popular:</span>
-            {["Next.js", "PostgreSQL", "AI Agents", "System Design", "Microservices", "ZKP"].map(
-              (keyword) => (
-                <button
-                  key={keyword}
-                  type="button"
-                  onClick={() => handleQueryChange(keyword)}
-                  className="bg-surface-950 text-surface-300 border-surface-800 hover:border-brand-500 hover:text-brand-300 rounded-lg border px-2.5 py-1 text-[11px] transition"
-                >
-                  {keyword}
-                </button>
-              )
-            )}
-          </div>
+        {/* Popular Topic Chips */}
+        <div className="border-border flex flex-wrap items-center gap-2 border-t pt-3 text-xs">
+          <span className="text-muted-foreground">Topics:</span>
+          {POPULAR_TOPICS.map((topic) => {
+            const isSelected = searchQuery.toLowerCase() === topic.toLowerCase();
+            return (
+              <button
+                key={topic}
+                type="button"
+                onClick={() => handleQueryChange(isSelected ? "" : topic)}
+                className={`rounded-md border px-2.5 py-1 text-xs transition-colors ${
+                  isSelected
+                    ? "border-primary bg-background text-foreground"
+                    : "border-border bg-background text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {topic}
+              </button>
+            );
+          })}
+          {isSearching && (
+            <span className="text-muted-foreground ml-auto text-xs">Searching...</span>
+          )}
         </div>
       </div>
 
       {/* Talks Grid */}
       {talks.length === 0 ? (
-        <div className="border-surface-800 bg-surface-900/30 space-y-4 rounded-3xl border border-dashed p-12 text-center">
-          <div className="bg-surface-800 text-surface-400 mx-auto flex size-14 items-center justify-center rounded-2xl">
-            <Search className="size-7" />
+        <Card className="p-12 text-center">
+          <div className="border-border bg-muted text-muted-foreground mx-auto mb-4 flex size-12 items-center justify-center rounded-lg border">
+            <Search className="size-6" />
           </div>
-          <div className="space-y-1">
-            <h4 className="text-surface-200 text-base font-bold">No Tech Talks Found</h4>
-            <p className="text-surface-400 mx-auto max-w-sm text-xs">
-              No sessions matched your search &quot;{searchQuery}&quot;. Try adjusting your keywords
-              or browse all archive sessions.
-            </p>
-          </div>
-          <Button variant="secondary" size="sm" onClick={handleClearSearch}>
-            Clear Search Filter
-          </Button>
-        </div>
+          <h3 className="text-foreground text-base font-semibold">No Tech Talks Found</h3>
+          <p className="text-muted-foreground mx-auto mt-1 max-w-sm text-xs">
+            {searchQuery
+              ? `No sessions matched "${searchQuery}". Try a different keyword.`
+              : "No sessions currently available in this category."}
+          </p>
+          {searchQuery && (
+            <div className="mt-4">
+              <Button variant="secondary" size="sm" onClick={handleClearSearch}>
+                Clear Search Filter
+              </Button>
+            </div>
+          )}
+        </Card>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {talks.map((talk) => {
-            const startDate = new Date(talk.startDate);
-            const isUpcoming = startDate >= new Date();
-            const dateStr = startDate.toLocaleDateString("en-IN", {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            });
-            const timeStr = startDate.toLocaleTimeString("en-IN", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            });
-
+            const isUpcoming = new Date(talk.startDate) >= new Date();
+            const dateStr = formatDate(talk.startDate);
+            const timeStr = formatTime(talk.startDate);
             const speaker = talk.speakers[0]?.speaker;
             const hostPartner = talk.partners[0]?.partner;
             const resource = talk.techTalkResource;
@@ -270,59 +267,51 @@ export function TechTalksSearchClient({
               : 0;
 
             return (
-              <div
+              <Card
                 key={talk.id}
-                className="group border-surface-800 from-surface-900 via-surface-900/90 to-surface-950 hover:border-surface-700 flex flex-col justify-between rounded-3xl border bg-gradient-to-b p-6 shadow-xl transition-all duration-200 hover:-translate-y-1"
+                className="hover:border-muted-foreground flex flex-col justify-between p-6 transition-[border-color] duration-150"
               >
                 <div className="space-y-4">
-                  {/* Host Institution & Live Status */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="text-brand-300 flex items-center gap-1.5 truncate text-xs font-medium">
-                      <School className="text-brand-400 size-3.5 shrink-0" />
+                  {/* Host Institution & Status (Neutral text, no colored pills) */}
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <div className="text-muted-foreground flex items-center gap-1.5 truncate">
+                      <School className="size-3.5 shrink-0" />
                       <span className="truncate">
                         {hostPartner?.name || "Kailshians Community"}
                       </span>
                     </div>
 
-                    <Badge
-                      variant={isUpcoming ? "brand" : "surface"}
-                      className="shrink-0 font-mono text-[10px] tracking-wider uppercase"
-                    >
-                      {isUpcoming ? (
-                        <span className="flex items-center gap-1">
-                          <Radio className="size-2.5 animate-pulse text-emerald-400" />
-                          Upcoming Live
-                        </span>
-                      ) : (
-                        "Archived"
-                      )}
-                    </Badge>
+                    <span className="text-muted-foreground shrink-0 text-xs font-medium">
+                      {isUpcoming ? "Upcoming" : "Past"}
+                    </span>
                   </div>
 
-                  {/* Topic Title & Overview */}
-                  <div className="space-y-2">
+                  {/* Title & Overview */}
+                  <div className="space-y-1.5">
                     <Link
                       href={`/tech-talks/${talk.slug}`}
-                      className="text-surface-50 group-hover:text-brand-400 line-clamp-2 text-lg font-bold transition-colors"
+                      className="text-foreground hover:text-primary line-clamp-2 text-base font-semibold transition-colors"
                     >
                       {talk.title}
                     </Link>
-                    <p className="text-surface-400 line-clamp-3 text-xs leading-relaxed">
-                      {talk.overview}
-                    </p>
+                    {talk.overview && (
+                      <p className="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
+                        {talk.overview}
+                      </p>
+                    )}
                   </div>
 
-                  {/* Date, Time & Mode */}
-                  <div className="border-surface-800/80 text-surface-300 space-y-1 border-t pt-2 text-xs">
+                  {/* Date, Time & Venue */}
+                  <div className="border-border text-muted-foreground space-y-1 border-t pt-3 text-xs">
                     <div className="flex items-center gap-2">
-                      <Calendar className="text-brand-400 size-3.5 shrink-0" />
+                      <Calendar className="size-3.5 shrink-0" />
                       <span>{dateStr}</span>
-                      <span className="text-surface-600">•</span>
+                      <span>•</span>
                       <span>{timeStr}</span>
                     </div>
 
-                    <div className="text-surface-400 flex items-center gap-2 truncate">
-                      <MapPin className="size-3.5 shrink-0 text-rose-400" />
+                    <div className="flex items-center gap-2 truncate">
+                      <MapPin className="size-3.5 shrink-0" />
                       <span className="truncate">
                         {talk.attendanceMode === "VIRTUAL"
                           ? "Virtual Livestream"
@@ -333,38 +322,51 @@ export function TechTalksSearchClient({
 
                   {/* Speaker Profile */}
                   {speaker && (
-                    <div className="border-surface-800/80 flex items-center gap-3 border-t pt-3">
-                      <div className="from-brand-600 to-accent-600 flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr via-indigo-600 text-xs font-bold text-white shadow-md">
+                    <div className="border-border flex items-center gap-3 border-t pt-3">
+                      <div className="border-border bg-muted text-foreground flex size-9 shrink-0 items-center justify-center rounded-full border text-xs font-semibold">
                         {speaker.name.slice(0, 2).toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-surface-100 truncate text-xs font-semibold">
+                        <p className="text-foreground truncate text-xs font-medium">
                           {speaker.name}
                         </p>
-                        <p className="text-surface-400 truncate text-[11px]">
-                          {speaker.designation}{" "}
-                          {speaker.organisation ? `@ ${speaker.organisation}` : ""}
+                        <p className="text-muted-foreground truncate text-xs">
+                          {speaker.designation}
+                          {speaker.organisation ? ` @ ${speaker.organisation}` : ""}
                         </p>
                       </div>
                     </div>
                   )}
 
-                  {/* Post-Event Resource Badges */}
+                  {/* Resource Links as small neutral tags with icons */}
                   {resource && (
-                    <div className="flex flex-wrap gap-1.5 pt-2">
+                    <div className="border-border flex flex-wrap gap-1.5 border-t pt-3">
                       {resource.videoUrl && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-rose-500/20 bg-rose-500/10 px-2 py-0.5 text-[10px] font-medium text-rose-300">
-                          <Video className="size-2.5" /> Video
-                        </span>
+                        <a
+                          href={resource.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="border-border bg-muted/50 text-muted-foreground hover:text-foreground hover:border-primary inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs transition-colors"
+                        >
+                          <Video className="size-3" />
+                          <span>Video</span>
+                        </a>
                       )}
                       {resource.slideUrl && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 text-[10px] font-medium text-indigo-300">
-                          <FileText className="size-2.5" /> Slides
-                        </span>
+                        <a
+                          href={resource.slideUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="border-border bg-muted/50 text-muted-foreground hover:text-foreground hover:border-primary inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs transition-colors"
+                        >
+                          <FileText className="size-3" />
+                          <span>Slides</span>
+                        </a>
                       )}
                       {takeawaysCount > 0 && (
-                        <span className="inline-flex items-center gap-1 rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300">
-                          <Lightbulb className="size-2.5" /> {takeawaysCount} Takeaways
+                        <span className="border-border bg-muted/50 text-muted-foreground inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs">
+                          <Lightbulb className="size-3" />
+                          <span>{takeawaysCount} Takeaways</span>
                         </span>
                       )}
                     </div>
@@ -372,19 +374,19 @@ export function TechTalksSearchClient({
                 </div>
 
                 {/* Card Action */}
-                <div className="border-surface-800 mt-6 flex items-center justify-between border-t pt-6">
-                  <span className="text-surface-400 font-mono text-[11px]">
+                <div className="border-border mt-6 flex items-center justify-between border-t pt-4">
+                  <span className="text-muted-foreground text-xs">
                     {talk.attendanceMode === "VIRTUAL" ? "Online Stream" : "In-Person Stage"}
                   </span>
 
                   <Button asChild variant={isUpcoming ? "primary" : "secondary"} size="sm">
                     <Link href={`/tech-talks/${talk.slug}`}>
-                      <span>{isUpcoming ? "Register Pass" : "Explore Knowledge"}</span>
+                      <span>{isUpcoming ? "View Details" : "Session Archive"}</span>
                       <ArrowRight className="ml-1 size-3.5" />
                     </Link>
                   </Button>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>

@@ -3,20 +3,20 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Crown,
-  CheckCircle2,
-  AlertCircle,
-  MapPin,
-  Send,
-  Loader2,
-  Clock,
-  ArrowRight,
-  Briefcase,
-  Globe,
-  Sparkles,
-} from "lucide-react";
+import { Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+} from "@/components/forms";
 import { trackApplicationSubmit } from "@/lib/analytics";
 import {
   stateLeadApplicationSchema,
@@ -28,12 +28,7 @@ export function StateLeadFormClient() {
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [successAppId, setSuccessAppId] = React.useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<StateLeadApplicationInput>({
+  const form = useForm<StateLeadApplicationInput>({
     resolver: zodResolver(stateLeadApplicationSchema),
     defaultValues: {
       name: "",
@@ -63,7 +58,7 @@ export function StateLeadFormClient() {
           roleOrTrack: values.state,
         });
         setSuccessAppId(res.applicationId);
-        reset();
+        form.reset();
       } else {
         setServerError(res.error || "Unable to submit application. Please review your entries.");
       }
@@ -74,345 +69,288 @@ export function StateLeadFormClient() {
 
   if (successAppId) {
     return (
-      <div className="space-y-6 rounded-3xl border border-purple-500/30 bg-purple-950/20 p-8 text-center shadow-2xl backdrop-blur-md sm:p-12">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-2xl border border-purple-500/30 bg-purple-500/20 text-purple-400">
-          <CheckCircle2 className="size-8" />
+      <Card className="space-y-6 p-8 text-center sm:p-12">
+        <div className="border-border bg-muted text-success mx-auto flex size-14 items-center justify-center rounded-full border">
+          <Check className="size-7" />
         </div>
-        <div className="space-y-2">
-          <span className="text-xs font-bold tracking-wider text-purple-400 uppercase">
+        <div className="space-y-1">
+          <p className="text-muted-foreground text-xs font-semibold uppercase">
             Stage 1: Executive Dossier Logged
-          </span>
-          <h3 className="text-surface-50 text-2xl font-bold">State Lead Application Received</h3>
-          <p className="text-surface-300 mx-auto max-w-lg text-sm">
-            Your leadership submission has entered executive review. A formal confirmation receipt
-            has been sent to your email.
+          </p>
+          <h3 className="text-foreground text-xl font-bold">State Lead Application Received</h3>
+          <p className="text-success text-sm font-medium">
+            Your leadership submission has entered executive review.
           </p>
         </div>
 
-        <div className="bg-surface-950/80 border-surface-800 mx-auto max-w-md space-y-2 rounded-2xl border p-4 text-left">
-          <div className="text-surface-400 text-[11px] font-semibold tracking-wider uppercase">
+        <div className="border-border bg-muted mx-auto max-w-md space-y-1 rounded-md border p-4 text-left">
+          <div className="text-muted-foreground text-xs font-medium uppercase">
             Executive Dossier Reference
           </div>
-          <div className="font-mono text-base font-bold text-purple-300 select-all">
+          <div className="text-foreground font-mono text-sm font-bold select-all">
             {successAppId}
           </div>
         </div>
 
-        <div className="border-surface-800/80 bg-surface-900/60 mx-auto max-w-lg space-y-3 rounded-2xl border p-5 text-left">
-          <p className="text-surface-200 text-xs font-semibold">
-            Executive Selection Roadmap (PRD §12)
-          </p>
-          <div className="text-surface-400 space-y-2 text-xs">
-            <div className="flex items-center gap-2 font-medium text-purple-400">
-              <CheckCircle2 className="size-3.5 shrink-0" />
-              <span>1. Application Registered (Under Review)</span>
-            </div>
-            <div className="text-surface-300 flex items-center gap-2">
-              <Clock className="text-brand-400 size-3.5 shrink-0" />
-              <span>2. Executive Background & Ecosystem Screening (3–5 business days)</span>
-            </div>
-            <div className="text-surface-400 flex items-center gap-2">
-              <ArrowRight className="text-surface-600 size-3.5 shrink-0" />
-              <span>3. Strategic Vision Interview with Founder & Steering Committee</span>
-            </div>
-            <div className="text-surface-400 flex items-center gap-2">
-              <ArrowRight className="text-surface-600 size-3.5 shrink-0" />
-              <span>4. State Jurisdiction Charter, Budget Allocation & Lead Access</span>
-            </div>
-          </div>
+        <div className="border-border bg-muted/40 text-muted-foreground mx-auto max-w-md space-y-2 rounded-md border p-4 text-left text-xs">
+          <p className="text-foreground font-semibold">Executive Selection Roadmap</p>
+          <ol className="list-decimal space-y-1 pl-4">
+            <li>Application Registered (Under Review)</li>
+            <li>Executive Background & Ecosystem Screening (3–5 business days)</li>
+            <li>Strategic Vision Interview with Founder & Steering Committee</li>
+            <li>State Jurisdiction Charter, Budget Allocation & Lead Access</li>
+          </ol>
         </div>
 
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
           onClick={() => setSuccessAppId(null)}
           className="text-xs"
         >
           Submit Another Application
         </Button>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="border-surface-800 bg-surface-900/90 space-y-8 rounded-3xl border p-6 shadow-2xl backdrop-blur-sm sm:p-10"
-    >
-      <div className="border-surface-800 border-b pb-5">
-        <h3 className="text-surface-50 flex items-center gap-2.5 text-xl font-bold">
-          <Crown className="size-5 text-purple-400" />
-          State Lead Executive Application
-        </h3>
-        <p className="text-surface-400 mt-1 text-xs">
-          State Leads require proven experience leading technical communities, event production, or
-          regional developer networks.
-        </p>
-      </div>
-
-      {serverError && (
-        <div className="flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-300">
-          <AlertCircle className="mt-0.5 size-4 shrink-0" />
-          <span>{serverError}</span>
-        </div>
-      )}
-
-      {/* Honeypot Spam Trap (Hidden) */}
-      <input
-        type="text"
-        {...register("honeypot")}
-        tabIndex={-1}
-        autoComplete="off"
-        className="hidden"
-        aria-hidden="true"
-      />
-
-      {/* Section 1: Leadership Profile */}
-      <div className="space-y-4">
-        <h4 className="text-surface-200 text-xs font-bold tracking-wider uppercase">
-          1. Leadership Profile
-        </h4>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Full Name <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="text"
-              {...register("name")}
-              placeholder="e.g. Rahul Rawat"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-            />
-            {errors.name && <p className="text-[11px] text-rose-400">{errors.name.message}</p>}
+    <Card className="p-6 sm:p-8">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="border-border border-b pb-4">
+            <h3 className="text-foreground text-lg font-bold">State Lead Application Form</h3>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Please provide complete details regarding your engineering leadership, community
+              organizing experience, and expansion roadmap.
+            </p>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Email Address <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="email"
-              {...register("email")}
-              placeholder="rahul@example.com"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-            />
-            {errors.email && <p className="text-[11px] text-rose-400">{errors.email.message}</p>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Phone / WhatsApp Number <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="tel"
-              {...register("phone")}
-              placeholder="+91 9876543210"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-            />
-            {errors.phone && <p className="text-[11px] text-rose-400">{errors.phone.message}</p>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Current Role / Affiliation <span className="text-rose-400">*</span>
-            </label>
-            <div className="relative">
-              <Briefcase className="text-surface-500 pointer-events-none absolute top-2.5 left-3 size-4" />
-              <input
-                type="text"
-                {...register("currentRole")}
-                placeholder="e.g. Lead SDE, Startup Founder, Tech Community Organizer"
-                className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border py-2.5 pr-3.5 pl-9 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-              />
+          {serverError && (
+            <div className="border-destructive/40 bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border p-3 text-xs">
+              <AlertCircle className="size-4 shrink-0" />
+              <span>{serverError}</span>
             </div>
-            {errors.currentRole && (
-              <p className="text-[11px] text-rose-400">{errors.currentRole.message}</p>
-            )}
-          </div>
-        </div>
+          )}
 
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            LinkedIn / Professional Portfolio <span className="text-rose-400">*</span>
-          </label>
           <input
             type="text"
-            {...register("linkedin")}
-            placeholder="https://linkedin.com/in/username"
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+            {...form.register("honeypot")}
+            className="hidden"
+            tabIndex={-1}
+            autoComplete="off"
           />
-          {errors.linkedin && (
-            <p className="text-[11px] text-rose-400">{errors.linkedin.message}</p>
-          )}
-        </div>
-      </div>
 
-      {/* Section 2: Regional State & City Jurisdiction */}
-      <div className="space-y-4">
-        <h4 className="text-surface-200 text-xs font-bold tracking-wider uppercase">
-          2. Regional Territory & Jurisdiction
-        </h4>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              State / Region Applying For <span className="text-rose-400">*</span>
-            </label>
-            <div className="relative">
-              <Globe className="text-surface-500 pointer-events-none absolute top-2.5 left-3 size-4" />
-              <input
-                type="text"
-                {...register("state")}
-                placeholder="e.g. Uttarakhand, Rajasthan, Punjab & Chandigarh, Delhi NCR"
-                className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border py-2.5 pr-3.5 pl-9 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-              />
-            </div>
-            {errors.state && <p className="text-[11px] text-rose-400">{errors.state.message}</p>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Headquarters City <span className="text-rose-400">*</span>
-            </label>
-            <div className="relative">
-              <MapPin className="text-surface-500 pointer-events-none absolute top-2.5 left-3 size-4" />
-              <input
-                type="text"
-                {...register("city")}
-                placeholder="e.g. Dehradun or Jaipur"
-                className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border py-2.5 pr-3.5 pl-9 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-              />
-            </div>
-            {errors.city && <p className="text-[11px] text-rose-400">{errors.city.message}</p>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Key Cities You Can Coordinate Across <span className="text-rose-400">*</span>
-            </label>
-            <input
-              type="text"
-              {...register("citiesCovered")}
-              placeholder="e.g. Dehradun, Haridwar, Roorkee, Rishikesh"
-              className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Full Name</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. Aarav Sharma" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.citiesCovered && (
-              <p className="text-[11px] text-rose-400">{errors.citiesCovered.message}</p>
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Email Address</FormLabel>
+                  <FormControl>
+                    <FormInput type="email" placeholder="name@company.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Phone Number (WhatsApp)</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="+91 98765 43210" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>State / Territory</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. Rajasthan, Uttarakhand, Punjab" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Base City</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. Jaipur" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="currentRole"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>Current Role / Affiliation</FormLabel>
+                  <FormControl>
+                    <FormInput placeholder="e.g. Tech Lead, Community Organizer" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="citiesCovered"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Key Cities in Jurisdiction</FormLabel>
+                <FormControl>
+                  <FormInput placeholder="e.g. Jaipur, Jodhpur, Udaipur, Kota" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-surface-200 text-xs font-semibold">
-              Weekly Leadership Commitment <span className="text-rose-400">*</span>
-            </label>
-            <select
-              {...register("availabilityHours")}
-              className="bg-surface-950 border-surface-800 text-surface-100 w-full rounded-xl border px-3.5 py-2.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-            >
-              <option value="8-12 hours/week">8–12 hours / week (Recommended)</option>
-              <option value="12-16 hours/week">12–16 hours / week</option>
-              <option value="16+ hours/week">16+ hours / week (Heavy dedication)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Section 3: Leadership Record & State Vision */}
-      <div className="space-y-4">
-        <h4 className="text-surface-200 text-xs font-bold tracking-wider uppercase">
-          3. Track Record & State Growth Vision
-        </h4>
-
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            Engineering & Professional Background <span className="text-rose-400">*</span>
-          </label>
-          <textarea
-            rows={3}
-            {...register("experience")}
-            placeholder="Share your engineering journey, software stacks built, work history, or notable open-source contributions."
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full resize-none rounded-xl border p-3.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
           />
-          {errors.experience && (
-            <p className="text-[11px] text-rose-400">{errors.experience.message}</p>
-          )}
-        </div>
 
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            Leadership & Community Organizing Track Record <span className="text-rose-400">*</span>
-          </label>
-          <textarea
-            rows={3}
-            {...register("leadershipEvidence")}
-            placeholder="What technical communities, developer meetups, conferences, or student hackathons have you organized or scaled in the past? Detail numbers and impact."
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full resize-none rounded-xl border p-3.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+          <FormField
+            control={form.control}
+            name="linkedin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>LinkedIn or Professional Profile</FormLabel>
+                <FormControl>
+                  <FormInput placeholder="https://linkedin.com/in/username" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          {errors.leadershipEvidence && (
-            <p className="text-[11px] text-rose-400">{errors.leadershipEvidence.message}</p>
-          )}
-        </div>
 
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            Strategic Vision for KailshiansX in Your State <span className="text-rose-400">*</span>
-          </label>
-          <textarea
-            rows={3}
-            {...register("communityVision")}
-            placeholder="How will you activate campus leads, partner with colleges, foster flagship meetup series, and create a regional developer powerhouse over the next 12 months?"
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full resize-none rounded-xl border p-3.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+          <FormField
+            control={form.control}
+            name="experience"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Engineering & Professional Background</FormLabel>
+                <FormControl>
+                  <FormTextarea
+                    placeholder="Outline your engineering background, companies worked with, open-source work, and key products built..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          {errors.communityVision && (
-            <p className="text-[11px] text-rose-400">{errors.communityVision.message}</p>
-          )}
-        </div>
 
-        <div className="space-y-1.5">
-          <label className="text-surface-200 text-xs font-semibold">
-            Why KailshiansX? <span className="text-rose-400">*</span>
-          </label>
-          <textarea
-            rows={2}
-            {...register("whyKailshiansX")}
-            placeholder="What attracts you to KailshiansX and our builder-first developer mission?"
-            className="bg-surface-950 border-surface-800 text-surface-100 placeholder:text-surface-500 w-full resize-none rounded-xl border p-3.5 text-xs transition focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+          <FormField
+            control={form.control}
+            name="leadershipEvidence"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Proven Community Leadership & Organizing Experience</FormLabel>
+                <FormControl>
+                  <FormTextarea
+                    placeholder="Detail tech meetups, hackathons, college clubs, or conferences you have led or organized..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          {errors.whyKailshiansX && (
-            <p className="text-[11px] text-rose-400">{errors.whyKailshiansX.message}</p>
-          )}
-        </div>
-      </div>
 
-      <div className="border-surface-800 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
-        <p className="text-surface-400 flex items-center gap-1.5 text-[11px]">
-          <Sparkles className="size-3.5 shrink-0 text-purple-400" />
-          <span>
-            State Lead appointments are vetted directly by the Founder & Steering Committee.
-          </span>
-        </p>
+          <FormField
+            control={form.control}
+            name="communityVision"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Strategic State Expansion Vision</FormLabel>
+                <FormControl>
+                  <FormTextarea
+                    placeholder="How will you build campus chapters, recruit campus leads, and scale regional meetup brands across your state?"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          disabled={isSubmitting}
-          className="w-full min-w-[220px] bg-purple-600 hover:bg-purple-500 sm:w-auto"
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 size-4 animate-spin" />
-              Submitting Executive Dossier...
-            </>
-          ) : (
-            <>
-              <Send className="mr-2 size-4" />
+          <FormField
+            control={form.control}
+            name="whyKailshiansX"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Why KailshiansX?</FormLabel>
+                <FormControl>
+                  <FormTextarea
+                    placeholder="Why do you choose to lead with KailshiansX over other developer organizations?"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="availabilityHours"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>Expected Weekly Commitment</FormLabel>
+                <FormControl>
+                  <FormSelect
+                    options={[
+                      { value: "5-8 hours/week", label: "5–8 hours / week" },
+                      { value: "8-12 hours/week", label: "8–12 hours / week (Recommended)" },
+                      { value: "12+ hours/week", label: "12+ hours / week" },
+                    ]}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="pt-2">
+            <Button type="submit" variant="primary" isLoading={form.formState.isSubmitting}>
               Submit State Lead Application
-            </>
-          )}
-        </Button>
-      </div>
-    </form>
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </Card>
   );
 }
