@@ -4,6 +4,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/server/auth/require-role";
+import { getCommunityAnalyticsOverview } from "@/server/analytics/community-service";
 import {
   AdminAnalyticsClient,
   type EventMetricItem,
@@ -11,13 +12,14 @@ import {
 } from "@/components/admin/AdminAnalyticsClient";
 
 export const metadata: Metadata = {
-  title: "Analytics & Telemetry | KailshiansX Admin",
+  title: "Analytics & Success Metrics | KailshiansX Admin",
 };
 
 export default async function AdminAnalyticsPage() {
   await requireAdmin();
 
   const [
+    communityMetrics,
     totalRegistrations,
     confirmedRegistrations,
     totalCheckins,
@@ -33,6 +35,7 @@ export default async function AdminAnalyticsPage() {
     collabsTotal,
     collabsWon,
   ] = await Promise.all([
+    getCommunityAnalyticsOverview(),
     db.registration.count({ where: { deletedAt: null } }),
     db.registration.count({ where: { deletedAt: null, status: "CONFIRMED" } }),
     db.attendance.count(),
@@ -118,6 +121,7 @@ export default async function AdminAnalyticsPage() {
 
   return (
     <AdminAnalyticsClient
+      communityMetrics={communityMetrics}
       totalRegistrations={totalRegistrations}
       confirmedRegistrations={confirmedRegistrations}
       totalCheckins={totalCheckins}

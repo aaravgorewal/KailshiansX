@@ -1,5 +1,5 @@
 // src/app/who-we-are/page.tsx
-// Who We Are: Mission, Vision, Values, Pillars, and Kailshians Web Services charter (PRD §17)
+// Who We Are: Mission, Vision, Values, Pillars, and Kailshians Web Services charter
 
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -36,38 +36,24 @@ export default async function WhoWeArePage() {
   const content = await getWhoWeArePageData();
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
-      {/* ─── HERO HEADER ─────────────────────────────────────────────────── */}
-      <section className="border-surface-800 from-surface-900 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-14">
-        <div
-          className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-          aria-hidden="true"
-        />
+    <div className="bg-background min-h-screen pb-24">
+      {/* ─── HEADER BANNER ─────────────────────────────────────────────────── */}
+      <section className="border-border border-b py-12">
+        <div className="container-page">
+          <SectionHeader title={content.title} description={content.introDescription} />
 
-        <div className="container-page relative z-10 text-center">
-          <SectionHeader
-            badge={content.badge}
-            title={content.title}
-            highlight="KailshiansX"
-            description={content.introDescription}
-            align="center"
-          />
-
-          <div className="text-surface-400 mt-8 flex flex-wrap items-center justify-center gap-6 font-mono text-xs">
-            <div className="flex items-center gap-2">
-              <span className="bg-brand-400 size-2 rounded-full" />
-              <span>Kailshians Web Services Wing</span>
-            </div>
-            <span className="text-surface-700">•</span>
+          <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-6 font-mono text-xs">
+            <div>Kailshians Web Services Wing</div>
+            <span>•</span>
             <div>Zero Commercial Fluff</div>
-            <span className="text-surface-700">•</span>
+            <span>•</span>
             <div>Autonomous Flywheel</div>
           </div>
         </div>
       </section>
 
       {/* ─── MAIN WHO WE ARE CONTENT ─────────────────────────────────────── */}
-      <main className="container-page mt-12">
+      <main className="container-page mt-10">
         <WhoWeAreClient content={content} />
       </main>
     </div>

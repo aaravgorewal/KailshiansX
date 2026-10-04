@@ -1,5 +1,5 @@
 // src/app/founder/page.tsx
-// Founder Page: Origin story, philosophy, milestones, and personal message (PRD §16)
+// Founder Page: Origin story, philosophy, milestones, and personal message
 
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -35,38 +35,27 @@ export default async function FounderPage() {
   const founderData = await getFounderPageData();
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
-      {/* ─── HERO HEADER ─────────────────────────────────────────────────── */}
-      <section className="border-surface-800 from-surface-900 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-14">
-        <div
-          className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-          aria-hidden="true"
-        />
-
-        <div className="container-page relative z-10 text-center">
+    <div className="bg-background min-h-screen pb-24">
+      {/* ─── HEADER BANNER ─────────────────────────────────────────────────── */}
+      <section className="border-border border-b py-12">
+        <div className="container-page">
           <SectionHeader
-            badge="Origin & Convictions"
-            title="The Vision Behind KailshiansX"
-            highlight="KailshiansX"
-            description="Why this platform was created, the community philosophy guiding every event, and the long-term compounding journey of India's developer flywheel."
-            align="center"
+            title="Founder & Philosophy"
+            description="The vision, philosophy, and milestones behind KailshiansX."
           />
 
-          <div className="text-surface-400 mt-8 flex flex-wrap items-center justify-center gap-6 font-mono text-xs">
-            <div className="flex items-center gap-2">
-              <span className="bg-brand-400 size-2 rounded-full" />
-              <span>Not a Resume</span>
-            </div>
-            <span className="text-surface-700">•</span>
+          <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-6 font-mono text-xs">
             <div>Builder Manifesto</div>
-            <span className="text-surface-700">•</span>
+            <span>•</span>
             <div>Zero Fluff Ecosystem</div>
+            <span>•</span>
+            <div>Autonomous Flywheel</div>
           </div>
         </div>
       </section>
 
       {/* ─── MAIN FOUNDER CONTENT ────────────────────────────────────────── */}
-      <main className="container-page mt-12">
+      <main className="container-page mt-10">
         <FounderClient founder={founderData} />
       </main>
     </div>

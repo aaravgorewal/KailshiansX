@@ -1,5 +1,5 @@
 // src/app/gallery/[albumId]/page.tsx
-// Shareable event album page with OG preview, lightbox, and admin ZIP download (PRD §18)
+// Shareable event album page with OG preview, lightbox, and admin ZIP download
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -110,38 +110,38 @@ export default async function AlbumPage({ params }: { params: Promise<{ albumId:
   };
 
   return (
-    <div className="bg-surface-950 min-h-screen pt-8 pb-28">
+    <div className="bg-background min-h-screen pt-8 pb-24">
       <div className="container-page space-y-8">
         {/* ─── BREADCRUMBS & BACK LINK ────────────────────────────────────── */}
         <nav aria-label="Breadcrumb" className="flex items-center justify-between text-xs">
-          <ol className="text-surface-400 flex items-center gap-2">
+          <ol className="text-muted-foreground flex items-center gap-2">
             <li>
-              <Link href="/gallery" className="hover:text-surface-200 transition-colors">
+              <Link href="/gallery" className="hover:text-foreground transition-colors">
                 Gallery
               </Link>
             </li>
             <li>
-              <ChevronRight className="text-surface-600 size-3" />
+              <ChevronRight className="text-muted-foreground size-3" />
             </li>
             <li>
               <Link
                 href={`/gallery?category=${album.category}`}
-                className="hover:text-surface-200 capitalize transition-colors"
+                className="hover:text-foreground capitalize transition-colors"
               >
                 {catConfig.label}
               </Link>
             </li>
             <li>
-              <ChevronRight className="text-surface-600 size-3" />
+              <ChevronRight className="text-muted-foreground size-3" />
             </li>
-            <li className="text-surface-200 max-w-[200px] truncate font-semibold sm:max-w-md">
+            <li className="text-foreground max-w-[200px] truncate font-medium sm:max-w-md">
               {album.title}
             </li>
           </ol>
 
           <Link
             href="/gallery"
-            className="text-surface-400 hover:text-brand-300 hidden items-center gap-1.5 font-medium transition-colors sm:inline-flex"
+            className="text-muted-foreground hover:text-foreground hidden items-center gap-1.5 font-medium transition-colors sm:inline-flex"
           >
             <ArrowLeft className="size-3.5" />
             <span>All Albums</span>
@@ -153,18 +153,15 @@ export default async function AlbumPage({ params }: { params: Promise<{ albumId:
 
         {/* ─── RELATED ALBUMS SECTION ─────────────────────────────────────── */}
         {relatedAlbums.length > 0 && (
-          <section className="border-surface-800 space-y-6 border-t pt-16">
+          <section className="border-border space-y-6 border-t pt-12">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-surface-50 text-xl font-bold">More from the Archive</h2>
-                <p className="text-surface-400 mt-1 text-xs">
+                <h2 className="text-foreground text-lg font-semibold">More from the Archive</h2>
+                <p className="text-muted-foreground mt-1 text-xs">
                   Explore other gatherings in the {catConfig.label} series.
                 </p>
               </div>
-              <Link
-                href="/gallery"
-                className="text-brand-400 hover:text-brand-300 text-xs font-semibold"
-              >
+              <Link href="/gallery" className="text-primary text-xs font-medium hover:underline">
                 View Full Archive &rarr;
               </Link>
             </div>

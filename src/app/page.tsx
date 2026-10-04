@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Calendar,
   Compass,
   ArrowRight,
-  Sparkles,
   GraduationCap,
   Video,
   CheckCircle2,
@@ -14,6 +14,7 @@ import {
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Card } from "@/components/ui/Card";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { EventCard, type EventType, type EventStatus } from "@/components/ui/EventCard";
 import { SeriesCard } from "@/components/ui/SeriesCard";
@@ -21,6 +22,7 @@ import { SpeakerCard, type SpeakerRole } from "@/components/ui/SpeakerCard";
 import { PartnerLogoGrid, type PartnerTier } from "@/components/ui/PartnerLogoGrid";
 import { StatCounter } from "@/components/ui/StatCounter";
 import { TestimonialCarousel, type TestimonialItem } from "@/components/ui/TestimonialCarousel";
+import { cn } from "@/lib/utils";
 
 // ─── ISR Configuration ─────────────────────────────────────────────────────────
 export const revalidate = 60; // Revalidate page every 60 seconds
@@ -134,7 +136,6 @@ export default async function HomePage() {
     db.stateLead.count({ where: { status: "ACTIVE" } }),
   ]);
 
-  // Baseline community impact multiplier for display
   const calculatedBuilders = Math.max(totalRegistrations * 15 + 2400, 2500);
 
   // ─── 3. Query Series with Editions & Cities ─────────────────────────────────
@@ -228,7 +229,6 @@ export default async function HomePage() {
   });
 
   const formattedPartners = partnersList.map((p) => {
-    // Map DB partner category or top event partner tier to PartnerTier enum
     const tier = (p.eventPartners[0]?.tier as PartnerTier) || "COMMUNITY";
     return {
       id: p.id,
@@ -239,53 +239,29 @@ export default async function HomePage() {
     };
   });
 
-  // ─── 9. Query Testimonials ──────────────────────────────────────────────────
+  // ─── 9. Query Testimonials (Only Published records from DB) ─────────────────
   const testimonialBlocks = await db.contentBlock.findMany({
     where: {
-      page: { slug: "home" },
+      page: { slug: "home", isPublished: true },
       type: "TESTIMONIAL",
       isVisible: true,
     },
     orderBy: { sortOrder: "asc" },
   });
 
-  const parsedTestimonials: TestimonialItem[] =
-    testimonialBlocks.length > 0
-      ? testimonialBlocks.map((block) => {
-          const d = block.data as Record<string, unknown>;
-          return {
-            id: block.id,
-            quote: (d.quote as string) || "KailshiansX empowered our campus tech culture.",
-            author: (d.author as string) || "Community Builder",
-            role: (d.role as string) || "Developer",
-            company: (d.company as string) || "KailshiansX",
-            avatarUrl: (d.avatarUrl as string) || undefined,
-            rating: (d.rating as number) || 5,
-            eventTitle: (d.eventTitle as string) || undefined,
-          };
-        })
-      : [
-          {
-            id: "fallback-1",
-            quote:
-              "KailshiansX completely changed how our campus approaches open source and hackathons. The energy at PadharoX was world-class.",
-            author: "Ananya Deshmukh",
-            role: "Campus Lead",
-            company: "MNIT Jaipur",
-            rating: 5,
-            eventTitle: "PadharoX Jaipur",
-          },
-          {
-            id: "fallback-2",
-            quote:
-              "Speaking at KailshiansX tech talks was one of the most rewarding community experiences of the year. The questions were deeply technical.",
-            author: "Rohan Varma",
-            role: "Lead Architect",
-            company: "CloudScale Systems",
-            rating: 5,
-            eventTitle: "Tech Talks Delhi",
-          },
-        ];
+  const parsedTestimonials: TestimonialItem[] = testimonialBlocks.map((block) => {
+    const d = block.data as Record<string, unknown>;
+    return {
+      id: block.id,
+      quote: (d.quote as string) || "",
+      author: (d.author as string) || "Developer",
+      role: (d.role as string) || "",
+      company: (d.company as string) || "",
+      avatarUrl: (d.avatarUrl as string) || undefined,
+      rating: (d.rating as number) || 5,
+      eventTitle: (d.eventTitle as string) || undefined,
+    };
+  });
 
   // ─── JSON-LD Structured Data ───────────────────────────────────────────────
   const jsonLd = {
@@ -349,48 +325,35 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="relative overflow-hidden">
+      <div className="relative">
         {/* ═══════════════════════════════════════════════════════════════════════
             1. HERO SECTION
         ═══════════════════════════════════════════════════════════════════════════ */}
         <section
           aria-label="Hero"
-          className="bg-surface-950 border-surface-800/80 relative overflow-hidden border-b pt-20 pb-20 sm:pt-28 sm:pb-28"
+          className="border-border bg-background border-b pt-20 pb-20 sm:pt-28 sm:pb-28"
         >
-          {/* Ambient Lighting & Grid */}
-          <div
-            className="bg-grid pointer-events-none absolute inset-0 opacity-40"
-            aria-hidden="true"
-          />
-
-          <div className="container-page relative z-10 text-center">
-            {/* Tagline Badge */}
-            <div className="border-brand-500/30 bg-brand-500/10 text-brand-300 mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium backdrop-blur-md sm:text-sm">
-              <Sparkles className="text-brand-400 size-3.5" aria-hidden="true" />
-              <span>Kailshians Web Services • Developer Ecosystem</span>
-            </div>
+          <div className="container-page relative z-10 text-center lg:text-left">
+            {/* Eyebrow Badge (Hero only) */}
+            <Badge variant="neutral" className="mb-6">
+              Kailshians Web Services • Developer Ecosystem
+            </Badge>
 
             {/* Exact Required Headline */}
-            <h1 className="text-surface-50 mx-auto max-w-4xl text-4xl leading-[1.1] font-extrabold tracking-tight sm:text-6xl sm:leading-[1.12] md:text-7xl">
-              Developer Events. <span className="text-brand-300">Builder Communities.</span> Real
-              Connections.
+            <h1 className="text-foreground max-w-4xl text-4xl font-extrabold tracking-tight [overflow-wrap:anywhere] sm:text-6xl sm:leading-[1.12] md:text-7xl">
+              Developer Events. Builder Communities. Real Connections.
             </h1>
 
             {/* Subtext */}
-            <p className="text-surface-300 mx-auto mt-6 max-w-2xl text-base leading-relaxed sm:text-lg md:text-xl">
+            <p className="text-muted-foreground mt-6 max-w-2xl text-base leading-relaxed sm:text-lg md:text-xl">
               The developer events &amp; community platform by Kailshians Web Services. Powering
               collegiate hackathons, regional tech meetups, architecture talks, and campus leaders
               across India.
             </p>
 
-            {/* Exact Required CTAs */}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Button
-                asChild
-                size="lg"
-                variant="default"
-                rightIcon={<ArrowRight className="size-5" />}
-              >
+            {/* Exact Required CTAs: primary, secondary, ghost (stack on mobile) */}
+            <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4 lg:justify-start">
+              <Button asChild size="lg" variant="primary">
                 <Link href="/events" id="hero-cta-explore-events">
                   Explore Events
                 </Link>
@@ -402,7 +365,7 @@ export default async function HomePage() {
                 </Link>
               </Button>
 
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="ghost">
                 <Link href="/collaborations" id="hero-cta-partner">
                   Partner With Us
                 </Link>
@@ -410,17 +373,16 @@ export default async function HomePage() {
             </div>
 
             {/* Live Micro-Badge Row */}
-            <div className="text-surface-400 mt-12 flex flex-wrap items-center justify-center gap-6 font-mono text-xs">
+            <div className="text-muted-foreground mt-10 flex flex-wrap items-center justify-center gap-4 font-mono text-xs lg:justify-start">
               <div className="flex items-center gap-2">
                 <span className="relative flex size-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+                  <span className="bg-success relative inline-flex size-2 rounded-full" />
                 </span>
                 <span>Active 2026 Season</span>
               </div>
-              <span className="text-surface-700">•</span>
+              <span>•</span>
               <div>100% Developer Owned &amp; Driven</div>
-              <span className="text-surface-700">•</span>
+              <span>•</span>
               <div>Free Tier Registrations</div>
             </div>
           </div>
@@ -429,22 +391,17 @@ export default async function HomePage() {
         {/* ═══════════════════════════════════════════════════════════════════════
             2. UPCOMING EVENTS (FROM DB)
         ═══════════════════════════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="section-upcoming-events"
-          className="section-spacing bg-surface-950"
-        >
+        <section aria-labelledby="section-upcoming-events" className="bg-background py-16 sm:py-20">
           <div className="container-page">
             <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <SectionHeader
-                badge="Schedule & Pass"
                 title="Upcoming Developer Gatherings"
-                highlight="Developer Gatherings"
                 description="Verified meetups, intense build-a-thons, and engineering deep dives. Reserve your seat directly from the database."
                 align="left"
               />
               <Button
                 asChild
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 rightIcon={<ArrowRight className="size-4" />}
               >
@@ -454,7 +411,7 @@ export default async function HomePage() {
 
             {displayEvents.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {displayEvents.map((event) => {
+                {displayEvents.map((event, index) => {
                   const isFree =
                     event.ticketTypes.length === 0 ||
                     event.ticketTypes.some((t) => Number(t.price) === 0);
@@ -480,6 +437,7 @@ export default async function HomePage() {
                       price={isFree ? 0 : lowestPrice}
                       attendeeCount={event._count.registrations}
                       speakerCount={event._count.speakers}
+                      priority={index === 0}
                       tags={
                         event.type === "HACKATHON" ? ["Hackathon", "Build"] : ["Meetup", "Devs"]
                       }
@@ -488,32 +446,30 @@ export default async function HomePage() {
                 })}
               </div>
             ) : (
-              <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-12 text-center">
-                <Calendar className="text-surface-500 mx-auto mb-3 size-12" />
-                <h3 className="text-surface-100 text-lg font-semibold">New Cohort Coming Soon</h3>
-                <p className="text-surface-400 mx-auto mt-1 max-w-sm text-sm">
+              <Card className="p-12 text-center">
+                <Calendar className="text-muted-foreground mx-auto mb-3 size-12" />
+                <h3 className="text-foreground text-lg font-semibold">New Cohort Coming Soon</h3>
+                <p className="text-muted-foreground mx-auto mt-1 max-w-sm text-sm">
                   Our organizers are finalizing the schedule for upcoming city editions.
                 </p>
-              </div>
+              </Card>
             )}
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════════
-            3. IMPACT COUNTERS (FROM DB / AGGREGATED)
+            3. IMPACT COUNTERS (py-12, plain numbers, muted labels, border-y)
         ═══════════════════════════════════════════════════════════════════════════ */}
         <section
           aria-labelledby="section-impact-counters"
-          className="bg-surface-900/40 border-surface-800 border-y py-16"
+          className="border-border bg-card border-y py-12"
         >
           <div className="container-page">
             <SectionHeader
-              badge="Real Ecosystem Impact"
               title="Powering India's Builder Revolution"
-              highlight="Builder Revolution"
               description="Transparent numbers driven by active database records, registrations, and campus chapters."
               align="center"
-              className="mb-12"
+              className="mb-10"
             />
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -522,7 +478,6 @@ export default async function HomePage() {
                 suffix="+"
                 label="Developers & Builders"
                 description="Registered members across workshops, hackathons, and regional chapters."
-                variant="brand"
                 duration={2.2}
               />
               <StatCounter
@@ -530,7 +485,6 @@ export default async function HomePage() {
                 suffix="+"
                 label="Published Events"
                 description="Community-first gatherings organized with zero commercial compromise."
-                variant="accent"
                 duration={1.8}
               />
               <StatCounter
@@ -538,7 +492,6 @@ export default async function HomePage() {
                 suffix="+"
                 label="Cities Covered"
                 description="Active chapters in Tier-1, Tier-2, and Himalayan tech hubs."
-                variant="default"
                 duration={2.0}
               />
               <StatCounter
@@ -546,7 +499,6 @@ export default async function HomePage() {
                 suffix="+"
                 label="Colleges & Chapters"
                 description="Campus leads driving hack sprints and open-source study groups."
-                variant="brand"
                 duration={2.4}
               />
             </div>
@@ -556,21 +508,19 @@ export default async function HomePage() {
         {/* ═══════════════════════════════════════════════════════════════════════
             4. FEATURED MEETUP & HACKATHON SERIES (FROM DB)
         ═══════════════════════════════════════════════════════════════════════════ */}
-        <section aria-labelledby="section-series" className="section-spacing bg-surface-950">
+        <section aria-labelledby="section-series" className="bg-background py-16 sm:py-20">
           <div className="container-page">
             <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <SectionHeader
-                badge="Recurring Signature Brands"
                 title="Meetup & Hackathon Series"
-                highlight="Series"
                 description="Dedicated properties engineered for recurring regional impact. Each series builds long-term community momentum."
                 align="left"
               />
               <div className="flex items-center gap-3">
-                <Button asChild variant="outline" size="sm">
+                <Button asChild variant="secondary" size="sm">
                   <Link href="/meetup-series">Meetup Series</Link>
                 </Button>
-                <Button asChild variant="outline" size="sm">
+                <Button asChild variant="secondary" size="sm">
                   <Link href="/hackathon-series">Hackathon Series</Link>
                 </Button>
               </div>
@@ -578,7 +528,6 @@ export default async function HomePage() {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {seriesList.slice(0, 3).map((series) => {
-                // Extract unique cities covered in series editions
                 const citiesCovered = Array.from(
                   new Set(
                     series.editions
@@ -610,23 +559,21 @@ export default async function HomePage() {
 
         {/* ═══════════════════════════════════════════════════════════════════════
             5. TECH TALKS (FROM DB)
-        ═══════════════════════════════════════════════════════════════════════════ */}
+        ═══════════════════════════════════════════════════════════════════════ */}
         <section
           aria-labelledby="section-techtalks"
-          className="section-spacing bg-surface-900/30 border-surface-800 border-t"
+          className="border-border bg-card/40 border-t py-16 sm:py-20"
         >
           <div className="container-page">
             <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <SectionHeader
-                badge="Engineering Insight"
                 title="Deep-Dive Tech Talks"
-                highlight="Tech Talks"
                 description="Zero sales pitches. Real production war stories on distributed systems, generative AI, and scale."
                 align="left"
               />
               <Button
                 asChild
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 rightIcon={<ArrowRight className="size-4" />}
               >
@@ -637,28 +584,28 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Highlight Featured Tech Talk Resource */}
               {featuredTechTalkResource && (
-                <div className="border-brand-500/40 from-brand-950/20 via-surface-900 to-surface-900/90 shadow-brand-950/30 flex flex-col justify-between rounded-2xl border bg-gradient-to-b p-6 shadow-xl sm:p-7 lg:col-span-1">
+                <Card className="flex flex-col justify-between p-6 sm:p-7 lg:col-span-1">
                   <div>
-                    <Badge variant="brand" size="sm" className="mb-3">
+                    <Badge variant="neutral" size="sm" className="mb-3">
                       Featured Keynote
                     </Badge>
-                    <h3 className="text-surface-50 text-xl leading-snug font-bold">
+                    <h3 className="text-foreground text-xl leading-snug font-bold">
                       {featuredTechTalkResource.event?.title || "Keynote Architecture Session"}
                     </h3>
-                    <div className="text-brand-300 mt-3 flex items-center gap-2 font-mono text-xs">
-                      <Video className="size-3.5" aria-hidden="true" />
+                    <div className="text-muted-foreground mt-3 flex items-center gap-2 font-mono text-xs">
+                      <Video className="text-foreground size-3.5" aria-hidden="true" />
                       <span>Recording Available</span>
                     </div>
 
                     {keyTakeaways.length > 0 && (
                       <div className="mt-6 space-y-2">
-                        <span className="text-surface-400 font-mono text-xs tracking-wider uppercase">
+                        <span className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
                           Key Engineering Lessons:
                         </span>
-                        <ul className="text-surface-300 space-y-2 text-xs">
+                        <ul className="text-muted-foreground space-y-2 text-xs">
                           {keyTakeaways.slice(0, 3).map((point: string, idx: number) => (
                             <li key={idx} className="flex items-start gap-2">
-                              <CheckCircle2 className="text-brand-400 mt-0.5 size-3.5 shrink-0" />
+                              <CheckCircle2 className="text-foreground mt-0.5 size-3.5 shrink-0" />
                               <span>{point}</span>
                             </li>
                           ))}
@@ -667,21 +614,21 @@ export default async function HomePage() {
                     )}
                   </div>
 
-                  <div className="border-surface-800 mt-8 flex items-center justify-between border-t pt-6">
+                  <div className="border-border mt-8 flex items-center justify-between border-t pt-6">
                     {featuredTechTalkResource.speaker ? (
                       <div>
-                        <div className="text-surface-100 text-sm font-semibold">
+                        <div className="text-foreground text-sm font-semibold">
                           {featuredTechTalkResource.speaker.name}
                         </div>
-                        <div className="text-surface-400 text-xs">
+                        <div className="text-muted-foreground text-xs">
                           {featuredTechTalkResource.speaker.designation} •{" "}
                           {featuredTechTalkResource.speaker.organisation}
                         </div>
                       </div>
                     ) : (
-                      <div className="text-surface-400 text-xs">Keynote Speaker</div>
+                      <div className="text-muted-foreground text-xs">Keynote Speaker</div>
                     )}
-                    <Button asChild size="sm" variant="accent">
+                    <Button asChild size="sm" variant="secondary">
                       <Link
                         href={featuredTechTalkResource.videoUrl || "/tech-talks"}
                         target="_blank"
@@ -690,7 +637,7 @@ export default async function HomePage() {
                       </Link>
                     </Button>
                   </div>
-                </div>
+                </Card>
               )}
 
               {/* Grid of Tech Talk Events */}
@@ -724,18 +671,18 @@ export default async function HomePage() {
 
             {/* Featured Community Speakers */}
             {featuredSpeakers.length > 0 && (
-              <div className="border-surface-800/60 mt-14 border-t pt-12">
+              <div className="border-border mt-14 border-t pt-12">
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h4 className="text-surface-50 text-xl font-bold">
+                    <h4 className="text-foreground text-xl font-bold">
                       Featured Keynote &amp; Session Speakers
                     </h4>
-                    <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+                    <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
                       Distinguished architects, open-source maintainers, and tech leads sharing real
                       production lessons.
                     </p>
                   </div>
-                  <Button asChild variant="outline" size="sm">
+                  <Button asChild variant="secondary" size="sm">
                     <Link href="/tech-talks">View All Speakers</Link>
                   </Button>
                 </div>
@@ -770,19 +717,17 @@ export default async function HomePage() {
         {/* ═══════════════════════════════════════════════════════════════════════
             6. WORKSHOPS (FROM DB)
         ═══════════════════════════════════════════════════════════════════════════ */}
-        <section aria-labelledby="section-workshops" className="section-spacing bg-surface-950">
+        <section aria-labelledby="section-workshops" className="bg-background py-16 sm:py-20">
           <div className="container-page">
             <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <SectionHeader
-                badge="Hands-on Coding"
                 title="Intensive Developer Workshops"
-                highlight="Workshops"
                 description="Live terminal labs, container deployments, and hands-on coding under direct mentorship."
                 align="left"
               />
               <Button
                 asChild
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 rightIcon={<ArrowRight className="size-4" />}
               >
@@ -811,28 +756,26 @@ export default async function HomePage() {
                   />
                 ))
               ) : (
-                <div className="border-surface-800 col-span-3 rounded-xl border py-12 text-center">
-                  <p className="text-surface-400 text-sm">
+                <Card className="col-span-3 py-12 text-center">
+                  <p className="text-muted-foreground text-sm">
                     Workshops announced bi-weekly. Check schedule.
                   </p>
-                </div>
+                </Card>
               )}
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════════
-            7. COMMUNITY PROGRAMS
+            7. COMMUNITY PROGRAMS (Campus, State, Core Team using shared Card)
         ═══════════════════════════════════════════════════════════════════════════ */}
         <section
           aria-labelledby="section-programs"
-          className="section-spacing bg-surface-900/40 border-surface-800 border-t"
+          className="border-border bg-card/40 border-t py-16 sm:py-20"
         >
           <div className="container-page">
             <SectionHeader
-              badge="Leadership Pipeline"
               title="Community Programs: Lead & Connect"
-              highlight="Community Programs"
               description="Move up the ladder: Attendee → Member → Contributor → Lead → Organizer. We equip you with funding, venues, and curriculum."
               align="center"
               className="mb-14"
@@ -840,37 +783,39 @@ export default async function HomePage() {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {/* Campus Leads */}
-              <div className="border-surface-800 bg-surface-900/80 hover:border-brand-500/50 flex flex-col justify-between rounded-2xl border p-7 transition-[border-color,transform] duration-200 hover:-translate-y-px">
+              <Card className="flex flex-col justify-between p-6 sm:p-7">
                 <div>
-                  <div className="bg-brand-500/10 border-brand-500/30 text-brand-400 mb-5 flex size-12 items-center justify-center rounded-xl border">
+                  <div className="border-border bg-muted text-foreground mb-5 flex size-12 items-center justify-center rounded-lg border">
                     <GraduationCap className="size-6" aria-hidden="true" />
                   </div>
-                  <Badge variant="brand" size="sm" className="mb-2">
+                  <Badge variant="neutral" size="sm" className="mb-2">
                     Campus Chapter
                   </Badge>
-                  <h3 className="text-surface-50 text-2xl font-bold">Campus Leads</h3>
-                  <p className="text-surface-300 mt-3 text-sm leading-relaxed">
+                  <h3 className="text-foreground text-2xl font-bold">Campus Leads</h3>
+                  <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
                     Represent KailshiansX at your engineering college. Organize campus hackathons,
                     host official watch parties, and grant your classmates direct industry access.
                   </p>
-                  <ul className="text-surface-400 mt-6 space-y-2 text-xs">
+                  <ul className="text-muted-foreground mt-6 space-y-2 text-xs">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="text-brand-400 size-3.5" />
+                      <CheckCircle2 className="text-foreground size-3.5" />
                       <span>Event budget &amp; swag support</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="text-brand-400 size-3.5" />
+                      <CheckCircle2 className="text-foreground size-3.5" />
                       <span>Direct referrals for internships</span>
                     </li>
                   </ul>
 
-                  <div className="border-brand-500/20 bg-brand-500/5 mt-5 rounded-lg border p-3 text-xs">
-                    <div className="text-brand-300 flex items-center justify-between font-semibold">
+                  <div className="border-border bg-muted mt-5 rounded-lg border p-3 text-xs">
+                    <div className="text-foreground flex items-center justify-between font-semibold">
                       <span>Active Chapters</span>
-                      <span className="font-mono">{Math.max(totalCampusLeads, 1)}+ Colleges</span>
+                      <span className="text-muted-foreground font-mono">
+                        {Math.max(totalCampusLeads, 1)}+ Colleges
+                      </span>
                     </div>
                     {activeCampusLeads.length > 0 && (
-                      <p className="text-surface-400 mt-1 truncate text-[11px]">
+                      <p className="text-muted-foreground mt-1 truncate text-xs">
                         e.g.{" "}
                         {activeCampusLeads
                           .map((cl) => cl.college?.name)
@@ -880,238 +825,249 @@ export default async function HomePage() {
                     )}
                   </div>
                 </div>
-                <div className="border-surface-800 mt-8 border-t pt-6">
-                  <Button asChild variant="default" className="w-full">
+                <div className="border-border mt-8 border-t pt-6">
+                  <Button asChild variant="primary" className="w-full">
                     <Link href="/campus-leads">Apply as Campus Lead</Link>
                   </Button>
                 </div>
-              </div>
+              </Card>
 
               {/* State Leads */}
-              <div className="border-surface-800 bg-surface-900/80 hover:border-accent-500/50 flex flex-col justify-between rounded-2xl border p-7 transition-[border-color,transform] duration-200 hover:-translate-y-px">
+              <Card className="flex flex-col justify-between p-6 sm:p-7">
                 <div>
-                  <div className="bg-accent-500/10 border-accent-500/30 text-accent-400 mb-5 flex size-12 items-center justify-center rounded-xl border">
+                  <div className="border-border bg-muted text-foreground mb-5 flex size-12 items-center justify-center rounded-lg border">
                     <Compass className="size-6" aria-hidden="true" />
                   </div>
-                  <Badge variant="accent" size="sm" className="mb-2">
+                  <Badge variant="neutral" size="sm" className="mb-2">
                     Regional Leadership
                   </Badge>
-                  <h3 className="text-surface-50 text-2xl font-bold">State Leads</h3>
-                  <p className="text-surface-300 mt-3 text-sm leading-relaxed">
+                  <h3 className="text-foreground text-2xl font-bold">State Leads</h3>
+                  <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
                     Lead statewide developer operations across cities. Mentor campus leads,
                     establish venue partnerships with tech parks, and drive regional series.
                   </p>
-                  <ul className="text-surface-400 mt-6 space-y-2 text-xs">
+                  <ul className="text-muted-foreground mt-6 space-y-2 text-xs">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="text-accent-400 size-3.5" />
+                      <CheckCircle2 className="text-foreground size-3.5" />
                       <span>Regional series decision autonomy</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="text-accent-400 size-3.5" />
+                      <CheckCircle2 className="text-foreground size-3.5" />
                       <span>Liaise with sponsor &amp; cloud partners</span>
                     </li>
                   </ul>
 
-                  <div className="border-accent-500/20 bg-accent-500/5 mt-5 rounded-lg border p-3 text-xs">
-                    <div className="text-accent-300 flex items-center justify-between font-semibold">
+                  <div className="border-border bg-muted mt-5 rounded-lg border p-3 text-xs">
+                    <div className="text-foreground flex items-center justify-between font-semibold">
                       <span>State Chapters</span>
-                      <span className="font-mono">{Math.max(totalStateLeads, 1)}+ Regions</span>
+                      <span className="text-muted-foreground font-mono">
+                        {Math.max(totalStateLeads, 1)}+ Regions
+                      </span>
                     </div>
-                    <p className="text-surface-400 mt-1 text-[11px]">
+                    <p className="text-muted-foreground mt-1 text-xs">
                       Rajasthan, Punjab &amp; Tri-City Tech Hubs
                     </p>
                   </div>
                 </div>
-                <div className="border-surface-800 mt-8 border-t pt-6">
-                  <Button asChild variant="accent" className="w-full">
+                <div className="border-border mt-8 border-t pt-6">
+                  <Button asChild variant="secondary" className="w-full">
                     <Link href="/state-leads">Apply as State Lead</Link>
                   </Button>
                 </div>
-              </div>
+              </Card>
 
               {/* Core Team & Collaborations */}
-              <div className="border-surface-800 bg-surface-900/80 hover:border-surface-600 flex flex-col justify-between rounded-2xl border p-7 transition-[border-color,transform] duration-200 hover:-translate-y-px">
+              <Card className="flex flex-col justify-between p-6 sm:p-7">
                 <div>
-                  <div className="bg-surface-800 border-surface-700 text-surface-200 mb-5 flex size-12 items-center justify-center rounded-xl border">
+                  <div className="border-border bg-muted text-foreground mb-5 flex size-12 items-center justify-center rounded-lg border">
                     <Users className="size-6" aria-hidden="true" />
                   </div>
-                  <Badge variant="surface" size="sm" className="mb-2">
+                  <Badge variant="neutral" size="sm" className="mb-2">
                     KWS Community Team
                   </Badge>
-                  <h3 className="text-surface-50 text-2xl font-bold">Join Core Team</h3>
-                  <p className="text-surface-300 mt-3 text-sm leading-relaxed">
+                  <h3 className="text-foreground text-2xl font-bold">Join Core Team</h3>
+                  <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
                     We are expanding the central KailshiansX operations team. We recruit full-stack
                     engineers, designers, stage hosts, and developer advocates.
                   </p>
-                  <ul className="text-surface-400 mt-6 space-y-2 text-xs">
+                  <ul className="text-muted-foreground mt-6 space-y-2 text-xs">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="text-surface-400 size-3.5" />
+                      <CheckCircle2 className="text-foreground size-3.5" />
                       <span>Next.js, PostgreSQL &amp; Cloud Ops</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="text-surface-400 size-3.5" />
+                      <CheckCircle2 className="text-foreground size-3.5" />
                       <span>Event production &amp; community relations</span>
                     </li>
                   </ul>
 
-                  <div className="border-surface-700/60 bg-surface-800/40 mt-5 rounded-lg border p-3 text-xs">
-                    <div className="text-surface-300 flex items-center justify-between font-semibold">
+                  <div className="border-border bg-muted mt-5 rounded-lg border p-3 text-xs">
+                    <div className="text-foreground flex items-center justify-between font-semibold">
                       <span>HQ Operations</span>
-                      <span className="text-surface-200 font-mono">KWS Core Squad</span>
+                      <span className="text-muted-foreground font-mono">KWS Core Squad</span>
                     </div>
-                    <p className="text-surface-400 mt-1 text-[11px]">
+                    <p className="text-muted-foreground mt-1 text-xs">
                       Engineering, Design, Marketing &amp; Logistics
                     </p>
                   </div>
                 </div>
-                <div className="border-surface-800 mt-8 border-t pt-6">
+                <div className="border-border mt-8 border-t pt-6">
                   <Button asChild variant="secondary" className="w-full">
                     <Link href="/join-team">View Open Roles</Link>
                   </Button>
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════════
-            8. GALLERY HIGHLIGHTS (FROM DB)
-        ═══════════════════════════════════════════════════════════════════════════ */}
-        <section aria-labelledby="section-gallery" className="section-spacing bg-surface-950">
-          <div className="container-page">
-            <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <SectionHeader
-                badge="Community Vibe"
-                title="Moments From the Floor"
-                highlight="the Floor"
-                description="Late-night hackathon coding sessions, packed auditoriums, and authentic developer networking."
-                align="left"
-              />
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                rightIcon={<ArrowRight className="size-4" />}
-              >
-                <Link href="/gallery">View Full Gallery</Link>
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-              {galleryHighlights.map((img, i) => (
-                <div
-                  key={img.id}
-                  className={`group border-surface-800 bg-surface-900/60 relative aspect-square overflow-hidden rounded-xl border ${
-                    i === 0 ? "col-span-2 row-span-2 aspect-auto min-h-[280px]" : ""
-                  }`}
+            8. GALLERY HIGHLIGHTS (pt-12 pb-20, hide if empty, first tile 2x2 sm+)
+        ═══════════════════════════════════════════════════════════════════════ */}
+        {galleryHighlights.length > 0 && (
+          <section aria-labelledby="section-gallery" className="bg-background pt-12 pb-20">
+            <div className="container-page">
+              <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <SectionHeader
+                  title="Moments From the Floor"
+                  description="Late-night hackathon coding sessions, packed auditoriums, and authentic developer networking."
+                  align="left"
+                />
+                <Button
+                  asChild
+                  variant="secondary"
+                  size="sm"
+                  rightIcon={<ArrowRight className="size-4" />}
                 >
-                  <div className="from-surface-900 to-surface-800 flex size-full items-center justify-center bg-gradient-to-tr p-4">
-                    <div className="text-center">
-                      <CameraIcon className="text-surface-600 mx-auto mb-2 size-8 transition-transform group-hover:scale-110" />
-                      <p className="text-surface-300 line-clamp-2 px-2 text-xs font-medium">
+                  <Link href="/gallery">View Full Gallery</Link>
+                </Button>
+              </div>
+
+              <div className="grid [grid-template-columns:repeat(1,minmax(0,1fr))] gap-4 sm:[grid-template-columns:repeat(3,minmax(0,1fr))] lg:[grid-template-columns:repeat(4,minmax(0,1fr))]">
+                {galleryHighlights.map((img, i) => (
+                  <div
+                    key={img.id}
+                    className={cn(
+                      "group border-border bg-card relative min-w-0 overflow-hidden rounded-lg border",
+                      i === 0
+                        ? "col-span-1 aspect-auto min-h-[280px] sm:col-span-2 sm:row-span-2"
+                        : "aspect-square"
+                    )}
+                  >
+                    {img.url ? (
+                      <Image
+                        src={img.url}
+                        alt={img.caption || img.album.title || "Community photo"}
+                        fill
+                        sizes={
+                          i === 0
+                            ? "(max-width: 640px) 100vw, 66vw"
+                            : "(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+                        }
+                        className="object-cover transition-opacity duration-150 group-hover:opacity-90"
+                      />
+                    ) : (
+                      <div className="bg-muted flex size-full items-center justify-center p-4">
+                        <CameraIcon className="text-muted-foreground size-8" />
+                      </div>
+                    )}
+                    <div className="border-border bg-card/90 absolute inset-x-0 bottom-0 border-t p-3 backdrop-blur-sm">
+                      <p className="text-foreground line-clamp-1 text-xs font-medium">
                         {img.caption || img.album.title}
                       </p>
-                      <span className="text-brand-400 mt-1 block font-mono text-[10px]">
-                        {img.album.title.split("—")[0]}
+                      <span className="text-muted-foreground mt-0.5 block font-mono text-xs">
+                        {img.album.title.split("—")[0].trim()}
                       </span>
                     </div>
                   </div>
-                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                    <span className="text-xs font-medium text-white">{img.caption}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ═══════════════════════════════════════════════════════════════════════
-            9. PARTNERS (FROM DB)
-        ═══════════════════════════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="section-partners"
-          className="section-spacing bg-surface-900/40 border-surface-800 border-t"
-        >
-          <div className="container-page">
-            <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            9. PARTNERS (FROM DB — Render ONLY if real records exist)
+        ═══════════════════════════════════════════════════════════════════════ */}
+        {formattedPartners.length > 0 && (
+          <section
+            aria-labelledby="section-partners"
+            className="border-border bg-card/40 border-t py-16 sm:py-20"
+          >
+            <div className="container-page">
+              <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <SectionHeader
+                  title="Backed by Leading Tech Giants"
+                  description="Our hackathons and meetups are supported by the best developer tooling, cloud platforms, and workspace providers."
+                  align="left"
+                />
+                <Button
+                  asChild
+                  variant="secondary"
+                  size="sm"
+                  rightIcon={<ArrowRight className="size-4" />}
+                >
+                  <Link href="/collaborations">Partner With Us</Link>
+                </Button>
+              </div>
+
+              <PartnerLogoGrid groupByTier={true} partners={formattedPartners} />
+            </div>
+          </section>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════════════════════
+            10. TESTIMONIALS (FROM DB — Render ONLY if real records exist)
+        ═══════════════════════════════════════════════════════════════════════ */}
+        {parsedTestimonials.length > 0 && (
+          <section aria-labelledby="section-testimonials" className="bg-background py-16 sm:py-20">
+            <div className="container-page">
               <SectionHeader
-                badge="Ecosystem Backers"
-                title="Backed by Leading Tech Giants"
-                highlight="Tech Giants"
-                description="Our hackathons and meetups are supported by the best developer tooling, cloud platforms, and workspace providers."
-                align="left"
+                title="Loved by Developers &amp; Organizers"
+                description="Real stories from attendees who became hackathon winners, campus leads, and keynote speakers."
+                align="center"
+                className="mb-14"
               />
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                rightIcon={<ArrowRight className="size-4" />}
-              >
-                <Link href="/collaborations">Partner With Us</Link>
-              </Button>
+
+              <TestimonialCarousel autoPlay={false} testimonials={parsedTestimonials} />
             </div>
-
-            <PartnerLogoGrid groupByTier={true} partners={formattedPartners} />
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ═══════════════════════════════════════════════════════════════════════
-            10. TESTIMONIALS (FROM DB)
-        ═══════════════════════════════════════════════════════════════════════════ */}
-        <section aria-labelledby="section-testimonials" className="section-spacing bg-surface-950">
-          <div className="container-page">
-            <SectionHeader
-              badge="Builder Voices"
-              title="Loved by Developers &amp; Organizers"
-              highlight="Developers &amp; Organizers"
-              description="Real stories from attendees who became hackathon winners, campus leads, and keynote speakers."
-              align="center"
-              className="mb-14"
-            />
-
-            <TestimonialCarousel autoPlay={false} testimonials={parsedTestimonials} />
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════════════════════════
-            11. FINAL CONVERSION CTA
-        ═══════════════════════════════════════════════════════════════════════════ */}
+            11. FINAL CONVERSION CTA (py-24, simple bordered block, primary + secondary)
+        ═══════════════════════════════════════════════════════════════════════ */}
         <section
           aria-labelledby="section-final-cta"
-          className="from-surface-900 via-surface-950 to-surface-950 border-surface-800 relative overflow-hidden border-t bg-gradient-to-b py-24 sm:py-32"
+          className="border-border bg-background border-t py-24"
         >
-          <div className="container-page relative z-10 mx-auto max-w-4xl text-center">
-            <Badge variant="gradient" size="default" dot className="mb-6">
-              The KailshiansX Mission
-            </Badge>
+          <div className="container-page mx-auto max-w-4xl">
+            <div className="border-border bg-card rounded-lg border p-8 text-center sm:p-12">
+              <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-4xl">
+                Ready to Build, Lead &amp; Shape the Future?
+              </h2>
 
-            <h2 className="text-surface-50 text-3xl leading-tight font-black tracking-tight sm:text-5xl md:text-6xl">
-              Ready to Build, Lead &amp; <span className="text-brand-300">Shape the Future?</span>
-            </h2>
+              <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-base leading-relaxed">
+                Every event moves a person:{" "}
+                <strong className="text-foreground font-semibold">
+                  Attendee → Member → Contributor → Lead → Organizer → Mentor / Speaker.
+                </strong>{" "}
+                Join thousands of developers leveling up their craft.
+              </p>
 
-            <p className="text-surface-300 mx-auto mt-6 max-w-2xl text-base leading-relaxed sm:text-lg md:text-xl">
-              Every event moves a person:{" "}
-              <strong className="text-surface-100 font-semibold">
-                Attendee → Member → Contributor → Lead → Organizer → Mentor / Speaker.
-              </strong>{" "}
-              Join thousands of developers leveling up their craft.
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Button
-                asChild
-                size="lg"
-                variant="accent"
-                rightIcon={<ArrowRight className="size-5" />}
-              >
-                <Link href="/events">Explore Upcoming Events</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/campus-leads">Apply for Campus Lead</Link>
-              </Button>
-              <Button asChild size="lg" variant="secondary">
-                <Link href="/community">Join Community</Link>
-              </Button>
+              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Button
+                  asChild
+                  size="lg"
+                  variant="primary"
+                  rightIcon={<ArrowRight className="size-5" />}
+                >
+                  <Link href="/events">Explore Upcoming Events</Link>
+                </Button>
+                <Button asChild size="lg" variant="secondary">
+                  <Link href="/community">Join Community</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>

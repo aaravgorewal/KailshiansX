@@ -1,5 +1,5 @@
 // src/app/core-team/page.tsx
-// Public Core Team directory with categorized profile cards (PRD §15)
+// Public Core Team directory with categorized profile cards
 
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -51,39 +51,31 @@ export default async function CoreTeamPage() {
   }));
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
-      {/* ─── HERO HEADER BANNER ────────────────────────────────────────────── */}
-      <section className="border-surface-800 from-surface-900 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-14">
-        <div
-          className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-          aria-hidden="true"
-        />
-
-        <div className="container-page relative z-10 text-center">
+    <div className="bg-background min-h-screen pb-24">
+      {/* ─── HEADER BANNER ─────────────────────────────────────────────────── */}
+      <section className="border-border border-b py-12">
+        <div className="container-page">
           <SectionHeader
-            badge="Ecosystem Leadership"
-            title="The Architects Behind KailshiansX"
-            highlight="KailshiansX"
-            description="A distributed team of engineers, community leaders, and event producers united by a single vision: making world-class developer experiences accessible across every tier of India."
-            align="center"
+            title="Core Team & Leadership"
+            description="The engineers, community organizers, and ecosystem architects building KailshiansX across India."
           />
 
           {/* Quick Metrics */}
-          <div className="text-surface-400 mt-8 flex flex-wrap items-center justify-center gap-6 font-mono text-xs">
-            <div className="flex items-center gap-2">
-              <span className="bg-brand-400 size-2 rounded-full" />
-              <span>7 Domain Divisions</span>
+          <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-6 font-mono text-xs">
+            <div>
+              <strong className="text-foreground font-semibold">{members.length}</strong> Active
+              Members
             </div>
-            <span className="text-surface-700">•</span>
+            <span>•</span>
             <div>100% Builder Driven</div>
-            <span className="text-surface-700">•</span>
+            <span>•</span>
             <div>Zero Fluff Culture</div>
           </div>
         </div>
       </section>
 
       {/* ─── MAIN CONTENT ──────────────────────────────────────────────────── */}
-      <main className="container-page mt-12">
+      <main className="container-page mt-10">
         <CoreTeamClient members={serializedMembers} />
       </main>
     </div>

@@ -28,6 +28,7 @@ import { PartnerLogoGrid, type PartnerTier } from "@/components/ui/PartnerLogoGr
 import { FAQAccordion } from "@/components/ui/FAQAccordion";
 import { EventCard, type EventType, type EventStatus } from "@/components/ui/EventCard";
 import { EventStickyCta } from "@/components/events/EventStickyCta";
+import { EventCountdown } from "@/components/events/EventCountdown";
 import { getGoogleCalendarUrl } from "@/lib/calendar";
 import { formatDate, formatTimeRange } from "@/lib/format-date";
 
@@ -333,7 +334,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               )}
 
               {/* Quick Specs Badges */}
-              <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 xl:grid-cols-4">
                 {/* Date & Time Card */}
                 <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4">
                   <div className="border-border bg-muted text-foreground rounded-md border p-2">
@@ -379,8 +380,13 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                   </div>
                 </div>
 
+                <EventCountdown
+                  startDate={event.startDate.toISOString()}
+                  endDate={event.endDate ? event.endDate.toISOString() : null}
+                />
+
                 {/* Capacity & Format Card */}
-                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4 sm:col-span-2 md:col-span-1">
+                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4">
                   <div className="border-border bg-muted text-foreground rounded-md border p-2">
                     <Users className="size-4" aria-hidden="true" />
                   </div>
@@ -866,6 +872,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                 highestPrice={highestPrice}
                 registrationDeadline={event.registrationDeadline}
                 startDate={event.startDate}
+                endDate={event.endDate}
                 status={event.status}
                 maxCapacity={event.maxCapacity}
                 attendeeCount={event._count.registrations}
@@ -937,6 +944,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           highestPrice={highestPrice}
           registrationDeadline={event.registrationDeadline}
           startDate={event.startDate}
+          endDate={event.endDate}
           status={event.status}
           maxCapacity={event.maxCapacity}
           attendeeCount={event._count.registrations}

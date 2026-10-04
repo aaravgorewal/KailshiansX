@@ -5,7 +5,11 @@ import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
@@ -83,14 +87,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#09090b",
-  colorScheme: "dark",
+  colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
 };
 
 import { Toaster } from "@/components/ui/Toaster";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -125,21 +129,30 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn("dark", "font-sans", geist.variable)} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={cn("font-sans", geist.variable, geistMono.variable)}
+      suppressHydrationWarning
+    >
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
       </head>
-      <body
-        className={`${geistMono.variable} bg-surface-950 text-surface-100 flex min-h-screen flex-col font-sans antialiased`}
-      >
-        <NavbarWrapper />
-        <main className="flex-1 pt-16">{children}</main>
-        <Footer />
-        <Toaster />
-        <GoogleAnalytics />
+      <body className="bg-background text-foreground flex min-h-screen flex-col font-sans antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NavbarWrapper />
+          <main className="flex-1 pt-16">{children}</main>
+          <Footer />
+          <Toaster />
+          <GoogleAnalytics />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 // src/app/gallery/page.tsx
-// Public gallery organized by category and event (PRD §18)
+// Public gallery organized by category and event
 
 import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
@@ -92,45 +92,36 @@ export default async function GalleryPage({
   }));
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-24">
-      {/* ─── HERO HEADER BANNER ────────────────────────────────────────────── */}
-      <section className="border-surface-800 from-surface-900 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-12">
-        <div
-          className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-          aria-hidden="true"
-        />
-
-        <div className="container-page relative z-10 text-center">
+    <div className="bg-background min-h-screen pb-24">
+      {/* ─── HEADER BANNER ─────────────────────────────────────────────────── */}
+      <section className="border-border border-b py-12">
+        <div className="container-page">
           <SectionHeader
-            badge="Visual Archive"
-            title="Moments from the Developer Ecosystem"
-            highlight="Developer Ecosystem"
-            description="36-hour hackathon floor sprints, architecture masterclasses, collegiate summits, and behind-the-scenes rituals across India."
-            align="center"
+            title="Visual Archive"
+            description="Moments from hackathons, architecture masterclasses, collegiate summits, and behind-the-scenes rituals across India."
           />
 
           {/* Quick Metrics Bar */}
-          <div className="text-surface-400 mt-8 flex flex-wrap items-center justify-center gap-6 font-mono text-xs">
-            <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-500" />
-              <span>
-                <strong className="text-surface-100">{albums.length}</strong> Curated Albums
-              </span>
-            </div>
-            <span className="text-surface-700">•</span>
+          <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-6 font-mono text-xs">
             <div>
-              <strong className="text-surface-100">{totalImagesCount}</strong> High-Res Photos
+              <strong className="text-foreground font-semibold">{albums.length}</strong> Curated
+              Albums
             </div>
-            <span className="text-surface-700">•</span>
+            <span>•</span>
             <div>
-              <strong className="text-surface-100">6</strong> Core Categories
+              <strong className="text-foreground font-semibold">{totalImagesCount}</strong> High-Res
+              Photos
+            </div>
+            <span>•</span>
+            <div>
+              <strong className="text-foreground font-semibold">6</strong> Categories
             </div>
           </div>
         </div>
       </section>
 
       {/* ─── MAIN GALLERY CONTENT ──────────────────────────────────────────── */}
-      <main className="container-page mt-10">
+      <main className="container-page mt-8">
         <GalleryOverviewClient
           albums={serializedAlbums}
           categoryCounts={categoryCounts}
