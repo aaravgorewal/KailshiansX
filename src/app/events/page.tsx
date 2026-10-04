@@ -181,29 +181,22 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="bg-surface-950 min-h-screen pb-24">
-        {/* Hero Header Banner */}
-        <section className="from-surface-900 to-surface-950 border-surface-800 relative overflow-hidden border-b bg-gradient-to-b pt-16 pb-12">
-          <div
-            className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-            aria-hidden="true"
-          />
-
-          <div className="container-page relative z-10 text-center">
+      <div className="bg-background min-h-screen pb-24">
+        {/* Header Banner */}
+        <section className="border-border bg-card/40 border-b py-12">
+          <div className="container-page text-center">
             <SectionHeader
-              badge="Verified Gathering Schedule"
-              title="Discover KailshiansX Gatherings"
-              highlight="KailshiansX Gatherings"
-              description="From flagship 36-hour hackathons and citywide summits to hands-on distributed systems masterclasses. Find your next stage."
+              title="Developer Gatherings & Events"
+              description="Discover hackathons, engineering meetups, hands-on workshops, and architecture deep dives across India."
               align="center"
             />
           </div>
         </section>
 
         {/* Main Events Catalog Area */}
-        <main className="container-page pt-10">
+        <main className="container-page pt-8">
           {/* Dynamic Interactive Filter Bar */}
-          <div className="border-surface-800 bg-surface-900/50 mb-10 rounded-2xl border p-6 shadow-xl backdrop-blur-sm">
+          <div className="border-border bg-card mb-8 rounded-lg border p-4 sm:p-6">
             <EventsFilterBar
               initialSearch={q}
               initialTimeline={timeline}
@@ -220,7 +213,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
           {events.length > 0 ? (
             <div className="space-y-12">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {events.map((event) => {
+                {events.map((event, index) => {
                   const isFree =
                     event.ticketTypes.length === 0 ||
                     event.ticketTypes.some((t) => Number(t.price) === 0);
@@ -258,6 +251,7 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
                       attendeeCount={event._count.registrations}
                       speakerCount={event._count.speakers}
                       tags={tags}
+                      priority={index < 2}
                     />
                   );
                 })}
@@ -265,28 +259,28 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
 
               {/* Server-side Pagination */}
               {totalPages > 1 && (
-                <div className="border-surface-800/80 border-t pt-6">
+                <div className="border-border border-t pt-6">
                   <EventsPagination currentPage={page} totalPages={totalPages} />
                 </div>
               )}
             </div>
           ) : (
             <EmptyState
-              icon={<Search className="text-surface-500 size-10" />}
-              title="No Gatherings Found"
+              icon={<Search className="text-muted-foreground size-10" aria-hidden="true" />}
+              title="No events found"
               description={
                 q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
-                  ? "No events match your current filter selection. Try resetting your search or exploring past archives."
-                  : "No upcoming events scheduled right now. Check back soon for the next cohort announcement!"
+                  ? "No events match your current filter selection. Try clearing your filters or exploring past events."
+                  : "No upcoming events scheduled right now. Check back soon for announcements!"
               }
               action={
                 q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
                   ? {
-                      label: "Reset All Filters",
+                      label: "Clear filters",
                       href: "/events",
                     }
                   : {
-                      label: "View Past Archives",
+                      label: "View past events",
                       href: "/events?timeline=past",
                     }
               }

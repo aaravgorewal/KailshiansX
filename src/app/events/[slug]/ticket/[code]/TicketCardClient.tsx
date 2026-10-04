@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Download, Calendar, Share2, Check, MapPin } from "lucide-react";
+import { Download, Calendar, Share2, Check, MapPin, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/useToast";
@@ -52,9 +52,9 @@ export function TicketCardClient({
     document.body.removeChild(link);
 
     toast({
-      title: "QR Ticket downloaded!",
-      description: "Save this on your device for fast check-in at the entrance.",
-      variant: "success",
+      title: "QR pass downloaded!",
+      description: "Saved to your device for check-in at the entrance.",
+      variant: "default",
     });
   };
 
@@ -64,7 +64,7 @@ export function TicketCardClient({
       try {
         await navigator.share({
           title: `My Pass for ${eventTitle}`,
-          text: `I'm attending ${eventTitle} with pass code ${registrationCode}!`,
+          text: `I'm attending ${eventTitle} with pass code #${registrationCode}!`,
           url,
         });
         return;
@@ -79,7 +79,7 @@ export function TicketCardClient({
       toast({
         title: "Pass link copied!",
         description: "You can bookmark or share this digital ticket link.",
-        variant: "success",
+        variant: "default",
       });
       setTimeout(() => setCopied(false), 2000);
     }
@@ -87,138 +87,153 @@ export function TicketCardClient({
 
   return (
     <div className="space-y-6">
-      {/* Central Digital Pass Card */}
-      <div className="border-surface-700/80 from-surface-900 via-surface-900/90 to-surface-950 relative overflow-hidden rounded-3xl border bg-gradient-to-b p-6 shadow-2xl backdrop-blur-md sm:p-9">
-        {/* Glow */}
-        <div
-          className="pointer-events-none absolute -top-16 -right-16 size-48 rounded-full opacity-20 blur-2xl"
-          style={{ background: "#3d61fc" }}
-        />
-
-        {/* Top Header of Ticket */}
-        <div className="border-surface-800 flex items-start justify-between border-b pb-6">
+      {/* Simple Centered Digital Pass Card */}
+      <div className="border-border bg-card space-y-6 rounded-lg border p-6 sm:p-8">
+        {/* Header with Registration ID & Status */}
+        <div className="border-border flex flex-col items-start justify-between gap-3 border-b pb-5 sm:flex-row sm:items-center">
           <div>
-            <span className="text-brand-400 font-mono text-xs font-semibold tracking-widest uppercase">
-              KailshiansX Verified Pass
-            </span>
-            <h2 className="text-surface-50 mt-1 text-2xl leading-snug font-black sm:text-3xl">
-              {eventTitle}
-            </h2>
-            <div className="text-surface-400 mt-1 text-xs">
-              {eventDateStr} • {eventTimeStr}
+            <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
+              Registration ID
+            </div>
+            <div className="text-foreground mt-0.5 font-mono text-2xl font-bold">
+              #{registrationCode}
             </div>
           </div>
-          <Badge variant="brand" size="default">
-            {ticketTierName}
-          </Badge>
-        </div>
-
-        {/* Middle Body with QR Code and Attendee Details */}
-        <div className="flex flex-col items-center justify-between gap-8 py-8 md:flex-row">
-          {/* QR Code Container */}
-          <div className="flex flex-col items-center">
-            <div className="border-surface-200 rounded-2xl border bg-white p-3 shadow-xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={qrCodeUrl}
-                alt={`QR code for ${registrationCode}`}
-                className="size-48 object-contain sm:size-52"
-              />
-            </div>
-            <span className="text-surface-400 mt-2 font-mono text-[11px]">
-              Scan at reception desk
-            </span>
-          </div>
-
-          {/* Attendee Data Block */}
-          <div className="w-full flex-1 space-y-4">
-            <div className="border-surface-800 bg-surface-950/70 space-y-3 rounded-2xl border p-5">
-              <div>
-                <div className="text-surface-500 font-mono text-[11px] tracking-wider uppercase">
-                  Registration Code
-                </div>
-                <div className="text-surface-50 mt-0.5 font-mono text-2xl font-black tracking-wider sm:text-3xl">
-                  {registrationCode}
-                </div>
-              </div>
-
-              <div className="border-surface-800/80 grid grid-cols-1 gap-3 border-t pt-2 text-xs sm:grid-cols-2">
-                <div>
-                  <div className="text-surface-500">Attendee Name</div>
-                  <div className="text-surface-100 mt-0.5 font-semibold">{name}</div>
-                </div>
-                <div>
-                  <div className="text-surface-500">Email Address</div>
-                  <div className="text-surface-200 mt-0.5 truncate font-medium">{email}</div>
-                </div>
-                {college && (
-                  <div className="sm:col-span-2">
-                    <div className="text-surface-500">Institution / Org</div>
-                    <div className="text-surface-200 mt-0.5 font-medium">{college}</div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Venue Info */}
-            <div className="border-surface-800/80 bg-surface-900/50 text-surface-300 flex items-start gap-3 rounded-xl border p-4 text-xs">
-              <MapPin className="text-accent-400 mt-0.5 size-4 shrink-0" />
-              <div>
-                <div className="text-surface-100 font-semibold">{venueName || "Venue"}</div>
-                {venueAddress && <div className="text-surface-400 mt-0.5">{venueAddress}</div>}
-              </div>
-            </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="neutral" size="sm">
+              {ticketTierName}
+            </Badge>
+            <Badge variant="success" size="sm">
+              Confirmed
+            </Badge>
           </div>
         </div>
 
-        {/* Action Buttons Row */}
-        <div className="border-surface-800 flex flex-wrap items-center justify-between gap-3 border-t pt-6">
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleDownloadQr}
-              leftIcon={<Download className="size-4" />}
-            >
-              Save QR Pass (PNG)
-            </Button>
-
-            <Button asChild variant="outline" size="sm" leftIcon={<Calendar className="size-4" />}>
-              <a href={googleCalUrl} target="_blank" rel="noopener noreferrer">
-                Google Calendar
-              </a>
-            </Button>
-
-            <Button asChild variant="ghost" size="sm" className="text-xs">
-              <a href={icsDownloadUrl} download>
-                Download .ics
-              </a>
-            </Button>
+        {/* Event Details */}
+        <div className="space-y-1">
+          <h2 className="text-foreground text-xl font-bold sm:text-2xl">{eventTitle}</h2>
+          <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
+            <span>{eventDateStr}</span>
+            <span>·</span>
+            <span>{eventTimeStr}</span>
           </div>
+          {(venueName || venueAddress) && (
+            <div className="text-muted-foreground flex items-center gap-1.5 pt-1 text-xs">
+              <MapPin className="text-foreground size-3.5 shrink-0" aria-hidden="true" />
+              <span>
+                {venueName ? `${venueName}` : ""}
+                {venueAddress ? `, ${venueAddress}` : ""}
+              </span>
+            </div>
+          )}
+        </div>
 
+        {/* Centered QR Ticket */}
+        <div className="border-border bg-muted/30 flex flex-col items-center justify-center rounded-lg border py-6 text-center">
+          <div className="border-border inline-block rounded-md border bg-white p-3 shadow-xs">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={qrCodeUrl}
+              alt={`QR code for ${registrationCode}`}
+              className="size-44 object-contain sm:size-48"
+            />
+          </div>
+          <p className="text-muted-foreground mt-3 font-mono text-xs">
+            Present this QR code at reception for entrance verification
+          </p>
+        </div>
+
+        {/* Attendee Details */}
+        <div className="border-border bg-muted/20 text-muted-foreground space-y-2 rounded-md border p-4 text-xs">
+          <div className="flex justify-between">
+            <span>Attendee:</span>
+            <span className="text-foreground font-semibold">{name}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Email:</span>
+            <span className="text-foreground font-medium">{email}</span>
+          </div>
+          {college && (
+            <div className="flex justify-between">
+              <span>College/Org:</span>
+              <span className="text-foreground font-medium">{college}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Next Steps */}
+        <div className="border-border text-muted-foreground space-y-2 border-t pt-4 text-xs">
+          <div className="text-foreground font-semibold">Next Steps:</div>
+          <div className="flex items-start gap-2">
+            <CheckCircle2 className="text-foreground mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+            <span>Add the gathering to your calendar so you don&apos;t miss schedule updates.</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <CheckCircle2 className="text-foreground mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+            <span>Save or download your QR pass offline on your mobile device.</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <CheckCircle2 className="text-foreground mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+            <span>Arrive 15 minutes before the first session with a valid photo ID.</span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="border-border grid grid-cols-1 gap-2.5 border-t pt-4 sm:grid-cols-3">
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            onClick={handleShare}
-            leftIcon={
-              copied ? <Check className="size-4 text-emerald-400" /> : <Share2 className="size-4" />
-            }
+            onClick={handleDownloadQr}
+            className="w-full gap-1.5 text-xs"
           >
-            {copied ? "Link Copied!" : "Share Ticket"}
+            <Download className="size-3.5" aria-hidden="true" />
+            <span>Download QR</span>
+          </Button>
+
+          <Button asChild variant="secondary" size="sm" className="w-full gap-1.5 text-xs">
+            <a href={googleCalUrl} target="_blank" rel="noopener noreferrer">
+              <Calendar className="size-3.5" aria-hidden="true" />
+              <span>Calendar</span>
+            </a>
+          </Button>
+
+          <Button asChild variant="secondary" size="sm" className="w-full gap-1.5 text-xs">
+            <a href={icsDownloadUrl} download>
+              <Download className="size-3.5" aria-hidden="true" />
+              <span>.ICS File</span>
+            </a>
+          </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleShare}
+            className="w-full gap-1.5 text-xs"
+          >
+            {copied ? (
+              <>
+                <Check className="size-3.5" aria-hidden="true" />
+                <span>Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="size-3.5" aria-hidden="true" />
+                <span>Share pass</span>
+              </>
+            )}
           </Button>
         </div>
-      </div>
 
-      {/* Navigation Return Links */}
-      <div className="text-surface-400 flex items-center justify-between px-2 text-xs">
-        <Link href={`/events/${eventSlug}`} className="hover:text-surface-100 transition-colors">
-          ← Return to Event Schedule
-        </Link>
-        <Link href="/events" className="hover:text-surface-100 transition-colors">
-          Explore Other Gatherings →
-        </Link>
+        <div className="pt-2 text-center">
+          <Link
+            href={`/events/${eventSlug}`}
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+          >
+            ← Return to event details
+          </Link>
+        </div>
       </div>
     </div>
   );

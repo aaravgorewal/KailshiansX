@@ -52,8 +52,8 @@ export default async function PaymentRecoveryPage({
     process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || "rzp_test_dummy";
 
   return (
-    <div className="bg-surface-950 min-h-screen py-16">
-      <div className="container-page mx-auto max-w-xl">
+    <div className="bg-background min-h-screen py-16">
+      <div className="container-page mx-auto max-w-lg">
         <PaymentRecoveryClient
           eventSlug={slug}
           eventTitle={registration.event.title}

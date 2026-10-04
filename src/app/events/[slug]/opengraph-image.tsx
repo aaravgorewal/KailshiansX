@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { db } from "@/lib/db";
+import { formatDate } from "@/lib/format-date";
 
 export const size = {
   width: 1200,
@@ -20,14 +21,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const type = event?.type?.replace("_", " ") || "EVENT";
   const city = event?.city?.name || "India";
   const venue = event?.venue || "Verified Tech Hub";
-  const dateStr = event?.startDate
-    ? new Date(event.startDate).toLocaleDateString("en-IN", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "Active 2026 Season";
+  const dateStr = event?.startDate ? formatDate(event.startDate) : "Active 2026 Season";
 
   return new ImageResponse(
     <div
@@ -38,10 +32,8 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         flexDirection: "column",
         justifyContent: "space-between",
         padding: "56px 64px",
-        backgroundColor: "#07090e",
-        backgroundImage:
-          "radial-gradient(ellipse at 15% 15%, rgba(61, 97, 252, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 85% 85%, rgba(139, 61, 255, 0.25) 0%, transparent 50%)",
-        color: "#f8fafc",
+        backgroundColor: "black",
+        color: "white",
         fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
@@ -59,14 +51,14 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             style={{
               width: "40px",
               height: "40px",
-              borderRadius: "10px",
-              backgroundColor: "#3d61fc",
+              borderRadius: "8px",
+              border: "1px solid white",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontWeight: "900",
-              fontSize: "22px",
-              color: "#ffffff",
+              fontSize: "20px",
+              color: "white",
             }}
           >
             KX
@@ -77,15 +69,15 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                 fontSize: "20px",
                 fontWeight: "bold",
                 letterSpacing: "-0.5px",
-                color: "#f8fafc",
+                color: "white",
               }}
             >
               KailshiansX
             </span>
             <span
               style={{
-                fontSize: "11px",
-                color: "#94a3b8",
+                fontSize: "12px",
+                opacity: 0.6,
                 letterSpacing: "1px",
                 textTransform: "uppercase",
               }}
@@ -99,12 +91,9 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "8px",
             padding: "6px 16px",
             borderRadius: "9999px",
-            backgroundColor: "rgba(61, 97, 252, 0.15)",
-            border: "1px solid rgba(61, 97, 252, 0.4)",
-            color: "#93c5fd",
+            border: "1px solid white",
             fontSize: "14px",
             fontWeight: "600",
             textTransform: "uppercase",
@@ -123,7 +112,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             fontWeight: "900",
             lineHeight: 1.15,
             letterSpacing: "-1.5px",
-            color: "#ffffff",
+            color: "white",
             margin: 0,
           }}
         >
@@ -136,16 +125,14 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             alignItems: "center",
             gap: "24px",
             fontSize: "20px",
-            color: "#cbd5e1",
+            opacity: 0.85,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ color: "#60a5fa" }}>📅</span>
             <span>{dateStr}</span>
           </div>
-          <span style={{ color: "#475569" }}>•</span>
+          <span>•</span>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ color: "#a78bfa" }}>📍</span>
             <span>
               {venue}, {city}
             </span>
@@ -160,13 +147,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           alignItems: "center",
           justifyContent: "space-between",
           paddingTop: "24px",
-          borderTop: "1px solid rgba(148, 163, 184, 0.15)",
+          borderTop: "1px solid white",
           fontSize: "15px",
-          color: "#94a3b8",
+          opacity: 0.7,
         }}
       >
         <span>Developer Events. Builder Communities. Real Connections.</span>
-        <span style={{ color: "#60a5fa", fontWeight: "600" }}>kailshiansx.com/events</span>
+        <span style={{ fontWeight: "600" }}>kailshiansx.com/events</span>
       </div>
     </div>,
     {

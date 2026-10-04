@@ -6,29 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Check,
-  ChevronLeft,
-  ArrowRight,
-  ShieldCheck,
-  Ticket,
-  User,
-  HelpCircle,
-  CreditCard,
-  CheckCircle2,
-  AlertCircle,
-  RefreshCw,
-  Building,
-  MapPin,
-  Mail,
-  Phone,
-} from "lucide-react";
+import { Check, ChevronLeft, ArrowRight, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
 
 import { registrationFormSchema, type RegistrationFormData } from "@/lib/validations/registration";
 import { initiateRegistration, verifyPaymentAndComplete } from "@/server/events/actions";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { trackPaymentSuccess } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 interface RazorpayResponse {
@@ -139,99 +122,91 @@ export function RegistrationFormClient({
     }
   };
 
-  // Form submission: Free or Razorpay Checkout
   const onSubmit = async (data: RegistrationFormData) => {
+    // Honeypot bot protection check
+    if (data.website_url_hp) {
+      return;
+    }
+
     setIsSubmitting(true);
     setServerError(null);
 
     try {
-      const res = await initiateRegistration(eventId, data);
+      // 1. Initialize registration (atomic quota reservation)
+      const initRes = await initiateRegistration(eventId, data);
 
-      if (!res.success) {
-        setServerError(res.error || "Failed to initiate registration.");
+      if (!initRes.success) {
+        setServerError(initRes.error || "Failed to initiate registration.");
         setIsSubmitting(false);
         return;
       }
 
-      // Free RSVP flow -> redirect to confirmation page immediately
-      if (res.isFree && res.redirectUrl) {
-        router.push(res.redirectUrl);
+      // 2. Free Tier Flow: Confirmation is immediate
+      if (initRes.redirectUrl) {
+        router.push(initRes.redirectUrl);
         return;
       }
 
-      // Paid Ticket Flow -> launch Razorpay Modal
-      if (res.razorpayOrder) {
+      // 3. Paid Tier Flow: Launch Razorpay standard checkout
+      if (initRes.razorpayOrder) {
         if (!window.Razorpay) {
-          // If script not ready, send them to recovery payment route
-          router.push(`/events/${eventSlug}/register/pay?regId=${res.registrationId}`);
+          router.push(`/events/${eventSlug}/register/pay?regId=${initRes.registrationId}`);
           return;
         }
 
-        const rzp = new window.Razorpay({
-          key: res.razorpayOrder.keyId,
-          amount: res.razorpayOrder.amount,
-          currency: res.razorpayOrder.currency,
-          name: res.razorpayOrder.name,
-          description: res.razorpayOrder.description,
-          order_id: res.razorpayOrder.id,
-          prefill: res.razorpayOrder.prefill,
-          theme: {
-            color: "#3d61fc",
-          },
-          handler: async (paymentResponse: RazorpayResponse) => {
+        const options = {
+          key: initRes.razorpayOrder.keyId,
+          amount: initRes.razorpayOrder.amount,
+          currency: initRes.razorpayOrder.currency,
+          name: initRes.razorpayOrder.name,
+          description: initRes.razorpayOrder.description,
+          order_id: initRes.razorpayOrder.id,
+          prefill: initRes.razorpayOrder.prefill,
+          handler: async (response: RazorpayResponse) => {
             try {
               const verifyRes = await verifyPaymentAndComplete({
-                registrationId: res.registrationId!,
-                razorpayOrderId: paymentResponse.razorpay_order_id,
-                razorpayPaymentId: paymentResponse.razorpay_payment_id,
-                razorpaySignature: paymentResponse.razorpay_signature,
+                registrationId: initRes.registrationId!,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
               });
 
               if (verifyRes.success && verifyRes.redirectUrl) {
-                trackPaymentSuccess({
-                  orderId: paymentResponse.razorpay_order_id,
-                  paymentId: paymentResponse.razorpay_payment_id,
-                  amount: res.razorpayOrder?.amount ?? 0,
-                  eventSlug,
-                });
                 router.push(verifyRes.redirectUrl);
               } else {
                 setServerError(
                   verifyRes.error ||
-                    "Payment was received, but server verification is finalizing. Check your email or ticket page."
+                    "Payment was processed, but signature verification encountered an issue. Please contact support."
                 );
                 setIsSubmitting(false);
               }
             } catch {
-              setServerError("Verification error. Your seat is safe; check your email shortly.");
+              setServerError("Payment confirmation error. Please check your inbox or ticket link.");
               setIsSubmitting(false);
             }
           },
           modal: {
             ondismiss: () => {
               setIsSubmitting(false);
-              // Provide recovery path notice
-              setServerError(
-                "Payment was not finished. You can resume your 10-minute seat hold from the payment page."
-              );
+              router.push(`/events/${eventSlug}/register/pay?regId=${initRes.registrationId}`);
             },
           },
-        });
+        };
 
+        const rzp = new window.Razorpay(options);
         rzp.open();
       }
-    } catch (err: unknown) {
-      console.error(err);
-      setServerError("An unexpected error occurred. Please try again.");
+    } catch {
+      setServerError("An unexpected error occurred while processing your pass. Please try again.");
       setIsSubmitting(false);
     }
   };
 
   const stepsMeta = [
-    { num: 1, label: "Pass Tier", icon: <Ticket className="size-4" /> },
-    { num: 2, label: "Builder Profile", icon: <User className="size-4" /> },
-    { num: 3, label: "Custom Details", icon: <HelpCircle className="size-4" /> },
-    { num: 4, label: "Review & Pay", icon: <CreditCard className="size-4" /> },
+    { num: 1, label: "Pass Tier" },
+    { num: 2, label: "Your Info" },
+    { num: 3, label: "Details" },
+    { num: 4, label: "Review & Pay" },
   ];
 
   return (
@@ -241,9 +216,9 @@ export function RegistrationFormClient({
         onLoad={() => setScriptLoaded(true)}
       />
 
-      <div className="space-y-8">
-        {/* Progress Step Header */}
-        <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-4 backdrop-blur-md sm:p-6">
+      <div className="border-border bg-card rounded-lg border p-5 sm:p-7">
+        {/* Step Progress Bar */}
+        <div className="border-border mb-6 border-b pb-5">
           <div className="flex items-center justify-between">
             {stepsMeta.map((s, idx) => {
               const isActive = step === s.num;
@@ -251,32 +226,34 @@ export function RegistrationFormClient({
 
               return (
                 <React.Fragment key={s.num}>
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <div
                       className={cn(
-                        "flex size-8 items-center justify-center rounded-full font-mono text-xs font-bold transition-all sm:size-9",
+                        "flex size-7 items-center justify-center rounded-full font-mono text-xs font-semibold transition-colors",
                         isDone
-                          ? "bg-emerald-500 text-white shadow-sm"
+                          ? "bg-primary text-primary-foreground"
                           : isActive
-                            ? "bg-brand-600 ring-brand-500/50 text-white ring-2"
-                            : "bg-surface-800 text-surface-400"
+                            ? "border-primary bg-background text-foreground border-2"
+                            : "border-border bg-muted text-muted-foreground border"
                       )}
                     >
-                      {isDone ? <Check className="size-4" /> : s.num}
+                      {isDone ? <Check className="size-3.5" aria-hidden="true" /> : s.num}
                     </div>
-                    <div className="hidden md:block">
-                      <div className="text-surface-200 text-xs font-semibold">{s.label}</div>
-                      <div className="text-surface-500 text-[10px]">
-                        {isDone ? "Completed" : isActive ? "Active" : "Upcoming"}
-                      </div>
-                    </div>
+                    <span
+                      className={cn(
+                        "hidden text-xs font-medium sm:inline",
+                        isActive ? "text-foreground font-semibold" : "text-muted-foreground"
+                      )}
+                    >
+                      {s.label}
+                    </span>
                   </div>
 
                   {idx < stepsMeta.length - 1 && (
                     <div
                       className={cn(
-                        "mx-2 h-0.5 flex-1 transition-colors sm:mx-4",
-                        step > s.num ? "bg-emerald-500/60" : "bg-surface-800"
+                        "mx-2 h-px flex-1 transition-colors",
+                        step > s.num ? "bg-primary" : "bg-border"
                       )}
                     />
                   )}
@@ -288,15 +265,15 @@ export function RegistrationFormClient({
 
         {/* Global Error Banner */}
         {serverError && (
-          <div className="flex items-start gap-3 rounded-xl border border-rose-500/40 bg-rose-500/10 p-4 text-xs text-rose-300 shadow-lg">
-            <AlertCircle className="mt-0.5 size-4 shrink-0" />
+          <div className="border-destructive/40 bg-destructive/10 text-destructive mb-6 flex items-start gap-2.5 rounded-md border p-3.5 text-xs">
+            <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <div className="flex-1">
-              <span className="font-semibold">{serverError}</span>
+              <span className="font-medium">{serverError}</span>
               {serverError.includes("resume") && (
-                <div className="mt-2">
+                <div className="mt-1.5">
                   <Link
                     href={`/events/${eventSlug}/register/pay`}
-                    className="font-semibold text-rose-200 underline"
+                    className="font-medium underline hover:opacity-80"
                   >
                     Resume pending payment here →
                   </Link>
@@ -306,7 +283,7 @@ export function RegistrationFormClient({
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Hidden registered inputs */}
           <input type="hidden" {...register("ticketTypeId")} />
           <input
@@ -321,12 +298,12 @@ export function RegistrationFormClient({
               STEP 1: PASS SELECTION
           ═══════════════════════════════════════════════════════════════════════ */}
           {step === 1 && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div>
-                <h3 className="text-surface-50 text-xl font-bold">Select Your Pass Tier</h3>
-                <p className="text-surface-400 mt-1 text-xs">
-                  Choose a ticket tier. All passes include verified event admittance, certificate,
-                  and speaker access.
+                <h3 className="text-foreground text-lg font-bold">Select Your Pass Tier</h3>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Choose your pass. All tiers include full event admittance and verified digital
+                  certificates.
                 </p>
               </div>
 
@@ -347,26 +324,28 @@ export function RegistrationFormClient({
                         })
                       }
                       className={cn(
-                        "flex cursor-pointer flex-col justify-between gap-4 rounded-2xl border p-5 transition-all select-none sm:flex-row sm:items-center sm:p-6",
+                        "flex cursor-pointer flex-col justify-between gap-3 rounded-lg border p-4 transition-colors select-none sm:flex-row sm:items-center",
                         isSelected
-                          ? "border-brand-500 bg-brand-500/10 ring-brand-500 shadow-[0_0_20px_rgba(61,97,252,0.15)] ring-1"
-                          : "border-surface-800 bg-surface-900/60 hover:border-surface-700 hover:bg-surface-900",
+                          ? "border-primary bg-primary/5 ring-primary ring-1"
+                          : "border-border bg-card hover:border-primary/50",
                         isSoldOut && "pointer-events-none cursor-not-allowed opacity-50"
                       )}
                     >
-                      <div className="flex-1 space-y-1.5">
-                        <div className="flex items-center gap-2.5">
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center gap-2">
                           <span
                             className={cn(
                               "flex size-4 items-center justify-center rounded-full border",
-                              isSelected ? "border-brand-400 bg-brand-500" : "border-surface-600"
+                              isSelected ? "border-primary bg-primary" : "border-border"
                             )}
                           >
-                            {isSelected && <span className="size-1.5 rounded-full bg-white" />}
+                            {isSelected && (
+                              <span className="bg-primary-foreground size-1.5 rounded-full" />
+                            )}
                           </span>
-                          <h4 className="text-surface-50 text-lg font-bold">{tier.name}</h4>
-                          <Badge variant={isFree ? "success" : "brand"} size="sm">
-                            {isFree ? "Free Pass" : "Paid Pass"}
+                          <h4 className="text-foreground text-base font-bold">{tier.name}</h4>
+                          <Badge variant="neutral" size="sm">
+                            {isFree ? "Free" : "Paid"}
                           </Badge>
                           {isSoldOut && (
                             <Badge variant="destructive" size="sm">
@@ -376,26 +355,20 @@ export function RegistrationFormClient({
                         </div>
 
                         {tier.description && (
-                          <p className="text-surface-400 pl-6 text-xs leading-relaxed">
-                            {tier.description}
-                          </p>
+                          <p className="text-muted-foreground pl-6 text-xs">{tier.description}</p>
                         )}
 
-                        <div className="text-surface-500 pt-1 pl-6 font-mono text-[11px]">
-                          {isSoldOut ? "Quota full" : `Seats available • ${tier.quota} total quota`}
+                        <div className="text-muted-foreground pl-6 font-mono text-xs">
+                          {isSoldOut ? "Quota full" : `${tier.quota} total capacity`}
                         </div>
                       </div>
 
-                      <div className="pl-6 text-right sm:pl-0 sm:text-right">
-                        <div className="text-surface-50 text-2xl font-black">
-                          {isFree ? (
-                            <span className="text-emerald-400">Free</span>
-                          ) : (
-                            `₹${tier.price}`
-                          )}
+                      <div className="pl-6 text-left sm:pl-0 sm:text-right">
+                        <div className="text-foreground text-xl font-bold">
+                          {isFree ? "Free" : `₹${tier.price}`}
                         </div>
-                        <span className="text-surface-400 font-mono text-[10px]">
-                          {isFree ? "100% Sponsored" : "Inclusive of taxes"}
+                        <span className="text-muted-foreground font-mono text-xs">
+                          {isFree ? "Sponsored RSVP" : "Inclusive of taxes"}
                         </span>
                       </div>
                     </div>
@@ -404,17 +377,19 @@ export function RegistrationFormClient({
               </div>
 
               {errors.ticketTypeId && (
-                <p className="text-xs text-rose-400">{errors.ticketTypeId.message}</p>
+                <p className="text-destructive text-xs">{errors.ticketTypeId.message}</p>
               )}
 
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end pt-3">
                 <Button
                   type="button"
                   onClick={handleNextStep}
-                  size="lg"
-                  rightIcon={<ArrowRight className="size-4" />}
+                  variant="primary"
+                  size="default"
+                  className="gap-1.5"
                 >
-                  Continue to Builder Profile
+                  <span>Continue</span>
+                  <ArrowRight className="size-4" aria-hidden="true" />
                 </Button>
               </div>
             </div>
@@ -424,228 +399,274 @@ export function RegistrationFormClient({
               STEP 2: BUILDER PROFILE
           ═══════════════════════════════════════════════════════════════════════ */}
           {step === 2 && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
-                <h3 className="text-surface-50 text-xl font-bold">Builder Profile</h3>
-                <p className="text-surface-400 mt-1 text-xs">
-                  We use your details to print your personalized badge and issue verifiable digital
-                  certificates.
+                <h3 className="text-foreground text-lg font-bold">Attendee Information</h3>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Used for entrance check-in and verifiable digital credentials.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {/* Full Name */}
-                <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-surface-200 text-xs font-semibold">
-                    Full Name (as on ID) <span className="text-rose-400">*</span>
-                  </label>
-                  <div className="relative">
-                    <User className="text-surface-500 absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      placeholder="e.g. Aarav Sharma"
-                      className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border pr-3 pl-10 text-sm focus:ring-2 focus:outline-none"
-                      {...register("name")}
-                    />
-                  </div>
-                  {errors.name && <p className="text-xs text-rose-400">{errors.name.message}</p>}
-                </div>
-
-                {/* Email Address */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">
-                    Email Address <span className="text-rose-400">*</span>
-                  </label>
-                  <div className="relative">
-                    <Mail className="text-surface-500 absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
-                    <input
-                      type="email"
-                      placeholder="aarav@example.com"
-                      className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border pr-3 pl-10 text-sm focus:ring-2 focus:outline-none"
-                      {...register("email")}
-                    />
-                  </div>
-                  {errors.email && <p className="text-xs text-rose-400">{errors.email.message}</p>}
-                </div>
-
-                {/* Phone Number */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">
-                    Phone / WhatsApp <span className="text-rose-400">*</span>
-                  </label>
-                  <div className="relative">
-                    <Phone className="text-surface-500 absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
-                    <input
-                      type="tel"
-                      placeholder="+91 98765 43210"
-                      className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border pr-3 pl-10 text-sm focus:ring-2 focus:outline-none"
-                      {...register("phone")}
-                    />
-                  </div>
-                  {errors.phone && <p className="text-xs text-rose-400">{errors.phone.message}</p>}
-                </div>
-
-                {/* College / Organization */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">
-                    College / Organization
-                  </label>
-                  <div className="relative">
-                    <Building className="text-surface-500 absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      placeholder="e.g. MNIT Jaipur or Startup Inc."
-                      className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border pr-3 pl-10 text-sm focus:ring-2 focus:outline-none"
-                      {...register("college")}
-                    />
-                  </div>
-                </div>
-
-                {/* City */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">City</label>
-                  <div className="relative">
-                    <MapPin className="text-surface-500 absolute top-1/2 left-3.5 size-4 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      placeholder="e.g. Jaipur, Delhi, Bengaluru"
-                      className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border pr-3 pl-10 text-sm focus:ring-2 focus:outline-none"
-                      {...register("city")}
-                    />
-                  </div>
-                </div>
+              {/* Full Name */}
+              <div>
+                <label
+                  htmlFor="reg-name"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  Full Name (as on ID) <span className="text-destructive">*</span>
+                </label>
+                <input
+                  id="reg-name"
+                  type="text"
+                  placeholder="e.g. Aarav Sharma"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("name")}
+                />
+                {errors.name && (
+                  <p className="text-destructive mt-1 text-xs">{errors.name.message}</p>
+                )}
               </div>
 
-              <div className="border-surface-800 flex items-center justify-between border-t pt-4">
+              {/* Email Address */}
+              <div>
+                <label
+                  htmlFor="reg-email"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  Email Address <span className="text-destructive">*</span>
+                </label>
+                <input
+                  id="reg-email"
+                  type="email"
+                  placeholder="aarav@example.com"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="text-destructive mt-1 text-xs">{errors.email.message}</p>
+                )}
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label
+                  htmlFor="reg-phone"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  Phone / WhatsApp <span className="text-destructive">*</span>
+                </label>
+                <input
+                  id="reg-phone"
+                  type="tel"
+                  placeholder="+91 98765 43210"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("phone")}
+                />
+                {errors.phone && (
+                  <p className="text-destructive mt-1 text-xs">{errors.phone.message}</p>
+                )}
+              </div>
+
+              {/* College / Organization */}
+              <div>
+                <label
+                  htmlFor="reg-college"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  College or Organization
+                </label>
+                <input
+                  id="reg-college"
+                  type="text"
+                  placeholder="e.g. MNIT Jaipur or Startup Inc."
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("college")}
+                />
+              </div>
+
+              {/* City */}
+              <div>
+                <label
+                  htmlFor="reg-city"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  City
+                </label>
+                <input
+                  id="reg-city"
+                  type="text"
+                  placeholder="e.g. Jaipur, Delhi, Bengaluru"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("city")}
+                />
+              </div>
+
+              <div className="border-border flex items-center justify-between border-t pt-4">
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
+                  size="default"
                   onClick={handlePrevStep}
-                  leftIcon={<ChevronLeft className="size-4" />}
+                  className="gap-1.5"
                 >
-                  Back
+                  <ChevronLeft className="size-4" aria-hidden="true" />
+                  <span>Back</span>
                 </Button>
                 <Button
                   type="button"
+                  variant="primary"
+                  size="default"
                   onClick={handleNextStep}
-                  rightIcon={<ArrowRight className="size-4" />}
+                  className="gap-1.5"
                 >
-                  Next: Event Details
+                  <span>Next</span>
+                  <ArrowRight className="size-4" aria-hidden="true" />
                 </Button>
               </div>
             </div>
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════
-              STEP 3: CUSTOM QUESTIONS & SWAG
+              STEP 3: PREFERENCES
           ═══════════════════════════════════════════════════════════════════════ */}
           {step === 3 && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
-                <h3 className="text-surface-50 text-xl font-bold">
-                  Custom Preferences &amp; Profiles
-                </h3>
-                <p className="text-surface-400 mt-1 text-xs">
-                  Help mentors tailor discussions, allocate swag sizes, and organize hacker teams.
+                <h3 className="text-foreground text-lg font-bold">Preferences</h3>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Help organizers plan logistics, allocate swag, and organize discussions.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {/* T-Shirt Size */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">T-Shirt Size</label>
-                  <select
-                    className="bg-surface-900 border-surface-700/80 text-surface-100 focus:ring-brand-500/50 h-11 w-full rounded-xl border px-3 text-sm focus:ring-2 focus:outline-none"
-                    {...register("tshirtSize")}
-                  >
-                    <option value="S">S (Small)</option>
-                    <option value="M">M (Medium)</option>
-                    <option value="L">L (Large)</option>
-                    <option value="XL">XL (Extra Large)</option>
-                    <option value="2XL">2XL (Double Large)</option>
-                  </select>
-                </div>
-
-                {/* Dietary Preference */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">
-                    Dietary Preference
-                  </label>
-                  <select
-                    className="bg-surface-900 border-surface-700/80 text-surface-100 focus:ring-brand-500/50 h-11 w-full rounded-xl border px-3 text-sm focus:ring-2 focus:outline-none"
-                    {...register("dietaryPref")}
-                  >
-                    <option value="VEG">Vegetarian</option>
-                    <option value="NON_VEG">Non-Vegetarian</option>
-                    <option value="VEGAN">Vegan</option>
-                    <option value="JAIN">Jain</option>
-                  </select>
-                </div>
-
-                {/* GitHub Handle */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">GitHub Profile</label>
-                  <input
-                    type="text"
-                    placeholder="github.com/username"
-                    className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border px-3 text-sm focus:ring-2 focus:outline-none"
-                    {...register("github")}
-                  />
-                </div>
-
-                {/* LinkedIn Profile */}
-                <div className="space-y-1.5">
-                  <label className="text-surface-200 text-xs font-semibold">LinkedIn Profile</label>
-                  <input
-                    type="text"
-                    placeholder="linkedin.com/in/username"
-                    className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border px-3 text-sm focus:ring-2 focus:outline-none"
-                    {...register("linkedin")}
-                  />
-                </div>
-
-                {/* Team Name */}
-                <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-surface-200 text-xs font-semibold">
-                    Team Name (if participating with team)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. ByteCraft Labs"
-                    className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 h-11 w-full rounded-xl border px-3 text-sm focus:ring-2 focus:outline-none"
-                    {...register("teamName")}
-                  />
-                </div>
-
-                {/* Project Idea / Interest */}
-                <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-surface-200 text-xs font-semibold">
-                    What are you looking to build or learn?
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="e.g. Distributed database caches, building autonomous multi-agent tool loops, meeting co-founders..."
-                    className="bg-surface-900 border-surface-700/80 text-surface-100 placeholder:text-surface-500 focus:ring-brand-500/50 w-full rounded-xl border p-3 text-sm focus:ring-2 focus:outline-none"
-                    {...register("projectIdea")}
-                  />
-                </div>
+              {/* T-Shirt Size */}
+              <div>
+                <label
+                  htmlFor="reg-tshirt"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  T-Shirt Size
+                </label>
+                <select
+                  id="reg-tshirt"
+                  className="border-input bg-background text-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("tshirtSize")}
+                >
+                  <option value="S">S (Small)</option>
+                  <option value="M">M (Medium)</option>
+                  <option value="L">L (Large)</option>
+                  <option value="XL">XL (Extra Large)</option>
+                  <option value="2XL">2XL (Double Large)</option>
+                </select>
               </div>
 
-              <div className="border-surface-800 flex items-center justify-between border-t pt-4">
+              {/* Dietary Preference */}
+              <div>
+                <label
+                  htmlFor="reg-diet"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  Dietary Preference
+                </label>
+                <select
+                  id="reg-diet"
+                  className="border-input bg-background text-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("dietaryPref")}
+                >
+                  <option value="VEG">Vegetarian</option>
+                  <option value="NON_VEG">Non-Vegetarian</option>
+                  <option value="VEGAN">Vegan</option>
+                  <option value="JAIN">Jain</option>
+                </select>
+              </div>
+
+              {/* GitHub Handle */}
+              <div>
+                <label
+                  htmlFor="reg-github"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  GitHub Profile
+                </label>
+                <input
+                  id="reg-github"
+                  type="text"
+                  placeholder="github.com/username"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("github")}
+                />
+              </div>
+
+              {/* LinkedIn Profile */}
+              <div>
+                <label
+                  htmlFor="reg-linkedin"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  LinkedIn Profile
+                </label>
+                <input
+                  id="reg-linkedin"
+                  type="text"
+                  placeholder="linkedin.com/in/username"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("linkedin")}
+                />
+              </div>
+
+              {/* Team Name */}
+              <div>
+                <label
+                  htmlFor="reg-team"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  Team Name (optional)
+                </label>
+                <input
+                  id="reg-team"
+                  type="text"
+                  placeholder="e.g. ByteCraft Labs"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("teamName")}
+                />
+              </div>
+
+              {/* Project Idea / Interest */}
+              <div>
+                <label
+                  htmlFor="reg-idea"
+                  className="text-foreground mb-1.5 block text-xs font-semibold"
+                >
+                  What are you looking to build or learn?
+                </label>
+                <textarea
+                  id="reg-idea"
+                  rows={3}
+                  placeholder="e.g. Distributed database systems, autonomous agent tool loops, networking with builders..."
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring w-full rounded-md border p-3 text-sm focus:ring-1 focus:outline-none"
+                  {...register("projectIdea")}
+                />
+              </div>
+
+              <div className="border-border flex items-center justify-between border-t pt-4">
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
+                  size="default"
                   onClick={handlePrevStep}
-                  leftIcon={<ChevronLeft className="size-4" />}
+                  className="gap-1.5"
                 >
-                  Back
+                  <ChevronLeft className="size-4" aria-hidden="true" />
+                  <span>Back</span>
                 </Button>
                 <Button
                   type="button"
+                  variant="primary"
+                  size="default"
                   onClick={handleNextStep}
-                  rightIcon={<ArrowRight className="size-4" />}
+                  className="gap-1.5"
                 >
-                  Review &amp; Finalize
+                  <span>Review Summary</span>
+                  <ArrowRight className="size-4" aria-hidden="true" />
                 </Button>
               </div>
             </div>
@@ -655,108 +676,108 @@ export function RegistrationFormClient({
               STEP 4: REVIEW & CONFIRM / PAY
           ═══════════════════════════════════════════════════════════════════════ */}
           {step === 4 && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div>
-                <h3 className="text-surface-50 text-xl font-bold">
-                  Review &amp; Confirm Registration
-                </h3>
-                <p className="text-surface-400 mt-1 text-xs">
-                  Please review your pass and attendee summary before finalizing.
+                <h3 className="text-foreground text-lg font-bold">Review &amp; Confirm</h3>
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Review your pass and registration summary before securing your seat.
                 </p>
               </div>
 
-              {/* Order Summary Box */}
-              <div className="border-surface-800 bg-surface-950/70 space-y-4 rounded-2xl border p-6">
-                <div className="border-surface-800 flex items-center justify-between border-b pb-3">
+              {/* Clear Price Summary Box */}
+              <div className="border-border bg-muted/40 space-y-3 rounded-lg border p-5">
+                <div className="border-border flex items-center justify-between border-b pb-3">
                   <div>
-                    <div className="text-surface-400 font-mono text-xs tracking-wider uppercase">
-                      Gathering
+                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
+                      Event
                     </div>
-                    <div className="text-surface-100 mt-0.5 text-base font-bold">{eventTitle}</div>
-                    <div className="text-surface-400 text-xs">
-                      {eventDate} • {venueName || "Venue"}
+                    <div className="text-foreground text-base font-bold">{eventTitle}</div>
+                    <div className="text-muted-foreground text-xs">
+                      {eventDate} · {venueName || "Venue"}
                       {cityName ? `, ${cityName}` : ""}
                     </div>
                   </div>
-                  <Badge variant="brand" size="sm">
+                  <Badge variant="neutral" size="sm">
                     {selectedTier.name}
                   </Badge>
                 </div>
 
-                <div className="text-surface-300 grid grid-cols-2 gap-3 py-1 text-xs">
+                <div className="text-muted-foreground grid grid-cols-1 gap-2 py-1 text-xs sm:grid-cols-2">
                   <div>
-                    <span className="text-surface-500">Attendee:</span>{" "}
-                    <span className="text-surface-100 font-semibold">{watchedName}</span>
+                    <span>Attendee:</span>{" "}
+                    <span className="text-foreground font-medium">{watchedName}</span>
                   </div>
                   <div>
-                    <span className="text-surface-500">Email:</span>{" "}
-                    <span className="text-surface-200 font-medium">{watchedEmail}</span>
+                    <span>Email:</span>{" "}
+                    <span className="text-foreground font-medium">{watchedEmail}</span>
                   </div>
                   <div>
-                    <span className="text-surface-500">Phone:</span>{" "}
-                    <span className="text-surface-200 font-medium">{watchedPhone}</span>
+                    <span>Phone:</span>{" "}
+                    <span className="text-foreground font-medium">{watchedPhone}</span>
                   </div>
                   <div>
-                    <span className="text-surface-500">College/Org:</span>{" "}
-                    <span className="text-surface-200 font-medium">{watchedCollege || "—"}</span>
+                    <span>College/Org:</span>{" "}
+                    <span className="text-foreground font-medium">{watchedCollege || "—"}</span>
                   </div>
                 </div>
 
-                <div className="border-surface-800 flex items-center justify-between border-t pt-3 text-sm">
-                  <span className="text-surface-200 font-bold">Total Payable:</span>
+                <div className="border-border flex items-center justify-between border-t pt-3">
+                  <span className="text-foreground text-sm font-bold">Total Payable:</span>
                   <div className="text-right">
-                    <span className="text-surface-50 text-2xl font-black">
-                      {isFreeTier ? (
-                        <span className="text-emerald-400">Free</span>
-                      ) : (
-                        `₹${selectedTier.price}`
-                      )}
+                    <span className="text-foreground text-2xl font-bold">
+                      {isFreeTier ? "Free" : `₹${selectedTier.price}`}
                     </span>
                     {isFreeTier && (
-                      <div className="text-surface-400 font-mono text-[10px]">100% Free RSVP</div>
+                      <div className="text-muted-foreground font-mono text-xs">Free RSVP</div>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Guarantees Box */}
-              <div className="border-surface-800 bg-surface-900/50 text-surface-400 space-y-2 rounded-xl border p-4 text-xs">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="text-brand-400 size-4 shrink-0" />
-                  <span>Your seat is reserved in real-time with atomic quota allocation.</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="text-accent-400 size-4 shrink-0" />
-                  <span>Instant QR pass generation + confirmation email dispatched.</span>
-                </div>
+              {/* Security notice */}
+              <div className="border-border bg-muted/30 text-muted-foreground flex items-center gap-2 rounded-md border p-3 text-xs">
+                <ShieldCheck className="text-foreground size-4 shrink-0" aria-hidden="true" />
+                <span>
+                  Seat is held atomically in real time. Digital pass is generated instantly upon
+                  confirmation.
+                </span>
               </div>
 
-              <div className="border-surface-800 flex items-center justify-between border-t pt-4">
+              <div className="border-border flex items-center justify-between border-t pt-4">
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
+                  size="default"
                   onClick={handlePrevStep}
                   disabled={isSubmitting}
-                  leftIcon={<ChevronLeft className="size-4" />}
+                  className="gap-1.5"
                 >
-                  Edit Information
+                  <ChevronLeft className="size-4" aria-hidden="true" />
+                  <span>Edit details</span>
                 </Button>
 
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  size="lg"
-                  className="shadow-brand-500/25 shadow-xl"
-                  leftIcon={
-                    isSubmitting ? <RefreshCw className="size-4 animate-spin" /> : undefined
-                  }
-                  rightIcon={!isSubmitting ? <ArrowRight className="size-4" /> : undefined}
+                  variant="primary"
+                  size="default"
+                  className="gap-1.5"
                 >
-                  {isSubmitting
-                    ? "Securing Seat..."
-                    : isFreeTier
-                      ? "Complete Free Registration"
-                      : `Pay ₹${selectedTier.price} & Complete Registration`}
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw className="size-4 animate-spin" aria-hidden="true" />
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>
+                        {isFreeTier
+                          ? "Complete Registration"
+                          : `Pay ₹${selectedTier.price} & Register`}
+                      </span>
+                      <ArrowRight className="size-4" aria-hidden="true" />
+                    </>
+                  )}
                 </Button>
               </div>
             </div>

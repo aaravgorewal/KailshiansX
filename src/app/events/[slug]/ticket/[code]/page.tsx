@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { getGoogleCalendarUrl } from "@/lib/calendar";
 import { generateQrCodeDataUrl, signQrPayload } from "@/server/events/registration";
+import { formatDate, formatTime, formatTimeRange } from "@/lib/format-date";
 import { TicketCardClient } from "./TicketCardClient";
 
 export const dynamic = "force-dynamic";
@@ -61,29 +62,32 @@ export default async function TicketPage({ params }: TicketPageProps) {
       registration.holdExpiresAt && new Date(registration.holdExpiresAt) > new Date();
 
     return (
-      <div className="bg-surface-950 min-h-screen px-4 py-16">
-        <div className="mx-auto max-w-xl space-y-6 text-center">
-          <div className="mx-auto inline-flex size-16 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/10 text-amber-400">
-            <AlertTriangle className="size-8" />
+      <div className="bg-background min-h-screen px-4 py-16">
+        <div className="mx-auto max-w-lg space-y-6 text-center">
+          <div className="border-border bg-muted text-foreground mx-auto inline-flex size-14 items-center justify-center rounded-lg border">
+            <AlertTriangle className="size-7" aria-hidden="true" />
           </div>
 
           <div className="space-y-2">
-            <Badge variant="warning">Payment Incomplete</Badge>
-            <h1 className="text-surface-100 text-2xl font-bold tracking-tight sm:text-3xl">
-              Ticket Payment Pending
+            <Badge variant="neutral">Payment Pending</Badge>
+            <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
+              Registration Incomplete
             </h1>
-            <p className="text-surface-400 text-sm">
-              Registration #{registration.registrationCode} is awaiting successful payment
-              confirmation.
+            <p className="text-muted-foreground text-sm">
+              Registration ID:{" "}
+              <span className="text-foreground font-mono font-semibold">
+                #{registration.registrationCode}
+              </span>{" "}
+              is awaiting payment confirmation.
             </p>
           </div>
 
           {isHoldValid ? (
-            <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-2xl border p-6">
-              <p className="text-surface-300 text-xs">
-                Your temporary seat hold is still active until{" "}
-                <strong className="text-brand-300">
-                  {new Date(registration.holdExpiresAt!).toLocaleTimeString()}
+            <div className="border-border bg-card space-y-4 rounded-lg border p-6">
+              <p className="text-muted-foreground text-xs">
+                Your temporary seat hold is active until{" "}
+                <strong className="text-foreground">
+                  {formatTime(registration.holdExpiresAt)}
                 </strong>
                 . Complete payment now to guarantee your spot.
               </p>
@@ -93,16 +97,16 @@ export default async function TicketPage({ params }: TicketPageProps) {
                     Complete Payment Now
                   </Link>
                 </Button>
-                <Button asChild variant="outline">
+                <Button asChild variant="secondary">
                   <Link href={`/events/${slug}`}>Return to Event</Link>
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="space-y-4 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-6">
-              <p className="text-xs text-rose-300">
-                Your 10-minute seat hold window has expired. If you made a payment, please wait a
-                moment or check your inbox as our webhook processes bank updates.
+            <div className="border-border bg-card space-y-4 rounded-lg border p-6">
+              <p className="text-muted-foreground text-xs">
+                Your seat hold window has expired. If you made a payment, please wait a moment or
+                check your email for confirmation.
               </p>
               <Button asChild variant="secondary">
                 <Link href={`/events/${slug}/register`}>Start Fresh Registration</Link>
@@ -116,22 +120,23 @@ export default async function TicketPage({ params }: TicketPageProps) {
 
   if (registration.status === "CANCELLED") {
     return (
-      <div className="bg-surface-950 min-h-screen px-4 py-16">
-        <div className="mx-auto max-w-xl space-y-6 text-center">
-          <div className="mx-auto inline-flex size-16 items-center justify-center rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-400">
-            <AlertTriangle className="size-8" />
+      <div className="bg-background min-h-screen px-4 py-16">
+        <div className="mx-auto max-w-lg space-y-6 text-center">
+          <div className="border-border bg-muted text-foreground mx-auto inline-flex size-14 items-center justify-center rounded-lg border">
+            <AlertTriangle className="size-7" aria-hidden="true" />
           </div>
 
           <div className="space-y-2">
-            <Badge variant="outline" className="border-rose-500/40 text-rose-400">
-              Pass Cancelled / Refunded
-            </Badge>
-            <h1 className="text-surface-100 text-2xl font-bold tracking-tight sm:text-3xl">
+            <Badge variant="destructive">Pass Cancelled</Badge>
+            <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
               Registration Inactive
             </h1>
-            <p className="text-surface-400 text-sm">
-              Registration #{registration.registrationCode} has been cancelled or refunded and is no
-              longer valid for venue entry.
+            <p className="text-muted-foreground text-sm">
+              Registration ID:{" "}
+              <span className="text-foreground font-mono font-semibold">
+                #{registration.registrationCode}
+              </span>{" "}
+              has been cancelled and is no longer valid for venue entry.
             </p>
           </div>
 
@@ -166,29 +171,11 @@ export default async function TicketPage({ params }: TicketPageProps) {
       .catch((err) => console.error("Could not cache generated QR code URL:", err));
   }
 
-  // Formatted date and time
-  const eventDateStr = new Date(event.startDate).toLocaleDateString("en-IN", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  // Formatted date and time using format-date.ts
+  const eventDateStr = formatDate(event.startDate);
+  const eventTimeStr = formatTimeRange(event.startDate, event.endDate);
 
-  const eventTimeStr = `${new Date(event.startDate).toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  })}${
-    event.endDate
-      ? ` - ${new Date(event.endDate).toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })}`
-      : ""
-  }`;
-
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://kailshiansx.com";
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://kailshiansX.com";
 
   const googleCalUrl = getGoogleCalendarUrl({
     title: event.title,
@@ -205,26 +192,26 @@ export default async function TicketPage({ params }: TicketPageProps) {
   const icsDownloadUrl = `/api/events/${event.slug}/ics`;
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-24">
+    <div className="bg-background min-h-screen pb-24">
       {/* Top Banner Bar */}
-      <div className="border-surface-800/80 bg-surface-900/60 border-b py-4">
-        <div className="container-page text-surface-400 flex items-center justify-between text-xs">
+      <div className="border-border bg-card/40 border-b py-3.5">
+        <div className="container-page text-muted-foreground flex items-center justify-between text-xs">
           <Link
             href={`/events/${event.slug}`}
-            className="hover:text-surface-100 inline-flex items-center gap-1.5 transition-colors"
+            className="hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
           >
-            <ArrowLeft className="size-3.5" />
+            <ArrowLeft className="size-3.5" aria-hidden="true" />
             <span>Back to event</span>
           </Link>
 
-          <div className="flex items-center gap-2 font-medium text-emerald-400">
-            <CheckCircle2 className="size-3.5" />
-            <span>Pass Confirmed & Issued</span>
+          <div className="text-foreground flex items-center gap-1.5 font-medium">
+            <CheckCircle2 className="size-3.5" aria-hidden="true" />
+            <span>Pass Confirmed &amp; Issued</span>
           </div>
         </div>
       </div>
 
-      <div className="container-page max-w-3xl px-4 pt-10">
+      <div className="container-page max-w-xl px-4 pt-8">
         <TicketCardClient
           registrationCode={registration.registrationCode}
           name={registration.name}

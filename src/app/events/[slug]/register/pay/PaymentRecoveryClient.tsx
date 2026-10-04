@@ -27,9 +27,6 @@ interface RazorpayOptions {
     email?: string;
     contact?: string;
   };
-  theme?: {
-    color?: string;
-  };
   handler: (response: RazorpayCheckoutHandlerArgs) => void;
   modal?: {
     ondismiss?: () => void;
@@ -108,7 +105,7 @@ export function PaymentRecoveryClient({
     }
 
     if (!window.Razorpay) {
-      setErrorMsg("Razorpay checkout is still initializing. Please try in a few seconds.");
+      setErrorMsg("Payment checkout is still initializing. Please try again in a few seconds.");
       return;
     }
 
@@ -126,9 +123,6 @@ export function PaymentRecoveryClient({
         name,
         email,
         contact: phone || "",
-      },
-      theme: {
-        color: "#3d61fc",
       },
       handler: async (response) => {
         try {
@@ -167,66 +161,67 @@ export function PaymentRecoveryClient({
         onLoad={() => setScriptLoaded(true)}
       />
 
-      <div className="border-surface-800 bg-surface-900/80 space-y-6 rounded-2xl border p-7 shadow-2xl backdrop-blur-md">
-        <div className="flex items-start justify-between">
+      <div className="border-border bg-card space-y-6 rounded-lg border p-6 sm:p-8">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <Badge variant={isExpired ? "destructive" : "warning"} size="sm" dot>
-              {isExpired ? "Seat Hold Expired" : "Payment Pending"}
+            <Badge variant={isExpired ? "destructive" : "neutral"} size="sm">
+              {isExpired ? "Hold expired" : "Payment pending"}
             </Badge>
-            <h2 className="text-surface-50 mt-2 text-2xl font-bold">Resume Your Registration</h2>
-            <p className="text-surface-400 mt-1 text-xs">
-              Reference Code: <span className="text-surface-200 font-mono">{registrationCode}</span>
+            <h2 className="text-foreground mt-2 text-xl font-bold">Complete Your Payment</h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Registration ID:{" "}
+              <span className="text-foreground font-mono font-semibold">#{registrationCode}</span>
             </p>
           </div>
 
           {!isExpired && (
             <div className="text-right">
-              <div className="text-surface-400 flex items-center justify-end gap-1 font-mono text-[11px]">
-                <Clock className="size-3 text-amber-400" />
-                <span>Seat Held For:</span>
+              <div className="text-muted-foreground flex items-center justify-end gap-1 font-mono text-xs">
+                <Clock className="text-muted-foreground size-3" aria-hidden="true" />
+                <span>Hold expires in:</span>
               </div>
-              <div className="mt-0.5 font-mono text-2xl font-black text-amber-400">{timeLeft}</div>
+              <div className="text-foreground mt-0.5 font-mono text-xl font-bold">{timeLeft}</div>
             </div>
           )}
         </div>
 
         {errorMsg && (
-          <div className="flex items-center gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-300">
-            <AlertCircle className="size-4 shrink-0" />
+          <div className="border-destructive/30 bg-destructive/10 text-destructive flex items-center gap-2 rounded-md border p-3 text-xs">
+            <AlertCircle className="size-4 shrink-0" aria-hidden="true" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {/* Order Details Card */}
-        <div className="border-surface-800 bg-surface-950/70 space-y-3 rounded-xl border p-5">
-          <div className="text-surface-300 border-surface-800 flex items-center justify-between border-b pb-2 text-xs">
+        <div className="border-border bg-muted/40 text-muted-foreground space-y-2.5 rounded-lg border p-4 text-xs">
+          <div className="border-border flex items-center justify-between border-b pb-2">
             <span>Event:</span>
-            <span className="text-surface-100 font-semibold">{eventTitle}</span>
+            <span className="text-foreground font-semibold">{eventTitle}</span>
           </div>
-          <div className="text-surface-300 border-surface-800 flex items-center justify-between border-b pb-2 text-xs">
+          <div className="border-border flex items-center justify-between border-b pb-2">
             <span>Pass Tier:</span>
-            <span className="text-brand-400 font-semibold">{ticketName}</span>
+            <span className="text-foreground font-semibold">{ticketName}</span>
           </div>
-          <div className="text-surface-300 border-surface-800 flex items-center justify-between border-b pb-2 text-xs">
+          <div className="border-border flex items-center justify-between border-b pb-2">
             <span>Attendee:</span>
-            <span className="text-surface-200 font-medium">
+            <span className="text-foreground font-medium">
               {name} ({email})
             </span>
           </div>
-          <div className="text-surface-100 flex items-center justify-between pt-1 text-sm">
-            <span className="font-bold">Total Amount Due:</span>
-            <span className="text-surface-50 text-xl font-black">₹{amount}</span>
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-foreground text-sm font-bold">Total Amount:</span>
+            <span className="text-foreground text-xl font-bold">₹{amount}</span>
           </div>
         </div>
 
-        {/* Action Button */}
+        {/* Next Steps / Action Button */}
         {isExpired ? (
           <div className="space-y-3">
-            <p className="text-xs text-rose-300">
-              The 10-minute hold window for this registration has lapsed. Please restart
-              registration to claim any newly available seats.
+            <p className="text-destructive text-xs">
+              The 10-minute hold window for this registration has lapsed. Please select your pass
+              again to check current availability.
             </p>
-            <Button asChild className="w-full" variant="default">
+            <Button asChild className="w-full" variant="secondary">
               <Link href={`/events/${eventSlug}/register`}>Select Ticket Again</Link>
             </Button>
           </div>
@@ -235,27 +230,31 @@ export function PaymentRecoveryClient({
             type="button"
             onClick={handlePayNow}
             disabled={loading || !scriptLoaded}
+            variant="primary"
             size="lg"
-            className="shadow-brand-500/25 w-full shadow-lg"
-            leftIcon={
-              loading ? (
-                <RefreshCw className="size-4 animate-spin" />
-              ) : (
-                <CreditCard className="size-4" />
-              )
-            }
-            rightIcon={!loading ? <ArrowRight className="size-4" /> : undefined}
+            className="w-full gap-2"
           >
-            {loading ? "Processing Payment..." : `Pay ₹${amount} via Razorpay (UPI / Cards)`}
+            {loading ? (
+              <>
+                <RefreshCw className="size-4 animate-spin" aria-hidden="true" />
+                <span>Processing Payment...</span>
+              </>
+            ) : (
+              <>
+                <CreditCard className="size-4" aria-hidden="true" />
+                <span>Pay ₹{amount} to complete registration</span>
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </>
+            )}
           </Button>
         )}
 
         <div className="text-center">
           <Link
             href={`/events/${eventSlug}`}
-            className="text-surface-400 hover:text-surface-200 text-xs transition-colors"
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
           >
-            ← Return to Event Overview
+            ← Return to event details
           </Link>
         </div>
       </div>

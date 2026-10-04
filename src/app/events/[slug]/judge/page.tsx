@@ -53,21 +53,21 @@ export default async function JudgePortalPage({ params }: JudgePageProps) {
 
   if (!queue) {
     return (
-      <div className="bg-surface-950 text-surface-100 flex min-h-screen items-center justify-center p-4">
-        <div className="border-surface-800 bg-surface-900/60 w-full max-w-md space-y-4 rounded-3xl border p-8 text-center backdrop-blur-xl">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-rose-500/20 bg-rose-500/10 text-rose-400">
-            <ShieldAlert className="h-7 w-7" />
+      <div className="bg-background text-foreground flex min-h-screen items-center justify-center p-4">
+        <div className="border-border bg-card w-full max-w-md space-y-4 rounded-lg border p-6 text-center sm:p-8">
+          <div className="border-destructive/20 bg-destructive/10 text-destructive mx-auto flex size-12 items-center justify-center rounded-md border">
+            <ShieldAlert className="size-6" />
           </div>
-          <h1 className="text-xl font-black text-white">Access Restricted</h1>
-          <p className="text-surface-400 text-xs sm:text-sm">
+          <h1 className="text-foreground text-xl font-bold">Access Restricted</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm">
             You do not have an active judge assignment for{" "}
-            <strong className="text-surface-200">{event.title}</strong>. If you are an official jury
+            <strong className="text-foreground">{event.title}</strong>. If you are an official jury
             member, please contact the hackathon director to assign your judge account.
           </p>
           <div className="pt-2">
-            <Button variant="outline" asChild className="w-full">
+            <Button variant="secondary" asChild className="w-full">
               <Link href={`/events/${event.slug}`}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ArrowLeft className="mr-2 size-4" />
                 Return to Hackathon
               </Link>
             </Button>

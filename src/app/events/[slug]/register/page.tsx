@@ -5,6 +5,7 @@ import { ArrowLeft, Shield } from "lucide-react";
 
 import { db } from "@/lib/db";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { formatDate } from "@/lib/format-date";
 import { RegistrationFormClient } from "./RegistrationFormClient";
 
 export const dynamic = "force-dynamic";
@@ -70,47 +71,40 @@ export default async function EventRegisterPage({ params, searchParams }: EventR
     soldCount: tier._count.registrations,
   }));
 
-  const dateStr = new Date(event.startDate).toLocaleDateString("en-IN", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const dateStr = formatDate(event.startDate);
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
+    <div className="bg-background min-h-screen pb-28">
       {/* Top Breadcrumb Header */}
-      <div className="border-surface-800/80 bg-surface-900/60 border-b py-4">
-        <div className="container-page text-surface-400 flex items-center justify-between text-xs">
+      <div className="border-border bg-card/40 border-b py-3.5">
+        <div className="container-page text-muted-foreground flex items-center justify-between text-xs">
           <Link
             href={`/events/${event.slug}`}
-            className="hover:text-surface-100 inline-flex items-center gap-1.5 transition-colors"
+            className="hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
           >
-            <ArrowLeft className="size-3.5" />
+            <ArrowLeft className="size-3.5" aria-hidden="true" />
             <span>Back to event details</span>
           </Link>
 
-          <div className="text-surface-400 flex items-center gap-2">
-            <Shield className="size-3.5 text-emerald-400" />
-            <span>256-bit Encrypted Reservation</span>
+          <div className="flex items-center gap-1.5">
+            <Shield className="text-foreground size-3.5" aria-hidden="true" />
+            <span>Encrypted reservation</span>
           </div>
         </div>
       </div>
 
-      <main className="container-page pt-10">
-        <div className="mx-auto max-w-2xl space-y-8">
+      <main className="container-page pt-8">
+        <div className="mx-auto max-w-xl space-y-6">
           {/* Header Summary */}
-          <div className="space-y-2 text-center">
+          <div className="text-center">
             <SectionHeader
-              badge="Official Registration"
-              title="Claim Your Gathering Pass"
-              highlight="Gathering Pass"
-              description={`${event.title} • ${dateStr} • ${event.venue || "Venue"}${event.city ? `, ${event.city.name}` : ""}`}
+              title="Claim Your Pass"
+              description={`${event.title} · ${dateStr} · ${event.venue || "Venue"}${event.city ? `, ${event.city.name}` : ""}`}
               align="center"
             />
           </div>
 
-          {/* Multi-Step Client Form */}
+          {/* Single Column Registration Form */}
           <RegistrationFormClient
             eventId={event.id}
             eventSlug={event.slug}

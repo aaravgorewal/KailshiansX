@@ -29,6 +29,7 @@ import { FAQAccordion } from "@/components/ui/FAQAccordion";
 import { EventCard, type EventType, type EventStatus } from "@/components/ui/EventCard";
 import { EventStickyCta } from "@/components/events/EventStickyCta";
 import { getGoogleCalendarUrl } from "@/lib/calendar";
+import { formatDate, formatTimeRange } from "@/lib/format-date";
 
 export const revalidate = 60;
 
@@ -166,27 +167,9 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const highestPrice =
     event.ticketTypes.length > 0 ? Math.max(...event.ticketTypes.map((t) => Number(t.price))) : 0;
 
-  // Format dates
-  const startDateStr = new Date(event.startDate).toLocaleDateString("en-IN", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
-  const startTimeStr = new Date(event.startDate).toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-
-  const endTimeStr = event.endDate
-    ? new Date(event.endDate).toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-    : null;
+  // Format dates via format-date.ts
+  const startDateStr = formatDate(event.startDate);
+  const timeRangeStr = formatTimeRange(event.startDate, event.endDate);
 
   const mapQueryUrl =
     event.venueMapUrl ||
@@ -278,58 +261,45 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="bg-surface-950 min-h-screen pb-28">
+      <div className="bg-background min-h-screen pb-28">
         {/* ─── Breadcrumb Bar ─────────────────────────────────────────────── */}
-        <div className="border-surface-800/80 bg-surface-900/60 border-b py-3">
-          <div className="container-page text-surface-400 flex items-center justify-between text-xs">
+        <div className="border-border bg-card/50 border-b py-3">
+          <div className="container-page text-muted-foreground flex items-center justify-between text-xs">
             <Link
               href="/events"
-              className="hover:text-surface-100 inline-flex items-center gap-1.5 transition-colors"
+              className="hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
             >
-              <ArrowLeft className="size-3.5" />
+              <ArrowLeft className="size-3.5" aria-hidden="true" />
               <span>Back to all events</span>
             </Link>
 
-            <div className="flex items-center gap-1.5 font-mono text-[11px]">
+            <div className="flex items-center gap-1.5 font-mono text-xs">
               <span>KailshiansX</span>
-              <ChevronRight className="text-surface-600 size-3" />
+              <ChevronRight className="text-muted-foreground size-3" aria-hidden="true" />
               <span>Events</span>
-              <ChevronRight className="text-surface-600 size-3" />
-              <span className="text-surface-200 max-w-[200px] truncate">{event.slug}</span>
+              <ChevronRight className="text-muted-foreground size-3" aria-hidden="true" />
+              <span className="text-foreground max-w-[200px] truncate">{event.slug}</span>
             </div>
           </div>
         </div>
 
         {/* ─── Event Hero Header ──────────────────────────────────────────── */}
-        <section
-          aria-label="Event Header"
-          className="from-surface-900 via-surface-900/80 to-surface-950 border-surface-800 relative overflow-hidden border-b bg-gradient-to-b pt-10 pb-12"
-        >
-          {/* Ambient Lighting & Grid */}
-          <div
-            className="bg-grid pointer-events-none absolute inset-0 opacity-30"
-            aria-hidden="true"
-          />
-
-          <div className="container-page relative z-10">
+        <section aria-label="Event Header" className="border-border bg-card/30 border-b py-10">
+          <div className="container-page">
             <div className="max-w-4xl space-y-5">
               {/* Badges Row */}
-              <div className="flex flex-wrap items-center gap-2.5">
-                <Badge variant="brand" size="default">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="neutral" size="sm">
                   {event.type.replace("_", " ")}
                 </Badge>
-                <Badge
-                  variant={event.status === "PUBLISHED" ? "success" : "surface"}
-                  size="default"
-                  dot
-                >
+                <Badge variant={event.status === "PUBLISHED" ? "success" : "neutral"} size="sm">
                   {event.status === "PUBLISHED" ? "Confirmed" : event.status}
                 </Badge>
-                <Badge variant="outline" size="default">
+                <Badge variant="neutral" size="sm">
                   {event.attendanceMode === "IN_PERSON" ? "In-Person Gathering" : "Virtual Stream"}
                 </Badge>
                 {event.city && (
-                  <Badge variant="surface" size="default">
+                  <Badge variant="neutral" size="sm">
                     {event.city.name}, {event.city.state}
                   </Badge>
                 )}
@@ -337,7 +307,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
               {/* Cover Image Banner */}
               {event.coverImage && (
-                <div className="border-surface-800 bg-surface-900 relative aspect-[21/9] w-full max-w-4xl overflow-hidden rounded-2xl border shadow-2xl">
+                <div className="border-border bg-muted relative aspect-[21/9] w-full max-w-4xl overflow-hidden rounded-lg border">
                   <Image
                     src={event.coverImage}
                     alt={event.title}
@@ -351,51 +321,49 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               )}
 
               {/* Event Title */}
-              <h1 className="text-surface-50 text-3xl leading-[1.12] font-black tracking-tight sm:text-5xl md:text-6xl">
+              <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
                 {event.title}
               </h1>
 
               {/* Overview / Subhead */}
               {event.overview && (
-                <p className="text-surface-300 max-w-3xl text-base leading-relaxed sm:text-lg">
+                <p className="text-muted-foreground max-w-3xl text-base leading-relaxed sm:text-lg">
                   {event.overview}
                 </p>
               )}
 
               {/* Quick Specs Badges */}
-              <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 md:grid-cols-3">
                 {/* Date & Time Card */}
-                <div className="border-surface-800 bg-surface-900/60 flex items-start gap-3 rounded-xl border p-4">
-                  <div className="bg-brand-500/10 text-brand-400 rounded-lg p-2">
-                    <Calendar className="size-5" />
+                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4">
+                  <div className="border-border bg-muted text-foreground rounded-md border p-2">
+                    <Calendar className="size-4" aria-hidden="true" />
                   </div>
                   <div>
-                    <div className="text-surface-400 font-mono text-xs tracking-wider uppercase">
+                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
                       Date &amp; Time (IST)
                     </div>
-                    <div className="text-surface-100 mt-0.5 text-sm font-semibold">
+                    <div className="text-foreground mt-0.5 text-sm font-semibold">
                       {startDateStr}
                     </div>
-                    <div className="text-surface-400 mt-0.5 text-xs">
-                      {startTimeStr} {endTimeStr ? `– ${endTimeStr}` : ""}
-                    </div>
+                    <div className="text-muted-foreground mt-0.5 text-xs">{timeRangeStr}</div>
                   </div>
                 </div>
 
                 {/* Venue & Location Card */}
-                <div className="border-surface-800 bg-surface-900/60 flex items-start gap-3 rounded-xl border p-4">
-                  <div className="bg-accent-500/10 text-accent-400 rounded-lg p-2">
-                    <MapPin className="size-5" />
+                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4">
+                  <div className="border-border bg-muted text-foreground rounded-md border p-2">
+                    <MapPin className="size-4" aria-hidden="true" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-surface-400 font-mono text-xs tracking-wider uppercase">
+                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
                       Location
                     </div>
-                    <div className="text-surface-100 mt-0.5 truncate text-sm font-semibold">
+                    <div className="text-foreground mt-0.5 truncate text-sm font-semibold">
                       {event.venue || "Announced Shortly"}
                     </div>
                     {event.venueAddress && (
-                      <div className="text-surface-400 mt-0.5 truncate text-xs">
+                      <div className="text-muted-foreground mt-0.5 truncate text-xs">
                         {event.venueAddress}
                       </div>
                     )}
@@ -403,28 +371,30 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                       href={mapQueryUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-brand-400 hover:text-brand-300 mt-1 inline-flex items-center gap-1 text-[11px] font-medium"
+                      className="text-foreground hover:text-muted-foreground mt-1 inline-flex items-center gap-1 text-xs font-medium underline"
                     >
-                      <span>Open in Google Maps</span>
-                      <ExternalLink className="size-2.5" />
+                      <span>Open in Maps</span>
+                      <ExternalLink className="size-2.5" aria-hidden="true" />
                     </a>
                   </div>
                 </div>
 
                 {/* Capacity & Format Card */}
-                <div className="border-surface-800 bg-surface-900/60 flex items-start gap-3 rounded-xl border p-4 sm:col-span-2 md:col-span-1">
-                  <div className="bg-surface-800 text-surface-300 rounded-lg p-2">
-                    <Users className="size-5" />
+                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4 sm:col-span-2 md:col-span-1">
+                  <div className="border-border bg-muted text-foreground rounded-md border p-2">
+                    <Users className="size-4" aria-hidden="true" />
                   </div>
                   <div>
-                    <div className="text-surface-400 font-mono text-xs tracking-wider uppercase">
+                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
                       Capacity
                     </div>
-                    <div className="text-surface-100 mt-0.5 text-sm font-semibold">
+                    <div className="text-foreground mt-0.5 text-sm font-semibold">
                       {event.maxCapacity ? `${event.maxCapacity} Builders` : "Open Community RSVP"}
                     </div>
-                    <div className="text-surface-400 mt-0.5 text-xs">
-                      {event._count.registrations} registered so far
+                    <div className="text-muted-foreground mt-0.5 text-xs">
+                      {event._count.registrations > 0
+                        ? `${event._count.registrations} registered`
+                        : "Registration open"}
                     </div>
                   </div>
                 </div>
@@ -434,22 +404,20 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         </section>
 
         {/* ─── Main Two-Column Layout ─────────────────────────────────────── */}
-        <main className="container-page pt-12">
+        <main className="container-page pt-10">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
             {/* Left Column: Comprehensive Detail Sections */}
-            <div className="space-y-16 lg:col-span-8">
+            <div className="space-y-12 lg:col-span-8">
               {/* 1. Overview & About */}
               <section aria-labelledby="section-overview">
                 <SectionHeader
-                  badge="About Gathering"
                   title="Event Overview"
-                  highlight="Overview"
                   description="Curated by Kailshians Web Services to foster high-caliber engineering discussions and hands-on building."
                   align="left"
-                  className="mb-6"
+                  className="mb-4"
                 />
 
-                <div className="prose prose-invert text-surface-300 max-w-none space-y-4 text-sm leading-relaxed sm:text-base">
+                <div className="text-muted-foreground space-y-4 text-sm leading-relaxed sm:text-base">
                   <p>
                     {event.overview ||
                       "Join software engineers, product architects, student builders, and open-source contributors for a day of technical deep dives, live code reviews, and networking."}
@@ -466,128 +434,105 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               {event.eligibility && (
                 <section
                   aria-labelledby="section-eligibility"
-                  className="border-surface-800 bg-surface-900/40 rounded-2xl border p-6 sm:p-8"
+                  className="border-border bg-card rounded-lg border p-6"
                 >
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="bg-brand-500/10 text-brand-400 border-brand-500/20 flex size-10 items-center justify-center rounded-xl border">
-                      <ShieldCheck className="size-5" />
+                    <div className="border-border bg-muted text-foreground flex size-9 items-center justify-center rounded-md border">
+                      <ShieldCheck className="size-5" aria-hidden="true" />
                     </div>
                     <div>
-                      <h3 id="section-eligibility" className="text-surface-100 text-xl font-bold">
+                      <h3 id="section-eligibility" className="text-foreground text-lg font-bold">
                         Eligibility &amp; Prerequisites
                       </h3>
-                      <p className="text-surface-400 text-xs">Review before confirming your pass</p>
+                      <p className="text-muted-foreground text-xs">
+                        Review before confirming your pass
+                      </p>
                     </div>
                   </div>
 
-                  <p className="text-surface-300 mb-6 text-sm leading-relaxed">
+                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
                     {event.eligibility}
                   </p>
 
-                  <div className="text-surface-400 border-surface-800/80 grid grid-cols-1 gap-3 border-t pt-4 text-xs sm:grid-cols-2">
+                  <div className="border-border text-muted-foreground grid grid-cols-1 gap-3 border-t pt-4 text-xs sm:grid-cols-2">
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+                      <CheckCircle2
+                        className="text-foreground size-4 shrink-0"
+                        aria-hidden="true"
+                      />
                       <span>Valid college or professional ID required at check-in</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+                      <CheckCircle2
+                        className="text-foreground size-4 shrink-0"
+                        aria-hidden="true"
+                      />
                       <span>Bring your own laptop &amp; development charger</span>
                     </div>
                   </div>
                 </section>
               )}
 
-              {/* 3. Schedule / Agenda */}
+              {/* 3. Schedule / Agenda (Simple table/list) */}
               {event.scheduleItems.length > 0 && (
                 <section aria-labelledby="section-schedule">
                   <SectionHeader
-                    badge="Timeline &amp; Agenda"
                     title="Event Schedule"
-                    highlight="Schedule"
                     description="Carefully planned sessions designed to maximize coding, learning, and peer networking."
                     align="left"
-                    className="mb-8"
+                    className="mb-6"
                   />
 
-                  <div className="border-surface-800 relative ml-2 space-y-8 border-l-2 pl-6">
-                    {event.scheduleItems.map((item, idx) => {
-                      const itemStartStr = new Date(item.startTime).toLocaleTimeString("en-IN", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      });
-                      const itemEndStr = item.endTime
-                        ? new Date(item.endTime).toLocaleTimeString("en-IN", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })
-                        : null;
+                  <div className="border-border bg-card overflow-hidden rounded-lg border">
+                    <div className="divide-border divide-y">
+                      {event.scheduleItems.map((item, idx) => {
+                        const itemTimeStr = formatTimeRange(item.startTime, item.endTime);
+                        const speakerMatch = event.speakers.find(
+                          (s) => s.speakerId === item.speakerId
+                        )?.speaker;
 
-                      // Associate speaker if present
-                      const speakerMatch = event.speakers.find(
-                        (s) => s.speakerId === item.speakerId
-                      )?.speaker;
-
-                      return (
-                        <div key={item.id} className="group relative">
-                          {/* Dot on timeline */}
-                          <div className="border-brand-500 bg-surface-950 group-hover:bg-brand-500 absolute top-1.5 -left-[31px] size-3.5 rounded-full border-2 transition-colors" />
-
-                          <div className="border-surface-800/80 bg-surface-900/60 group-hover:border-surface-700 rounded-xl border p-5 transition-all sm:p-6">
-                            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                              <span className="text-brand-300 inline-flex items-center gap-1.5 font-mono text-xs font-medium">
-                                <Clock className="size-3.5" />
-                                <span>
-                                  {itemStartStr} {itemEndStr ? `– ${itemEndStr}` : ""}
-                                </span>
+                        return (
+                          <div key={item.id} className="p-4 sm:p-5">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+                              <span className="text-muted-foreground flex items-center gap-1.5 font-mono text-xs">
+                                <Clock className="size-3.5" aria-hidden="true" />
+                                <span>{itemTimeStr}</span>
                               </span>
-                              <Badge variant="surface" size="sm">
+                              <Badge variant="neutral" size="sm">
                                 Slot {idx + 1}
                               </Badge>
                             </div>
 
-                            <h4 className="text-surface-100 text-lg font-bold">{item.title}</h4>
+                            <h4 className="text-foreground mt-2 text-base font-bold">
+                              {item.title}
+                            </h4>
 
                             {item.description && (
-                              <p className="text-surface-400 mt-2 text-sm leading-relaxed">
+                              <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
                                 {item.description}
                               </p>
                             )}
 
                             {speakerMatch && (
-                              <div className="border-surface-800 mt-4 flex items-center gap-3 border-t pt-3">
-                                {speakerMatch.photo ? (
-                                  /* eslint-disable-next-line @next/next/no-img-element */
-                                  <img
-                                    src={speakerMatch.photo}
-                                    alt={speakerMatch.name}
-                                    className="border-surface-700 size-8 rounded-full border object-cover"
-                                  />
-                                ) : (
-                                  <div className="bg-surface-800 text-surface-200 flex size-8 items-center justify-center rounded-full text-xs font-bold">
-                                    {speakerMatch.name.charAt(0)}
-                                  </div>
-                                )}
-                                <div>
-                                  <div className="text-surface-200 text-xs font-semibold">
-                                    {speakerMatch.name}
-                                  </div>
-                                  <div className="text-surface-400 text-[11px]">
-                                    {speakerMatch.designation} • {speakerMatch.organisation}
-                                  </div>
+                              <div className="text-muted-foreground mt-3 flex items-center gap-2.5 text-xs">
+                                <div className="bg-muted text-foreground flex size-6 items-center justify-center rounded-full font-bold">
+                                  {speakerMatch.name.charAt(0)}
                                 </div>
+                                <span>
+                                  <strong className="text-foreground">{speakerMatch.name}</strong>
+                                  {speakerMatch.designation ? ` · ${speakerMatch.designation}` : ""}
+                                </span>
                               </div>
                             )}
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </section>
               )}
 
-              {/* 3.5. Hackathon Engine Cockpit (Squad Formation, Problem Statements, Submissions, Leaderboard) */}
+              {/* 3.5. Hackathon Engine Cockpit */}
               {event.type === "HACKATHON" && hackathonEngineData && (
                 <section
                   id="hackathon-portal"
@@ -595,78 +540,64 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                   className="space-y-6"
                 >
                   {isJudgeOrAdmin && (
-                    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-purple-800/40 bg-purple-950/30 p-4">
+                    <div className="border-border bg-card flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-purple-400">
-                          <Gavel className="h-5 w-5" />
+                        <div className="border-border bg-muted text-foreground flex size-9 shrink-0 items-center justify-center rounded-md border">
+                          <Gavel className="size-5" aria-hidden="true" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-white">
+                          <h4 className="text-foreground text-sm font-bold">
                             Grand Jury &amp; Organizer Access
                           </h4>
-                          <p className="text-surface-400 text-xs">
+                          <p className="text-muted-foreground text-xs">
                             You have evaluation privileges for this hackathon. Access the official
                             scoring rubric cockpit.
                           </p>
                         </div>
                       </div>
-                      <Button
-                        size="sm"
-                        className="bg-purple-600 font-bold text-white hover:bg-purple-500"
-                        asChild
-                      >
+                      <Button size="sm" variant="secondary" asChild>
                         <Link href={`/events/${event.slug}/judge`}>Launch Judge Cockpit</Link>
                       </Button>
                     </div>
                   )}
 
                   <SectionHeader
-                    badge="Hackathon Engine"
                     title="Builder Cockpit &amp; Submissions"
-                    highlight="Cockpit"
                     description="Form your squad, pick problem statements, submit project artifacts, and monitor the live leaderboard."
                     align="left"
-                    className="mb-8"
+                    className="mb-6"
                   />
 
                   <HackathonEngineClient initialData={hackathonEngineData} />
                 </section>
               )}
 
-              {/* 4. Tracks & Problem Statements (Hackathons & Workshops) */}
+              {/* 4. Tracks & Problem Statements */}
               {event.type !== "HACKATHON" && event.tracks.length > 0 && (
                 <section aria-labelledby="section-tracks">
                   <SectionHeader
-                    badge="Hack &amp; Build Tracks"
                     title="Tracks &amp; Problem Statements"
-                    highlight="Tracks"
                     description="Choose your area of innovation. Multi-disciplinary tracks with focused sponsor APIs and mentorship."
                     align="left"
-                    className="mb-8"
+                    className="mb-6"
                   />
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {event.tracks.map((track) => (
                       <div
                         key={track.id}
-                        className="border-surface-800 bg-surface-900/60 hover:border-surface-700 flex flex-col justify-between rounded-xl border p-6 transition-all hover:shadow-lg"
+                        className="border-border bg-card flex flex-col justify-between rounded-lg border p-5"
                       >
                         <div>
-                          <div className="mb-3 flex items-center gap-2">
-                            <span
-                              className="size-3 shrink-0 rounded-full"
-                              style={{ backgroundColor: track.color || "#3d61fc" }}
-                            />
-                            <h4 className="text-surface-100 text-lg font-bold">{track.name}</h4>
-                          </div>
+                          <h4 className="text-foreground text-base font-bold">{track.name}</h4>
                           {track.description && (
-                            <p className="text-surface-400 text-xs leading-relaxed sm:text-sm">
+                            <p className="text-muted-foreground mt-1 text-xs leading-relaxed sm:text-sm">
                               {track.description}
                             </p>
                           )}
                         </div>
 
-                        <div className="border-surface-800/60 text-surface-500 mt-5 flex items-center justify-between border-t pt-3 font-mono text-[11px]">
+                        <div className="border-border text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-xs">
                           <span>Track Focus</span>
                           <span>Open Submission</span>
                         </div>
@@ -678,26 +609,24 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
               {/* 5. Speakers, Judges & Mentors */}
               {event.speakers.length > 0 && (
-                <section aria-labelledby="section-speakers" className="space-y-10">
+                <section aria-labelledby="section-speakers" className="space-y-8">
                   <SectionHeader
-                    badge="Ecosystem Mentorship"
                     title="Speakers, Judges &amp; Mentors"
-                    highlight="Mentors"
                     description="Learn directly from senior engineers, startup CTOs, and open source architects."
                     align="left"
-                    className="mb-8"
+                    className="mb-6"
                   />
 
                   {/* Keynote Speakers */}
                   {speakersList.length > 0 && (
                     <div className="space-y-4">
-                      <h4 className="text-surface-200 flex items-center gap-2 text-base font-semibold">
-                        <Badge variant="brand" size="sm">
+                      <h4 className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                        <Badge variant="neutral" size="sm">
                           Speakers
                         </Badge>
                         <span>Keynote &amp; Session Speakers</span>
                       </h4>
-                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         {speakersList.map((es) => (
                           <SpeakerCard
                             key={es.id}
@@ -722,14 +651,14 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
                   {/* Judges */}
                   {judgesList.length > 0 && (
-                    <div className="border-surface-800/80 space-y-4 border-t pt-4">
-                      <h4 className="text-surface-200 flex items-center gap-2 text-base font-semibold">
-                        <Badge variant="accent" size="sm">
+                    <div className="border-border space-y-4 border-t pt-4">
+                      <h4 className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                        <Badge variant="neutral" size="sm">
                           Judges
                         </Badge>
                         <span>Evaluation Jury</span>
                       </h4>
-                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         {judgesList.map((es) => (
                           <SpeakerCard
                             key={es.id}
@@ -752,14 +681,14 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
                   {/* Mentors */}
                   {mentorsList.length > 0 && (
-                    <div className="border-surface-800/80 space-y-4 border-t pt-4">
-                      <h4 className="text-surface-200 flex items-center gap-2 text-base font-semibold">
-                        <Badge variant="success" size="sm">
+                    <div className="border-border space-y-4 border-t pt-4">
+                      <h4 className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                        <Badge variant="neutral" size="sm">
                           Mentors
                         </Badge>
                         <span>Hands-On Mentors</span>
                       </h4>
-                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         {mentorsList.map((es) => (
                           <SpeakerCard
                             key={es.id}
@@ -785,12 +714,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               {/* 6. Ticket Options (#tickets) */}
               <section id="tickets" aria-labelledby="section-tickets" className="scroll-mt-24">
                 <SectionHeader
-                  badge="Pass Selection"
                   title="Ticket Options &amp; Passes"
-                  highlight="Passes"
                   description="Choose your ticket tier. All passes include full event access, verifiable certificate, and partner swag."
                   align="left"
-                  className="mb-8"
+                  className="mb-6"
                 />
 
                 <div className="space-y-4">
@@ -801,39 +728,35 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                       return (
                         <div
                           key={ticket.id}
-                          className="border-surface-800 bg-surface-900/70 hover:border-brand-500/50 flex flex-col items-start justify-between gap-6 rounded-2xl border p-6 transition-all hover:shadow-xl sm:flex-row sm:items-center"
+                          className="border-border bg-card flex flex-col items-start justify-between gap-4 rounded-lg border p-5 sm:flex-row sm:items-center"
                         >
-                          <div className="flex-1 space-y-1.5">
-                            <div className="flex items-center gap-2.5">
-                              <h4 className="text-surface-50 text-xl font-bold">{ticket.name}</h4>
-                              <Badge variant={isFreeTicket ? "success" : "brand"} size="sm">
-                                {isFreeTicket ? "Free Pass" : "Paid Pass"}
+                          <div className="flex-1 space-y-1">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-foreground text-base font-bold">{ticket.name}</h4>
+                              <Badge variant="neutral" size="sm">
+                                {isFreeTicket ? "Free pass" : "Paid pass"}
                               </Badge>
                             </div>
 
                             {ticket.description && (
-                              <p className="text-surface-400 text-xs leading-relaxed sm:text-sm">
+                              <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">
                                 {ticket.description}
                               </p>
                             )}
 
-                            <div className="text-surface-500 flex items-center gap-4 pt-1 font-mono text-xs">
+                            <div className="text-muted-foreground flex items-center gap-3 pt-1 font-mono text-xs">
                               <span>Quota: {ticket.quota} seats</span>
                               <span>•</span>
-                              <span>Verifiable Certificate included</span>
+                              <span>Certificate included</span>
                             </div>
                           </div>
 
-                          <div className="border-surface-800/80 flex w-full items-center justify-between gap-3 border-t pt-3 sm:w-auto sm:flex-col sm:items-end sm:border-0 sm:pt-0">
-                            <div className="text-surface-100 text-2xl font-black">
-                              {isFreeTicket ? (
-                                <span className="text-emerald-400">Free</span>
-                              ) : (
-                                `₹${ticket.price}`
-                              )}
+                          <div className="border-border flex w-full items-center justify-between gap-3 border-t pt-3 sm:w-auto sm:flex-col sm:items-end sm:border-0 sm:pt-0">
+                            <div className="text-foreground text-xl font-bold">
+                              {isFreeTicket ? "Free" : `₹${ticket.price}`}
                             </div>
 
-                            <Button asChild size="default" variant="default" className="shadow-md">
+                            <Button asChild size="sm" variant="primary">
                               <Link href={`/events/${event.slug}/register?tier=${ticket.id}`}>
                                 Claim Pass
                               </Link>
@@ -843,14 +766,17 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                       );
                     })
                   ) : (
-                    <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-8 text-center">
-                      <Tag className="text-surface-500 mx-auto mb-3 size-10" />
-                      <h4 className="text-surface-200 text-lg font-bold">Open Community Entry</h4>
-                      <p className="text-surface-400 mx-auto mt-1 max-w-sm text-xs">
+                    <div className="border-border bg-card rounded-lg border p-6 text-center">
+                      <Tag
+                        className="text-muted-foreground mx-auto mb-2 size-8"
+                        aria-hidden="true"
+                      />
+                      <h4 className="text-foreground text-base font-bold">Open Community Entry</h4>
+                      <p className="text-muted-foreground mx-auto mt-1 max-w-sm text-xs">
                         This gathering is free for verified community members. RSVP below to confirm
                         your seat.
                       </p>
-                      <Button asChild className="mt-5" variant="default">
+                      <Button asChild className="mt-4" variant="primary">
                         <Link href={`/events/${event.slug}/register`}>RSVP Now</Link>
                       </Button>
                     </div>
@@ -862,12 +788,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               {formattedPartners.length > 0 && (
                 <section aria-labelledby="section-partners">
                   <SectionHeader
-                    badge="Supporters &amp; Sponsors"
                     title="Supported by Industry Leaders"
-                    highlight="Industry Leaders"
                     description="Cloud providers, developer toolmakers, and tech workspaces making this edition possible."
                     align="left"
-                    className="mb-8"
+                    className="mb-6"
                   />
 
                   <PartnerLogoGrid partners={formattedPartners} groupByTier={true} />
@@ -878,12 +802,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               {event.faqs.length > 0 && (
                 <section aria-labelledby="section-faqs">
                   <SectionHeader
-                    badge="Common Questions"
                     title="Frequently Asked Questions"
-                    highlight="Questions"
                     description="Everything you need to know about attendance, schedules, certificates, and check-in."
                     align="left"
-                    className="mb-8"
+                    className="mb-6"
                   />
 
                   <FAQAccordion
@@ -900,33 +822,31 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               {event.galleryAlbums.length > 0 && (
                 <section aria-labelledby="section-gallery">
                   <SectionHeader
-                    badge="Vibe &amp; Atmosphere"
                     title="Moments From Previous Editions"
-                    highlight="Moments"
                     description="Snapshots from the floor, coding sprints, and keynote stages."
                     align="left"
-                    className="mb-8"
+                    className="mb-6"
                   />
 
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {event.galleryAlbums
                       .flatMap((a) => a.images)
                       .slice(0, 6)
                       .map((img) => (
                         <div
                           key={img.id}
-                          className="group border-surface-800 bg-surface-900 relative aspect-video overflow-hidden rounded-xl border"
+                          className="border-border bg-muted relative aspect-video overflow-hidden rounded-lg border"
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={img.url}
                             alt={img.altText || img.caption || "Event moment"}
-                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="size-full object-cover"
                             loading="lazy"
                           />
                           {img.caption && (
-                            <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 via-transparent to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
-                              <span className="text-xs font-medium text-white">{img.caption}</span>
+                            <div className="bg-background/80 text-foreground absolute inset-x-0 bottom-0 p-2 text-xs backdrop-blur-sm">
+                              {img.caption}
                             </div>
                           )}
                         </div>
@@ -959,23 +879,21 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           {recommendedEvents.length > 0 && (
             <section
               aria-labelledby="section-related"
-              className="border-surface-800 mt-24 border-t pt-16"
+              className="border-border mt-20 border-t pt-12"
             >
-              <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <SectionHeader
-                  badge="More Gatherings"
                   title="Explore Other Upcoming Events"
-                  highlight="Upcoming Events"
                   description="Keep the momentum going. Register for upcoming summits, hack sprints, and workshops."
                   align="left"
                 />
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/events">View All Events</Link>
+                <Button asChild variant="secondary" size="sm">
+                  <Link href="/events">View all events</Link>
                 </Button>
               </div>
 
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {recommendedEvents.map((ev) => {
+                {recommendedEvents.map((ev, idx) => {
                   const evIsFree =
                     ev.ticketTypes.length === 0 ||
                     ev.ticketTypes.some((t) => Number(t.price) === 0);
@@ -1001,6 +919,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                       attendeeCount={ev._count.registrations}
                       speakerCount={ev._count.speakers}
                       tags={[ev.type.replace("_", " "), ev.city?.name || "India"]}
+                      priority={idx < 2}
                     />
                   );
                 })}
