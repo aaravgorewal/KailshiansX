@@ -23,6 +23,10 @@ import {
   type CollaborationAckEmailProps,
 } from "./templates/CollaborationAckEmail";
 import { EventReminderEmail, type EventReminderEmailProps } from "./templates/EventReminderEmail";
+import {
+  CertificateIssuedEmail,
+  type CertificateIssuedEmailProps,
+} from "./templates/CertificateIssuedEmail";
 
 export type EmailTemplatePayloadMap = {
   REGISTRATION_CONFIRMATION: RegistrationConfirmationEmailProps;
@@ -32,6 +36,7 @@ export type EmailTemplatePayloadMap = {
   STATUS_CHANGE: StatusChangeEmailProps;
   COLLABORATION_ACK: CollaborationAckEmailProps;
   EVENT_REMINDER_24H: EventReminderEmailProps;
+  CERTIFICATE_ISSUED: CertificateIssuedEmailProps;
 };
 
 export async function renderEmailTemplate<T extends EmailTemplate>(
@@ -94,6 +99,13 @@ export async function renderEmailTemplate<T extends EmailTemplate>(
       const p = payload as EventReminderEmailProps;
       element = React.createElement(EventReminderEmail, p);
       defaultSubject = `Reminder: ${p.eventTitle} begins tomorrow! Pass: ${p.registrationCode}`;
+      break;
+    }
+
+    case EmailTemplate.CERTIFICATE_ISSUED: {
+      const p = payload as CertificateIssuedEmailProps;
+      element = React.createElement(CertificateIssuedEmail, p);
+      defaultSubject = `Your Verified Certificate of Achievement: ${p.eventTitle} (${p.uniqueId})`;
       break;
     }
 

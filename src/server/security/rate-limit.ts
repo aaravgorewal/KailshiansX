@@ -142,6 +142,20 @@ export async function checkRateLimit(
   identifier: string,
   category: RateLimitCategory = "api"
 ): Promise<RateLimitResult> {
+  // Allow unrestricted testing from localhost in non-production environments (except unit tests verifying the limiter)
+  if (
+    process.env.NODE_ENV !== "test" &&
+    process.env.NODE_ENV !== "production" &&
+    (identifier === "127.0.0.1" || identifier === "::1" || identifier === "localhost")
+  ) {
+    return {
+      success: true,
+      limit: 1000,
+      remaining: 999,
+      reset: Date.now() + 60000,
+    };
+  }
+
   const key = `${category}:${identifier}`;
   const upstashLimiter = upstashLimiters.get(category);
 

@@ -918,17 +918,19 @@ model CertificateTemplate {
 }
 
 model Certificate {
-  id             String   @id @default(cuid())
-  uniqueId       String   @unique @default(cuid()) // public verification ID e.g. KX-CERT-abc123
-  eventId        String
-  registrationId String?  @unique
-  templateId     String
-  participantName String
+  id               String         @id @default(cuid())
+  uniqueId         String         @unique @default(cuid()) // public verification ID e.g. KX-CERT-abc123
+  eventId          String
+  registrationId   String?        @unique
+  templateId       String
+  participantName  String
   participantEmail String
-  userId         String?
-  issuedAt       DateTime @default(now())
-  certificateUrl String?  // generated S3 URL
-  emailSentAt    DateTime?
+  userId           String?
+  issuedAt         DateTime       @default(now())
+  certificateUrl   String?        // generated S3 URL or PDF storage URL
+  emailSentAt      DateTime?
+  deliveryStatus   EmailJobStatus @default(PENDING)
+  deliveryError    String?
 
   event        Event               @relation(fields: [eventId], references: [id])
   registration Registration?       @relation(fields: [registrationId], references: [id])
@@ -939,6 +941,7 @@ model Certificate {
   @@index([participantEmail])
   @@index([userId])
   @@index([uniqueId])
+  @@index([deliveryStatus])
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1055,6 +1058,7 @@ enum EmailTemplate {
   STATUS_CHANGE
   COLLABORATION_ACK
   EVENT_REMINDER_24H
+  CERTIFICATE_ISSUED
 }
 
 model EmailLog {

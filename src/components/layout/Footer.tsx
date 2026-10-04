@@ -20,6 +20,7 @@ const FOOTER_COLUMNS = [
       { label: "State Leads", href: "/state-leads" },
       { label: "Collaborations", href: "/collaborations" },
       { label: "Join Team", href: "/join-team" },
+      { label: "Verify Certificate", href: "/verify" },
     ],
   },
   {

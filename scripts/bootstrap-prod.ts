@@ -94,7 +94,33 @@ async function main() {
     console.log(`ℹ️  Who We Are Content already exists (ID: ${existingWhoWeAre.id})`);
   }
 
-  // 5. Audit Log Entry for Bootstrap
+  // 5. Default Certificate Templates (PRD §21)
+  const existingTemplates = await db.certificateTemplate.count();
+  if (existingTemplates === 0) {
+    await db.certificateTemplate.createMany({
+      data: [
+        {
+          id: "template-obsidian-gold",
+          name: "Obsidian & Gold Executive",
+          description: "Deep obsidian backdrop with metallic gold borders and crisp typography.",
+          templateUrl: "",
+          fields: {
+            recipientName: { x: 50, y: 35, fontSize: 32, color: "#ffffff", align: "center" },
+            eventTitle: { x: 50, y: 53, fontSize: 20, color: "#38bdf8", align: "center" },
+            issueDate: { x: 50, y: 64, fontSize: 11, color: "#94a3b8", align: "center" },
+            qrCode: { x: 50, y: 76, size: 68, align: "center" },
+            uniqueId: { x: 50, y: 92, fontSize: 10, color: "#94a3b8", align: "center" },
+          },
+          isDefault: true,
+        },
+      ],
+    });
+    console.log("✅ Default Certificate Templates initialized");
+  } else {
+    console.log(`ℹ️  Certificate Templates already exist (${existingTemplates} found)`);
+  }
+
+  // 6. Audit Log Entry for Bootstrap
   await db.auditLog.create({
     data: {
       userId: adminUser.id,

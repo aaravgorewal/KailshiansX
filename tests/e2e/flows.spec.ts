@@ -229,7 +229,9 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     );
 
     // Submit application
-    await page.click('button[type="submit"]:has-text("Submit Application")');
+    const submitBtn = page.locator('button[type="submit"]:has-text("Submit Application")');
+    await submitBtn.scrollIntoViewIfNeeded();
+    await submitBtn.click();
 
     // Verify success banner appears
     await expect(page.locator("text=Application Received!")).toBeVisible({
@@ -305,6 +307,81 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await expect(page.locator("text=Community Progression Ladder")).toBeVisible();
     await expect(page.locator("text=Milestone Achievement Badges")).toBeVisible();
 
+    await context.close();
+  });
+
+  test("Flow 7: Public Certificate Verification (/verify) & Admin Certificate Studio (/admin/certificates)", async ({
+    browser,
+  }) => {
+    // 1. Ensure an event and certificate exists in the database
+    const event = await db.event.findFirst({
+      where: { status: "PUBLISHED" },
+    });
+    expect(event).toBeTruthy();
+
+    const template = await db.certificateTemplate.findFirst();
+    expect(template).toBeTruthy();
+
+    const uniqueCertId = `KX-TEST-${Date.now().toString(36).toUpperCase()}`;
+    const testCert = await db.certificate.create({
+      data: {
+        uniqueId: uniqueCertId,
+        participantName: "Aryan Certificate Tester",
+        participantEmail: `cert-tester-${Date.now()}@example.com`,
+        event: { connect: { id: event!.id } },
+        template: { connect: { id: template!.id } },
+        certificateUrl: `/api/certificates/${uniqueCertId}/download`,
+        deliveryStatus: "SENT",
+      },
+    });
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    // 2. Visit public /verify page
+    await page.goto("/verify");
+    await expect(page.locator("h1")).toContainText(/Verify KailshiansX Credential/i);
+    await expect(page.locator("#input-verify-search")).toBeVisible();
+
+    // Search by certificate ID
+    await page.fill("#input-verify-search", uniqueCertId);
+    await page.click("#btn-verify-submit");
+
+    // Verify result card renders with cryptographic proof
+    await expect(page.locator("text=Cryptographically Verified")).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("h2:has-text('Aryan Certificate Tester')")).toBeVisible();
+    await expect(page.locator(`text=${uniqueCertId}`).first()).toBeVisible();
+    await expect(page.locator("#btn-download-verified-pdf")).toBeVisible();
+
+    // 3. Test direct URL param verification (/verify?id=...)
+    await page.goto(`/verify?id=${uniqueCertId}`);
+    await expect(page.locator("text=Cryptographically Verified")).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("h2:has-text('Aryan Certificate Tester')")).toBeVisible();
+
+    // 4. Admin Certificate Studio
+    const adminToken = await createAdminSessionToken();
+    await context.addCookies([
+      { name: "authjs.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "authjs.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+    ]);
+
+    await page.goto("/admin/certificates");
+    await expect(page.locator("text=Certificate Studio & Delivery")).toBeVisible({
+      timeout: 10000,
+    });
+    await expect(page.locator("#tab-certificate-studio")).toBeVisible();
+    await expect(page.locator("#tab-delivery-tracker")).toBeVisible();
+    await expect(page.locator("#select-cert-event")).toBeVisible();
+
+    // Switch to Delivery Tracker tab
+    await page.click("#tab-delivery-tracker");
+    await expect(page.getByText("Delivery Rate", { exact: true })).toBeVisible();
+    await expect(page.getByText("Total Issued", { exact: true })).toBeVisible();
+
+    // Clean up test certificate
+    await db.certificate.delete({ where: { id: testCert.id } }).catch(() => {});
     await context.close();
   });
 });

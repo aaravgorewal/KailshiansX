@@ -75,6 +75,11 @@ export const PRIMARY_NAV: NavItem[] = [
         href: "/state-leads",
         description: "Drive expansion across your state",
       },
+      {
+        label: "Verify Certificate",
+        href: "/verify",
+        description: "Cryptographically verify authentic credentials",
+      },
     ],
   },
   { label: "Collaborations", href: "/collaborations" },

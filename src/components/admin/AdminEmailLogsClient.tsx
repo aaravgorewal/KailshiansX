@@ -54,6 +54,7 @@ const TEMPLATE_LABELS: Record<EmailTemplate, { label: string; color: string }> =
   STATUS_CHANGE: { label: "Status Update", color: "#8b5cf6" },
   COLLABORATION_ACK: { label: "Collab Auto-Ack", color: "#38bdf8" },
   EVENT_REMINDER_24H: { label: "24h Event Countdown", color: "#f59e0b" },
+  CERTIFICATE_ISSUED: { label: "Certificate Issued", color: "#38bdf8" },
 };
 
 export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLogsClientProps) {
