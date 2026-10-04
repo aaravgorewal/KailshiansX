@@ -1,0 +1,92 @@
+name: CI / Quality & Security Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint, Typecheck, Test & Migrate Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: kailshiansx
+          POSTGRES_PASSWORD: kailshiansx_ci_password
+          POSTGRES_DB: kailshiansx_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kailshiansx -d kailshiansx_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: "postgresql://kailshiansx:kailshiansx_ci_password@localhost:5432/kailshiansx_ci"
+      AUTH_SECRET: "kx_ci_auth_secret_minimum_32_characters_2026"
+      AUTH_GOOGLE_ID: "ci_google_id"
+      AUTH_GOOGLE_SECRET: "ci_google_secret"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+      RESEND_API_KEY: "re_ci_dummy_key_2026"
+      RESEND_FROM_EMAIL: "notifications@kailshiansx.com"
+      RAZORPAY_KEY_ID: "rzp_test_dummy_key"
+      RAZORPAY_KEY_SECRET: "kws_test_rzp_secret_2026"
+      RAZORPAY_WEBHOOK_SECRET: "kws_rzp_webhook_secret_dev_2026"
+      S3_BUCKET_NAME: "kailshiansx-ci-bucket"
+      S3_REGION: "ap-south-1"
+      S3_ACCESS_KEY_ID: "ci_access_key"
+      S3_SECRET_ACCESS_KEY: "ci_secret_key"
+      UPSTASH_REDIS_REST_URL: "https://ci-dummy.upstash.io"
+      UPSTASH_REDIS_REST_TOKEN: "ci_dummy_token"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Verify Prisma Migrations Schema Check
+        run: |
+          echo "Applying migrations to CI Postgres service..."
+          npx prisma migrate deploy
+          echo "Checking migration status..."
+          npx prisma migrate status
+
+      - name: ESLint Check (Zero Warnings Enforced)
+        run: npx eslint . --max-warnings=0
+
+      - name: TypeScript Typecheck
+        run: npm run typecheck
+
+      - name: Seed Database for Integration Tests
+        run: npx tsx prisma/seed.ts
+
+      - name: Run Vitest Service Unit Tests
+        run: npx vitest run
+
+      - name: Run Node Service Integration Tests
+        run: npx tsx --test tests/*.test.ts
+
+      - name: Production Build Check
+        run: npm run build

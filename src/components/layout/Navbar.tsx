@@ -150,6 +150,8 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  if (!open) return null;
+
   return (
     <>
       {/* Backdrop */}

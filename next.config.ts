@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import "./src/lib/env";
 
 const cspHeader = `
@@ -7,7 +8,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https: https://www.google-analytics.com;
   font-src 'self' data:;
-  connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com https://*.resend.com https://*.upstash.io https://www.google-analytics.com https://analytics.google.com;
+  connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com https://*.resend.com https://*.upstash.io https://www.google-analytics.com https://analytics.google.com https://*.ingest.sentry.io https://*.sentry.io;
   frame-src 'self' https://api.razorpay.com;
   object-src 'none';
   base-uri 'self';
@@ -32,6 +33,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Allow 127.0.0.1 and localhost for dev/testing
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   // Strict mode for better dev-time error catching
   reactStrictMode: true,
   // Enable server actions with CSRF allowed origins
@@ -76,4 +79,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+});

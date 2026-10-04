@@ -248,8 +248,8 @@ describe("Centralized Email System with React Email & DB Queue", () => {
     });
 
     it("should process the queue and dispatch overdue pending jobs", async () => {
-      // Create a pending job scheduled for 10 minutes ago
-      const pastDate = new Date(Date.now() - 600000);
+      // Create a pending job scheduled with an oldest epoch timestamp so it guarantees precedence in sweep
+      const pastDate = new Date(0);
       const pendingJob = await db.emailLog.create({
         data: {
           template: EmailTemplate.APPLICATION_RECEIVED,
@@ -271,7 +271,7 @@ describe("Centralized Email System with React Email & DB Queue", () => {
       createdEmailLogIds.push(pendingJob.id);
 
       // Run worker sweep
-      const sweep = await processEmailQueue({ batchSize: 10 });
+      const sweep = await processEmailQueue({ batchSize: 50 });
       assert.ok(sweep.processed >= 1, "Processed at least 1 job");
 
       const refreshed = await db.emailLog.findUnique({ where: { id: pendingJob.id } });

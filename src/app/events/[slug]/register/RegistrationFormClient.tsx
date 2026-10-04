@@ -118,21 +118,17 @@ export function RegistrationFormClient({
     setServerError(null);
 
     if (step === 1) {
-      const valid = await trigger(["ticketTypeId"]);
-      if (valid) setStep(2);
+      if (selectedTierId) {
+        setStep(2);
+      } else {
+        const valid = await trigger(["ticketTypeId"]);
+        if (valid) setStep(2);
+      }
     } else if (step === 2) {
-      const valid = await trigger(["name", "email", "phone", "college", "city"]);
+      const valid = await trigger(["name", "email", "phone"]);
       if (valid) setStep(3);
     } else if (step === 3) {
-      const valid = await trigger([
-        "tshirtSize",
-        "dietaryPref",
-        "github",
-        "linkedin",
-        "teamName",
-        "projectIdea",
-      ]);
-      if (valid) setStep(4);
+      setStep(4);
     }
   };
 
@@ -311,7 +307,8 @@ export function RegistrationFormClient({
         )}
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Honeypot hidden input */}
+          {/* Hidden registered inputs */}
+          <input type="hidden" {...register("ticketTypeId")} />
           <input
             type="text"
             tabIndex={-1}
@@ -336,13 +333,19 @@ export function RegistrationFormClient({
               <div className="space-y-3">
                 {ticketTypes.map((tier) => {
                   const isSelected = selectedTierId === tier.id;
-                  const isSoldOut = tier.soldCount >= tier.quota;
+                  const isSoldOut = tier.quota > 0 && tier.soldCount >= tier.quota;
                   const isFree = tier.price === 0;
 
                   return (
                     <div
                       key={tier.id}
-                      onClick={() => !isSoldOut && setValue("ticketTypeId", tier.id)}
+                      onClick={() =>
+                        !isSoldOut &&
+                        setValue("ticketTypeId", tier.id, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
                       className={cn(
                         "flex cursor-pointer flex-col justify-between gap-4 rounded-2xl border p-5 transition-all select-none sm:flex-row sm:items-center sm:p-6",
                         isSelected
