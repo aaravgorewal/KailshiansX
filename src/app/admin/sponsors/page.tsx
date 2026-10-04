@@ -1,36 +1,63 @@
 // src/app/admin/sponsors/page.tsx
-// Server component fetching partners / sponsors for AdminSponsorsClient.
+// Sponsor CRM and Partnerships Control Room (PRD §22 & §23)
+// Deals pipeline, deliverables tracker, billing & invoices linked directly to events.
 
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/server/auth/require-role";
-import { AdminSponsorsClient, type SponsorListItem } from "@/components/admin/AdminSponsorsClient";
+import {
+  getSponsorsWithStats,
+  getSponsorDeals,
+  getDeliverables,
+  getInvoices,
+} from "@/server/sponsors/service";
+import {
+  AdminSponsorCRMClient,
+  type DealItem,
+  type DeliverableItem,
+  type InvoiceItem,
+} from "@/components/admin/sponsors/AdminSponsorCRMClient";
 
 export const metadata: Metadata = {
-  title: "Sponsors & Partners Manager | KailshiansX Admin",
+  title: "Sponsor CRM & Pipeline | KailshiansX Admin",
+  description:
+    "Enterprise sponsorship deal tracking, deliverables checklist, and invoicing linked to events.",
 };
 
 export default async function AdminSponsorsPage() {
   await requireAdmin();
 
-  const partners = await db.partner.findMany({
-    orderBy: { name: "asc" },
-    include: {
-      _count: {
-        select: { eventPartners: true },
+  const [sponsors, deals, deliverables, invoices, rawEvents] = await Promise.all([
+    getSponsorsWithStats(),
+    getSponsorDeals(),
+    getDeliverables(),
+    getInvoices(),
+    db.event.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: { startDate: "desc" },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        startDate: true,
       },
-    },
-  });
+    }),
+  ]);
 
-  const formatted: SponsorListItem[] = partners.map((p) => ({
-    id: p.id,
-    name: p.name,
-    slug: p.slug,
-    logo: p.logo,
-    website: p.website,
-    category: p.category,
-    eventsCount: p._count.eventPartners,
+  const formattedEvents = rawEvents.map((e) => ({
+    id: e.id,
+    title: e.title,
+    slug: e.slug,
+    startDate: e.startDate.toISOString(),
   }));
 
-  return <AdminSponsorsClient initialSponsors={formatted} />;
+  return (
+    <AdminSponsorCRMClient
+      initialSponsors={sponsors}
+      initialDeals={deals as unknown as DealItem[]}
+      initialDeliverables={deliverables as unknown as DeliverableItem[]}
+      initialInvoices={invoices as unknown as InvoiceItem[]}
+      events={formattedEvents}
+    />
+  );
 }

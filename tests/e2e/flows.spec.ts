@@ -384,4 +384,71 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await db.certificate.delete({ where: { id: testCert.id } }).catch(() => {});
     await context.close();
   });
+
+  test("Flow 8: Sponsor CRM (Deals, Deliverables, Invoices) & Event P&L per PRD §23", async ({
+    browser,
+  }) => {
+    const adminToken = await createAdminSessionToken();
+    const context = await browser.newContext();
+    await context.addCookies([
+      { name: "authjs.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "authjs.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+    ]);
+
+    const page = await context.newPage();
+
+    // 1. Visit /admin/sponsors
+    await page.goto("/admin/sponsors");
+    await expect(page.locator("h1")).toContainText(/Sponsor CRM/i);
+    await expect(page.locator("text=Total Pipeline")).toBeVisible({ timeout: 10000 });
+
+    // Verify all 4 tabs exist
+    await expect(page.locator("#tab-deals-pipeline")).toBeVisible();
+    await expect(page.locator("#tab-sponsors-directory")).toBeVisible();
+    await expect(page.locator("#tab-deliverables")).toBeVisible();
+    await expect(page.locator("#tab-invoices")).toBeVisible();
+
+    // Switch between CRM tabs
+    await page.click("#tab-sponsors-directory");
+    await expect(page.locator("text=Corporate & Ecosystem Partners Catalog")).toBeVisible();
+
+    await page.click("#tab-deliverables");
+    await expect(
+      page.locator("text=Sponsor Perks & Contract Deliverables Checklist")
+    ).toBeVisible();
+
+    await page.click("#tab-invoices");
+    await expect(page.locator("text=Sponsor Invoices & Financial Settlement")).toBeVisible();
+
+    // 2. Visit /admin/pnl
+    await page.goto("/admin/pnl");
+    await expect(page.locator("h1")).toContainText(/Revenue & Event P&L Control Room/i);
+    await expect(page.locator("text=PRD §23 · Event Profit & Loss Intelligence")).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Verify 4 primary KPI cards
+    await expect(page.locator("text=Total Revenue")).toBeVisible();
+    await expect(page.locator("text=Total Expenses")).toBeVisible();
+    await expect(page.locator("text=/Net (Profit|Loss)/i")).toBeVisible();
+    await expect(page.locator("text=Profit Margin")).toBeVisible();
+
+    // Verify export buttons exist
+    await expect(page.locator("#btn-export-pnl-csv")).toBeVisible();
+    await expect(page.locator("#btn-export-pnl-pdf")).toBeVisible();
+
+    // Test Series Rollup mode
+    await page.click("#mode-series-pnl");
+    await expect(page.locator("#select-pnl-series")).toBeVisible();
+    await expect(page.locator("text=Series Profit Margin")).toBeVisible({ timeout: 10000 });
+
+    // Switch back to Event mode
+    await page.click("#mode-event-pnl");
+    await expect(page.locator("#select-pnl-event")).toBeVisible();
+    await expect(page.locator("#btn-sync-tickets")).toBeVisible();
+
+    await context.close();
+  });
 });

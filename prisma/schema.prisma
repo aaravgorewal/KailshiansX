@@ -51,11 +51,38 @@ enum SpeakerRole {
 
 enum PartnerTier {
   TITLE
+  PLATINUM
   GOLD
   SILVER
   BRONZE
   COMMUNITY
   MEDIA
+}
+
+enum SponsorDealStage {
+  PROSPECT
+  INITIAL_CONTACT
+  PITCHING
+  PROPOSAL_SENT
+  NEGOTIATION
+  CONTRACT_SIGNED
+  WON
+  LOST
+}
+
+enum DeliverableStatus {
+  PENDING
+  IN_PROGRESS
+  FULFILLED
+  WAIVED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
 }
 
 enum RegistrationStatus {
@@ -334,16 +361,21 @@ model Speaker {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 model Partner {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  logo      String?
-  website   String?
-  category  String? // brand, college, community, media, venue
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  logo          String?
+  website       String?
+  category      String? // brand, college, community, media, venue
+  contactPerson String?
+  contactEmail  String?
+  contactPhone  String?
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   eventPartners EventPartner[]
+  deals         SponsorDeal[]
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -426,13 +458,16 @@ model Event {
   partners         EventPartner[]
   ticketTypes      TicketType[]
   registrations    Registration[]
-  galleryAlbums    GalleryAlbum[]
-  faqs             EventFaq[]
-  revenueItems     EventRevenueItem[]
-  expenseItems     EventExpenseItem[]
-  certificates     Certificate[]
-  techTalkResource TechTalkResource?
-  hackathonDetail  HackathonDetail?
+  galleryAlbums       GalleryAlbum[]
+  faqs                EventFaq[]
+  revenueItems        EventRevenueItem[]
+  expenseItems        EventExpenseItem[]
+  sponsorDeals        SponsorDeal[]
+  sponsorDeliverables SponsorDeliverable[]
+  sponsorInvoices     SponsorInvoice[]
+  certificates        Certificate[]
+  techTalkResource    TechTalkResource?
+  hackathonDetail     HackathonDetail?
 
   @@index([status])
   @@index([type])
@@ -945,23 +980,106 @@ model Certificate {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// SPONSOR CRM (PRD §22 & §23)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model SponsorDeal {
+  id              String           @id @default(cuid())
+  title           String
+  sponsorId       String
+  eventId         String?
+  tier            PartnerTier      @default(COMMUNITY)
+  stage           SponsorDealStage @default(PROSPECT)
+  amount          Decimal          @db.Decimal(10, 2)
+  currency        String           @default("INR")
+  confidence      Int              @default(50) // 0-100%
+  ownerName       String?
+  notes           String?          @db.Text
+  expectedCloseAt DateTime?
+  closedAt        DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  sponsor      Partner              @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
+  event        Event?               @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  deliverables SponsorDeliverable[]
+  invoices     SponsorInvoice[]
+
+  @@index([sponsorId])
+  @@index([eventId])
+  @@index([stage])
+}
+
+model SponsorDeliverable {
+  id          String            @id @default(cuid())
+  dealId      String
+  eventId     String?
+  title       String
+  description String?
+  status      DeliverableStatus @default(PENDING)
+  dueDate     DateTime?
+  fulfilledAt DateTime?
+  proofUrl    String?
+  assignee    String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  deal  SponsorDeal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  event Event?       @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([dealId])
+  @@index([eventId])
+  @@index([status])
+}
+
+model SponsorInvoice {
+  id             String        @id @default(cuid())
+  invoiceNumber  String        @unique // e.g. KX-INV-2026-0001
+  dealId         String
+  eventId        String?
+  amount         Decimal       @db.Decimal(10, 2)
+  taxAmount      Decimal       @default(0) @db.Decimal(10, 2)
+  totalAmount    Decimal       @db.Decimal(10, 2)
+  status         InvoiceStatus @default(DRAFT)
+  issueDate      DateTime      @default(now())
+  dueDate        DateTime?
+  paidAt         DateTime?
+  paymentMethod  String?
+  transactionRef String?
+  notes          String?       @db.Text
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  deal  SponsorDeal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  event Event?       @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([dealId])
+  @@index([eventId])
+  @@index([status])
+  @@index([invoiceNumber])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // REVENUE & EXPENSES (PRD §23)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 model EventRevenueItem {
-  id          String          @id @default(cuid())
-  eventId     String
-  category    RevenueCategory
-  description String?
-  amount      Decimal         @db.Decimal(10, 2)
-  receivedAt  DateTime?
-  notes       String?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id           String          @id @default(cuid())
+  eventId      String
+  category     RevenueCategory
+  description  String?
+  amount       Decimal         @db.Decimal(10, 2)
+  receivedAt   DateTime?
+  source       String?         // e.g. "Auto-synced Tickets", "Invoice KX-INV-001", "Direct Sponsor"
+  isAutoSynced Boolean         @default(false)
+  notes        String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@index([eventId])
+  @@index([category])
 }
 
 model EventExpenseItem {
@@ -971,7 +1089,9 @@ model EventExpenseItem {
   description String?
   amount      Decimal         @db.Decimal(10, 2)
   paidAt      DateTime?
+  payee       String?         // Vendor or recipient name
   receiptUrl  String?
+  referenceNo String?         // Bill / receipt invoice reference
   notes       String?
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
@@ -979,6 +1099,7 @@ model EventExpenseItem {
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@index([eventId])
+  @@index([category])
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

@@ -29,6 +29,7 @@ import {
   QrCode,
   ShieldCheck,
   Mail,
+  DollarSign,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -66,6 +67,13 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Tech Talks", href: "/admin/tech-talks", icon: Mic },
       { label: "Meetup Series", href: "/admin/meetup-series", icon: Layers },
       { label: "Hackathon Series", href: "/admin/hackathon-series", icon: Trophy },
+      {
+        label: "Event P&L",
+        href: "/admin/pnl",
+        icon: DollarSign,
+        badge: "PRD §23",
+        badgeVariant: "success",
+      },
     ],
   },
   {
@@ -76,7 +84,13 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "State Leads", href: "/admin/state-leads", icon: MapPin },
       { label: "Team Applications", href: "/admin/team-applications", icon: Briefcase },
       { label: "Collaborations", href: "/admin/collaborations", icon: Handshake },
-      { label: "Sponsors & Partners", href: "/admin/sponsors", icon: Building2 },
+      {
+        label: "Sponsor CRM",
+        href: "/admin/sponsors",
+        icon: Building2,
+        badge: "CRM",
+        badgeVariant: "brand",
+      },
     ],
   },
   {
