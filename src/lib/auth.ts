@@ -64,7 +64,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   events: {
-    // Write audit log on sign-in
+    // Write audit log and auto-link past records on sign-in
     async signIn({ user }) {
       if (user?.id) {
         await db.auditLog.create({
@@ -75,6 +75,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             entityId: user.id,
           },
         });
+
+        // Auto-link past registrations and certificates matching verified email
+        if (user.email) {
+          try {
+            const { autoLinkUserRecords } = await import("@/server/users/autolink");
+            await autoLinkUserRecords(user.id, user.email);
+          } catch (err) {
+            console.error("Failed to auto-link user records on sign in:", err);
+          }
+        }
       }
     },
     async signOut(message) {

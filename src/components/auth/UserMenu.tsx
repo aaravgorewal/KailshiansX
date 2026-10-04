@@ -7,7 +7,7 @@ import { signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { LogOut, User, Settings, ChevronDown } from "lucide-react";
+import { LogOut, Settings, ChevronDown, Sparkles, Ticket } from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
 interface Props {
@@ -106,12 +106,22 @@ export function UserMenu({ user }: Props) {
           {/* Links */}
           <div className="py-1">
             <Link
-              href="/account"
+              href="/me"
+              id="link-user-me"
+              onClick={() => setOpen(false)}
+              className="text-surface-200 hover:bg-surface-800 flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors hover:text-white"
+            >
+              <Sparkles size={16} className="text-brand-400" />
+              <span>Developer Passport (/me)</span>
+            </Link>
+
+            <Link
+              href="/me?tab=tickets"
               onClick={() => setOpen(false)}
               className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
             >
-              <User size={15} />
-              My Account
+              <Ticket size={15} />
+              <span>My Tickets & Events</span>
             </Link>
 
             {isAdmin && (

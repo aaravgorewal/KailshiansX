@@ -134,7 +134,15 @@ function NavLink({ item }: { item: NavItem }) {
 
 // ─── Mobile Drawer ────────────────────────────────────────────────────────────
 
-function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+function MobileDrawer({
+  open,
+  onClose,
+  user,
+}: {
+  open: boolean;
+  onClose: () => void;
+  user?: NavbarUser;
+}) {
   const pathname = usePathname();
 
   React.useEffect(() => {
@@ -210,17 +218,29 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
 
         {/* Footer CTA */}
         <div className="border-surface-700 space-y-2 border-t px-5 py-4">
+          {user ? (
+            <Link
+              href="/me"
+              onClick={onClose}
+              className="bg-brand-500 hover:bg-brand-600 block w-full rounded-lg py-2.5 text-center text-sm font-semibold text-white transition-colors"
+            >
+              Developer Passport (/me)
+            </Link>
+          ) : (
+            <Link
+              href="/signin"
+              onClick={onClose}
+              className="bg-brand-500 hover:bg-brand-600 block w-full rounded-lg py-2.5 text-center text-sm font-semibold text-white transition-colors"
+            >
+              Sign In
+            </Link>
+          )}
           <Link
             href="/events"
-            className="bg-brand-500 hover:bg-brand-600 block w-full rounded-lg py-2.5 text-center text-sm font-semibold text-white transition-colors"
-          >
-            Explore Events
-          </Link>
-          <Link
-            href="/join-team"
+            onClick={onClose}
             className="border-surface-600 hover:bg-surface-800 text-surface-200 block w-full rounded-lg border py-2.5 text-center text-sm font-medium transition-colors"
           >
-            Join Team
+            Explore Events
           </Link>
         </div>
       </div>
@@ -305,7 +325,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
         </div>
       </header>
 
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} user={user} />
     </>
   );
 }

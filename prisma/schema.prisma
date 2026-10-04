@@ -241,10 +241,22 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  // Developer Passport & Profile
+  username         String?   @unique
+  headline         String?
+  bio              String?   @db.Text
+  github           String?
+  linkedin         String?
+  twitter          String?
+  website          String?
+  skills           String[]  @default([])
+  isPassportPublic Boolean   @default(true)
+
   accounts               Account[]
   sessions               Session[]
   registrations          Registration[]
   payments               Payment[]
+  certificates           Certificate[]
   teamApplications       TeamApplication[]
   campusLeadApplications CampusLeadApplication[]
   stateLeadApplications  StateLeadApplication[]
@@ -254,6 +266,7 @@ model User {
 
   @@index([email])
   @@index([role])
+  @@index([username])
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -912,6 +925,7 @@ model Certificate {
   templateId     String
   participantName String
   participantEmail String
+  userId         String?
   issuedAt       DateTime @default(now())
   certificateUrl String?  // generated S3 URL
   emailSentAt    DateTime?
@@ -919,9 +933,11 @@ model Certificate {
   event        Event               @relation(fields: [eventId], references: [id])
   registration Registration?       @relation(fields: [registrationId], references: [id])
   template     CertificateTemplate @relation(fields: [templateId], references: [id])
+  user         User?               @relation(fields: [userId], references: [id])
 
   @@index([eventId])
   @@index([participantEmail])
+  @@index([userId])
   @@index([uniqueId])
 }
 

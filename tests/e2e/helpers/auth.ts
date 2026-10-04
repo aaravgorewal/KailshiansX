@@ -31,3 +31,36 @@ export async function createAdminSessionToken(): Promise<string> {
 
   return sessionToken;
 }
+
+export async function createUserSessionToken(options?: {
+  email?: string;
+  name?: string;
+  role?: "SUPER_ADMIN" | "ADMIN" | "EVENT_MANAGER" | "MEMBER";
+}): Promise<{ sessionToken: string; email: string; name: string }> {
+  const email = options?.email || `user-${Date.now()}@example.com`;
+  const name = options?.name || "Dev Builder";
+  const role = options?.role || "MEMBER";
+
+  const user = await db.user.upsert({
+    where: { email },
+    update: { role },
+    create: {
+      email,
+      name,
+      role,
+    },
+  });
+
+  const sessionToken = `e2e_user_session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  await db.session.create({
+    data: {
+      sessionToken,
+      userId: user.id,
+      expires,
+    },
+  });
+
+  return { sessionToken, email, name };
+}

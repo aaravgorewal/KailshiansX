@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import crypto from "crypto";
 import { db } from "@/lib/db";
-import { createAdminSessionToken } from "./helpers/auth";
+import { createAdminSessionToken, createUserSessionToken } from "./helpers/auth";
 
 const RAZORPAY_SECRET = process.env.RAZORPAY_KEY_SECRET || "kws_test_rzp_secret_2026";
 
@@ -236,5 +236,75 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
       timeout: 10000,
     });
     await expect(page.locator("text=Application Reference:")).toBeVisible();
+  });
+
+  test("Flow 6: Member profile (/me) and public Developer Passport (/passport/[username])", async ({
+    browser,
+  }) => {
+    // Authenticate as a community member
+    const userSession = await createUserSessionToken({
+      email: `passport-member-${Date.now()}@example.com`,
+      name: "Dev Builder",
+      role: "MEMBER",
+    });
+
+    const context = await browser.newContext();
+    await context.addCookies([
+      {
+        name: "authjs.session-token",
+        value: userSession.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: userSession.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "authjs.session-token",
+        value: userSession.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: userSession.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+
+    const page = await context.newPage();
+
+    // 1. Visit /me member dashboard
+    await page.goto("/me");
+    await expect(page).toHaveURL(/\/me/);
+
+    // Verify passport header elements
+    await expect(page.locator("text=Pass ID")).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("text=Community Progression Ladder")).toBeVisible();
+    await expect(page.locator("text=Milestone Achievement Badges")).toBeVisible();
+
+    // 2. Check tab switching
+    const ticketsTab = page.locator("#tab-tickets");
+    await ticketsTab.click();
+    await expect(page.locator("text=My Event Tickets & Access Passes")).toBeVisible();
+
+    // 3. Visit public passport view
+    const publicBtn = page.locator("#view-public-passport");
+    await expect(publicBtn).toBeVisible();
+    const passportHref = await publicBtn.getAttribute("href");
+    expect(passportHref).toBeTruthy();
+
+    await page.goto(passportHref!);
+    await expect(page.locator("text=Verified Developer Credential")).toBeVisible({
+      timeout: 10000,
+    });
+    await expect(page.locator("text=Community Progression Ladder")).toBeVisible();
+    await expect(page.locator("text=Milestone Achievement Badges")).toBeVisible();
+
+    await context.close();
   });
 });
