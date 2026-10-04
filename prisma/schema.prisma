@@ -21,8 +21,62 @@ enum UserRole {
   VIEWER
   CAMPUS_LEAD
   STATE_LEAD
+  CHAPTER_LEAD
+  PARTNER
   JUDGE
   MEMBER
+}
+
+enum ChapterType {
+  CAMPUS
+  REGIONAL_CITY
+}
+
+enum ChapterStatus {
+  ACTIVE
+  PENDING_REVIEW
+  PAUSED
+  ARCHIVED
+}
+
+enum ChapterMemberRole {
+  LEAD
+  CO_LEAD
+  CORE_TEAM
+  MEMBER
+}
+
+enum ChapterMemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ChapterHealthStatus {
+  EXCELLENT
+  HEALTHY
+  NEEDS_ATTENTION
+  CRITICAL
+}
+
+enum ChapterEventStatus {
+  UPCOMING
+  COMPLETED
+  CANCELLED
+}
+
+enum SpeakerAvailabilityStatus {
+  AVAILABLE
+  LIMITED
+  BUSY
+  UNAVAILABLE
+}
+
+enum BookingRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  COMPLETED
+  CANCELLED
 }
 
 enum EventType {
@@ -296,6 +350,12 @@ model User {
   hackathonTeamMemberships HackathonTeamMember[]
   hackathonJudgeProfiles   HackathonJudge[]
 
+  // Chapters & Mentorship
+  chaptersLed              Chapter[]               @relation("ChapterLeader")
+  chapterMemberships       ChapterMember[]
+  speakerProfiles          Speaker[]
+  bookingRequestsSent      SpeakerBookingRequest[] @relation("BookingRequester")
+
   @@index([email])
   @@index([role])
   @@index([username])
@@ -317,6 +377,7 @@ model City {
   stateLeads     StateLead[]
   colleges       College[]
   collaborations CollaborationLead[]
+  chapters       Chapter[]
 
   @@index([state])
 }
@@ -352,13 +413,31 @@ model Speaker {
   twitter      String?
   github       String?
   website      String?
+
+  userId                  String?
+  user                    User?                      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  isMentor                Boolean                    @default(true)
+  isSpeaker               Boolean                    @default(true)
+  topics                  String[]                   @default([])
+  sessionTypes            String[]                   @default([])
+  availabilityStatus      SpeakerAvailabilityStatus  @default(AVAILABLE)
+  weeklyAvailabilityHours Int                        @default(5)
+  preferredCadence        String?
+  meetingPlatform         String?                    @default("Google Meet")
+  calendlyUrl             String?
+  totalSessionsConducted  Int                        @default(0)
+  rating                  Float                      @default(5.0)
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   eventSpeakers    EventSpeaker[]
   techTalkResources TechTalkResource[]
+  bookingRequests  SpeakerBookingRequest[]
 
   @@index([name])
+  @@index([userId])
+  @@index([availabilityStatus])
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -376,11 +455,20 @@ model Partner {
   contactEmail  String?
   contactPhone  String?
   notes         String?  @db.Text
+
+  // Partner Portal
+  portalAccessCode     String?
+  portalContactEmail   String?
+  portalLastAccessedAt DateTime?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   eventPartners EventPartner[]
   deals         SponsorDeal[]
+  eventReports  SponsorEventReport[]
+
+  @@index([portalAccessCode])
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -476,6 +564,8 @@ model Event {
   leadActivities      LeadActivity[]
   techTalkResource    TechTalkResource?
   hackathonDetail     HackathonDetail?
+  chapterEvents       ChapterEvent[]
+  sponsorEventReports SponsorEventReport[]
 
   @@index([status])
   @@index([type])
@@ -1364,6 +1454,7 @@ model SponsorDeal {
   event        Event?               @relation(fields: [eventId], references: [id], onDelete: SetNull)
   deliverables SponsorDeliverable[]
   invoices     SponsorInvoice[]
+  eventReports SponsorEventReport[]
 
   @@index([sponsorId])
   @@index([eventId])
@@ -1567,5 +1658,173 @@ model EmailLog {
   @@index([recipient])
   @@index([template])
   @@index([createdAt])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CHAPTERS & REGIONAL HUBS (PRD §10, §28)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model Chapter {
+  id              String              @id @default(cuid())
+  name            String
+  slug            String              @unique
+  type            ChapterType         @default(CAMPUS)
+  description     String?             @db.Text
+  institution     String?             // e.g. "IIT Delhi", "MNIT Jaipur"
+  cityId          String?
+  state           String?
+  leadId          String?
+  status          ChapterStatus       @default(ACTIVE)
+  bannerImage     String?
+  logo            String?
+  meetingCadence  String?             // e.g. "Bi-weekly Saturdays 5 PM"
+  location        String?             // e.g. "Auditorium 3 / Lab 402"
+  socialLinks     Json?               // { discord?: string, whatsapp?: string, github?: string, linkedin?: string }
+  healthScore     Int                 @default(85) // 0-100 composite index
+  healthStatus    ChapterHealthStatus @default(HEALTHY)
+  foundedAt       DateTime            @default(now())
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  city            City?                  @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  lead            User?                  @relation("ChapterLeader", fields: [leadId], references: [id], onDelete: SetNull)
+  members         ChapterMember[]
+  events          ChapterEvent[]
+  healthMetrics   ChapterHealthMetric[]
+  bookingRequests SpeakerBookingRequest[]
+
+  @@index([slug])
+  @@index([type])
+  @@index([status])
+  @@index([cityId])
+  @@index([leadId])
+}
+
+model ChapterMember {
+  id        String              @id @default(cuid())
+  chapterId String
+  userId    String
+  role      ChapterMemberRole   @default(MEMBER)
+  status    ChapterMemberStatus @default(ACTIVE)
+  joinedAt  DateTime            @default(now())
+
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chapterId, userId])
+  @@index([chapterId])
+  @@index([userId])
+  @@index([role])
+}
+
+model ChapterEvent {
+  id              String             @id @default(cuid())
+  chapterId       String
+  eventId         String?
+  title           String
+  description     String?            @db.Text
+  date            DateTime
+  venue           String?
+  attendanceCount Int                @default(0)
+  rsvpsCount      Int                @default(0)
+  status          ChapterEventStatus @default(UPCOMING)
+  recapNotes      String?            @db.Text
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([chapterId])
+  @@index([eventId])
+  @@index([status])
+}
+
+model ChapterHealthMetric {
+  id               String   @id @default(cuid())
+  chapterId        String
+  recordedAt       DateTime @default(now())
+  activeMembers    Int
+  monthlyGrowth    Float    @default(0.0)
+  eventsCount      Int      @default(0)
+  avgAttendance    Float    @default(0.0)
+  cadenceAdherence Int      @default(100) // %
+  healthScore      Int      @default(85) // 0-100
+  notes            String?
+
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([chapterId])
+  @@index([recordedAt])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MENTOR / SPEAKER BOOKINGS (PRD §28, §30)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model SpeakerBookingRequest {
+  id              String               @id @default(cuid())
+  speakerId       String
+  requesterId     String
+  chapterId       String?
+  title           String
+  topic           String
+  sessionType     String               // "1:1 Mentorship", "Keynote Talk", "Hands-on Workshop", "Hackathon Judging"
+  description     String               @db.Text
+  preferredDate   DateTime
+  durationMinutes Int                  @default(45)
+  format          AttendanceMode       @default(VIRTUAL)
+  meetingUrl      String?
+  status          BookingRequestStatus @default(PENDING)
+  declinedReason  String?
+  mentorNotes     String?              @db.Text
+  rating          Int?                 // 1-5
+  feedback        String?              @db.Text
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  speaker   Speaker  @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+  requester User     @relation("BookingRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+
+  @@index([speakerId])
+  @@index([requesterId])
+  @@index([chapterId])
+  @@index([status])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PARTNER EVENT REPORTS (PRD §28)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model SponsorEventReport {
+  id                 String   @id @default(cuid())
+  dealId             String
+  partnerId          String
+  eventId            String
+  title              String
+  executiveSummary   String   @db.Text
+  totalImpressions   Int      @default(0)
+  totalAttendees     Int      @default(0)
+  boothFootfall      Int?     @default(0)
+  trackParticipants  Int?     @default(0)
+  clickThroughRate   Float?   @default(0.0)
+  leadCapturesCount  Int?     @default(0)
+  mediaGalleryUrls   String[] @default([])
+  recapDeckUrl       String?
+  npsScore           Float?   @default(9.0)
+  isPublished        Boolean  @default(true)
+  publishedAt        DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  deal    SponsorDeal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  partner Partner     @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  event   Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([dealId])
+  @@index([partnerId])
+  @@index([eventId])
+  @@index([isPublished])
 }
 

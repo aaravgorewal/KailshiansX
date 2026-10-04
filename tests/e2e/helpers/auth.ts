@@ -42,6 +42,8 @@ export async function createUserSessionToken(options?: {
     | "MEMBER"
     | "CAMPUS_LEAD"
     | "STATE_LEAD"
+    | "CHAPTER_LEAD"
+    | "PARTNER"
     | "VIEWER"
     | "JUDGE";
 }): Promise<{ sessionToken: string; email: string; name: string; userId: string }> {

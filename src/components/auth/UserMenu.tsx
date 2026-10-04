@@ -26,6 +26,8 @@ const ROLE_BADGE: Record<UserRole, { label: string; className: string }> = {
   EVENT_MANAGER: { label: "Event Manager", className: "bg-yellow-500/20 text-yellow-400" },
   CAMPUS_LEAD: { label: "Campus Lead", className: "bg-green-500/20 text-green-400" },
   STATE_LEAD: { label: "State Lead", className: "bg-teal-500/20 text-teal-400" },
+  CHAPTER_LEAD: { label: "Chapter Lead", className: "bg-emerald-500/20 text-emerald-400" },
+  PARTNER: { label: "Partner", className: "bg-blue-500/20 text-blue-400" },
   MEMBER: { label: "Member", className: "bg-brand-500/20 text-brand-400" },
   VIEWER: { label: "Viewer", className: "bg-surface-700 text-surface-400" },
 };
@@ -123,6 +125,26 @@ export function UserMenu({ user }: Props) {
             >
               <Ticket size={15} />
               <span>My Tickets & Events</span>
+            </Link>
+
+            <Link
+              href="/me/bookings"
+              id="link-user-bookings"
+              onClick={() => setOpen(false)}
+              className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
+            >
+              <Ticket size={15} className="text-brand-400" />
+              <span>Mentor Bookings</span>
+            </Link>
+
+            <Link
+              href="/me/mentor"
+              id="link-user-mentor"
+              onClick={() => setOpen(false)}
+              className="text-surface-300 hover:bg-surface-800 hover:text-surface-50 flex items-center gap-3 px-4 py-2 text-sm transition-colors"
+            >
+              <Sparkles size={15} className="text-emerald-400" />
+              <span>Mentor Cockpit</span>
             </Link>
 
             {isAdmin && (

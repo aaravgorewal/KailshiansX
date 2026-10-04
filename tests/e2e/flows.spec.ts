@@ -910,4 +910,122 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await judgeContext.close();
     await adminContext.close();
   });
+
+  test("Flow 11: Campus Chapters Cockpit, Mentor Network Booking & Partner Portal Telemetry", async ({
+    browser,
+    baseURL,
+  }) => {
+    const adminToken = await createAdminSessionToken();
+    await createUserSessionToken({
+      email: `builder-e2e-${Date.now()}@example.com`,
+      name: "E2E Student Builder",
+      role: "MEMBER",
+    });
+
+    const context = await browser.newContext({
+      baseURL,
+      extraHTTPHeaders: {
+        cookie: `authjs.session-token=${adminToken}; next-auth.session-token=${adminToken}`,
+      },
+    });
+    const page = await context.newPage();
+
+    // 1. Campus Chapters Directory
+    await page.goto("/chapters");
+    await expect(page).toHaveTitle(/Collegiate & Regional Chapters|KailshiansX/i);
+    await expect(page.locator("h1")).toContainText(/Collegiate & Regional/i);
+
+    // Verify Chapter Card exists (e.g. IIT Delhi)
+    const chapterCard = page.locator('a[href^="/chapters/"]').first();
+    await expect(chapterCard).toBeVisible({ timeout: 10000 });
+
+    // 2. Chapter Public Page
+    await page.goto("/chapters/iit-delhi");
+    await expect(page.locator("h1")).toContainText(/IIT Delhi/i);
+    const cockpitBtn = page.locator('a[href*="/dashboard"]').first();
+    await expect(cockpitBtn).toBeVisible();
+
+    // 3. Chapter Dashboard Cockpit
+    await page.goto("/chapters/iit-delhi/dashboard");
+    await expect(page.locator("h1")).toContainText(/Chapter Cockpit/i);
+
+    // Verify 4 Cockpit Tabs
+    await expect(page.locator("#tab-overview")).toBeVisible();
+    await expect(page.locator("#tab-roster")).toBeVisible();
+    await expect(page.locator("#tab-events")).toBeVisible();
+    await expect(page.locator("#tab-settings")).toBeVisible();
+
+    // Check Diagnostics & Health Score
+    await expect(page.locator("text=Composite Health Score").first()).toBeVisible();
+
+    // Tab switching
+    await page.click("#tab-roster");
+    await expect(page.locator("text=Active Roster").first()).toBeVisible();
+
+    await page.click("#tab-events");
+    await expect(page.locator("text=Meetups & Hackathons").first()).toBeVisible();
+
+    // 4. Mentor / Speaker Network Discovery
+    await page.goto("/network/speakers");
+    await expect(page.locator("h1")).toContainText(/Mentor & Speaker Network/i);
+
+    const speakerCard = page.locator('a[href^="/network/speakers/"]').first();
+    await expect(speakerCard).toBeVisible({ timeout: 10000 });
+
+    // 5. Speaker Profile & Booking Request Modal
+    await page.goto("/network/speakers/ananya-sharma");
+    await expect(page.locator("h1")).toContainText(/Ananya Sharma/i);
+
+    const bookBtn = page.locator("#btn-open-booking-modal");
+    await expect(bookBtn).toBeVisible();
+    await bookBtn.click();
+
+    // Booking Modal
+    const modalHeading = page.locator("#booking-modal-title");
+    await expect(modalHeading).toBeVisible();
+
+    await page.fill("#booking-topic", "Agentic Workflows in Production");
+    await page.fill("#booking-description", "Seeking guidance on multi-agent consensus protocols.");
+    const dateInput = page.locator("#booking-date");
+    await dateInput.fill("2026-11-15T16:00");
+
+    const submitBookingBtn = page.locator("#btn-submit-booking");
+    await expect(submitBookingBtn).toBeVisible();
+    await submitBookingBtn.click();
+
+    // 6. User Bookings Hub
+    await page.goto("/me/bookings");
+    await expect(page.locator("h1")).toContainText(/Mentorship Sessions/i);
+    await expect(page.locator("text=Agentic Workflows in Production").first()).toBeVisible({
+      timeout: 10000,
+    });
+
+    // 7. Mentor Cockpit
+    await page.goto("/me/mentor");
+    await expect(page.locator("h1")).toContainText(/Mentor Cockpit/i);
+    await expect(page.locator("text=Availability & Hours").first()).toBeVisible();
+
+    // 8. Partner Portal Gateway
+    await page.goto("/partners/portal");
+    await expect(page.locator("h1")).toContainText(/Partner Portal/i);
+
+    const accessInput = page.locator("#partner-access-code-input");
+    await expect(accessInput).toBeVisible();
+
+    // Find demo partner code or use DEVREL26
+    const demoPartner = await db.partner.findFirst({
+      where: { portalAccessCode: { not: null } },
+    });
+    const testCode = demoPartner?.portalAccessCode || "DEVREL26";
+
+    await accessInput.fill(testCode);
+    await page.click("#btn-access-portal");
+
+    // Verify Partner Portal Dashboard
+    await page.waitForURL(new RegExp(`/partners/portal/${testCode}`), { timeout: 15000 });
+    await expect(page.locator("text=Sponsor Deliverables").first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("text=Audience Reach Telemetry").first()).toBeVisible();
+
+    await context.close();
+  });
 });

@@ -23,6 +23,17 @@ export const ALL_NAV_ITEMS: NavItem[] = [
     description: "Recurring hackathon properties",
   },
   { label: "Community", href: "/community", description: "Join the KailshiansX community" },
+  { label: "Campus Chapters", href: "/chapters", description: "Collegiate chapters & dashboards" },
+  {
+    label: "Mentor Network",
+    href: "/network/speakers",
+    description: "Book 1-on-1 mentorship & keynotes",
+  },
+  {
+    label: "Partner Portal",
+    href: "/partners/portal",
+    description: "Deliverables, reach telemetry & recap reports",
+  },
   { label: "Campus Leads", href: "/campus-leads", description: "Represent us at your college" },
   {
     label: "State Leads",
@@ -66,6 +77,16 @@ export const PRIMARY_NAV: NavItem[] = [
     children: [
       { label: "Community Hub", href: "/community", description: "Join the KailshiansX network" },
       {
+        label: "Campus Chapters",
+        href: "/chapters",
+        description: "Collegiate chapters, roster & health scores",
+      },
+      {
+        label: "Mentor Network",
+        href: "/network/speakers",
+        description: "Book 1-on-1 mentorship & keynotes",
+      },
+      {
         label: "Campus Leads",
         href: "/campus-leads",
         description: "Represent KailshiansX at your college",
@@ -82,7 +103,22 @@ export const PRIMARY_NAV: NavItem[] = [
       },
     ],
   },
-  { label: "Collaborations", href: "/collaborations" },
+  {
+    label: "Collaborations",
+    href: "/collaborations",
+    children: [
+      {
+        label: "Partner With Us",
+        href: "/collaborations",
+        description: "Sponsorship tiers & corporate partnerships",
+      },
+      {
+        label: "Partner Portal",
+        href: "/partners/portal",
+        description: "Live deliverables, telemetry & event reports",
+      },
+    ],
+  },
   { label: "Gallery", href: "/gallery" },
   {
     label: "About",
