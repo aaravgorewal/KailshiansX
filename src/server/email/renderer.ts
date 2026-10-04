@@ -27,6 +27,18 @@ import {
   CertificateIssuedEmail,
   type CertificateIssuedEmailProps,
 } from "./templates/CertificateIssuedEmail";
+import {
+  LeadOnboardingEmail,
+  type LeadOnboardingEmailProps,
+} from "./templates/LeadOnboardingEmail";
+import {
+  LeadInactivityNudgeEmail,
+  type LeadInactivityNudgeEmailProps,
+} from "./templates/LeadInactivityNudgeEmail";
+import {
+  PostEventFeedbackNextStepEmail,
+  type PostEventFeedbackNextStepEmailProps,
+} from "./templates/PostEventFeedbackNextStepEmail";
 
 export type EmailTemplatePayloadMap = {
   REGISTRATION_CONFIRMATION: RegistrationConfirmationEmailProps;
@@ -37,6 +49,9 @@ export type EmailTemplatePayloadMap = {
   COLLABORATION_ACK: CollaborationAckEmailProps;
   EVENT_REMINDER_24H: EventReminderEmailProps;
   CERTIFICATE_ISSUED: CertificateIssuedEmailProps;
+  LEAD_ONBOARDING: LeadOnboardingEmailProps;
+  LEAD_INACTIVITY_NUDGE: LeadInactivityNudgeEmailProps;
+  POST_EVENT_FEEDBACK_NEXT_STEP: PostEventFeedbackNextStepEmailProps;
 };
 
 export async function renderEmailTemplate<T extends EmailTemplate>(
@@ -106,6 +121,28 @@ export async function renderEmailTemplate<T extends EmailTemplate>(
       const p = payload as CertificateIssuedEmailProps;
       element = React.createElement(CertificateIssuedEmail, p);
       defaultSubject = `Your Verified Certificate of Achievement: ${p.eventTitle} (${p.uniqueId})`;
+      break;
+    }
+
+    case EmailTemplate.LEAD_ONBOARDING: {
+      const p = payload as LeadOnboardingEmailProps;
+      element = React.createElement(LeadOnboardingEmail, p);
+      const title = p.leadType === "CAMPUS_LEAD" ? "Campus Lead" : "State Lead";
+      defaultSubject = `Official Appointment: Welcome to KailshiansX Leadership (${title} - ${p.collegeOrState})`;
+      break;
+    }
+
+    case EmailTemplate.LEAD_INACTIVITY_NUDGE: {
+      const p = payload as LeadInactivityNudgeEmailProps;
+      element = React.createElement(LeadInactivityNudgeEmail, p);
+      defaultSubject = `Chapter Check-in: Reconnecting with your KailshiansX community (${p.collegeOrState})`;
+      break;
+    }
+
+    case EmailTemplate.POST_EVENT_FEEDBACK_NEXT_STEP: {
+      const p = payload as PostEventFeedbackNextStepEmailProps;
+      element = React.createElement(PostEventFeedbackNextStepEmail, p);
+      defaultSubject = `Thank You for Attending ${p.eventTitle} · Share Feedback & Choose Your Next Step!`;
       break;
     }
 

@@ -55,6 +55,9 @@ const TEMPLATE_LABELS: Record<EmailTemplate, { label: string; color: string }> =
   COLLABORATION_ACK: { label: "Collab Auto-Ack", color: "#38bdf8" },
   EVENT_REMINDER_24H: { label: "24h Event Countdown", color: "#f59e0b" },
   CERTIFICATE_ISSUED: { label: "Certificate Issued", color: "#38bdf8" },
+  LEAD_ONBOARDING: { label: "Lead Charter Onboarding", color: "#6366f1" },
+  LEAD_INACTIVITY_NUDGE: { label: "Lead Inactivity Nudge", color: "#f97316" },
+  POST_EVENT_FEEDBACK_NEXT_STEP: { label: "Post-Event Next Step", color: "#ec4899" },
 };
 
 export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLogsClientProps) {

@@ -80,8 +80,27 @@ const NAV_GROUPS: NavGroup[] = [
     label: "People & Pipelines",
     items: [
       { label: "Participants", href: "/admin/participants", icon: Users },
-      { label: "Campus Leads", href: "/admin/campus-leads", icon: GraduationCap },
-      { label: "State Leads", href: "/admin/state-leads", icon: MapPin },
+      {
+        label: "Leader Portal",
+        href: "/lead",
+        icon: Award,
+        badge: "Portal",
+        badgeVariant: "brand",
+      },
+      {
+        label: "Campus Leads",
+        href: "/admin/campus-leads",
+        icon: GraduationCap,
+        badge: "PRD §11",
+        badgeVariant: "default",
+      },
+      {
+        label: "State Leads",
+        href: "/admin/state-leads",
+        icon: MapPin,
+        badge: "PRD §12",
+        badgeVariant: "default",
+      },
       { label: "Team Applications", href: "/admin/team-applications", icon: Briefcase },
       { label: "Collaborations", href: "/admin/collaborations", icon: Handshake },
       {

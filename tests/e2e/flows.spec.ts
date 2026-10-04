@@ -1,7 +1,12 @@
 import { test, expect } from "@playwright/test";
 import crypto from "crypto";
 import { db } from "@/lib/db";
-import { createAdminSessionToken, createUserSessionToken } from "./helpers/auth";
+import {
+  createAdminSessionToken,
+  createUserSessionToken,
+  createCampusLeadSessionToken,
+  createStateLeadSessionToken,
+} from "./helpers/auth";
 
 const RAZORPAY_SECRET = process.env.RAZORPAY_KEY_SECRET || "kws_test_rzp_secret_2026";
 
@@ -450,5 +455,161 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await expect(page.locator("#btn-sync-tickets")).toBeVisible();
 
     await context.close();
+  });
+
+  test("Flow 9: Campus and State Lead Dashboards & Leadership Network Control Room per PRD §11 & §12", async ({
+    browser,
+  }) => {
+    // 1. Admin Scope: Access Leader Portal (/lead) as SUPER_ADMIN
+    const adminToken = await createAdminSessionToken();
+    const adminContext = await browser.newContext();
+    await adminContext.addCookies([
+      { name: "authjs.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "authjs.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+    ]);
+
+    const adminPage = await adminContext.newPage();
+    await adminPage.goto("/lead");
+    await expect(adminPage.locator("h1")).toContainText(/Campus & State Lead Intelligence Hub/i);
+    await expect(adminPage.locator("text=PRD §11 & §12 · Leadership Control Room")).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Verify mode switcher
+    await expect(adminPage.locator("#btn-admin-campus-mode")).toBeVisible();
+    await expect(adminPage.locator("#btn-admin-state-mode")).toBeVisible();
+
+    // Toggle State Mode
+    await adminPage.click("#btn-admin-state-mode");
+    await expect(adminPage.locator("text=Active State Chapters")).toBeVisible();
+
+    // Toggle back to Campus Mode
+    await adminPage.click("#btn-admin-campus-mode");
+    await expect(adminPage.locator("text=Active Campus Chapters")).toBeVisible();
+
+    await adminContext.close();
+
+    // 2. Campus Lead Scope: Access Campus Dashboard (/lead/campus)
+    const campusAuth = await createCampusLeadSessionToken();
+    const campusContext = await browser.newContext();
+    await campusContext.addCookies([
+      {
+        name: "authjs.session-token",
+        value: campusAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: campusAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "authjs.session-token",
+        value: campusAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: campusAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+
+    const campusPage = await campusContext.newPage();
+    await campusPage.goto("/lead/campus");
+    await expect(campusPage.locator("text=Campus Lead").first()).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Check college scope & referral box
+    await expect(campusPage.locator(`text=${campusAuth.collegeName}`)).toBeVisible();
+    await expect(campusPage.locator("#btn-copy-code")).toBeVisible();
+    await expect(campusPage.locator("#btn-copy-referral-link")).toBeVisible();
+
+    // Verify 4 KPI cards
+    await expect(campusPage.getByText("Attendee Referrals", { exact: true })).toBeVisible();
+    await expect(campusPage.getByText("Events Supported", { exact: true })).toBeVisible();
+    await expect(campusPage.getByText("Activities Logged", { exact: true })).toBeVisible();
+    await expect(campusPage.locator("text=Performance Score").first()).toBeVisible();
+
+    // Verify tabs
+    await expect(campusPage.locator("#tab-activities")).toBeVisible();
+    await expect(campusPage.locator("#tab-reports")).toBeVisible();
+    await expect(campusPage.locator("#tab-events")).toBeVisible();
+
+    // Switch to Monthly Reports tab
+    await campusPage.click("#tab-reports");
+    await expect(campusPage.locator("#btn-submit-monthly-report")).toBeVisible();
+
+    // Switch to Supported Events tab
+    await campusPage.click("#tab-events");
+    await expect(campusPage.locator("text=/supported events/i").first()).toBeVisible();
+
+    // Switch back to Activities tab
+    await campusPage.click("#tab-activities");
+    await expect(campusPage.locator("#btn-log-activity")).toBeVisible();
+
+    await campusContext.close();
+
+    // 3. State Lead Scope: Access State Dashboard (/lead/state)
+    const stateAuth = await createStateLeadSessionToken();
+    const stateContext = await browser.newContext();
+    await stateContext.addCookies([
+      {
+        name: "authjs.session-token",
+        value: stateAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: stateAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "authjs.session-token",
+        value: stateAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: stateAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+
+    const statePage = await stateContext.newPage();
+    await statePage.goto("/lead/state");
+    await expect(statePage.locator("text=State Lead").first()).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Check state scope
+    await expect(statePage.locator(`text=State of ${stateAuth.state}`)).toBeVisible();
+    await expect(statePage.locator("#btn-copy-code")).toBeVisible();
+    await expect(statePage.locator("#btn-copy-referral-link")).toBeVisible();
+
+    // Check statewide aggregates
+    await expect(statePage.getByText("Statewide Referrals", { exact: true })).toBeVisible();
+    await expect(statePage.getByText("Regional Events", { exact: true })).toBeVisible();
+    await expect(statePage.getByText("Active Campus Leads", { exact: true })).toBeVisible();
+    await expect(statePage.locator("text=Performance Score").first()).toBeVisible();
+
+    // Check tabs
+    await expect(statePage.locator("#tab-campus-leads")).toBeVisible();
+    await expect(statePage.locator("#tab-activities")).toBeVisible();
+    await expect(statePage.locator("#tab-reports")).toBeVisible();
+    await expect(statePage.locator("#tab-events")).toBeVisible();
+
+    await stateContext.close();
   });
 });

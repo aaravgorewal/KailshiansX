@@ -466,6 +466,9 @@ model Event {
   sponsorDeliverables SponsorDeliverable[]
   sponsorInvoices     SponsorInvoice[]
   certificates        Certificate[]
+  campusLeadEvents    CampusLeadEvent[]
+  stateLeadEvents     StateLeadEvent[]
+  leadActivities      LeadActivity[]
   techTalkResource    TechTalkResource?
   hackathonDetail     HackathonDetail?
 
@@ -736,27 +739,33 @@ model CampusLeadApplication {
 }
 
 model CampusLead {
-  id            String           @id @default(cuid())
-  applicationId String           @unique
-  userId        String           @unique
-  collegeId     String?
-  cityId        String?
-  status        CampusLeadStatus @default(ACTIVE)
-  startDate     DateTime         @default(now())
-  endDate       DateTime?
-  eventsSupported Int            @default(0)
-  referrals       Int            @default(0)
-  adminNotes    String?          @db.Text
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  id              String                 @id @default(cuid())
+  applicationId   String                 @unique
+  userId          String                 @unique
+  collegeId       String?
+  cityId          String?
+  status          CampusLeadStatus       @default(ACTIVE)
+  startDate       DateTime               @default(now())
+  endDate         DateTime?
+  eventsSupported Int                    @default(0)
+  referrals       Int                    @default(0)
+  referralCode    String?
+  performanceScore Int                   @default(0)
+  adminNotes      String?                @db.Text
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
 
-  application CampusLeadApplication @relation(fields: [applicationId], references: [id])
-  user        User                  @relation(fields: [userId], references: [id])
-  college     College?              @relation(fields: [collegeId], references: [id])
-  city        City?                 @relation(fields: [cityId], references: [id])
+  application     CampusLeadApplication  @relation(fields: [applicationId], references: [id])
+  user            User                   @relation(fields: [userId], references: [id])
+  college         College?               @relation(fields: [collegeId], references: [id])
+  city            City?                  @relation(fields: [cityId], references: [id])
+  activities      LeadActivity[]
+  monthlyReports  LeadMonthlyReport[]
+  supportedEvents CampusLeadEvent[]
 
   @@index([status])
   @@index([cityId])
+  @@index([referralCode])
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -793,23 +802,146 @@ model StateLeadApplication {
 }
 
 model StateLead {
-  id            String          @id @default(cuid())
-  applicationId String          @unique
-  userId        String          @unique
-  state         String
-  status        StateLeadStatus @default(ACTIVE)
-  startDate     DateTime        @default(now())
-  endDate       DateTime?
-  adminNotes    String?         @db.Text
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id               String                @id @default(cuid())
+  applicationId    String                @unique
+  userId           String                @unique
+  state            String
+  status           StateLeadStatus       @default(ACTIVE)
+  startDate        DateTime              @default(now())
+  endDate          DateTime?
+  eventsSupported  Int                   @default(0)
+  referrals        Int                   @default(0)
+  referralCode     String?
+  performanceScore Int                   @default(0)
+  adminNotes       String?               @db.Text
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
 
-  application StateLeadApplication @relation(fields: [applicationId], references: [id])
-  user        User                 @relation(fields: [userId], references: [id])
-  cities      City[]
+  application     StateLeadApplication  @relation(fields: [applicationId], references: [id])
+  user            User                  @relation(fields: [userId], references: [id])
+  cities          City[]
+  activities      LeadActivity[]
+  monthlyReports  LeadMonthlyReport[]
+  supportedEvents StateLeadEvent[]
 
   @@index([state])
   @@index([status])
+  @@index([referralCode])
+}
+
+enum LeadActivityType {
+  WORKSHOP_HOSTING
+  INFO_SESSION
+  MEETUP_ORGANIZING
+  HACKATHON_BOOTH
+  COLLEGE_OUTREACH
+  POSTER_DISTRIBUTION
+  SPEAKER_INVITATION
+  SOCIAL_CAMPAIGN
+  PARTNERSHIP_MEETING
+  OTHER
+}
+
+enum MonthlyReportStatus {
+  DRAFT
+  SUBMITTED
+  REVIEWED
+  FLAGGED
+}
+
+model LeadActivity {
+  id              String           @id @default(cuid())
+  title           String
+  type            LeadActivityType @default(COLLEGE_OUTREACH)
+  description     String           @db.Text
+  date            DateTime         @default(now())
+  hoursSpent      Float            @default(1.0)
+  attendeesCount  Int              @default(0)
+  proofUrls       String[]         @default([])
+  verifiedByAdmin Boolean          @default(false)
+  adminFeedback   String?          @db.Text
+
+  campusLeadId    String?
+  stateLeadId     String?
+  eventId         String?
+
+  campusLead      CampusLead?      @relation(fields: [campusLeadId], references: [id], onDelete: Cascade)
+  stateLead       StateLead?       @relation(fields: [stateLeadId], references: [id], onDelete: Cascade)
+  event           Event?           @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([campusLeadId])
+  @@index([stateLeadId])
+  @@index([type])
+  @@index([date])
+}
+
+model LeadMonthlyReport {
+  id                   String              @id @default(cuid())
+  month                Int                 // 1-12
+  year                 Int                 // e.g. 2026
+  status               MonthlyReportStatus @default(SUBMITTED)
+  summary              String              @db.Text
+  highlights           String?             @db.Text
+  challenges           String?             @db.Text
+  nextMonthPlans       String?             @db.Text
+  newSignupsCount      Int                 @default(0)
+  eventsOrganizedCount Int                 @default(0)
+  swagDistributedCount Int                 @default(0)
+  performanceScore     Int?                // evaluation score out of 100
+  adminFeedback        String?             @db.Text
+  submittedAt          DateTime            @default(now())
+  reviewedAt           DateTime?
+
+  campusLeadId         String?
+  stateLeadId          String?
+
+  campusLead           CampusLead?         @relation(fields: [campusLeadId], references: [id], onDelete: Cascade)
+  stateLead            StateLead?          @relation(fields: [stateLeadId], references: [id], onDelete: Cascade)
+
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  @@unique([campusLeadId, month, year])
+  @@unique([stateLeadId, month, year])
+  @@index([month, year])
+  @@index([status])
+}
+
+model CampusLeadEvent {
+  id           String     @id @default(cuid())
+  campusLeadId String
+  eventId      String
+  role         String     @default("ORGANIZER")
+  notes        String?
+
+  campusLead   CampusLead @relation(fields: [campusLeadId], references: [id], onDelete: Cascade)
+  event        Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime   @default(now())
+
+  @@unique([campusLeadId, eventId])
+  @@index([campusLeadId])
+  @@index([eventId])
+}
+
+model StateLeadEvent {
+  id          String    @id @default(cuid())
+  stateLeadId String
+  eventId     String
+  role        String    @default("REGIONAL_COORDINATOR")
+  notes       String?
+
+  stateLead   StateLead @relation(fields: [stateLeadId], references: [id], onDelete: Cascade)
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+
+  @@unique([stateLeadId, eventId])
+  @@index([stateLeadId])
+  @@index([eventId])
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1180,6 +1312,9 @@ enum EmailTemplate {
   COLLABORATION_ACK
   EVENT_REMINDER_24H
   CERTIFICATE_ISSUED
+  LEAD_ONBOARDING
+  LEAD_INACTIVITY_NUDGE
+  POST_EVENT_FEEDBACK_NEXT_STEP
 }
 
 model EmailLog {
