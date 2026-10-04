@@ -1,0 +1,60 @@
+/* src/styles/tokens.css
+ * Canonical design tokens for KailshiansX.
+ * Allowed to contain raw color literals as the single source of truth.
+ */
+
+:root {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #fafafa;
+  --card-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b6b6b;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-foreground: #ffffff;
+  --accent-text: #1d4ed8;
+  --ring: #2563eb;
+  --success: #15803d;
+  --destructive: #b91c1c;
+  --scrim: rgba(0, 0, 0, 0.55);
+
+  /* Radix / Shadcn compatible aliases */
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0b0b0c;
+  --foreground: #ededed;
+  --card: #141416;
+  --card-foreground: #ededed;
+  --muted: #1b1b1e;
+  --muted-foreground: #9a9aa2;
+  --border: #26262a;
+  --input: #2e2e33;
+  --primary: #5b8def;
+  --primary-hover: #7aa3f5;
+  --primary-foreground: #0b0b0c;
+  --accent-text: #8fb0f7;
+  --ring: #5b8def;
+  --success: #4ade80;
+  --destructive: #f87171;
+  --scrim: rgba(0, 0, 0, 0.65);
+
+  /* Radix / Shadcn compatible aliases */
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+}

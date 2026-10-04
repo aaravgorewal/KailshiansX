@@ -1,5 +1,5 @@
 // src/server/cms/content.ts
-// CMS server queries and mutation actions for Core Team, Founder, and Who We Are (PRD §15, §16, §17, §22)
+// CMS server queries and mutation actions for Core Team, Founder, and Who We Are
 
 import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";
@@ -7,7 +7,7 @@ import { requireAdmin } from "@/server/auth/require-role";
 import { sanitizeRichText } from "@/server/security/sanitize";
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 1. CORE TEAM QUERIES & MUTATIONS (PRD §15)
+// 1. CORE TEAM QUERIES & MUTATIONS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export async function getCoreTeamData(includeInactive = false) {
@@ -137,7 +137,7 @@ export async function deleteCoreTeamMember(id: string) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 2. FOUNDER CONTENT QUERIES & MUTATIONS (PRD §16)
+// 2. FOUNDER CONTENT QUERIES & MUTATIONS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export const DEFAULT_FOUNDER_MILESTONES = [
@@ -187,13 +187,15 @@ export async function getFounderPageData() {
     philosophy:
       founder?.philosophy ||
       "True community cannot be bought through marketing budgets. It is grown with patient consistency, authentic technical respect, and genuine investment in individual potential. We measure success not by registrations or ticket revenues, but by how many attendees build production systems, launch open-source initiatives, or step up to become mentors and organizers.",
-    photo:
-      founder?.photo || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
-    linkedin: founder?.linkedin || "https://linkedin.com/in/aaravgorewal",
-    twitter: founder?.twitter || "https://twitter.com/aaravgorewal",
+    photo: founder?.photo || null,
+    linkedin: founder?.linkedin || null,
+    twitter: founder?.twitter || null,
     milestones:
-      (founder?.milestones as Array<{ year: string; title: string; description: string }>) ||
-      DEFAULT_FOUNDER_MILESTONES,
+      (founder?.milestones as Array<{
+        year: string | number;
+        title: string;
+        description: string;
+      }>) || [],
     isPublished: founder?.isPublished ?? true,
   };
 }
@@ -259,7 +261,7 @@ export async function updateFounderContent(data: {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 3. WHO WE ARE CMS & QUERIES (PRD §17)
+// 3. WHO WE ARE CMS & QUERIES
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export interface WhoWeAreContent {

@@ -31,10 +31,16 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "localhost",
       },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
     ],
   },
   // Allow 127.0.0.1 and localhost for dev/testing
   allowedDevOrigins: ["127.0.0.1", "localhost"],
+  // Disable dev indicators to avoid overlapping fixed-position UI on small screens
+  devIndicators: false,
   // Strict mode for better dev-time error catching
   reactStrictMode: true,
   // Enable server actions with CSRF allowed origins

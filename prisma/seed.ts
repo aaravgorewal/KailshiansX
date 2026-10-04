@@ -775,39 +775,44 @@ async function main() {
   console.log("✅ Event tracks created");
 
   // ─── Gallery Albums ───────────────────────────────────────────────────────
-  const raibarX01Album = await prisma.galleryAlbum.create({
-    data: {
-      eventId: raibarX01.id,
-      title: "RaibarX Edition 01 — Official Gallery",
-      category: "meetup",
-      isPublished: true,
-    },
+  const existingRaibarAlbum = await prisma.galleryAlbum.findFirst({
+    where: { eventId: raibarX01.id },
   });
-  await prisma.galleryImage.createMany({
-    data: [
-      {
-        albumId: raibarX01Album.id,
-        url: "https://cdn.kailshiansx.com/gallery/raibarx-01/01.jpg",
-        caption: "Opening keynote by Rahul Sharma",
-        altText: "Speaker on stage",
-        sortOrder: 1,
+  if (!existingRaibarAlbum) {
+    const raibarX01Album = await prisma.galleryAlbum.create({
+      data: {
+        eventId: raibarX01.id,
+        title: "RaibarX Edition 01 — Official Gallery",
+        category: "meetup",
+        isPublished: true,
       },
-      {
-        albumId: raibarX01Album.id,
-        url: "https://cdn.kailshiansx.com/gallery/raibarx-01/02.jpg",
-        caption: "Networking at the event",
-        altText: "Developers networking",
-        sortOrder: 2,
-      },
-      {
-        albumId: raibarX01Album.id,
-        url: "https://cdn.kailshiansx.com/gallery/raibarx-01/03.jpg",
-        caption: "Community group photo",
-        altText: "Group photo",
-        sortOrder: 3,
-      },
-    ],
-  });
+    });
+    await prisma.galleryImage.createMany({
+      data: [
+        {
+          albumId: raibarX01Album.id,
+          url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
+          caption: "Opening keynote by Rahul Sharma",
+          altText: "Speaker on stage",
+          sortOrder: 1,
+        },
+        {
+          albumId: raibarX01Album.id,
+          url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1200&auto=format&fit=crop&q=80",
+          caption: "Networking at the event",
+          altText: "Developers networking",
+          sortOrder: 2,
+        },
+        {
+          albumId: raibarX01Album.id,
+          url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80",
+          caption: "Community group photo",
+          altText: "Group photo",
+          sortOrder: 3,
+        },
+      ],
+    });
+  }
   console.log("✅ Gallery albums & images created");
 
   // ─── Revenue & Expense Items (NirmanX 01) ─────────────────────────────────

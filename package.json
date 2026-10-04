@@ -23,12 +23,17 @@
     "test:e2e": "dotenv run -f .env.local -- playwright test",
     "db:bootstrap": "dotenv run -f .env.local -- tsx scripts/bootstrap-prod.ts",
     "db:backup": "dotenv run -f .env.local -- tsx scripts/backup-db.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "check:colors": "node scripts/check-colors.mjs",
+    "check:ui": "npm run check:colors; npm run typecheck; npm run lint"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "eslint --fix",
       "prettier --write"
+    ],
+    "src/**/*.{ts,tsx,css}": [
+      "node scripts/check-colors.mjs --staged"
     ],
     "*.{css,json,md,yaml,yml}": [
       "prettier --write"
@@ -64,6 +69,7 @@
     "lucide-react": "^1.50.0",
     "next": "16.3.8",
     "next-auth": "^5.0.0-beta.32",
+    "next-themes": "^0.4.6",
     "pdf-lib": "^1.17.1",
     "pg": "^8.23.1",
     "prisma": "^7.10.0",

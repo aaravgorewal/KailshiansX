@@ -18,6 +18,7 @@ import { useToast } from "@/components/ui/useToast";
 import { cn } from "@/lib/utils";
 import { trackRegisterClick } from "@/lib/analytics";
 import { formatDate } from "@/lib/format-date";
+import { EventCountdown } from "@/components/events/EventCountdown";
 
 export interface EventStickyCtaProps {
   slug: string;
@@ -27,6 +28,7 @@ export interface EventStickyCtaProps {
   highestPrice?: number;
   registrationDeadline?: Date | null;
   startDate: Date;
+  endDate?: Date | null;
   status: string;
   maxCapacity?: number | null;
   attendeeCount: number;
@@ -43,6 +45,7 @@ export function EventStickyCta({
   highestPrice,
   registrationDeadline,
   startDate,
+  endDate = null,
   status,
   maxCapacity,
   attendeeCount,
@@ -162,6 +165,8 @@ export function EventStickyCta({
               <span className="text-foreground font-mono">{formatDate(registrationDeadline)}</span>
             </div>
           )}
+
+          <EventCountdown variant="compact" startDate={startDate} endDate={endDate} />
         </div>
 
         {/* Primary Register CTA Button */}
