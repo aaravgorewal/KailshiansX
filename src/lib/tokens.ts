@@ -48,7 +48,15 @@ export const colors = {
 } as const;
 
 export const fonts = {
-  sans: ["var(--font-inter)", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+  sans: [
+    "var(--font-sans)",
+    "Geist",
+    "ui-sans-serif",
+    "system-ui",
+    "-apple-system",
+    "Segoe UI",
+    "sans-serif",
+  ],
   mono: ["var(--font-geist-mono)", "Geist Mono", "ui-monospace", "monospace"],
 } as const;
 
