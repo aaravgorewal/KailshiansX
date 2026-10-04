@@ -612,4 +612,302 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
 
     await stateContext.close();
   });
+
+  test("Flow 10: Full hackathon engine: team formation/invites, problem-statement selection, project submissions, judge rubric scoring, leaderboard, results publishing, certificate + prize tracking", async ({
+    browser,
+    request,
+  }) => {
+    // 1. Fetch a real hackathon event from DB
+    const hackathon = await db.event.findFirst({
+      where: { type: "HACKATHON", deletedAt: null },
+      include: {
+        hackathonDetail: {
+          include: {
+            problemStatementsList: true,
+            rubricCriteria: true,
+            prizesList: true,
+          },
+        },
+      },
+    });
+
+    expect(hackathon).not.toBeNull();
+    const detailId = hackathon!.hackathonDetail!.id;
+    const slug = hackathon!.slug;
+
+    // Ensure hackathon is active with future deadline for test flow
+    await db.hackathonDetail.update({
+      where: { id: detailId },
+      data: {
+        submissionDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        isResultsPublished: false,
+      },
+    });
+
+    // 2. Setup Team Leader User
+    const leaderAuth = await createUserSessionToken({
+      name: "Satya Nadella",
+      email: `builder-leader-${Date.now()}@example.com`,
+      role: "MEMBER",
+    });
+
+    const leaderContext = await browser.newContext();
+    await leaderContext.addCookies([
+      {
+        name: "authjs.session-token",
+        value: leaderAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: leaderAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "authjs.session-token",
+        value: leaderAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: leaderAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+
+    const leaderPage = await leaderContext.newPage();
+    await leaderPage.goto(`/events/${slug}`);
+    await expect(leaderPage.locator("#hackathon-portal")).toBeVisible({ timeout: 15000 });
+
+    // Create Team via API
+    const teamName = `NeuralCore ${Date.now().toString().slice(-4)}`;
+    const teamRes = await request.post("/api/hackathons/teams", {
+      headers: {
+        cookie: `authjs.session-token=${leaderAuth.sessionToken}; next-auth.session-token=${leaderAuth.sessionToken}`,
+      },
+      data: {
+        hackathonDetailId: detailId,
+        name: teamName,
+        track: "Autonomous AI Agents",
+      },
+    });
+    expect(teamRes.ok()).toBeTruthy();
+    const teamJson = await teamRes.json();
+    const createdTeam = teamJson.data;
+    expect(createdTeam.inviteCode).toMatch(/^KX-TEAM-/);
+    const inviteCode = createdTeam.inviteCode;
+
+    // 3. Setup Second Teammate & Join via Invite Code
+    const teammateAuth = await createUserSessionToken({
+      name: "Andrej Karpathy",
+      email: `builder-dev-${Date.now()}@example.com`,
+      role: "MEMBER",
+    });
+
+    const joinRes = await request.post("/api/hackathons/teams/join", {
+      headers: {
+        cookie: `authjs.session-token=${teammateAuth.sessionToken}; next-auth.session-token=${teammateAuth.sessionToken}`,
+      },
+      data: {
+        inviteCode,
+        role: "DEVELOPER",
+      },
+    });
+    expect(joinRes.ok()).toBeTruthy();
+    const joinJson = await joinRes.json();
+    expect(joinJson.data.members.length).toBe(2);
+
+    // 4. Select Problem Statement
+    const firstPs = hackathon!.hackathonDetail!.problemStatementsList[0];
+    if (firstPs) {
+      const psRes = await request.post("/api/hackathons/teams/problem-statement", {
+        headers: {
+          cookie: `authjs.session-token=${leaderAuth.sessionToken}; next-auth.session-token=${leaderAuth.sessionToken}`,
+        },
+        data: {
+          teamId: createdTeam.id,
+          problemStatementId: firstPs.id,
+        },
+      });
+      expect(psRes.ok()).toBeTruthy();
+    }
+
+    // 5. Submit Project (GitHub, Live Demo, Pitch Deck, Video Demo, Tech Stack)
+    const subRes = await request.post("/api/hackathons/submissions", {
+      headers: {
+        cookie: `authjs.session-token=${leaderAuth.sessionToken}; next-auth.session-token=${leaderAuth.sessionToken}`,
+      },
+      data: {
+        teamId: createdTeam.id,
+        title: "Autonomous Kubernetes SRE Agent",
+        tagline: "Zero-downtime distributed consensus operator",
+        description: "Self-healing Kubernetes clusters running custom autonomous eBPF probes.",
+        track: "Autonomous AI Agents",
+        repoUrl: "https://github.com/kailshiansx/autonomous-sre",
+        demoUrl: "https://sre.kailshiansx.com",
+        deckUrl: "https://pitch.kailshiansx.com/deck.pdf",
+        videoUrl: "https://youtube.com/watch?v=mock-demo",
+        techStack: ["Next.js", "Go", "eBPF", "Kubernetes", "PostgreSQL"],
+      },
+    });
+    const subJson = await subRes.json();
+    if (!subRes.ok()) {
+      console.error("Submission failed response:", subJson);
+    }
+    expect(subRes.ok()).toBeTruthy();
+    const submissionId = subJson.data.id;
+    expect(subJson.data.status).toBe("SUBMITTED");
+
+    // 6. Judge Account Rubric Scoring
+    const judgeAuth = await createUserSessionToken({
+      name: "Guillermo Rauch",
+      email: `judge-${Date.now()}@example.com`,
+      role: "JUDGE",
+    });
+
+    const judgeContext = await browser.newContext();
+    await judgeContext.addCookies([
+      {
+        name: "authjs.session-token",
+        value: judgeAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: judgeAuth.sessionToken,
+        domain: "localhost",
+        path: "/",
+      },
+      {
+        name: "authjs.session-token",
+        value: judgeAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+      {
+        name: "next-auth.session-token",
+        value: judgeAuth.sessionToken,
+        domain: "127.0.0.1",
+        path: "/",
+      },
+    ]);
+
+    const judgePage = await judgeContext.newPage();
+    await judgePage.goto(`/events/${slug}/judge`);
+    await expect(judgePage.locator("text=Grand Jury Evaluation Cockpit").first()).toBeVisible({
+      timeout: 15000,
+    });
+
+    // Score submission via API
+    const criteriaScores: Record<string, number> = {};
+    for (const r of hackathon!.hackathonDetail!.rubricCriteria) {
+      criteriaScores[r.id] = Math.round(r.maxScore * 0.95);
+    }
+
+    const scoreRes = await request.post("/api/hackathons/judging/scores", {
+      headers: {
+        cookie: `authjs.session-token=${judgeAuth.sessionToken}; next-auth.session-token=${judgeAuth.sessionToken}`,
+      },
+      data: {
+        submissionId,
+        criteriaScores,
+        feedback: "Exceptional architecture, production-grade telemetry, and intuitive UI.",
+        privateNotes: "Unanimous top contender for Grand Prize.",
+      },
+    });
+    expect(scoreRes.ok()).toBeTruthy();
+    const scoreJson = await scoreRes.json();
+    expect(Number(scoreJson.data.totalScore)).toBeGreaterThan(80);
+
+    // 7. Admin Control Room: Results Publishing & Official Winner Assignment
+    const adminToken = await createAdminSessionToken();
+    const adminContext = await browser.newContext();
+    await adminContext.addCookies([
+      { name: "authjs.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "localhost", path: "/" },
+      { name: "authjs.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+      { name: "next-auth.session-token", value: adminToken, domain: "127.0.0.1", path: "/" },
+    ]);
+
+    const adminPage = await adminContext.newPage();
+    await adminPage.goto(`/admin/hackathons/${detailId}`);
+    await expect(adminPage.locator("h1")).toContainText(/Control Room/i, { timeout: 15000 });
+
+    // Publish results officially via API
+    const publishRes = await request.post("/api/admin/hackathons/publish", {
+      headers: {
+        cookie: `authjs.session-token=${adminToken}; next-auth.session-token=${adminToken}`,
+      },
+      data: {
+        hackathonDetailId: detailId,
+        winnerSelections: [
+          {
+            submissionId,
+            rank: 1,
+            winnerTier: "GRAND_PRIZE",
+          },
+        ],
+      },
+    });
+    expect(publishRes.ok()).toBeTruthy();
+
+    // 8. Prize Disbursement Tracking & Automated Certificate Generation
+    const prizes = await db.hackathonPrize.findMany({
+      where: { hackathonDetailId: detailId },
+      orderBy: { rank: "asc" },
+    });
+
+    if (prizes.length > 0) {
+      const prizeId = prizes[0].id;
+      const prizeRes = await request.patch("/api/admin/hackathons/prizes", {
+        headers: {
+          cookie: `authjs.session-token=${adminToken}; next-auth.session-token=${adminToken}`,
+        },
+        data: {
+          prizeId,
+          status: "DISBURSED",
+          transactionRef: "UPI-HACK-2026-WINNER-01",
+        },
+      });
+      expect(prizeRes.ok()).toBeTruthy();
+      const prizeJson = await prizeRes.json();
+      expect(prizeJson.data.disbursementStatus).toBe("DISBURSED");
+    }
+
+    // Issue Certificates
+    const certRes = await request.post("/api/admin/hackathons/certificates", {
+      headers: {
+        cookie: `authjs.session-token=${adminToken}; next-auth.session-token=${adminToken}`,
+      },
+      data: {
+        hackathonDetailId: detailId,
+        issueType: "ALL",
+      },
+    });
+    expect(certRes.ok()).toBeTruthy();
+    const certJson = await certRes.json();
+    expect(certJson.data.issuedCount).toBeGreaterThanOrEqual(2);
+
+    // Verify certificate in DB
+    const cert = await db.certificate.findFirst({
+      where: { participantEmail: leaderAuth.email },
+    });
+    expect(cert).not.toBeNull();
+    expect(cert!.uniqueId).toMatch(/^KX-HACK-/);
+
+    // 9. Public Results Verification: Reload Public Event Page
+    await leaderPage.reload();
+    await expect(leaderPage.locator("#tab-hackathon-leaderboard")).toBeVisible();
+    await leaderPage.click("#tab-hackathon-leaderboard");
+    await expect(leaderPage.locator("text=Official Hackathon Leaderboard")).toBeVisible();
+
+    await leaderContext.close();
+    await judgeContext.close();
+    await adminContext.close();
+  });
 });

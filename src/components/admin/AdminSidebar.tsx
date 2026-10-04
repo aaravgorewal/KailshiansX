@@ -68,6 +68,13 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Meetup Series", href: "/admin/meetup-series", icon: Layers },
       { label: "Hackathon Series", href: "/admin/hackathon-series", icon: Trophy },
       {
+        label: "Hackathons Engine",
+        href: "/admin/hackathons",
+        icon: Award,
+        badge: "Engine",
+        badgeVariant: "brand",
+      },
+      {
         label: "Event P&L",
         href: "/admin/pnl",
         icon: DollarSign,

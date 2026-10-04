@@ -36,7 +36,14 @@ export async function createUserSessionToken(options?: {
   email?: string;
   name?: string;
   role?:
-    "SUPER_ADMIN" | "ADMIN" | "EVENT_MANAGER" | "MEMBER" | "CAMPUS_LEAD" | "STATE_LEAD" | "VIEWER";
+    | "SUPER_ADMIN"
+    | "ADMIN"
+    | "EVENT_MANAGER"
+    | "MEMBER"
+    | "CAMPUS_LEAD"
+    | "STATE_LEAD"
+    | "VIEWER"
+    | "JUDGE";
 }): Promise<{ sessionToken: string; email: string; name: string; userId: string }> {
   const email = options?.email || `user-${Date.now()}@example.com`;
   const name = options?.name || "Dev Builder";

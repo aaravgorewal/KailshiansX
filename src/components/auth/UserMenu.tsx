@@ -22,6 +22,7 @@ interface Props {
 const ROLE_BADGE: Record<UserRole, { label: string; className: string }> = {
   SUPER_ADMIN: { label: "Super Admin", className: "bg-red-500/20 text-red-400" },
   ADMIN: { label: "Admin", className: "bg-orange-500/20 text-orange-400" },
+  JUDGE: { label: "Judge", className: "bg-purple-500/20 text-purple-400" },
   EVENT_MANAGER: { label: "Event Manager", className: "bg-yellow-500/20 text-yellow-400" },
   CAMPUS_LEAD: { label: "Campus Lead", className: "bg-green-500/20 text-green-400" },
   STATE_LEAD: { label: "State Lead", className: "bg-teal-500/20 text-teal-400" },

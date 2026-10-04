@@ -13,9 +13,13 @@ import {
   ShieldCheck,
   Tag,
   ChevronRight,
+  Gavel,
 } from "lucide-react";
 
+import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getHackathonEngineData } from "@/server/hackathons/service";
+import { HackathonEngineClient } from "@/components/hackathons/HackathonEngineClient";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -129,6 +133,13 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   if (!event || event.status === "DRAFT" || event.deletedAt) {
     notFound();
   }
+
+  const session = await auth();
+  const hackathonEngineData =
+    event.type === "HACKATHON" ? await getHackathonEngineData(event.slug, session?.user?.id) : null;
+  const isJudgeOrAdmin =
+    Boolean(session?.user?.role) &&
+    ["SUPER_ADMIN", "ADMIN", "JUDGE", "EVENT_MANAGER"].includes(session?.user?.role || "");
 
   // Recommended other upcoming gatherings
   const recommendedEvents = await db.event.findMany({
@@ -576,8 +587,54 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                 </section>
               )}
 
+              {/* 3.5. Hackathon Engine Cockpit (Squad Formation, Problem Statements, Submissions, Leaderboard) */}
+              {event.type === "HACKATHON" && hackathonEngineData && (
+                <section
+                  id="hackathon-portal"
+                  aria-labelledby="section-hackathon-engine"
+                  className="space-y-6"
+                >
+                  {isJudgeOrAdmin && (
+                    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-purple-800/40 bg-purple-950/30 p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-purple-400">
+                          <Gavel className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-white">
+                            Grand Jury &amp; Organizer Access
+                          </h4>
+                          <p className="text-surface-400 text-xs">
+                            You have evaluation privileges for this hackathon. Access the official
+                            scoring rubric cockpit.
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="bg-purple-600 font-bold text-white hover:bg-purple-500"
+                        asChild
+                      >
+                        <Link href={`/events/${event.slug}/judge`}>Launch Judge Cockpit</Link>
+                      </Button>
+                    </div>
+                  )}
+
+                  <SectionHeader
+                    badge="Hackathon Engine"
+                    title="Builder Cockpit &amp; Submissions"
+                    highlight="Cockpit"
+                    description="Form your squad, pick problem statements, submit project artifacts, and monitor the live leaderboard."
+                    align="left"
+                    className="mb-8"
+                  />
+
+                  <HackathonEngineClient initialData={hackathonEngineData} />
+                </section>
+              )}
+
               {/* 4. Tracks & Problem Statements (Hackathons & Workshops) */}
-              {event.tracks.length > 0 && (
+              {event.type !== "HACKATHON" && event.tracks.length > 0 && (
                 <section aria-labelledby="section-tracks">
                   <SectionHeader
                     badge="Hack &amp; Build Tracks"
