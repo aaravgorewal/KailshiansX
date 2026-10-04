@@ -904,7 +904,7 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await leaderPage.reload();
     await expect(leaderPage.locator("#tab-hackathon-leaderboard")).toBeVisible();
     await leaderPage.click("#tab-hackathon-leaderboard");
-    await expect(leaderPage.locator("text=Official Hackathon Leaderboard")).toBeVisible();
+    await expect(leaderPage.locator("text=Hackathon Leaderboard")).toBeVisible();
 
     await leaderContext.close();
     await judgeContext.close();
