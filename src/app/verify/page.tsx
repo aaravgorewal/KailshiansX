@@ -1,5 +1,5 @@
 // src/app/verify/page.tsx
-// Public Certificate Verification Portal (PRD §21)
+// Public Certificate Verification Portal ()
 // Enter certificate ID or email/registration ID -> verify -> view -> download.
 
 import type { Metadata } from "next";
@@ -51,7 +51,7 @@ export default async function CertificateVerificationPage({ searchParams }: Prop
   }
 
   return (
-    <main className="bg-surface-950 min-h-screen px-4 pt-28 pb-20 sm:px-6 lg:px-8">
+    <main className="bg-background min-h-screen px-4 pt-28 pb-20 sm:px-6 lg:px-8">
       <PublicVerifyClient initialQuery={initialQuery} initialCertificate={initialCertificate} />
     </main>
   );

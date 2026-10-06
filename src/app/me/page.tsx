@@ -36,7 +36,7 @@ export default async function MemberProfilePage() {
   }
 
   return (
-    <main className="bg-surface-950 min-h-screen px-4 pt-24 pb-20 sm:px-6 lg:px-8">
+    <main className="bg-background min-h-screen px-4 pt-24 pb-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <MemberDashboardClient initialData={dashboardData} recommendations={recommendations} />
       </div>

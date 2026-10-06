@@ -1,5 +1,5 @@
 // src/app/lead/page.tsx
-// Unified role-gated Leader Portal (PRD §11 & §12)
+// Unified role-gated Leader Portal ()
 // Directs Campus Leads and State Leads to their scoped dashboards, and admins to the Leadership Hub.
 
 import type { Metadata } from "next";
