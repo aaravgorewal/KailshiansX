@@ -41,10 +41,10 @@ export default async function AdminHackathonsIndexPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="flex items-center gap-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
-            <Trophy className="text-brand-400 h-7 w-7" />
+            <Trophy className="text-primary h-7 w-7" />
             Hackathons Engine Control
           </h1>
-          <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+          <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
             Manage teams, problem statements, submissions, rubric scoring, leaderboards, and prize
             disbursements per .
           </p>
@@ -59,20 +59,20 @@ export default async function AdminHackathonsIndexPage() {
           return (
             <div
               key={h.id}
-              className="border-surface-800 bg-surface-900/60 hover:border-surface-700 flex flex-col justify-between rounded-3xl border p-6 backdrop-blur-xl transition-all hover:shadow-xl"
+              className="border-border bg-card hover:border-border flex flex-col justify-between rounded-3xl border p-6 backdrop-blur-xl transition-all hover:shadow-xl"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="bg-brand-500/10 border-brand-500/20 text-brand-400 rounded-full border px-2.5 py-0.5 font-mono text-xs font-bold uppercase">
+                  <span className="bg-primary/10 border-primary/20 text-primary rounded-full border px-2.5 py-0.5 font-mono text-xs font-bold uppercase">
                     Hackathon
                   </span>
                   {isPublished ? (
-                    <span className="flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-mono text-[11px] font-bold text-emerald-400">
+                    <span className="border-success/20 bg-success/10 text-success flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-xs font-bold">
                       <CheckCircle2 className="h-3 w-3" />
                       Results Published
                     </span>
                   ) : (
-                    <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 font-mono text-[11px] font-bold text-amber-400">
+                    <span className="border-border bg-primary/10 text-primary rounded-full border px-2 py-0.5 font-mono text-xs font-bold">
                       Judging Active
                     </span>
                   )}
@@ -80,7 +80,7 @@ export default async function AdminHackathonsIndexPage() {
 
                 <div>
                   <h2 className="text-xl font-black text-white">{h.title}</h2>
-                  <div className="text-surface-400 mt-1 flex items-center gap-2 text-xs">
+                  <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs">
                     <Calendar className="h-3.5 w-3.5" />
                     <span>
                       {new Date(h.startDate).toLocaleDateString("en-IN", {
@@ -95,24 +95,26 @@ export default async function AdminHackathonsIndexPage() {
                 </div>
 
                 {detail && (
-                  <div className="border-surface-800 grid grid-cols-3 gap-2 border-y py-3 text-center">
+                  <div className="border-border grid grid-cols-3 gap-2 border-y py-3 text-center">
                     <div>
-                      <div className="text-surface-400 text-[10px] font-bold uppercase">Teams</div>
+                      <div className="text-muted-foreground text-xs font-bold uppercase">Teams</div>
                       <div className="mt-0.5 font-mono text-base font-black text-white">
                         {detail._count.teams}
                       </div>
                     </div>
                     <div>
-                      <div className="text-surface-400 text-[10px] font-bold uppercase">
+                      <div className="text-muted-foreground text-xs font-bold uppercase">
                         Projects
                       </div>
-                      <div className="text-brand-400 mt-0.5 font-mono text-base font-black">
+                      <div className="text-primary mt-0.5 font-mono text-base font-black">
                         {detail._count.submissions}
                       </div>
                     </div>
                     <div>
-                      <div className="text-surface-400 text-[10px] font-bold uppercase">Judges</div>
-                      <div className="mt-0.5 font-mono text-base font-black text-purple-400">
+                      <div className="text-muted-foreground text-xs font-bold uppercase">
+                        Judges
+                      </div>
+                      <div className="text-primary mt-0.5 font-mono text-base font-black">
                         {detail._count.judges}
                       </div>
                     </div>
@@ -122,7 +124,7 @@ export default async function AdminHackathonsIndexPage() {
 
               <div className="space-y-2 pt-6">
                 <Button
-                  className="bg-brand-500 hover:bg-brand-600 w-full font-bold text-white"
+                  className="bg-primary hover:bg-primary-hover w-full font-bold text-white"
                   asChild
                 >
                   <Link href={`/admin/hackathons/${detail?.id || h.id}`}>
@@ -134,7 +136,7 @@ export default async function AdminHackathonsIndexPage() {
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" className="w-full" asChild>
                     <Link href={`/events/${h.slug}/judge`}>
-                      <Gavel className="mr-1 h-3.5 w-3.5 text-purple-400" />
+                      <Gavel className="text-primary mr-1 h-3.5 w-3.5" />
                       Judge View
                     </Link>
                   </Button>

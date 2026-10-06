@@ -10,7 +10,7 @@ import {
   XCircle,
   RefreshCw,
   UserCheck,
-  Sparkles,
+  Zap,
   Mail,
   Phone,
   Building,
@@ -334,11 +334,11 @@ export function CheckinScannerClient({
   return (
     <div className="space-y-8">
       {/* Event Filter & Audio Toggle Toolbar */}
-      <div className="border-surface-800 bg-surface-900/80 flex flex-col items-stretch justify-between gap-4 rounded-2xl border p-4 backdrop-blur-md sm:flex-row sm:items-center">
+      <div className="border-border bg-card flex flex-col items-stretch justify-between gap-4 rounded-2xl border p-4 backdrop-blur-md sm:flex-row sm:items-center">
         <div className="flex flex-1 items-center gap-3">
           <label
             htmlFor="event-filter"
-            className="text-surface-400 shrink-0 text-xs font-semibold tracking-wider uppercase"
+            className="text-muted-foreground shrink-0 text-xs font-semibold tracking-wider uppercase"
           >
             Event Context:
           </label>
@@ -346,7 +346,7 @@ export function CheckinScannerClient({
             id="event-filter"
             value={selectedEventId}
             onChange={(e) => setSelectedEventId(e.target.value)}
-            className="border-surface-700 bg-surface-950 text-surface-100 focus:border-brand-500 focus:ring-brand-500 w-full max-w-md rounded-xl border px-3.5 py-2 text-sm transition outline-none focus:ring-1"
+            className="border-border bg-background text-foreground focus:border-primary focus:ring-ring w-full max-w-md rounded-xl border px-3.5 py-2 text-sm transition outline-none focus:ring-1"
           >
             <option value="">⚡ Universal Scanner (All Events)</option>
             {events.map((ev) => (
@@ -362,7 +362,7 @@ export function CheckinScannerClient({
             <select
               value={selectedDeviceId}
               onChange={(e) => setSelectedDeviceId(e.target.value)}
-              className="border-surface-700 bg-surface-950 text-surface-200 rounded-xl border px-3 py-1.5 text-xs outline-none"
+              className="border-border bg-background text-foreground rounded-xl border px-3 py-1.5 text-xs outline-none"
             >
               {cameras.map((c, i) => (
                 <option key={c.deviceId} value={c.deviceId}>
@@ -376,11 +376,11 @@ export function CheckinScannerClient({
             variant="ghost"
             size="sm"
             onClick={() => setSoundEnabled((prev) => !prev)}
-            className="text-surface-400 hover:text-surface-100"
+            className="text-muted-foreground hover:text-foreground"
             title={soundEnabled ? "Mute audio chimes" : "Enable audio chimes"}
           >
             {soundEnabled ? (
-              <Volume2 className="text-brand-400 size-4" />
+              <Volume2 className="text-primary size-4" />
             ) : (
               <VolumeX className="size-4" />
             )}
@@ -389,14 +389,14 @@ export function CheckinScannerClient({
       </div>
 
       {/* Tabs */}
-      <div className="border-surface-800 flex border-b">
+      <div className="border-border flex border-b">
         <button
           type="button"
           onClick={() => setActiveTab("camera")}
           className={`flex items-center gap-2 border-b-2 px-6 py-3.5 text-sm font-semibold transition-all ${
             activeTab === "camera"
-              ? "border-brand-500 text-brand-400 bg-brand-500/5"
-              : "text-surface-400 hover:text-surface-200 border-transparent"
+              ? "border-primary text-primary bg-primary/5"
+              : "text-muted-foreground hover:text-foreground border-transparent"
           }`}
         >
           <Camera className="size-4" />
@@ -407,8 +407,8 @@ export function CheckinScannerClient({
           onClick={() => setActiveTab("search")}
           className={`flex items-center gap-2 border-b-2 px-6 py-3.5 text-sm font-semibold transition-all ${
             activeTab === "search"
-              ? "border-brand-500 text-brand-400 bg-brand-500/5"
-              : "text-surface-400 hover:text-surface-200 border-transparent"
+              ? "border-primary text-primary bg-primary/5"
+              : "text-muted-foreground hover:text-foreground border-transparent"
           }`}
         >
           <Search className="size-4" />
@@ -421,7 +421,7 @@ export function CheckinScannerClient({
         {/* Left Column: Scanner or Manual Search View */}
         <div className="space-y-6 lg:col-span-7">
           {activeTab === "camera" && (
-            <div className="border-surface-800 bg-surface-950 relative overflow-hidden rounded-3xl border shadow-2xl">
+            <div className="border-border bg-background relative overflow-hidden rounded-3xl border shadow-2xl">
               {/* Hidden canvas for jsQR frame analysis */}
               <canvas ref={canvasRef} className="hidden" />
 
@@ -438,20 +438,20 @@ export function CheckinScannerClient({
                 {/* Reticle / Viewfinder Frame */}
                 {cameraActive && (
                   <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="border-brand-500/70 relative size-64 rounded-3xl border-2 shadow-[0_0_0_9999px_rgba(0,0,0,0.55)] sm:size-72">
+                    <div className="border-primary/70 relative size-64 rounded-3xl border-2 shadow-[0_0_0_9999px_rgba(0,0,0,0.55)] sm:size-72">
                       {/* Laser scanning bar */}
-                      <div className="via-brand-400 absolute inset-x-2 top-0 h-1 animate-pulse bg-gradient-to-r from-transparent to-transparent shadow-[0_0_15px_#3d61fc]" />
+                      <div className="bg-primary/80 absolute inset-x-2 top-0 h-0.5 animate-pulse rounded-full" />
 
                       {/* Corner markers */}
-                      <div className="border-brand-400 absolute -top-1 -left-1 size-6 rounded-tl-xl border-t-4 border-l-4" />
-                      <div className="border-brand-400 absolute -top-1 -right-1 size-6 rounded-tr-xl border-t-4 border-r-4" />
-                      <div className="border-brand-400 absolute -bottom-1 -left-1 size-6 rounded-bl-xl border-b-4 border-l-4" />
-                      <div className="border-brand-400 absolute -right-1 -bottom-1 size-6 rounded-br-xl border-r-4 border-b-4" />
+                      <div className="border-primary absolute -top-1 -left-1 size-6 rounded-tl-xl border-t-4 border-l-4" />
+                      <div className="border-primary absolute -top-1 -right-1 size-6 rounded-tr-xl border-t-4 border-r-4" />
+                      <div className="border-primary absolute -bottom-1 -left-1 size-6 rounded-bl-xl border-b-4 border-l-4" />
+                      <div className="border-primary absolute -right-1 -bottom-1 size-6 rounded-br-xl border-r-4 border-b-4" />
 
                       {/* Processing state indicator */}
                       {isProcessing && (
-                        <div className="bg-brand-950/60 absolute inset-0 flex items-center justify-center rounded-3xl backdrop-blur-xs">
-                          <RefreshCw className="text-brand-400 size-8 animate-spin" />
+                        <div className="bg-background/80 absolute inset-0 flex items-center justify-center rounded-3xl backdrop-blur-xs">
+                          <RefreshCw className="text-primary size-8 animate-spin" />
                         </div>
                       )}
                     </div>
@@ -460,9 +460,9 @@ export function CheckinScannerClient({
 
                 {/* Error Banner if camera fails */}
                 {cameraError && (
-                  <div className="bg-surface-950/90 absolute inset-0 flex flex-col items-center justify-center space-y-4 p-6 text-center">
-                    <XCircle className="size-12 text-rose-500" />
-                    <p className="text-surface-200 max-w-sm text-sm">{cameraError}</p>
+                  <div className="bg-background absolute inset-0 flex flex-col items-center justify-center space-y-4 p-6 text-center">
+                    <XCircle className="text-destructive size-12" />
+                    <p className="text-foreground max-w-sm text-sm">{cameraError}</p>
                     <Button variant="secondary" size="sm" onClick={() => setActiveTab("search")}>
                       Switch to Manual Search
                     </Button>
@@ -471,38 +471,38 @@ export function CheckinScannerClient({
               </div>
 
               {/* Scanner Status Bar */}
-              <div className="border-surface-800 bg-surface-900/90 flex items-center justify-between border-t px-6 py-4">
+              <div className="border-border bg-card flex items-center justify-between border-t px-6 py-4">
                 <div className="flex items-center gap-2">
                   <div
-                    className={`size-2.5 rounded-full ${cameraActive ? "animate-pulse bg-emerald-400" : "bg-surface-600"}`}
+                    className={`size-2.5 rounded-full ${cameraActive ? "bg-success animate-pulse" : "bg-muted-foreground/40"}`}
                   />
-                  <span className="text-surface-300 text-xs">
+                  <span className="text-muted-foreground text-xs">
                     {cameraActive ? "Aim camera at attendee's QR Pass" : "Camera idle"}
                   </span>
                 </div>
-                <span className="text-surface-500 font-mono text-xs">Auto-Detect 60FPS</span>
+                <span className="text-muted-foreground font-mono text-xs">Auto-Detect 60FPS</span>
               </div>
             </div>
           )}
 
           {activeTab === "search" && (
-            <div className="border-surface-800 bg-surface-900/60 space-y-6 rounded-3xl border p-6">
+            <div className="border-border bg-card space-y-6 rounded-3xl border p-6">
               <div className="space-y-2">
-                <label className="text-surface-400 text-xs font-semibold tracking-wider uppercase">
+                <label className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
                   Search Attendee Directory
                 </label>
                 <div className="relative">
-                  <Search className="text-surface-400 absolute top-3.5 left-3.5 size-4" />
+                  <Search className="text-muted-foreground absolute top-3.5 left-3.5 size-4" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Type Name, Email, Phone, or KX-XXXX-XXXX..."
-                    className="border-surface-700 bg-surface-950 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 focus:ring-brand-500 w-full rounded-xl border py-3 pr-4 pl-10 text-sm transition outline-none focus:ring-1"
+                    className="border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring w-full rounded-xl border py-3 pr-4 pl-10 text-sm transition outline-none focus:ring-1"
                     autoFocus
                   />
                   {isSearching && (
-                    <RefreshCw className="text-brand-400 absolute top-3.5 right-3.5 size-4 animate-spin" />
+                    <RefreshCw className="text-primary absolute top-3.5 right-3.5 size-4 animate-spin" />
                   )}
                 </div>
               </div>
@@ -510,7 +510,7 @@ export function CheckinScannerClient({
               {/* Search results list */}
               <div className="space-y-3">
                 {searchResults.length === 0 && searchQuery.trim() && !isSearching && (
-                  <div className="text-surface-500 border-surface-800 rounded-2xl border border-dashed p-8 text-center text-sm">
+                  <div className="text-muted-foreground border-border rounded-2xl border border-dashed p-8 text-center text-sm">
                     No registrations found matching &quot;{searchQuery}&quot;.
                   </div>
                 )}
@@ -518,19 +518,19 @@ export function CheckinScannerClient({
                 {searchResults.map((attendee) => (
                   <div
                     key={attendee.id}
-                    className="border-surface-800 bg-surface-950/70 hover:border-surface-700 flex flex-col justify-between gap-4 rounded-2xl border p-4 transition sm:flex-row sm:items-center"
+                    className="border-border bg-background hover:border-border flex flex-col justify-between gap-4 rounded-2xl border p-4 transition sm:flex-row sm:items-center"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-surface-100 text-sm font-bold">{attendee.name}</span>
-                        <Badge variant="outline" className="font-mono text-[11px]">
+                        <span className="text-foreground text-sm font-bold">{attendee.name}</span>
+                        <Badge variant="outline" className="font-mono text-xs">
                           {attendee.registrationCode}
                         </Badge>
-                        <Badge variant="surface" className="text-[11px]">
+                        <Badge variant="surface" className="text-xs">
                           {attendee.ticketTier}
                         </Badge>
                       </div>
-                      <div className="text-surface-400 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                      <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
                         <span className="inline-flex items-center gap-1">
                           <Mail className="size-3" /> {attendee.email}
                         </span>
@@ -549,11 +549,11 @@ export function CheckinScannerClient({
 
                     <div>
                       {attendee.isCheckedIn ? (
-                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-400">
+                        <div className="border-success/30 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold">
                           <CheckCircle2 className="size-3.5" /> Checked In
                         </div>
                       ) : attendee.status !== "CONFIRMED" ? (
-                        <Badge variant="outline" className="border-amber-500/30 text-amber-400">
+                        <Badge variant="outline" className="border-border text-primary">
                           {attendee.status}
                         </Badge>
                       ) : (
@@ -592,7 +592,7 @@ export function CheckinScannerClient({
                 name="passCode"
                 type="text"
                 placeholder="Or paste/type code manually (e.g. KX-PX01-0001)..."
-                className="border-surface-800 bg-surface-900/80 text-surface-200 placeholder:text-surface-500 focus:border-brand-500 flex-1 rounded-xl border px-4 py-2.5 text-xs outline-none"
+                className="border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-primary flex-1 rounded-xl border px-4 py-2.5 text-xs outline-none"
               />
               <Button type="submit" variant="secondary" size="sm" disabled={isProcessing}>
                 Verify
@@ -608,10 +608,10 @@ export function CheckinScannerClient({
             <div
               className={`rounded-3xl border p-6 shadow-2xl transition-all ${
                 lastResult.success
-                  ? "via-surface-900 to-surface-950 border-emerald-500/40 bg-gradient-to-br from-emerald-950/40"
+                  ? "border-success/40 bg-success/10"
                   : lastResult.alreadyCheckedIn
-                    ? "via-surface-900 to-surface-950 border-amber-500/40 bg-gradient-to-br from-amber-950/40"
-                    : "via-surface-900 to-surface-950 border-rose-500/40 bg-gradient-to-br from-rose-950/40"
+                    ? "border-warning/40 bg-warning/10"
+                    : "border-destructive/40 bg-destructive/10"
               }`}
             >
               <div className="flex items-start justify-between">
@@ -619,10 +619,10 @@ export function CheckinScannerClient({
                   <div
                     className={`flex size-12 items-center justify-center rounded-2xl ${
                       lastResult.success
-                        ? "bg-emerald-500/20 text-emerald-400"
+                        ? "bg-success/20 text-success"
                         : lastResult.alreadyCheckedIn
-                          ? "bg-amber-500/20 text-amber-400"
-                          : "bg-rose-500/20 text-rose-400"
+                          ? "bg-warning/20 text-warning"
+                          : "bg-destructive/20 text-destructive"
                     }`}
                   >
                     {lastResult.success ? (
@@ -634,14 +634,14 @@ export function CheckinScannerClient({
                     )}
                   </div>
                   <div>
-                    <h3 className="text-surface-100 text-base font-bold">
+                    <h3 className="text-foreground text-base font-bold">
                       {lastResult.success
                         ? "Access Approved"
                         : lastResult.alreadyCheckedIn
                           ? "Already Checked In!"
                           : "Entry Declined"}
                     </h3>
-                    <p className="text-surface-400 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       {lastResult.message || lastResult.error}
                     </p>
                   </div>
@@ -650,16 +650,16 @@ export function CheckinScannerClient({
                 <button
                   type="button"
                   onClick={() => setLastResult(null)}
-                  className="text-surface-500 hover:text-surface-300 text-xs"
+                  className="text-muted-foreground hover:text-muted-foreground text-xs"
                 >
                   ✕
                 </button>
               </div>
 
               {lastResult.attendee && (
-                <div className="border-surface-800 mt-5 space-y-3 border-t pt-4">
+                <div className="border-border mt-5 space-y-3 border-t pt-4">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-surface-50 text-lg font-bold">
+                    <span className="text-foreground text-lg font-bold">
                       {lastResult.attendee.name}
                     </span>
                     <Badge variant="brand" className="font-mono text-xs">
@@ -668,23 +668,23 @@ export function CheckinScannerClient({
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-surface-950/60 border-surface-800 rounded-xl border p-2.5">
-                      <span className="text-surface-500 block text-[10px] uppercase">Tier</span>
-                      <span className="text-brand-300 font-semibold">
+                    <div className="bg-background border-border rounded-xl border p-2.5">
+                      <span className="text-muted-foreground block text-xs uppercase">Tier</span>
+                      <span className="text-primary font-semibold">
                         {lastResult.attendee.ticketTier}
                       </span>
                     </div>
-                    <div className="bg-surface-950/60 border-surface-800 rounded-xl border p-2.5">
-                      <span className="text-surface-500 block text-[10px] uppercase">Event</span>
-                      <span className="text-surface-200 block truncate font-semibold">
+                    <div className="bg-background border-border rounded-xl border p-2.5">
+                      <span className="text-muted-foreground block text-xs uppercase">Event</span>
+                      <span className="text-foreground block truncate font-semibold">
                         {lastResult.attendee.eventTitle}
                       </span>
                     </div>
                   </div>
 
                   {lastResult.attendee.college && (
-                    <p className="text-surface-300 flex items-center gap-1.5 text-xs">
-                      <Building className="text-surface-400 size-3" />
+                    <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                      <Building className="text-muted-foreground size-3" />
                       {lastResult.attendee.college}
                     </p>
                   )}
@@ -694,11 +694,11 @@ export function CheckinScannerClient({
           )}
 
           {/* Recent Check-ins Feed */}
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-3xl border p-6">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
+          <div className="border-border bg-card space-y-4 rounded-3xl border p-6">
+            <div className="border-border flex items-center justify-between border-b pb-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="text-brand-400 size-4" />
-                <h3 className="text-surface-100 text-sm font-bold">Live Activity Feed</h3>
+                <Zap className="text-primary size-4" />
+                <h3 className="text-foreground text-sm font-bold">Live Activity Feed</h3>
               </div>
               <Badge variant="outline" className="text-xs">
                 {recentList.length} scans
@@ -707,33 +707,35 @@ export function CheckinScannerClient({
 
             <div className="max-h-[380px] space-y-3 overflow-y-auto pr-1">
               {recentList.length === 0 ? (
-                <p className="text-surface-500 py-8 text-center text-xs">
+                <p className="text-muted-foreground py-8 text-center text-xs">
                   No check-ins recorded yet. Start scanning badges.
                 </p>
               ) : (
                 recentList.map((c) => (
                   <div
                     key={c.id}
-                    className="bg-surface-950/60 border-surface-800/80 flex items-center justify-between rounded-xl border p-3 text-xs"
+                    className="bg-background border-border flex items-center justify-between rounded-xl border p-3 text-xs"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-surface-200 font-semibold">{c.attendeeName}</span>
-                        <Badge variant="surface" className="px-1.5 py-0 text-[10px]">
+                        <span className="text-foreground font-semibold">{c.attendeeName}</span>
+                        <Badge variant="surface" className="px-1.5 py-0 text-xs">
                           {c.ticketTier}
                         </Badge>
                       </div>
-                      <p className="text-surface-500 font-mono text-[11px]">{c.registrationCode}</p>
+                      <p className="text-muted-foreground font-mono text-xs">
+                        {c.registrationCode}
+                      </p>
                     </div>
 
-                    <div className="text-surface-400 text-right text-[11px]">
+                    <div className="text-muted-foreground text-right text-xs">
                       <span>
                         {new Date(c.checkedInAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
                       </span>
-                      <span className="text-surface-500 block text-[10px] uppercase">
+                      <span className="text-muted-foreground block text-xs uppercase">
                         {c.method}
                       </span>
                     </div>

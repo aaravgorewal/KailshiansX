@@ -69,33 +69,33 @@ export default async function AdminCmsPage({ searchParams }: AdminCmsPageProps) 
   }));
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-28">
+    <div className="bg-background min-h-screen pb-28">
       {/* ─── TOP HEADER ─────────────────────────────────────────────────── */}
-      <div className="border-surface-800 bg-surface-900/60 border-b py-4">
+      <div className="border-border bg-card border-b py-4">
         <div className="container-page flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
               href="/admin"
-              className="border-surface-700 bg-surface-800 text-surface-300 hover:text-surface-100 inline-flex size-8 items-center justify-center rounded-lg border transition-colors"
+              className="border-border bg-muted text-muted-foreground hover:text-foreground inline-flex size-8 items-center justify-center rounded-lg border transition-colors"
             >
               <ArrowLeft className="size-4" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <Sliders className="text-brand-400 size-5" />
-                <h1 className="text-surface-50 text-lg font-bold">
+                <Sliders className="text-primary size-5" />
+                <h1 className="text-foreground text-lg font-bold">
                   Ecosystem Content &amp; Team CMS
                 </h1>
               </div>
-              <p className="text-surface-400 text-xs">
+              <p className="text-muted-foreground text-xs">
                 Direct editing for recruitment applications, core profiles, founder manifesto, and
                 KWS charter.
               </p>
             </div>
           </div>
 
-          <div className="border-surface-800 bg-surface-950 text-surface-400 flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs">
-            <ShieldCheck className="text-brand-400 size-4" />
+          <div className="border-border bg-background text-muted-foreground flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs">
+            <ShieldCheck className="text-primary size-4" />
             <span>Admin Clearance Verified</span>
           </div>
         </div>
