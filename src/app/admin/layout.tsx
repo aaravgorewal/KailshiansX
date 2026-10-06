@@ -1,11 +1,14 @@
 // src/app/admin/layout.tsx
 // Root Admin layout protecting all /admin/* routes with requireAdmin()
-// Renders the responsive AdminSidebar and main control panel shell.
+// Renders the responsive AdminSidebar and main control panel shell with ThemeToggle.
 
 import * as React from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { requireAdmin } from "@/server/auth/require-role";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { Button } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   title: "Admin Control Room | KailshiansX",
@@ -19,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await requireAdmin();
 
   return (
-    <div className="bg-surface-950 text-surface-100 flex min-h-screen">
+    <div className="bg-background text-foreground flex min-h-screen">
       {/* Sidebar navigation */}
       <AdminSidebar
         userRole={session.user.role}
@@ -28,30 +31,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
-        {/* Top Header Bar */}
-        <header className="border-surface-850/80 bg-surface-950/80 sticky top-0 z-30 flex h-16 items-center justify-between border-b px-4 backdrop-blur-md sm:px-6 lg:px-8">
-          {/* Left: Mobile spacer + Section title indicator */}
-          <div className="flex items-center gap-3 pl-10 lg:pl-0">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-            <span className="text-surface-400 font-mono text-xs font-medium">
-              PRD §22 Control Center
-            </span>
+        {/* Top Header Bar with ThemeToggle */}
+        <header className="border-border bg-card/90 sticky top-0 z-30 flex h-16 items-center justify-between border-b px-4 backdrop-blur-sm sm:px-6 lg:px-8">
+          {/* Left: Mobile spacer + Section title */}
+          <div className="flex items-center gap-2 pl-10 lg:pl-0">
+            <span className="text-foreground text-sm font-semibold">Admin Control Room</span>
           </div>
 
-          {/* Right: Quick actions */}
+          {/* Right: Quick actions + ThemeToggle */}
           <div className="flex items-center gap-3">
-            <a
-              href="/admin/checkin"
-              className="border-surface-700 bg-surface-900/60 hover:bg-surface-800 text-surface-200 hidden items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors sm:inline-flex"
-            >
-              <span>Scan Passes</span>
-            </a>
-            <a
-              href="/admin/events/new"
-              className="bg-brand-600 hover:bg-brand-500 shadow-brand-600/30 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors"
-            >
-              <span>+ New Event</span>
-            </a>
+            <ThemeToggle />
+            <Button asChild variant="secondary" size="sm" className="hidden sm:inline-flex">
+              <Link href="/admin/checkin">Scan Passes</Link>
+            </Button>
+            <Button asChild variant="primary" size="sm">
+              <Link href="/admin/events/new">+ New Event</Link>
+            </Button>
           </div>
         </header>
 

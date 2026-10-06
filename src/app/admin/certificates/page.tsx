@@ -1,5 +1,5 @@
 // src/app/admin/certificates/page.tsx
-// Certificate Management Studio (PRD §21)
+// Certificate Management Studio ()
 // Admin picks event -> imports participants -> chooses template & positions coordinates -> bulk generates PDFs & queues emails -> tracks delivery rate.
 
 import type { Metadata } from "next";
@@ -80,20 +80,15 @@ export default async function AdminCertificatesPage() {
   return (
     <div className="max-w-6xl space-y-8 pb-16">
       {/* Header */}
-      <div className="border-surface-800 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-border flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="mb-1 flex items-center gap-2">
-            <span className="border-brand-500/20 bg-brand-500/10 text-brand-400 rounded border px-2 py-0.5 font-mono text-[10px] font-bold">
-              PRD §21 Production Engine
-            </span>
-            <span className="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-400">
-              Active
-            </span>
+            <span className="text-muted-foreground text-xs font-semibold">Certificates Studio</span>
           </div>
-          <h1 className="text-surface-50 text-2xl font-extrabold tracking-tight sm:text-3xl">
+          <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
             Certificate Studio &amp; Delivery Engine
           </h1>
-          <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+          <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
             Bulk-generate cryptographically signed vector PDFs, customize template coordinates with
             drag-and-drop, and monitor Resend queue delivery rates.
           </p>

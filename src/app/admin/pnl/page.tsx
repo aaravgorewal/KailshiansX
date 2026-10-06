@@ -1,5 +1,5 @@
 // src/app/admin/pnl/page.tsx
-// Event P&L Dashboard (PRD §23)
+// Event P&L Dashboard ()
 // Server component loading events, series, and initial financial P&L statements.
 
 import type { Metadata } from "next";

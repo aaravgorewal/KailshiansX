@@ -1,5 +1,5 @@
 // src/app/admin/email-logs/page.tsx
-// Admin Email Log & Queue Console (PRD §22 Control Room).
+// Admin Email Log & Queue Console (Control Room).
 
 import type { Metadata } from "next";
 import { requireAdmin } from "@/server/auth/require-role";

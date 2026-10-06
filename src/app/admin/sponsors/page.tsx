@@ -1,5 +1,5 @@
 // src/app/admin/sponsors/page.tsx
-// Sponsor CRM and Partnerships Control Room (PRD §22 & §23)
+// Sponsor CRM and Partnerships Control Room ()
 // Deals pipeline, deliverables tracker, billing & invoices linked directly to events.
 
 import type { Metadata } from "next";

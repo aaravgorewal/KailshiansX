@@ -46,7 +46,7 @@ export default async function AdminHackathonsIndexPage() {
           </h1>
           <p className="text-surface-400 mt-1 text-xs sm:text-sm">
             Manage teams, problem statements, submissions, rubric scoring, leaderboards, and prize
-            disbursements per PRD §9 &amp; §24.
+            disbursements per .
           </p>
         </div>
       </div>
