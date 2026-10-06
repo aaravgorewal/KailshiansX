@@ -65,20 +65,20 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
       header: "City",
       accessorKey: "name",
       sortable: true,
-      cell: (item) => <span className="text-surface-100 text-xs font-bold">{item.name}</span>,
+      cell: (item) => <span className="text-foreground text-xs font-bold">{item.name}</span>,
     },
     {
       header: "State / Region",
       accessorKey: "state",
       sortable: true,
-      cell: (item) => <span className="text-surface-300 text-xs">{item.state}</span>,
+      cell: (item) => <span className="text-muted-foreground text-xs">{item.state}</span>,
     },
     {
       header: "Colleges",
       accessorKey: "collegesCount",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-300 font-mono text-xs">{item.collegesCount}</span>
+        <span className="text-muted-foreground font-mono text-xs">{item.collegesCount}</span>
       ),
     },
     {
@@ -86,7 +86,7 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
       accessorKey: "campusLeadsCount",
       sortable: true,
       cell: (item) => (
-        <span className="text-brand-400 font-mono text-xs font-bold">{item.campusLeadsCount}</span>
+        <span className="text-primary font-mono text-xs font-bold">{item.campusLeadsCount}</span>
       ),
     },
     {
@@ -94,7 +94,7 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
       accessorKey: "eventsCount",
       sortable: true,
       cell: (item) => (
-        <span className="font-mono text-xs font-bold text-purple-400">{item.eventsCount}</span>
+        <span className="text-primary font-mono text-xs font-bold">{item.eventsCount}</span>
       ),
     },
   ];
@@ -103,8 +103,8 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-surface-50 text-2xl font-bold">Community & Regional Chapters</h1>
-          <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+          <h1 className="text-foreground text-2xl font-bold">Community & Regional Chapters</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
             Geographic directory of collegiate chapters, campus fellows, and Tier-2/Tier-3 city
             summits.
           </p>
@@ -113,7 +113,7 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
         <Button
           size="sm"
           onClick={() => setModalOpen(true)}
-          className="bg-brand-600 hover:bg-brand-500 shadow-brand-600/20 flex items-center gap-1.5 self-start text-xs font-bold text-white shadow-md sm:self-auto"
+          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start text-xs font-bold text-white shadow-md sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Add Regional City</span>
@@ -138,32 +138,32 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
       >
         <div className="space-y-4">
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
-              City Name <span className="text-red-400">*</span>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              City Name <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={cityName}
               onChange={(e) => setCityName(e.target.value)}
               placeholder="e.g. Udaipur, Amritsar, Noida"
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
-              State / UT <span className="text-red-400">*</span>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              State / UT <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={stateName}
               onChange={(e) => setStateName(e.target.value)}
               placeholder="e.g. Rajasthan, Punjab, Uttar Pradesh"
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
             />
           </div>
 
-          <div className="border-surface-800 flex justify-end gap-2 border-t pt-2">
+          <div className="border-border flex justify-end gap-2 border-t pt-2">
             <Button
               variant="outline"
               size="sm"
@@ -176,7 +176,7 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
               size="sm"
               onClick={handleCreateCity}
               disabled={isSaving}
-              className="bg-brand-600 hover:bg-brand-500 text-xs text-white"
+              className="bg-primary-hover hover:bg-primary text-xs text-white"
             >
               {isSaving ? "Saving..." : "Add City"}
             </Button>

@@ -46,18 +46,51 @@ interface AdminEmailLogsClientProps {
   initialStats: StatsProps;
 }
 
-const TEMPLATE_LABELS: Record<EmailTemplate, { label: string; color: string }> = {
-  REGISTRATION_CONFIRMATION: { label: "Pass Confirmation", color: "#10b981" },
-  PAYMENT_FAILED: { label: "Payment Failed", color: "#ef4444" },
-  REFUND_PROCESSED: { label: "Refund Processed", color: "#34d399" },
-  APPLICATION_RECEIVED: { label: "App Received", color: "#06b6d4" },
-  STATUS_CHANGE: { label: "Status Update", color: "#8b5cf6" },
-  COLLABORATION_ACK: { label: "Collab Auto-Ack", color: "#38bdf8" },
-  EVENT_REMINDER_24H: { label: "24h Event Countdown", color: "#f59e0b" },
-  CERTIFICATE_ISSUED: { label: "Certificate Issued", color: "#38bdf8" },
-  LEAD_ONBOARDING: { label: "Lead Charter Onboarding", color: "#6366f1" },
-  LEAD_INACTIVITY_NUDGE: { label: "Lead Inactivity Nudge", color: "#f97316" },
-  POST_EVENT_FEEDBACK_NEXT_STEP: { label: "Post-Event Next Step", color: "#ec4899" },
+const TEMPLATE_LABELS: Record<EmailTemplate, { label: string; className: string }> = {
+  REGISTRATION_CONFIRMATION: {
+    label: "Pass Confirmation",
+    className: "border-success/30 bg-success/10 text-success",
+  },
+  PAYMENT_FAILED: {
+    label: "Payment Failed",
+    className: "border-destructive/30 bg-destructive/10 text-destructive",
+  },
+  REFUND_PROCESSED: {
+    label: "Refund Processed",
+    className: "border-success/30 bg-success/10 text-success",
+  },
+  APPLICATION_RECEIVED: {
+    label: "App Received",
+    className: "border-primary/30 bg-primary/10 text-primary",
+  },
+  STATUS_CHANGE: {
+    label: "Status Update",
+    className: "border-primary/30 bg-primary/10 text-primary",
+  },
+  COLLABORATION_ACK: {
+    label: "Collab Auto-Ack",
+    className: "border-primary/30 bg-primary/10 text-primary",
+  },
+  EVENT_REMINDER_24H: {
+    label: "24h Event Countdown",
+    className: "border-warning/30 bg-warning/10 text-warning",
+  },
+  CERTIFICATE_ISSUED: {
+    label: "Certificate Issued",
+    className: "border-primary/30 bg-primary/10 text-primary",
+  },
+  LEAD_ONBOARDING: {
+    label: "Lead Charter Onboarding",
+    className: "border-primary/30 bg-primary/10 text-primary",
+  },
+  LEAD_INACTIVITY_NUDGE: {
+    label: "Lead Inactivity Nudge",
+    className: "border-warning/30 bg-warning/10 text-warning",
+  },
+  POST_EVENT_FEEDBACK_NEXT_STEP: {
+    label: "Post-Event Next Step",
+    className: "border-primary/30 bg-primary/10 text-primary",
+  },
 };
 
 export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLogsClientProps) {
@@ -124,7 +157,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
           <Badge
             variant="surface"
             size="sm"
-            className="border border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
+            className="border-success/20 bg-success/10 text-success border"
           >
             SENT
           </Badge>
@@ -159,27 +192,25 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
       cell: (item) => {
         const meta = TEMPLATE_LABELS[item.template] || {
           label: item.template,
-          color: "#94a3b8",
+          className: "border-border bg-muted text-muted-foreground",
         };
         return (
           <div className="space-y-1">
-            <p className="text-surface-100 font-mono text-xs font-semibold tracking-tight sm:text-sm">
+            <p className="text-foreground font-mono text-xs font-semibold tracking-tight sm:text-sm">
               {item.recipient}
             </p>
             <div className="flex items-center gap-1.5">
               <span
-                className="rounded border px-2 py-0.5 font-mono text-[10px] font-bold"
-                style={{
-                  color: meta.color,
-                  backgroundColor: `${meta.color}15`,
-                  borderColor: `${meta.color}30`,
-                }}
+                className={cn(
+                  "rounded border px-2 py-0.5 font-mono text-xs font-bold",
+                  meta.className
+                )}
               >
                 {meta.label}
               </span>
               {item.messageId && (
                 <span
-                  className="text-surface-500 max-w-[120px] truncate font-mono text-[10px]"
+                  className="text-muted-foreground max-w-[120px] truncate font-mono text-xs"
                   title={item.messageId}
                 >
                   {item.messageId}
@@ -196,11 +227,11 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
       sortable: true,
       cell: (item) => (
         <div className="max-w-xs truncate sm:max-w-sm">
-          <p className="text-surface-200 truncate text-xs font-medium" title={item.subject}>
+          <p className="text-foreground truncate text-xs font-medium" title={item.subject}>
             {item.subject}
           </p>
           {item.error && (
-            <p className="mt-0.5 truncate text-[11px] text-red-400" title={item.error}>
+            <p className="text-destructive mt-0.5 truncate text-xs" title={item.error}>
               Error: {item.error}
             </p>
           )}
@@ -221,10 +252,10 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
         <span
           className={`rounded px-2 py-0.5 font-mono text-xs ${
             item.attempts >= item.maxAttempts
-              ? "border border-red-500/20 bg-red-500/10 text-red-400"
+              ? "border-destructive/20 bg-destructive/10 text-destructive border"
               : item.attempts > 0
-                ? "bg-amber-500/10 text-amber-400"
-                : "text-surface-400"
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground"
           }`}
         >
           {item.attempts} / {item.maxAttempts}
@@ -236,14 +267,14 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
       accessorKey: "createdAt",
       sortable: true,
       cell: (item) => (
-        <div className="text-surface-400 space-y-0.5 text-[11px]">
+        <div className="text-muted-foreground space-y-0.5 text-xs">
           <p title="Enqueued At">Enqueued: {formatDate(item.createdAt)}</p>
           {item.sentAt ? (
-            <p className="text-emerald-400" title="Dispatched At">
+            <p className="text-success" title="Dispatched At">
               Sent: {formatDate(item.sentAt)}
             </p>
           ) : (
-            <p className="text-amber-400" title="Scheduled For">
+            <p className="text-primary" title="Scheduled For">
               Scheduled: {formatDate(item.scheduledFor)}
             </p>
           )}
@@ -261,7 +292,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-surface-300 h-7 px-2 text-[11px] hover:text-white"
+                className="text-muted-foreground h-7 px-2 text-xs hover:text-white"
                 onClick={() => setPreviewLog(item)}
                 title="Preview Rendered Email"
               >
@@ -272,7 +303,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
             <Button
               variant="ghost"
               size="sm"
-              className="text-surface-300 h-7 px-2 text-[11px] hover:text-white"
+              className="text-muted-foreground h-7 px-2 text-xs hover:text-white"
               onClick={() => setDetailsLog(item)}
               title="Inspect JSON Payload & Error Details"
             >
@@ -283,7 +314,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
               <Button
                 variant="secondary"
                 size="sm"
-                className="bg-brand-600/20 text-brand-300 hover:bg-brand-600 border-brand-500/30 h-7 border px-2.5 text-[11px] hover:text-white"
+                className="bg-primary-hover/20 text-primary hover:bg-primary-hover border-primary/30 h-7 border px-2.5 text-xs hover:text-white"
                 onClick={() => handleRetry(item.id)}
                 disabled={isRetrying}
                 title="Retry Send Now"
@@ -329,21 +360,21 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="border-surface-800 flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-border flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="mb-1 flex items-center gap-2">
-            <span className="bg-brand-500/10 text-brand-400 border-brand-500/20 rounded border px-2 py-0.5 font-mono text-[10px] font-bold">
-              PRD §22 Control Room
+            <span className="bg-primary/10 text-primary border-primary/20 rounded border px-2 py-0.5 font-mono text-xs font-bold">
+              Control Room
             </span>
-            <span className="text-surface-500 text-xs">·</span>
-            <span className="text-surface-400 font-mono text-xs">
+            <span className="text-muted-foreground text-xs">·</span>
+            <span className="text-muted-foreground font-mono text-xs">
               Email Queue &amp; Delivery Logs
             </span>
           </div>
-          <h1 className="text-surface-50 text-2xl font-extrabold tracking-tight sm:text-3xl">
+          <h1 className="text-foreground text-2xl font-extrabold tracking-tight sm:text-3xl">
             Email Delivery &amp; Job Queue
           </h1>
-          <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+          <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
             Centralized React Email delivery pipeline with automated retries, forensic audit logs,
             and rendered email inspection.
           </p>
@@ -355,7 +386,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
             size="sm"
             onClick={handleProcessQueue}
             disabled={isProcessingQueue}
-            className="bg-surface-800 hover:bg-surface-700 text-surface-100 border-surface-700 border text-xs"
+            className="bg-muted hover:bg-muted text-foreground border-border border text-xs"
           >
             <Send className={`mr-1.5 h-3.5 w-3.5 ${isProcessingQueue ? "animate-pulse" : ""}`} />
             <span>{isProcessingQueue ? "Processing Sweep..." : "Run Queue Sweep"}</span>
@@ -365,54 +396,54 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
 
       {/* Telemetry Stat Cards */}
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-5">
-        <div className="bg-surface-900/60 border-surface-800 rounded-xl border p-4">
-          <div className="text-surface-400 mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-bold tracking-wider uppercase">Total Enqueued</span>
-            <Send className="text-surface-400 h-4 w-4" />
+        <div className="bg-card border-border rounded-xl border p-4">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider uppercase">Total Enqueued</span>
+            <Send className="text-muted-foreground h-4 w-4" />
           </div>
-          <p className="text-surface-100 font-mono text-2xl font-black">
+          <p className="text-foreground font-mono text-2xl font-black">
             {stats.total.toLocaleString()}
           </p>
         </div>
 
-        <div className="bg-surface-900/60 rounded-xl border border-emerald-500/20 p-4">
-          <div className="mb-2 flex items-center justify-between text-emerald-400">
-            <span className="text-[11px] font-bold tracking-wider uppercase">Delivered</span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+        <div className="bg-card border-success/20 rounded-xl border p-4">
+          <div className="text-success mb-2 flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider uppercase">Delivered</span>
+            <CheckCircle2 className="text-success h-4 w-4" />
           </div>
-          <p className="font-mono text-2xl font-black text-emerald-400">
+          <p className="text-success font-mono text-2xl font-black">
             {stats.sent.toLocaleString()}
           </p>
         </div>
 
-        <div className="bg-surface-900/60 rounded-xl border border-red-500/20 p-4">
-          <div className="mb-2 flex items-center justify-between text-red-400">
-            <span className="text-[11px] font-bold tracking-wider uppercase">Failed</span>
-            <AlertTriangle className="h-4 w-4 text-red-400" />
+        <div className="bg-card border-destructive/20 rounded-xl border p-4">
+          <div className="text-destructive mb-2 flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider uppercase">Failed</span>
+            <AlertTriangle className="text-destructive h-4 w-4" />
           </div>
-          <p className="font-mono text-2xl font-black text-red-400">
+          <p className="text-destructive font-mono text-2xl font-black">
             {stats.failed.toLocaleString()}
           </p>
         </div>
 
-        <div className="bg-surface-900/60 rounded-xl border border-amber-500/20 p-4">
-          <div className="mb-2 flex items-center justify-between text-amber-400">
-            <span className="text-[11px] font-bold tracking-wider uppercase">Pending / Queued</span>
-            <Clock className="h-4 w-4 text-amber-400" />
+        <div className="bg-card border-border rounded-xl border p-4">
+          <div className="text-primary mb-2 flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider uppercase">Pending / Queued</span>
+            <Clock className="text-primary h-4 w-4" />
           </div>
-          <p className="font-mono text-2xl font-black text-amber-400">
+          <p className="text-primary font-mono text-2xl font-black">
             {stats.pending.toLocaleString()}
           </p>
         </div>
 
-        <div className="bg-surface-900/60 border-brand-500/20 col-span-2 rounded-xl border p-4 sm:col-span-1">
-          <div className="text-brand-400 mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-bold tracking-wider uppercase">Success Rate</span>
+        <div className="bg-card border-primary/20 col-span-2 rounded-xl border p-4 sm:col-span-1">
+          <div className="text-primary mb-2 flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider uppercase">Success Rate</span>
             <span className="font-mono text-xs font-bold">{stats.deliveryRate}%</span>
           </div>
-          <div className="bg-surface-800 mt-3 h-2 w-full overflow-hidden rounded-full">
+          <div className="bg-muted mt-3 h-2 w-full overflow-hidden rounded-full">
             <div
-              className="bg-brand-500 h-full rounded-full transition-all duration-500"
+              className="bg-primary h-full rounded-full transition-all duration-500"
               style={{ width: `${stats.deliveryRate}%` }}
             />
           </div>
@@ -443,15 +474,15 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
       >
         {previewLog && (
           <div className="space-y-4">
-            <div className="bg-surface-950 border-surface-800 flex items-center justify-between rounded-lg border px-3 py-2 text-xs">
-              <span className="text-surface-400">
-                Subject: <strong className="text-surface-200">{previewLog.subject}</strong>
+            <div className="bg-background border-border flex items-center justify-between rounded-lg border px-3 py-2 text-xs">
+              <span className="text-muted-foreground">
+                Subject: <strong className="text-foreground">{previewLog.subject}</strong>
               </span>
-              <span className="text-surface-500 font-mono">{previewLog.recipient}</span>
+              <span className="text-muted-foreground font-mono">{previewLog.recipient}</span>
             </div>
 
             {previewLog.html ? (
-              <div className="border-surface-800 h-[520px] w-full overflow-hidden rounded-xl border bg-[#07090e]">
+              <div className="border-border bg-background h-[520px] w-full overflow-hidden rounded-xl border">
                 <iframe
                   title="Rendered Email HTML"
                   srcDoc={previewLog.html}
@@ -460,7 +491,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
                 />
               </div>
             ) : (
-              <div className="text-surface-400 bg-surface-950 border-surface-800 rounded-xl border p-8 text-center">
+              <div className="text-muted-foreground bg-background border-border rounded-xl border p-8 text-center">
                 <p>HTML has not been pre-rendered for this log yet.</p>
               </div>
             )}
@@ -483,8 +514,8 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
         {detailsLog && (
           <div className="space-y-4">
             {detailsLog.error && (
-              <div className="space-y-1 rounded-lg border border-red-500/20 bg-red-500/10 p-3.5 text-xs text-red-300">
-                <p className="flex items-center gap-1.5 font-bold text-red-400">
+              <div className="border-destructive/20 bg-destructive/10 text-destructive space-y-1 rounded-lg border p-3.5 text-xs">
+                <p className="text-destructive flex items-center gap-1.5 font-bold">
                   <AlertTriangle className="h-4 w-4" />
                   <span>Delivery Error:</span>
                 </p>
@@ -492,34 +523,34 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
               </div>
             )}
 
-            <div className="bg-surface-950 border-surface-800 grid grid-cols-2 gap-3 rounded-lg border p-3.5 text-xs">
+            <div className="bg-background border-border grid grid-cols-2 gap-3 rounded-lg border p-3.5 text-xs">
               <div>
-                <span className="text-surface-400">Message ID:</span>
-                <p className="text-surface-200 truncate font-mono">
+                <span className="text-muted-foreground">Message ID:</span>
+                <p className="text-foreground truncate font-mono">
                   {detailsLog.messageId || "N/A"}
                 </p>
               </div>
               <div>
-                <span className="text-surface-400">Template:</span>
-                <p className="text-surface-200 font-mono">{detailsLog.template}</p>
+                <span className="text-muted-foreground">Template:</span>
+                <p className="text-foreground font-mono">{detailsLog.template}</p>
               </div>
               <div>
-                <span className="text-surface-400">Scheduled For:</span>
-                <p className="text-surface-200">{formatDate(detailsLog.scheduledFor)}</p>
+                <span className="text-muted-foreground">Scheduled For:</span>
+                <p className="text-foreground">{formatDate(detailsLog.scheduledFor)}</p>
               </div>
               <div>
-                <span className="text-surface-400">Sent At:</span>
-                <p className="text-surface-200">
+                <span className="text-muted-foreground">Sent At:</span>
+                <p className="text-foreground">
                   {detailsLog.sentAt ? formatDate(detailsLog.sentAt) : "Not Sent"}
                 </p>
               </div>
             </div>
 
             <div>
-              <p className="text-surface-400 mb-1.5 text-xs font-bold tracking-wider uppercase">
+              <p className="text-muted-foreground mb-1.5 text-xs font-bold tracking-wider uppercase">
                 Template Data Payload (JSON)
               </p>
-              <pre className="bg-surface-950 border-surface-800 max-h-64 overflow-y-auto rounded-lg border p-3 font-mono text-[11px] break-all whitespace-pre-wrap text-cyan-300">
+              <pre className="bg-background border-border text-primary max-h-64 overflow-y-auto rounded-lg border p-3 font-mono text-xs break-all whitespace-pre-wrap">
                 {JSON.stringify(detailsLog.payload, null, 2)}
               </pre>
             </div>

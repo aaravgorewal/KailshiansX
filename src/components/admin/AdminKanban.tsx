@@ -1,16 +1,13 @@
 // src/components/admin/AdminKanban.tsx
-// Universal Kanban board for pipelines (Team Applications, Campus Leads, State Leads, Collaborations)
-// Meets PRD §22 pipeline workflow requirements.
+// Universal Kanban board for pipelines using design tokens
 
 "use client";
 
 import * as React from "react";
-import { Badge } from "@/components/ui/Badge";
 
 export interface KanbanColumn<T> {
   id: string;
   title: string;
-  badgeVariant?: "default" | "success" | "warning" | "error" | "info";
   items: T[];
 }
 
@@ -56,15 +53,15 @@ export function AdminKanban<T extends KanbanItemProps>({
         return (
           <div
             key={column.id}
-            className="bg-surface-900/50 border-surface-800 flex w-80 flex-shrink-0 flex-col rounded-xl border"
+            className="border-border bg-card flex w-80 shrink-0 flex-col rounded-lg border"
           >
             {/* Column Header */}
-            <div className="border-surface-800/80 bg-surface-900/90 flex items-center justify-between rounded-t-xl border-b p-3.5">
+            <div className="border-border bg-card flex items-center justify-between rounded-t-lg border-b p-3.5">
               <div className="flex items-center gap-2">
-                <span className="text-surface-200 text-xs font-bold tracking-wider uppercase">
+                <span className="text-foreground text-xs font-semibold tracking-wider uppercase">
                   {column.title}
                 </span>
-                <span className="bg-surface-800 text-surface-400 rounded-full px-2 py-0.5 text-xs font-semibold">
+                <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium">
                   {column.items.length}
                 </span>
               </div>
@@ -73,8 +70,8 @@ export function AdminKanban<T extends KanbanItemProps>({
             {/* Column Cards */}
             <div className="max-h-[calc(100vh-280px)] min-h-[300px] flex-1 space-y-2.5 overflow-y-auto p-2.5">
               {column.items.length === 0 ? (
-                <div className="border-surface-800/60 flex h-28 items-center justify-center rounded-lg border border-dashed p-4 text-center">
-                  <p className="text-surface-500 text-xs">No records in this stage</p>
+                <div className="border-border flex h-28 items-center justify-center rounded-md border border-dashed p-4 text-center">
+                  <p className="text-muted-foreground text-xs">No records in this stage</p>
                 </div>
               ) : (
                 column.items.map((item) => {
@@ -84,60 +81,53 @@ export function AdminKanban<T extends KanbanItemProps>({
                     <div
                       key={item.id}
                       onClick={() => onItemClick && onItemClick(item)}
-                      className={`group bg-surface-850/80 hover:bg-surface-800 border-surface-750/60 hover:border-brand-500/40 relative cursor-pointer rounded-lg border p-3.5 shadow-sm transition-all ${
+                      className={`border-border bg-background hover:bg-muted relative cursor-pointer rounded-md border p-3.5 transition-colors ${
                         isThisMoving ? "pointer-events-none opacity-50" : ""
                       }`}
                     >
                       {/* Top tag & date */}
                       <div className="mb-2 flex items-center justify-between gap-2">
                         {item.tag && (
-                          <Badge variant="outline" size="sm" className="text-[10px] font-semibold">
+                          <span className="border-border bg-muted text-muted-foreground inline-block rounded border px-1.5 py-0.5 text-xs font-medium">
                             {item.tag}
-                          </Badge>
+                          </span>
                         )}
                         {item.date && (
-                          <span className="text-surface-500 text-[10px]">{item.date}</span>
+                          <span className="text-muted-foreground text-xs">{item.date}</span>
                         )}
                       </div>
 
                       {/* Title & subtitle */}
-                      <h4 className="text-surface-100 group-hover:text-brand-300 text-sm font-semibold transition-colors">
-                        {item.title}
-                      </h4>
+                      <h4 className="text-foreground text-xs font-semibold">{item.title}</h4>
                       {item.subtitle && (
-                        <p className="text-surface-400 mt-0.5 line-clamp-1 text-xs">
-                          {item.subtitle}
-                        </p>
+                        <p className="text-muted-foreground mt-0.5 text-xs">{item.subtitle}</p>
                       )}
 
-                      {/* Details pills */}
+                      {/* Detail metrics */}
                       {item.details && item.details.length > 0 && (
-                        <div className="border-surface-800/60 text-surface-300 mt-2.5 space-y-1 border-t pt-2 text-xs">
-                          {item.details.map(
-                            (det, i) =>
-                              det.value && (
-                                <div
-                                  key={i}
-                                  className="flex items-center gap-1.5 truncate text-[11px]"
-                                >
-                                  <span className="text-surface-500">{det.label}:</span>
-                                  <span className="text-surface-200 truncate">{det.value}</span>
-                                </div>
-                              )
-                          )}
+                        <div className="border-border mt-2.5 space-y-1 border-t pt-2">
+                          {item.details.map((d, dIdx) => (
+                            <div key={dIdx} className="flex justify-between text-xs">
+                              <span className="text-muted-foreground">{d.label}</span>
+                              <span className="text-foreground max-w-[140px] truncate text-right font-medium">
+                                {d.value ?? "—"}
+                              </span>
+                            </div>
+                          ))}
                         </div>
                       )}
 
-                      {/* Quick stage transition dropdown */}
+                      {/* Stage Mover Selector */}
                       <div
-                        className="border-surface-800 mt-3 flex items-center justify-between border-t pt-2"
+                        className="mt-3 flex items-center justify-between"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <span className="text-surface-500 text-[10px] font-medium">Stage:</span>
+                        <span className="text-muted-foreground text-xs">Move:</span>
                         <select
                           value={item.currentStatus}
+                          disabled={isThisMoving}
                           onChange={(e) => handleStatusSelect(item.id, e.target.value)}
-                          className="bg-surface-900 border-surface-700 text-surface-200 focus:border-brand-500 rounded border px-2 py-0.5 text-[11px] focus:outline-none"
+                          className="border-input bg-background text-foreground focus:border-primary rounded border px-2 py-0.5 text-xs focus:outline-none"
                         >
                           {statusOptions.map((opt) => (
                             <option key={opt.value} value={opt.value}>

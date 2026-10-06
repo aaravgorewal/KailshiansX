@@ -13,7 +13,7 @@ import {
   Building2,
   MapPin,
   CheckCircle2,
-  Sparkles,
+  Zap,
   BarChart3,
   Percent,
 } from "lucide-react";
@@ -115,19 +115,17 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
   return (
     <div className="animate-in fade-in space-y-8 duration-300">
       {/* ─── TOP HERO COCKPIT ──────────────────────────────────────────────── */}
-      <div className="border-surface-800 bg-surface-900/60 relative overflow-hidden rounded-3xl border p-6 backdrop-blur-xl sm:p-8">
-        <div className="bg-brand-500/10 pointer-events-none absolute top-0 right-0 -mt-12 -mr-12 h-64 w-64 rounded-full blur-3xl" />
-
+      <div className="border-border bg-card relative overflow-hidden rounded-3xl border p-6 backdrop-blur-xl sm:p-8">
         <div className="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="space-y-2">
-            <div className="border-brand-500/30 bg-brand-500/10 text-brand-400 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>PRD §29 Executive Intelligence</span>
+            <div className="border-primary/30 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
+              <Zap className="h-3.5 w-3.5" />
+              <span>Executive Intelligence</span>
             </div>
             <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
               Community Analytics & Success Metrics
             </h1>
-            <p className="text-surface-300 max-w-2xl text-sm leading-relaxed">
+            <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed">
               Real-time telemetry across the 12 core community KPIs: from builder acquisition and
               repeat attendance to geographic coverage, financial health, and leadership
               progression.
@@ -141,32 +139,32 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               size="sm"
               className="flex items-center gap-2"
             >
-              <Download className="text-brand-400 h-4 w-4" />
-              <span>Export §29 CSV Report</span>
+              <Download className="text-primary h-4 w-4" />
+              <span>Export CSV Report</span>
             </Button>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="border-surface-800/80 mt-8 flex flex-wrap gap-2 border-t pt-6">
+        <div className="border-border mt-8 flex flex-wrap gap-2 border-t pt-6">
           <button
             onClick={() => setActiveTab("EXECUTIVE")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "EXECUTIVE"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "bg-surface-950/60 text-surface-400 hover:text-white"
+                ? "bg-primary text-white shadow-md"
+                : "bg-background text-muted-foreground hover:text-white"
             }`}
           >
             <BarChart3 className="h-4 w-4" />
-            <span>12 Core Success Metrics (PRD §29)</span>
+            <span>12 Core Success Metrics ()</span>
           </button>
 
           <button
             onClick={() => setActiveTab("AUDIENCE")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "AUDIENCE"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "bg-surface-950/60 text-surface-400 hover:text-white"
+                ? "bg-primary text-white shadow-md"
+                : "bg-background text-muted-foreground hover:text-white"
             }`}
           >
             <Users className="h-4 w-4" />
@@ -177,8 +175,8 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             onClick={() => setActiveTab("LEADERSHIP")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "LEADERSHIP"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "bg-surface-950/60 text-surface-400 hover:text-white"
+                ? "bg-primary text-white shadow-md"
+                : "bg-background text-muted-foreground hover:text-white"
             }`}
           >
             <MapPin className="h-4 w-4" />
@@ -189,8 +187,8 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             onClick={() => setActiveTab("COMMERCIAL")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "COMMERCIAL"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "bg-surface-950/60 text-surface-400 hover:text-white"
+                ? "bg-primary text-white shadow-md"
+                : "bg-background text-muted-foreground hover:text-white"
             }`}
           >
             <DollarSign className="h-4 w-4" />
@@ -204,72 +202,72 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
         <div className="space-y-6">
           {/* North Star Health Gauge */}
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
-            <div className="border-brand-500/40 from-brand-950/50 to-surface-900 relative overflow-hidden rounded-3xl border bg-gradient-to-br p-6 backdrop-blur-md">
-              <span className="text-surface-400 font-mono text-[11px] font-bold tracking-wider uppercase">
+            <div className="border-border bg-card relative overflow-hidden rounded-3xl border p-6">
+              <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
                 Community Health Index
               </span>
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-5xl font-black tracking-tight text-white">
+                <span className="text-foreground text-5xl font-black tracking-tight">
                   {metrics.summary.communityHealthScore}
                 </span>
-                <span className="text-brand-400 text-sm font-bold">/ 100</span>
+                <span className="text-primary text-sm font-bold">/ 100</span>
               </div>
-              <p className="text-surface-300 mt-3 text-xs">
+              <p className="text-muted-foreground mt-3 text-xs">
                 Composite diagnostic evaluating retention, conversion, regional reach, and
                 leadership progression.
               </p>
             </div>
 
-            <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
-              <span className="text-surface-400 font-mono text-[11px] font-bold tracking-wider uppercase">
+            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+              <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
                 1. Monthly Active Builders (MAU)
               </span>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-3xl font-black text-white">
                   {metrics.mau.current30d.toLocaleString()}
                 </span>
-                <span className="text-xs font-bold text-emerald-400">
+                <span className="text-success text-xs font-bold">
                   {metrics.mau.growthPct >= 0
                     ? `+${metrics.mau.growthPct}%`
                     : `${metrics.mau.growthPct}%`}{" "}
                   MoM
                 </span>
               </div>
-              <p className="text-surface-400 mt-3 text-xs">
+              <p className="text-muted-foreground mt-3 text-xs">
                 Avg ~{metrics.mau.dailyEngagementAvg} daily active builder touchpoints.
               </p>
             </div>
 
-            <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
-              <span className="text-surface-400 font-mono text-[11px] font-bold tracking-wider uppercase">
+            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+              <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
                 4. Repeat Attendee Rate
               </span>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-3xl font-black text-white">
                   {metrics.repeatAttendees.repeatAttendanceRate}%
                 </span>
-                <span className="text-xs font-bold text-purple-400">
+                <span className="text-primary text-xs font-bold">
                   ({metrics.repeatAttendees.repeatAttendeesCount} builders)
                 </span>
               </div>
-              <p className="text-surface-400 mt-3 text-xs">
+              <p className="text-muted-foreground mt-3 text-xs">
                 {metrics.repeatAttendees.loyaltyTiers.fourPlus} super-builders with &ge; 4 events.
               </p>
             </div>
 
-            <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
-              <span className="text-surface-400 font-mono text-[11px] font-bold tracking-wider uppercase">
-                12. Role Progression Rate (PRD §30)
+            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+              <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
+                12. Role Progression Rate ()
               </span>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-3xl font-black text-white">
                   {metrics.roleProgression.progressionRatePct}%
                 </span>
-                <span className="text-xs font-bold text-amber-400">
+                <span className="text-primary text-xs font-bold">
                   ({metrics.roleProgression.attendeesWithCommunityRole} leaders)
                 </span>
               </div>
-              <p className="text-surface-400 mt-3 text-xs">
+              <p className="text-muted-foreground mt-3 text-xs">
                 Attendees progressing to campus, state, mentor, or chapter leadership.
               </p>
             </div>
@@ -278,21 +276,21 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
           {/* 12 Metric Cards Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Metric 2: Registrations */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">2. Event Registrations</span>
-                <Calendar className="text-brand-400 h-4 w-4" />
+                <Calendar className="text-primary h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.registrations.totalLifetime.toLocaleString()}
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Last 30 Days:</span>
-                <strong className="font-bold text-emerald-400">
+                <strong className="text-success font-bold">
                   +{metrics.registrations.last30Days}
                 </strong>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Confirmed Attendees:</span>
                 <span className="font-medium text-white">
                   {metrics.registrations.totalConfirmed}
@@ -301,42 +299,42 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 3: Paid Conversion */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">3. Paid Ticket Conversion</span>
-                <Percent className="h-4 w-4 text-emerald-400" />
+                <Percent className="text-success h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.paidConversion.conversionRate}%
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Paid Passes Sold:</span>
                 <span className="font-medium text-white">
                   {metrics.paidConversion.paidTickets} / {metrics.paidConversion.totalTickets}
                 </span>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Total Ticket Revenue:</span>
-                <strong className="font-bold text-emerald-400">
+                <strong className="text-success font-bold">
                   ₹{metrics.paidConversion.totalCapturedRevenue.toLocaleString("en-IN")}
                 </strong>
               </div>
             </div>
 
             {/* Metric 5: Workshop & Talk Participation */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">5. Workshop & Talk Attendance</span>
-                <Activity className="h-4 w-4 text-purple-400" />
+                <Activity className="text-primary h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.workshopTalkParticipation.combinedAttendees.toLocaleString()}
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Workshops: {metrics.workshopTalkParticipation.totalWorkshops}</span>
                 <span>Tech Talks: {metrics.workshopTalkParticipation.totalTechTalks}</span>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Average Attendance:</span>
                 <span className="font-medium text-white">
                   ~{metrics.workshopTalkParticipation.avgAttendeesPerSession} / session
@@ -345,21 +343,21 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 6: Campus Lead Activation */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">6. Campus Lead Activation</span>
-                <Building2 className="h-4 w-4 text-amber-400" />
+                <Building2 className="text-primary h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.leadApplications.campus.activationRate}%
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Active Leads:</span>
-                <strong className="font-bold text-emerald-400">
+                <strong className="text-success font-bold">
                   {metrics.leadApplications.campus.active} active
                 </strong>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Colleges Represented:</span>
                 <span className="font-medium text-white">
                   {metrics.leadApplications.campus.uniqueColleges} colleges
@@ -368,22 +366,22 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 7: State Lead Coverage */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">7. State Lead Coverage</span>
-                <MapPin className="h-4 w-4 text-rose-400" />
+                <MapPin className="text-destructive h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.stateCoverage.coveragePct}%
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Covered Territories:</span>
                 <strong className="font-bold text-white">
                   {metrics.stateCoverage.coveredCount} / {metrics.stateCoverage.totalStatesAndUTs}{" "}
                   States & UTs
                 </strong>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Active State Executives:</span>
                 <span className="font-medium text-white">
                   {metrics.leadApplications.state.active} leads
@@ -392,69 +390,69 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 8: Collaboration Leads */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">8. Inbound Collaboration Leads</span>
-                <Users className="h-4 w-4 text-cyan-400" />
+                <Users className="text-primary h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.collaborationLeads.conversionRate}%
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Total Inbound Leads:</span>
                 <span className="font-medium text-white">{metrics.collaborationLeads.total}</span>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Confirmed / Won:</span>
-                <strong className="font-bold text-emerald-400">
+                <strong className="text-success font-bold">
                   {metrics.collaborationLeads.wonCount} partnerships
                 </strong>
               </div>
             </div>
 
             {/* Metric 9: Sponsor Deal Conversion */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">9. Sponsor Conversion</span>
-                <DollarSign className="h-4 w-4 text-emerald-400" />
+                <DollarSign className="text-success h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.sponsorConversion.conversionRate}%
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Deals Won:</span>
                 <strong className="font-medium text-white">
                   {metrics.sponsorConversion.wonDeals} / {metrics.sponsorConversion.totalDeals}
                 </strong>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Closed Sponsor Revenue:</span>
-                <strong className="font-bold text-emerald-400">
+                <strong className="text-success font-bold">
                   ₹{metrics.sponsorConversion.closedWonValue.toLocaleString("en-IN")}
                 </strong>
               </div>
             </div>
 
             {/* Metric 10: Event Profitability */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">10. Event P&L Profit Margin</span>
-                <TrendingUp className="h-4 w-4 text-emerald-400" />
+                <TrendingUp className="text-success h-4 w-4" />
               </div>
               <p
-                className={`mt-2 text-2xl font-bold ${metrics.profitability.profitMarginPct >= 0 ? "text-emerald-400" : "text-rose-400"}`}
+                className={`mt-2 text-2xl font-bold ${metrics.profitability.profitMarginPct >= 0 ? "text-success" : "text-destructive"}`}
               >
                 {metrics.profitability.profitMarginPct}%
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Net P&L:</span>
                 <strong
-                  className={`font-bold ${metrics.profitability.netProfit >= 0 ? "text-emerald-400" : "text-rose-400"}`}
+                  className={`font-bold ${metrics.profitability.netProfit >= 0 ? "text-success" : "text-destructive"}`}
                 >
                   ₹{metrics.profitability.netProfit.toLocaleString("en-IN")}
                 </strong>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Profitable Events Ratio:</span>
                 <span className="font-medium text-white">
                   {metrics.profitability.profitableEventsRatio}%
@@ -463,21 +461,21 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 11: Certificate Delivery Rate */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <div className="text-surface-400 flex items-center justify-between text-xs">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">11. Certificate Delivery Rate</span>
-                <Award className="h-4 w-4 text-amber-400" />
+                <Award className="text-primary h-4 w-4" />
               </div>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.certificates.deliveryRatePct}%
               </p>
-              <div className="text-surface-400 mt-2 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Certificates Generated:</span>
                 <span className="font-medium text-white">{metrics.certificates.totalIssued}</span>
               </div>
-              <div className="text-surface-400 mt-1 flex justify-between text-xs">
+              <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Claimed / Verified:</span>
-                <strong className="font-bold text-emerald-400">
+                <strong className="text-success font-bold">
                   {metrics.certificates.totalClaimedOrVerified} verified
                 </strong>
               </div>
@@ -491,12 +489,12 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Format Breakdown */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
               <h2 className="flex items-center gap-2 text-lg font-bold text-white">
-                <Calendar className="text-brand-400 h-5 w-5" />
+                <Calendar className="text-primary h-5 w-5" />
                 Registrations by Event Format
               </h2>
-              <p className="text-surface-400 mt-1 text-xs">
+              <p className="text-muted-foreground mt-1 text-xs">
                 Breakdown across KailshiansX community properties.
               </p>
 
@@ -510,13 +508,13 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                     <div key={format} className="space-y-1">
                       <div className="flex justify-between text-xs">
                         <span className="font-bold text-white">{format}</span>
-                        <span className="text-surface-400">
+                        <span className="text-muted-foreground">
                           {count} ({pct}%)
                         </span>
                       </div>
-                      <div className="bg-surface-950 h-2 w-full overflow-hidden rounded-full">
+                      <div className="bg-background h-2 w-full overflow-hidden rounded-full">
                         <div
-                          className="bg-brand-500 h-full rounded-full"
+                          className="bg-primary h-full rounded-full"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
@@ -527,49 +525,49 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Repeat Attendee Cohorts */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
               <h2 className="flex items-center gap-2 text-lg font-bold text-white">
-                <Users className="h-5 w-5 text-purple-400" />
+                <Users className="text-primary h-5 w-5" />
                 Builder Loyalty Cohorts
               </h2>
-              <p className="text-surface-400 mt-1 text-xs">
+              <p className="text-muted-foreground mt-1 text-xs">
                 Multi-event retention and builder progression.
               </p>
 
               <div className="mt-6 grid grid-cols-3 gap-3">
-                <div className="border-surface-800 bg-surface-950 rounded-2xl border p-4 text-center">
-                  <span className="text-surface-400 text-xs">1 Event</span>
+                <div className="border-border bg-background rounded-2xl border p-4 text-center">
+                  <span className="text-muted-foreground text-xs">1 Event</span>
                   <p className="mt-1 text-2xl font-bold text-white">
                     {metrics.repeatAttendees.loyaltyTiers.singleEvent}
                   </p>
-                  <span className="text-surface-500 text-[10px]">First-Time Attendees</span>
+                  <span className="text-muted-foreground text-xs">First-Time Attendees</span>
                 </div>
 
-                <div className="border-brand-500/30 bg-brand-500/5 rounded-2xl border p-4 text-center">
-                  <span className="text-brand-300 text-xs">2-3 Events</span>
-                  <p className="text-brand-400 mt-1 text-2xl font-bold">
+                <div className="border-primary/30 bg-primary/5 rounded-2xl border p-4 text-center">
+                  <span className="text-primary text-xs">2-3 Events</span>
+                  <p className="text-primary mt-1 text-2xl font-bold">
                     {metrics.repeatAttendees.loyaltyTiers.twoToThree}
                   </p>
-                  <span className="text-brand-300/80 text-[10px]">Active Builders</span>
+                  <span className="text-primary/80 text-xs">Active Builders</span>
                 </div>
 
-                <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-4 text-center">
-                  <span className="text-xs text-purple-300">4+ Events</span>
-                  <p className="mt-1 text-2xl font-bold text-purple-400">
+                <div className="border-primary/30 bg-primary/5 rounded-2xl border p-4 text-center">
+                  <span className="text-primary text-xs">4+ Events</span>
+                  <p className="text-primary mt-1 text-2xl font-bold">
                     {metrics.repeatAttendees.loyaltyTiers.fourPlus}
                   </p>
-                  <span className="text-[10px] text-purple-300/80">Super-Builders</span>
+                  <span className="text-primary/80 text-xs">Super-Builders</span>
                 </div>
               </div>
 
-              <div className="border-surface-800 bg-surface-950/60 text-surface-300 mt-6 space-y-1 rounded-2xl border p-4 text-xs">
+              <div className="border-border bg-background text-muted-foreground mt-6 space-y-1 rounded-2xl border p-4 text-xs">
                 <div className="flex justify-between">
                   <span>Total Unique Attendees:</span>
                   <strong className="text-white">{metrics.repeatAttendees.uniqueAttendees}</strong>
                 </div>
                 <div className="flex justify-between">
                   <span>Overall Repeat Rate:</span>
-                  <strong className="text-emerald-400">
+                  <strong className="text-success">
                     {metrics.repeatAttendees.repeatAttendanceRate}%
                   </strong>
                 </div>
@@ -582,35 +580,35 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
       {/* ─── TAB 3: STATE & CAMPUS EXPANSION ───────────────────────────────── */}
       {activeTab === "LEADERSHIP" && (
         <div className="space-y-6">
-          <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
+          <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <h2 className="flex items-center gap-2 text-lg font-bold text-white">
-                  <MapPin className="h-5 w-5 text-rose-400" />
+                  <MapPin className="text-destructive h-5 w-5" />
                   State Lead Territorial Coverage ({metrics.stateCoverage.coveredCount}/36)
                 </h2>
-                <p className="text-surface-400 mt-1 text-xs">
-                  Active expansion across all 28 Indian States & 8 Union Territories per PRD §12.
+                <p className="text-muted-foreground mt-1 text-xs">
+                  Active expansion across all 28 Indian States & 8 Union Territories per .
                 </p>
               </div>
               <div className="text-right">
-                <span className="text-2xl font-black text-emerald-400">
+                <span className="text-success text-2xl font-black">
                   {metrics.stateCoverage.coveragePct}%
                 </span>
-                <span className="text-surface-400 block text-xs">Coverage Ratio</span>
+                <span className="text-muted-foreground block text-xs">Coverage Ratio</span>
               </div>
             </div>
 
             {/* Covered States Grid */}
             <div className="mt-6">
-              <span className="text-surface-400 mb-3 block font-mono text-xs font-bold tracking-wider uppercase">
+              <span className="text-muted-foreground mb-3 block font-mono text-xs font-bold tracking-wider uppercase">
                 Covered Regions with Active State Leads:
               </span>
               <div className="flex flex-wrap gap-2">
                 {metrics.stateCoverage.coveredStates.map((st) => (
                   <span
                     key={st}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-400"
+                    className="border-success/30 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     {st}
@@ -620,15 +618,15 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Priority Uncovered States */}
-            <div className="border-surface-800 mt-6 border-t pt-6">
-              <span className="mb-3 block font-mono text-xs font-bold tracking-wider text-amber-400 uppercase">
+            <div className="border-border mt-6 border-t pt-6">
+              <span className="text-primary mb-3 block font-mono text-xs font-bold tracking-wider uppercase">
                 Priority Regions for Next Outreach:
               </span>
               <div className="flex flex-wrap gap-2">
                 {metrics.stateCoverage.priorityUncoveredStates.map((st) => (
                   <span
                     key={st}
-                    className="border-surface-800 bg-surface-950 text-surface-400 inline-flex items-center gap-1 rounded-xl border px-3 py-1 text-xs font-medium"
+                    className="border-border bg-background text-muted-foreground inline-flex items-center gap-1 rounded-xl border px-3 py-1 text-xs font-medium"
                   >
                     {st}
                   </span>
@@ -639,36 +637,38 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
           {/* Campus Lead Stats */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <span className="text-surface-400 text-xs font-bold uppercase">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <span className="text-muted-foreground text-xs font-bold uppercase">
                 Campus Applications
               </span>
               <p className="mt-2 text-2xl font-bold text-white">
                 {metrics.leadApplications.campus.totalApplications}
               </p>
-              <span className="text-surface-500 mt-1 block text-xs">Inbound student dossiers</span>
+              <span className="text-muted-foreground mt-1 block text-xs">
+                Inbound student dossiers
+              </span>
             </div>
 
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <span className="text-surface-400 text-xs font-bold uppercase">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <span className="text-muted-foreground text-xs font-bold uppercase">
                 Active Campus Leads
               </span>
-              <p className="mt-2 text-2xl font-bold text-emerald-400">
+              <p className="text-success mt-2 text-2xl font-bold">
                 {metrics.leadApplications.campus.active}
               </p>
-              <span className="text-surface-500 mt-1 block text-xs">
+              <span className="text-muted-foreground mt-1 block text-xs">
                 {metrics.leadApplications.campus.activationRate}% activation from selected
               </span>
             </div>
 
-            <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5">
-              <span className="text-surface-400 text-xs font-bold uppercase">
+            <div className="border-border bg-card rounded-2xl border p-5">
+              <span className="text-muted-foreground text-xs font-bold uppercase">
                 Collegiate Presence
               </span>
-              <p className="mt-2 text-2xl font-bold text-purple-400">
+              <p className="text-primary mt-2 text-2xl font-bold">
                 {metrics.leadApplications.campus.uniqueColleges}
               </p>
-              <span className="text-surface-500 mt-1 block text-xs">
+              <span className="text-muted-foreground mt-1 block text-xs">
                 Campuses represented across India
               </span>
             </div>
@@ -681,39 +681,39 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* P&L Statement Rollup */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
               <h2 className="flex items-center gap-2 text-lg font-bold text-white">
-                <DollarSign className="h-5 w-5 text-emerald-400" />
-                Event P&L Financial Rollup (PRD §23)
+                <DollarSign className="text-success h-5 w-5" />
+                Event P&L Financial Rollup ()
               </h2>
-              <p className="text-surface-400 mt-1 text-xs">
+              <p className="text-muted-foreground mt-1 text-xs">
                 Combined ticket gate + corporate sponsor revenue.
               </p>
 
               <div className="mt-6 space-y-3">
-                <div className="bg-surface-950 flex justify-between rounded-xl p-3 text-xs">
-                  <span className="text-surface-400">Paid Ticket Sales:</span>
+                <div className="bg-background flex justify-between rounded-xl p-3 text-xs">
+                  <span className="text-muted-foreground">Paid Ticket Sales:</span>
                   <span className="font-bold text-white">
                     ₹{metrics.profitability.ticketRevenue.toLocaleString("en-IN")}
                   </span>
                 </div>
-                <div className="bg-surface-950 flex justify-between rounded-xl p-3 text-xs">
-                  <span className="text-surface-400">Sponsor Invoices (Paid):</span>
+                <div className="bg-background flex justify-between rounded-xl p-3 text-xs">
+                  <span className="text-muted-foreground">Sponsor Invoices (Paid):</span>
                   <span className="font-bold text-white">
                     ₹{metrics.profitability.sponsorRevenue.toLocaleString("en-IN")}
                   </span>
                 </div>
-                <div className="bg-surface-950 flex justify-between rounded-xl p-3 text-xs">
-                  <span className="text-surface-400">Total Expenses:</span>
-                  <span className="font-bold text-rose-400">
+                <div className="bg-background flex justify-between rounded-xl p-3 text-xs">
+                  <span className="text-muted-foreground">Total Expenses:</span>
+                  <span className="text-destructive font-bold">
                     ₹{metrics.profitability.totalExpenses.toLocaleString("en-IN")}
                   </span>
                 </div>
-                <div className="border-brand-500/30 bg-brand-500/10 flex justify-between rounded-xl border p-3 text-xs font-bold">
-                  <span className="text-brand-300">Net Community P&L:</span>
+                <div className="border-primary/30 bg-primary/10 flex justify-between rounded-xl border p-3 text-xs font-bold">
+                  <span className="text-primary">Net Community P&L:</span>
                   <span
                     className={
-                      metrics.profitability.netProfit >= 0 ? "text-emerald-400" : "text-rose-400"
+                      metrics.profitability.netProfit >= 0 ? "text-success" : "text-destructive"
                     }
                   >
                     ₹{metrics.profitability.netProfit.toLocaleString("en-IN")} (
@@ -724,51 +724,49 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Sponsor Pipeline */}
-            <div className="border-surface-800 bg-surface-900/60 rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
               <h2 className="flex items-center gap-2 text-lg font-bold text-white">
-                <TrendingUp className="h-5 w-5 text-amber-400" />
+                <TrendingUp className="text-primary h-5 w-5" />
                 Sponsor Pipeline & Conversions
               </h2>
-              <p className="text-surface-400 mt-1 text-xs">
+              <p className="text-muted-foreground mt-1 text-xs">
                 Contract value and brand conversion rate.
               </p>
 
               <div className="mt-6 grid grid-cols-2 gap-4">
-                <div className="border-surface-800 bg-surface-950 rounded-2xl border p-4">
-                  <span className="text-surface-400 text-xs">Total Pipeline Value</span>
+                <div className="border-border bg-background rounded-2xl border p-4">
+                  <span className="text-muted-foreground text-xs">Total Pipeline Value</span>
                   <p className="mt-1 text-xl font-bold text-white">
                     ₹{metrics.sponsorConversion.totalPipelineValue.toLocaleString("en-IN")}
                   </p>
-                  <span className="text-surface-500 text-[10px]">
+                  <span className="text-muted-foreground text-xs">
                     {metrics.sponsorConversion.totalDeals} total deals
                   </span>
                 </div>
 
-                <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4">
-                  <span className="text-xs text-emerald-400">Closed Won Revenue</span>
-                  <p className="mt-1 text-xl font-bold text-emerald-400">
+                <div className="border-success/30 bg-success/5 rounded-2xl border p-4">
+                  <span className="text-success text-xs">Closed Won Revenue</span>
+                  <p className="text-success mt-1 text-xl font-bold">
                     ₹{metrics.sponsorConversion.closedWonValue.toLocaleString("en-IN")}
                   </p>
-                  <span className="text-[10px] text-emerald-400/80">
+                  <span className="text-success/80 text-xs">
                     {metrics.sponsorConversion.conversionRate}% conversion rate
                   </span>
                 </div>
               </div>
 
               {/* Collaboration Leads */}
-              <div className="border-surface-800 text-surface-300 mt-6 space-y-2 border-t pt-4 text-xs">
+              <div className="border-border text-muted-foreground mt-6 space-y-2 border-t pt-4 text-xs">
                 <span className="block font-bold text-white">Collaboration Leads Pipeline:</span>
                 <div className="flex justify-between">
                   <span>Inbound Leads: {metrics.collaborationLeads.total}</span>
                   <span>
                     Won / Confirmed:{" "}
-                    <strong className="text-emerald-400">
-                      {metrics.collaborationLeads.wonCount}
-                    </strong>
+                    <strong className="text-success">{metrics.collaborationLeads.wonCount}</strong>
                   </span>
                   <span>
                     Win Rate:{" "}
-                    <strong className="text-brand-400">
+                    <strong className="text-primary">
                       {metrics.collaborationLeads.conversionRate}%
                     </strong>
                   </span>

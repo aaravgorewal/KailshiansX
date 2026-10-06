@@ -47,8 +47,8 @@ export function AdminParticipantsClient({ initialParticipants }: AdminParticipan
       sortable: true,
       cell: (item) => (
         <div>
-          <p className="text-surface-100 font-semibold">{item.name || "Anonymous User"}</p>
-          <p className="text-surface-400 text-[11px]">{item.email}</p>
+          <p className="text-foreground font-semibold">{item.name || "Anonymous User"}</p>
+          <p className="text-muted-foreground text-xs">{item.email}</p>
         </div>
       ),
     },
@@ -64,7 +64,7 @@ export function AdminParticipantsClient({ initialParticipants }: AdminParticipan
             value={item.role}
             disabled={isBusy}
             onChange={(e) => handleRoleChange(item.id, e.target.value as UserRole)}
-            className="bg-surface-900 border-surface-700 text-surface-200 focus:border-brand-500 rounded border px-2 py-1 font-mono text-xs focus:outline-none"
+            className="bg-card border-border text-foreground focus:border-primary rounded border px-2 py-1 font-mono text-xs focus:outline-none"
           >
             <option value={UserRole.VIEWER}>VIEWER</option>
             <option value={UserRole.MEMBER}>MEMBER</option>
@@ -82,7 +82,7 @@ export function AdminParticipantsClient({ initialParticipants }: AdminParticipan
       accessorKey: "registrationsCount",
       sortable: true,
       cell: (item) => (
-        <span className="text-brand-400 text-xs font-bold">{item.registrationsCount}</span>
+        <span className="text-primary text-xs font-bold">{item.registrationsCount}</span>
       ),
     },
     {
@@ -91,7 +91,7 @@ export function AdminParticipantsClient({ initialParticipants }: AdminParticipan
       sortable: true,
       sortAccessor: (item) => new Date(item.createdAt).getTime(),
       cell: (item) => (
-        <span className="text-surface-400 text-xs">{formatDate(item.createdAt)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.createdAt)}</span>
       ),
     },
   ];
@@ -115,8 +115,8 @@ export function AdminParticipantsClient({ initialParticipants }: AdminParticipan
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-surface-50 text-2xl font-bold">Participants & Access Control</h1>
-        <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+        <h1 className="text-foreground text-2xl font-bold">Participants & Access Control</h1>
+        <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
           Directory of registered builders, community members, and administrative role assignments.
         </p>
       </div>

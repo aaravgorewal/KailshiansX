@@ -82,14 +82,14 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
       cell: (item) => (
         <div>
           <div className="flex items-center gap-1.5">
-            <span className="text-surface-100 font-bold">{item.title}</span>
+            <span className="text-foreground font-bold">{item.title}</span>
             {item.isFeatured && (
               <Badge variant="warning" size="sm" className="px-1 py-0 text-[9px]">
                 Featured
               </Badge>
             )}
           </div>
-          <span className="text-surface-500 font-mono text-[11px]">/events/{item.slug}</span>
+          <span className="text-muted-foreground font-mono text-xs">/events/{item.slug}</span>
         </div>
       ),
     },
@@ -98,7 +98,7 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
       accessorKey: "type",
       sortable: true,
       cell: (item) => (
-        <span className="bg-surface-800 text-surface-300 rounded px-2 py-0.5 text-[10px] font-bold uppercase">
+        <span className="bg-muted text-muted-foreground rounded px-2 py-0.5 text-xs font-bold uppercase">
           {item.type}
         </span>
       ),
@@ -108,14 +108,16 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
       accessorKey: "category",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-300 text-xs font-medium">{item.category ?? "General"}</span>
+        <span className="text-muted-foreground text-xs font-medium">
+          {item.category ?? "General"}
+        </span>
       ),
     },
     {
       header: "City",
       accessorKey: "cityName",
       sortable: true,
-      cell: (item) => <span className="text-surface-300 text-xs">{item.cityName}</span>,
+      cell: (item) => <span className="text-muted-foreground text-xs">{item.cityName}</span>,
     },
     {
       header: "Start Date",
@@ -123,7 +125,7 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
       sortable: true,
       sortAccessor: (item) => new Date(item.startDate).getTime(),
       cell: (item) => (
-        <span className="text-surface-300 text-xs">{formatDate(item.startDate)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.startDate)}</span>
       ),
     },
     {
@@ -131,7 +133,7 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
       accessorKey: "registrationsCount",
       sortable: true,
       cell: (item) => (
-        <span className="text-brand-400 text-xs font-bold">{item.registrationsCount}</span>
+        <span className="text-primary text-xs font-bold">{item.registrationsCount}</span>
       ),
     },
     {
@@ -164,18 +166,18 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
               onClick={() => handleTogglePublish(item.id, item.status)}
               disabled={isBusy}
               title={item.status === EventStatus.PUBLISHED ? "Unpublish event" : "Publish event"}
-              className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded p-1 disabled:opacity-40"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1 disabled:opacity-40"
             >
               {item.status === EventStatus.PUBLISHED ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <CheckCircle2 className="text-success h-4 w-4" />
               ) : (
-                <XCircle className="h-4 w-4 text-amber-400" />
+                <XCircle className="text-primary h-4 w-4" />
               )}
             </button>
 
             <Link
               href={`/admin/events/${item.id}/edit`}
-              className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded p-1"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1"
               title="Edit event"
             >
               <Edit2 className="h-4 w-4" />
@@ -184,7 +186,7 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
             <button
               onClick={() => handleDuplicate(item.id)}
               disabled={isBusy}
-              className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded p-1 disabled:opacity-40"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1 disabled:opacity-40"
               title="Duplicate event"
             >
               <Copy className="h-4 w-4" />
@@ -193,7 +195,7 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
             <Link
               href={`/events/${item.slug}`}
               target="_blank"
-              className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded p-1"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1"
               title="Open public page"
             >
               <ExternalLink className="h-4 w-4" />
@@ -202,7 +204,7 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
             <button
               onClick={() => handleDelete(item.id)}
               disabled={isBusy}
-              className="rounded p-1 text-red-400 hover:bg-red-950/40 hover:text-red-300 disabled:opacity-40"
+              className="text-destructive hover:bg-destructive/10 rounded p-1 disabled:opacity-40"
               title="Delete event"
             >
               <Trash2 className="h-4 w-4" />
@@ -239,15 +241,15 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-surface-50 text-2xl font-bold">Events Control</h1>
-          <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+          <h1 className="text-foreground text-2xl font-bold">Events Control</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
             Manage meetups, hackathons, workshops, and tech talks across all Indian chapters.
           </p>
         </div>
 
         <Link
           href="/admin/events/new"
-          className="bg-brand-600 hover:bg-brand-500 shadow-brand-600/20 flex items-center gap-1.5 self-start rounded-lg px-3.5 py-2 text-xs font-bold text-white shadow-md transition-all sm:self-auto"
+          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start rounded-lg px-3.5 py-2 text-xs font-bold text-white shadow-md transition-all sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Create Event</span>

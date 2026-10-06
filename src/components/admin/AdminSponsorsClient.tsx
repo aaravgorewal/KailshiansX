@@ -134,7 +134,7 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
       sortable: true,
       cell: (item) => (
         <div className="flex items-center gap-3">
-          <div className="bg-surface-800 border-surface-700 flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
+          <div className="bg-muted border-border flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border">
             {item.logo ? (
               <Image
                 src={item.logo}
@@ -145,12 +145,12 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
                 unoptimized
               />
             ) : (
-              <Building2 className="text-surface-500 h-4 w-4" />
+              <Building2 className="text-muted-foreground h-4 w-4" />
             )}
           </div>
           <div>
-            <span className="text-surface-100 block text-xs font-bold">{item.name}</span>
-            <span className="text-surface-500 font-mono text-[11px]">{item.slug}</span>
+            <span className="text-foreground block text-xs font-bold">{item.name}</span>
+            <span className="text-muted-foreground font-mono text-xs">{item.slug}</span>
           </div>
         </div>
       ),
@@ -160,7 +160,7 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
       accessorKey: "category",
       sortable: true,
       cell: (item) => (
-        <Badge variant="outline" size="sm" className="text-[10px] capitalize">
+        <Badge variant="outline" size="sm" className="text-xs capitalize">
           {item.category || "General"}
         </Badge>
       ),
@@ -172,13 +172,13 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
           <a
             href={item.website}
             target="_blank"
-            className="text-brand-400 hover:text-brand-300 flex max-w-[200px] items-center gap-1 truncate text-xs"
+            className="text-primary hover:text-primary flex max-w-[200px] items-center gap-1 truncate text-xs"
           >
             <span>{item.website.replace(/^https?:\/\//, "")}</span>
             <ExternalLink className="h-3 w-3 flex-shrink-0" />
           </a>
         ) : (
-          <span className="text-surface-500 text-[11px]">—</span>
+          <span className="text-muted-foreground text-xs">—</span>
         ),
     },
     {
@@ -186,7 +186,7 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
       accessorKey: "eventsCount",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-200 font-mono text-xs font-bold">
+        <span className="text-foreground font-mono text-xs font-bold">
           {item.eventsCount} events
         </span>
       ),
@@ -199,14 +199,14 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
             size="sm"
             variant="outline"
             onClick={() => handleOpenEdit(item)}
-            className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded p-1"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1"
             title="Edit partner"
           >
             <Edit2 className="h-4 w-4" />
           </Button>
           <button
             onClick={() => handleDelete(item.id)}
-            className="rounded p-1 text-red-400 hover:bg-red-950/40 hover:text-red-300"
+            className="text-destructive hover:bg-destructive/10 rounded p-1"
             title="Delete partner"
           >
             <Trash2 className="h-4 w-4" />
@@ -234,8 +234,8 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-surface-50 text-2xl font-bold">Sponsors & Global Partners</h1>
-          <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+          <h1 className="text-foreground text-2xl font-bold">Sponsors & Global Partners</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
             Ecosystem partners backing hackathons, meetup tracks, and developer scholarships.
           </p>
         </div>
@@ -243,7 +243,7 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
         <Button
           size="sm"
           onClick={handleOpenCreate}
-          className="bg-brand-600 hover:bg-brand-500 shadow-brand-600/20 flex items-center gap-1.5 self-start text-xs font-bold text-white shadow-md sm:self-auto"
+          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start text-xs font-bold text-white shadow-md sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Add Partner</span>
@@ -270,8 +270,8 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
       >
         <div className="space-y-4">
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
-              Partner / Brand Name <span className="text-red-400">*</span>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Partner / Brand Name <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
@@ -283,29 +283,31 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
                 }
               }}
               placeholder="e.g. AWS, Razorpay, GitHub"
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
-              URL Slug <span className="text-red-400">*</span>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              URL Slug <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value.toLowerCase().trim())}
               placeholder="razorpay"
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 font-mono text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 font-mono text-xs"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">Category</label>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Category
+            </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
             >
               <option value="brand">Corporate Tech Brand</option>
               <option value="community">Developer Community</option>
@@ -316,28 +318,32 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">Logo URL</label>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Logo URL
+            </label>
             <input
               type="url"
               value={logo}
               onChange={(e) => setLogo(e.target.value)}
               placeholder="https://... logo image URL"
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">Website URL</label>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Website URL
+            </label>
             <input
               type="url"
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="https://company.com"
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
             />
           </div>
 
-          <div className="border-surface-800 flex justify-end gap-2 border-t pt-2">
+          <div className="border-border flex justify-end gap-2 border-t pt-2">
             <Button
               variant="outline"
               size="sm"
@@ -350,7 +356,7 @@ export function AdminSponsorsClient({ initialSponsors }: AdminSponsorsClientProp
               size="sm"
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-brand-600 hover:bg-brand-500 text-xs text-white"
+              className="bg-primary-hover hover:bg-primary text-xs text-white"
             >
               {isSaving ? "Saving..." : "Save Partner"}
             </Button>

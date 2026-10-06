@@ -1,7 +1,7 @@
 // src/components/admin/EventEditorClient.tsx
 // Fully No-Code Visual Event Editor
 // Cover upload, rich text, schedule builder, speakers, tracks, tickets, partners, FAQs, publish/unpublish, duplicate-event.
-// Meets PRD §22 event editor requirements.
+// Meets event editor requirements.
 
 "use client";
 
@@ -513,13 +513,13 @@ export function EventEditorClient({
   return (
     <div className="space-y-8 pb-16">
       {/* Top Action Bar */}
-      <div className="bg-surface-950/90 border-surface-800/80 sticky top-16 z-20 -mx-4 flex flex-col gap-4 border-b px-4 py-4 backdrop-blur-md sm:-mx-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <div className="bg-background border-border sticky top-16 z-20 -mx-4 flex flex-col gap-4 border-b px-4 py-4 backdrop-blur-md sm:-mx-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-brand-400 font-mono text-xs font-semibold uppercase">
+            <span className="text-primary font-mono text-xs font-semibold uppercase">
               {isEditing ? "Event Editor" : "New Event Draft"}
             </span>
-            <span className="text-surface-600">·</span>
+            <span className="text-muted-foreground">·</span>
             <Badge
               variant={
                 status === EventStatus.PUBLISHED
@@ -533,7 +533,7 @@ export function EventEditorClient({
               {status}
             </Badge>
           </div>
-          <h1 className="text-surface-50 max-w-xl truncate text-xl font-black sm:text-2xl">
+          <h1 className="text-foreground max-w-xl truncate text-xl font-black sm:text-2xl">
             {title || "Untitled Event"}
           </h1>
         </div>
@@ -546,7 +546,7 @@ export function EventEditorClient({
                 href={`/events/${slug}`}
                 target="_blank"
                 rel="noreferrer"
-                className="border-surface-700 bg-surface-900 text-surface-300 hover:text-surface-100 flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors"
+                className="border-border bg-card text-muted-foreground hover:text-foreground flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors"
                 title="View public page in new tab"
               >
                 <span>Live Page</span>
@@ -558,7 +558,7 @@ export function EventEditorClient({
                 size="sm"
                 onClick={handleDuplicate}
                 disabled={isSubmitting}
-                className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1.5 text-xs"
+                className="border-border bg-card text-foreground flex items-center gap-1.5 text-xs"
               >
                 <Copy className="h-3.5 w-3.5" /> Duplicate
               </Button>
@@ -568,7 +568,7 @@ export function EventEditorClient({
                 size="sm"
                 onClick={handleDelete}
                 disabled={isSubmitting}
-                className="flex items-center gap-1.5 border-red-900/60 bg-red-950/20 text-xs text-red-400 hover:bg-red-900/40"
+                className="border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20 flex items-center gap-1.5 text-xs"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
@@ -582,7 +582,7 @@ export function EventEditorClient({
               size="sm"
               onClick={() => handleSave(EventStatus.DRAFT)}
               disabled={isSubmitting}
-              className="border-amber-600/40 text-xs text-amber-300 hover:bg-amber-950/30"
+              className="border-warning/40 text-warning hover:bg-muted text-xs"
             >
               Unpublish to Draft
             </Button>
@@ -591,7 +591,7 @@ export function EventEditorClient({
               size="sm"
               onClick={() => handleSave(EventStatus.PUBLISHED)}
               disabled={isSubmitting}
-              className="bg-emerald-600 text-xs font-bold text-white hover:bg-emerald-500"
+              className="bg-success text-success-foreground hover:bg-success/90 text-xs font-bold"
             >
               Publish Event Live
             </Button>
@@ -602,7 +602,7 @@ export function EventEditorClient({
             size="sm"
             onClick={() => handleSave()}
             disabled={isSubmitting}
-            className="bg-brand-600 hover:bg-brand-500 shadow-brand-600/20 flex items-center gap-1.5 text-xs font-bold text-white shadow-md"
+            className="bg-primary hover:bg-primary-hover text-primary-foreground flex items-center gap-1.5 text-xs font-bold shadow-md"
           >
             <Save className="h-3.5 w-3.5" />
             {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Create Event"}
@@ -615,8 +615,8 @@ export function EventEditorClient({
         <div
           className={`flex items-center justify-between rounded-xl border p-4 text-xs font-semibold ${
             feedback.type === "success"
-              ? "border-emerald-800 bg-emerald-950/40 text-emerald-300"
-              : "border-red-800 bg-red-950/40 text-red-300"
+              ? "border-success/30 bg-success/10 text-success"
+              : "border-destructive/30 bg-destructive/10 text-destructive"
           }`}
         >
           <span>{feedback.text}</span>
@@ -627,32 +627,32 @@ export function EventEditorClient({
       )}
 
       {/* Section 1: Basic Event Details */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-5 rounded-2xl border p-6">
-        <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-          <Calendar className="text-brand-400 h-4 w-4" />
+      <div className="bg-card border-border space-y-5 rounded-2xl border p-6">
+        <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+          <Calendar className="text-primary h-4 w-4" />
           <span>Core Information</span>
         </h2>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
-              Event Title <span className="text-red-400">*</span>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Event Title <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => handleTitleChange(e.target.value)}
               placeholder="e.g. RaibarX Dehradun: High-Concurrency Backend Systems"
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
-              URL Slug <span className="text-red-400">*</span>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              URL Slug <span className="text-destructive">*</span>
             </label>
             <div className="flex items-center">
-              <span className="bg-surface-800 border-surface-700 text-surface-400 rounded-l-lg border border-r-0 px-3 py-2.5 font-mono text-xs">
+              <span className="bg-muted border-border text-muted-foreground rounded-l-lg border border-r-0 px-3 py-2.5 font-mono text-xs">
                 /events/
               </span>
               <input
@@ -660,17 +660,19 @@ export function EventEditorClient({
                 value={slug}
                 onChange={(e) => setSlug(e.target.value.toLowerCase().trim())}
                 placeholder="raibarx-dehradun-backend"
-                className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-r-lg border p-2.5 font-mono text-xs focus:outline-none"
+                className="bg-background border-border text-foreground focus:border-primary w-full rounded-r-lg border p-2.5 font-mono text-xs focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">Event Type</label>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Event Type
+            </label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as EventType)}
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             >
               <option value={EventType.MEETUP}>Meetup (Regional Chapter)</option>
               <option value={EventType.HACKATHON}>Hackathon (Flagship Series)</option>
@@ -681,7 +683,7 @@ export function EventEditorClient({
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
               Technical Category
             </label>
             <input
@@ -689,18 +691,18 @@ export function EventEditorClient({
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="System Design, MERN, AI, DevOps, Rust..."
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
               Attendance Mode
             </label>
             <select
               value={attendanceMode}
               onChange={(e) => setAttendanceMode(e.target.value as AttendanceMode)}
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             >
               <option value={AttendanceMode.IN_PERSON}>In-Person Gathering</option>
               <option value={AttendanceMode.VIRTUAL}>Virtual Live Stream</option>
@@ -709,11 +711,11 @@ export function EventEditorClient({
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">City</label>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">City</label>
             <select
               value={cityId}
               onChange={(e) => setCityId(e.target.value)}
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             >
               <option value="">National / Online</option>
               {cities.map((c) => (
@@ -732,11 +734,11 @@ export function EventEditorClient({
             id="featuredToggle"
             checked={isFeatured}
             onChange={(e) => setIsFeatured(e.target.checked)}
-            className="border-surface-700 bg-surface-950 text-brand-600 focus:ring-brand-500 h-4 w-4 rounded"
+            className="border-border bg-background text-primary focus:ring-ring h-4 w-4 rounded"
           />
           <label
             htmlFor="featuredToggle"
-            className="text-surface-200 cursor-pointer text-xs font-semibold"
+            className="text-foreground cursor-pointer text-xs font-semibold"
           >
             Feature this event prominently on homepage and category banners
           </label>
@@ -744,64 +746,66 @@ export function EventEditorClient({
       </div>
 
       {/* Section 2: Date, Time & Venue */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-5 rounded-2xl border p-6">
-        <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-          <Clock className="h-4 w-4 text-emerald-400" />
+      <div className="bg-card border-border space-y-5 rounded-2xl border p-6">
+        <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+          <Clock className="text-success h-4 w-4" />
           <span>Date, Time & Venue</span>
         </h2>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
-              Start Date & Time <span className="text-red-400">*</span>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Start Date & Time <span className="text-destructive">*</span>
             </label>
             <input
               type="datetime-local"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
               End Date & Time
             </label>
             <input
               type="datetime-local"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
               Registration Deadline
             </label>
             <input
               type="datetime-local"
               value={registrationDeadline}
               onChange={(e) => setRegistrationDeadline(e.target.value)}
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">Venue Name</label>
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+              Venue Name
+            </label>
             <input
               type="text"
               value={venue}
               onChange={(e) => setVenue(e.target.value)}
               placeholder="e.g. MNIT Jaipur Auditorium / WeWork DLF Cyber City"
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
               Venue Street Address
             </label>
             <input
@@ -809,12 +813,12 @@ export function EventEditorClient({
               value={venueAddress}
               onChange={(e) => setVenueAddress(e.target.value)}
               placeholder="JLN Marg, Malviya Nagar, Jaipur"
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
               Max Seating Capacity
             </label>
             <input
@@ -822,13 +826,13 @@ export function EventEditorClient({
               value={maxCapacity}
               onChange={(e) => setMaxCapacity(e.target.value)}
               placeholder="150"
-              className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+              className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-surface-300 mb-1 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1 block text-xs font-semibold">
             Google Maps Embed / Navigation URL
           </label>
           <input
@@ -836,21 +840,21 @@ export function EventEditorClient({
             value={venueMapUrl}
             onChange={(e) => setVenueMapUrl(e.target.value)}
             placeholder="https://maps.google.com/?q=..."
-            className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+            className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
           />
         </div>
       </div>
 
       {/* Section 3: Cover Image Upload & Preview */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
-        <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-          <ImageIcon className="h-4 w-4 text-purple-400" />
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
+        <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+          <ImageIcon className="text-primary h-4 w-4" />
           <span>Cover Image</span>
         </h2>
 
         <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-3">
           {/* Preview container */}
-          <div className="border-surface-700 bg-surface-950 relative aspect-video overflow-hidden rounded-xl border">
+          <div className="border-border bg-background relative aspect-video overflow-hidden rounded-xl border">
             {coverImage ? (
               <Image
                 src={coverImage}
@@ -860,7 +864,7 @@ export function EventEditorClient({
                 unoptimized={coverImage.startsWith("data:")}
               />
             ) : (
-              <div className="text-surface-500 flex h-full w-full flex-col items-center justify-center text-xs">
+              <div className="text-muted-foreground flex h-full w-full flex-col items-center justify-center text-xs">
                 <ImageIcon className="mb-2 h-8 w-8" />
                 <span>No cover image selected</span>
               </div>
@@ -870,7 +874,7 @@ export function EventEditorClient({
           {/* Upload Controls */}
           <div className="space-y-3 md:col-span-2">
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                 Upload New Image File
               </label>
               <input
@@ -878,15 +882,15 @@ export function EventEditorClient({
                 accept="image/*"
                 onChange={handleFileUpload}
                 disabled={uploadingImage}
-                className="text-surface-400 file:bg-surface-800 file:text-surface-200 hover:file:bg-surface-700 block w-full cursor-pointer text-xs file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-xs file:font-semibold"
+                className="text-muted-foreground file:bg-muted file:text-foreground hover:file:bg-muted block w-full cursor-pointer text-xs file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-xs file:font-semibold"
               />
               {uploadingImage && (
-                <p className="text-brand-400 mt-1 animate-pulse text-xs">Uploading to S3...</p>
+                <p className="text-primary mt-1 animate-pulse text-xs">Uploading to S3...</p>
               )}
             </div>
 
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                 Or Direct Image URL
               </label>
               <input
@@ -894,7 +898,7 @@ export function EventEditorClient({
                 value={coverImage}
                 onChange={(e) => setCoverImage(e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-2.5 text-xs focus:outline-none"
+                className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-2.5 text-xs focus:outline-none"
               />
             </div>
           </div>
@@ -902,30 +906,30 @@ export function EventEditorClient({
       </div>
 
       {/* Section 4: Rich Overview Description */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
-        <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-          <Tag className="h-4 w-4 text-blue-400" />
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
+        <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+          <Tag className="text-primary h-4 w-4" />
           <span>Event Overview & Agenda</span>
         </h2>
 
         <div>
-          <label className="text-surface-300 mb-1 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1 block text-xs font-semibold">
             Overview / Description (Markdown supported)
           </label>
           <textarea
             rows={6}
             value={overview}
             onChange={(e) => setOverview(e.target.value)}
-            className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-lg border p-3 font-mono text-xs focus:outline-none"
+            className="bg-background border-border text-foreground focus:border-primary w-full rounded-lg border p-3 font-mono text-xs focus:outline-none"
           />
         </div>
       </div>
 
       {/* Section 5: Schedule Builder */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-            <Clock className="h-4 w-4 text-amber-400" />
+          <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+            <Clock className="text-primary h-4 w-4" />
             <span>Schedule Builder ({scheduleItems.length} Sessions)</span>
           </h2>
           <Button
@@ -941,7 +945,7 @@ export function EventEditorClient({
                 },
               ])
             }
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Plus className="h-3.5 w-3.5" /> Add Session
           </Button>
@@ -951,10 +955,10 @@ export function EventEditorClient({
           {scheduleItems.map((item, idx) => (
             <div
               key={idx}
-              className="bg-surface-950 border-surface-800 space-y-3 rounded-xl border p-3.5"
+              className="bg-background border-border space-y-3 rounded-xl border p-3.5"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-surface-300 font-mono text-xs font-bold">
+                <span className="text-muted-foreground font-mono text-xs font-bold">
                   #{idx + 1} Session
                 </span>
                 <div className="flex items-center gap-1">
@@ -967,7 +971,7 @@ export function EventEditorClient({
                       copy[idx - 1] = temp;
                       setScheduleItems(copy);
                     }}
-                    className="text-surface-500 hover:text-surface-200 p-1"
+                    className="text-muted-foreground hover:text-foreground p-1"
                     title="Move up"
                   >
                     <ArrowUp className="h-3.5 w-3.5" />
@@ -981,14 +985,14 @@ export function EventEditorClient({
                       copy[idx + 1] = temp;
                       setScheduleItems(copy);
                     }}
-                    className="text-surface-500 hover:text-surface-200 p-1"
+                    className="text-muted-foreground hover:text-foreground p-1"
                     title="Move down"
                   >
                     <ArrowDown className="h-3.5 w-3.5" />
                   </button>
                   <button
                     onClick={() => setScheduleItems((prev) => prev.filter((_, i) => i !== idx))}
-                    className="p-1 text-red-400 hover:text-red-300"
+                    className="text-destructive p-1 hover:opacity-80"
                     title="Remove session"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -1007,7 +1011,7 @@ export function EventEditorClient({
                       setScheduleItems(copy);
                     }}
                     placeholder="Session Title (e.g. Distributed Consensus in Raft)"
-                    className="bg-surface-900 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+                    className="bg-card border-border text-foreground w-full rounded-lg border p-2 text-xs"
                   />
                 </div>
                 <div>
@@ -1018,7 +1022,7 @@ export function EventEditorClient({
                       copy[idx].speakerId = e.target.value || null;
                       setScheduleItems(copy);
                     }}
-                    className="bg-surface-900 border-surface-700 text-surface-200 w-full rounded-lg border p-2 text-xs"
+                    className="bg-card border-border text-foreground w-full rounded-lg border p-2 text-xs"
                   >
                     <option value="">No Speaker Assigned</option>
                     {speakersPool.map((sp) => (
@@ -1039,7 +1043,7 @@ export function EventEditorClient({
                   setScheduleItems(copy);
                 }}
                 placeholder="Session summary / key takeaways..."
-                className="bg-surface-900 border-surface-700 text-surface-300 w-full rounded-lg border p-2 text-xs"
+                className="bg-card border-border text-muted-foreground w-full rounded-lg border p-2 text-xs"
               />
             </div>
           ))}
@@ -1047,10 +1051,10 @@ export function EventEditorClient({
       </div>
 
       {/* Section 6: Speakers Manager */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-            <Users className="h-4 w-4 text-cyan-400" />
+          <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+            <Users className="text-primary h-4 w-4" />
             <span>Assigned Speakers ({assignedSpeakers.length})</span>
           </h2>
           <div className="flex items-center gap-2">
@@ -1058,7 +1062,7 @@ export function EventEditorClient({
               size="sm"
               variant="outline"
               onClick={() => setShowSpeakerModal(true)}
-              className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+              className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
             >
               <Plus className="h-3.5 w-3.5" /> New Speaker Pool
             </Button>
@@ -1073,13 +1077,13 @@ export function EventEditorClient({
             return (
               <div
                 key={idx}
-                className="bg-surface-950 border-surface-800 flex items-center justify-between gap-3 rounded-xl border p-3"
+                className="bg-background border-border flex items-center justify-between gap-3 rounded-xl border p-3"
               >
                 <div>
-                  <p className="text-surface-100 text-xs font-bold">
+                  <p className="text-foreground text-xs font-bold">
                     {speakerObj?.name ?? "Unknown Speaker"}
                   </p>
-                  <p className="text-surface-400 text-[11px]">
+                  <p className="text-muted-foreground text-xs">
                     {speakerObj?.designation}{" "}
                     {speakerObj?.organisation ? `@ ${speakerObj.organisation}` : ""}
                   </p>
@@ -1093,7 +1097,7 @@ export function EventEditorClient({
                       copy[idx].role = e.target.value as SpeakerRole;
                       setAssignedSpeakers(copy);
                     }}
-                    className="bg-surface-900 border-surface-700 text-surface-200 rounded border px-2 py-1 text-xs"
+                    className="bg-card border-border text-foreground rounded border px-2 py-1 text-xs"
                   >
                     <option value={SpeakerRole.SPEAKER}>Speaker</option>
                     <option value={SpeakerRole.JUDGE}>Judge</option>
@@ -1102,7 +1106,7 @@ export function EventEditorClient({
 
                   <button
                     onClick={() => setAssignedSpeakers((prev) => prev.filter((_, i) => i !== idx))}
-                    className="text-surface-500 p-1 hover:text-red-400"
+                    className="text-muted-foreground hover:text-destructive p-1"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -1127,7 +1131,7 @@ export function EventEditorClient({
               }
               e.target.value = "";
             }}
-            className="bg-surface-950 border-surface-700 text-surface-300 rounded-lg border p-2 text-xs focus:outline-none"
+            className="bg-background border-border text-muted-foreground rounded-lg border p-2 text-xs focus:outline-none"
           >
             <option value="">+ Assign speaker from pool...</option>
             {speakersPool
@@ -1142,10 +1146,10 @@ export function EventEditorClient({
       </div>
 
       {/* Section 7: Event Tracks */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-            <Layers className="h-4 w-4 text-emerald-400" />
+          <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+            <Layers className="text-success h-4 w-4" />
             <span>Tracks ({tracks.length})</span>
           </h2>
           <Button
@@ -1154,7 +1158,7 @@ export function EventEditorClient({
             onClick={() =>
               setTracks((prev) => [...prev, { name: "New Track", description: "", color: "blue" }])
             }
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Plus className="h-3.5 w-3.5" /> Add Track
           </Button>
@@ -1164,7 +1168,7 @@ export function EventEditorClient({
           {tracks.map((tr, idx) => (
             <div
               key={idx}
-              className="bg-surface-950 border-surface-800 space-y-2 rounded-xl border p-3.5"
+              className="bg-background border-border space-y-2 rounded-xl border p-3.5"
             >
               <div className="flex items-center justify-between">
                 <input
@@ -1176,11 +1180,11 @@ export function EventEditorClient({
                     setTracks(copy);
                   }}
                   placeholder="Track Name"
-                  className="bg-surface-900 border-surface-700 text-surface-100 rounded border p-1.5 text-xs font-bold"
+                  className="bg-card border-border text-foreground rounded border p-1.5 text-xs font-bold"
                 />
                 <button
                   onClick={() => setTracks((prev) => prev.filter((_, i) => i !== idx))}
-                  className="text-surface-500 p-1 hover:text-red-400"
+                  className="text-muted-foreground hover:text-destructive p-1"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -1195,7 +1199,7 @@ export function EventEditorClient({
                   setTracks(copy);
                 }}
                 placeholder="Track description..."
-                className="bg-surface-900 border-surface-700 text-surface-300 w-full rounded border p-1.5 text-xs"
+                className="bg-card border-border text-muted-foreground w-full rounded border p-1.5 text-xs"
               />
             </div>
           ))}
@@ -1203,10 +1207,10 @@ export function EventEditorClient({
       </div>
 
       {/* Section 8: Ticket Tiers */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-            <Ticket className="text-brand-400 h-4 w-4" />
+          <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+            <Ticket className="text-primary h-4 w-4" />
             <span>Ticket Tiers & Pricing ({tickets.length})</span>
           </h2>
           <Button
@@ -1223,7 +1227,7 @@ export function EventEditorClient({
                 },
               ])
             }
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Plus className="h-3.5 w-3.5" /> Add Tier
           </Button>
@@ -1233,10 +1237,10 @@ export function EventEditorClient({
           {tickets.map((t, idx) => (
             <div
               key={idx}
-              className="bg-surface-950 border-surface-800 grid grid-cols-1 items-center gap-3 rounded-xl border p-3.5 md:grid-cols-4"
+              className="bg-background border-border grid grid-cols-1 items-center gap-3 rounded-xl border p-3.5 md:grid-cols-4"
             >
               <div>
-                <label className="text-surface-400 text-[10px] font-semibold uppercase">
+                <label className="text-muted-foreground text-xs font-semibold uppercase">
                   Tier Name
                 </label>
                 <input
@@ -1247,12 +1251,12 @@ export function EventEditorClient({
                     copy[idx].name = e.target.value;
                     setTickets(copy);
                   }}
-                  className="bg-surface-900 border-surface-700 text-surface-100 w-full rounded border p-1.5 text-xs"
+                  className="bg-card border-border text-foreground w-full rounded border p-1.5 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-400 text-[10px] font-semibold uppercase">
+                <label className="text-muted-foreground text-xs font-semibold uppercase">
                   Price (₹ INR)
                 </label>
                 <input
@@ -1265,12 +1269,12 @@ export function EventEditorClient({
                     copy[idx].isFree = num === 0;
                     setTickets(copy);
                   }}
-                  className="bg-surface-900 border-surface-700 text-surface-100 w-full rounded border p-1.5 text-xs"
+                  className="bg-card border-border text-foreground w-full rounded border p-1.5 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-400 text-[10px] font-semibold uppercase">
+                <label className="text-muted-foreground text-xs font-semibold uppercase">
                   Seat Quota
                 </label>
                 <input
@@ -1281,12 +1285,12 @@ export function EventEditorClient({
                     copy[idx].quota = Number(e.target.value);
                     setTickets(copy);
                   }}
-                  className="bg-surface-900 border-surface-700 text-surface-100 w-full rounded border p-1.5 text-xs"
+                  className="bg-card border-border text-foreground w-full rounded border p-1.5 text-xs"
                 />
               </div>
 
               <div className="flex items-center justify-between pt-4">
-                <span className="text-surface-300 text-xs font-semibold">
+                <span className="text-muted-foreground text-xs font-semibold">
                   {t.isFree ? (
                     <Badge variant="success" size="sm">
                       Free Pass
@@ -1299,7 +1303,7 @@ export function EventEditorClient({
                 </span>
                 <button
                   onClick={() => setTickets((prev) => prev.filter((_, i) => i !== idx))}
-                  className="text-surface-500 p-1 hover:text-red-400"
+                  className="text-muted-foreground hover:text-destructive p-1"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -1310,17 +1314,17 @@ export function EventEditorClient({
       </div>
 
       {/* Section 9: Partners & Sponsors */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-            <Handshake className="h-4 w-4 text-amber-400" />
+          <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+            <Handshake className="text-primary h-4 w-4" />
             <span>Assigned Sponsors & Partners ({assignedPartners.length})</span>
           </h2>
           <Button
             size="sm"
             variant="outline"
             onClick={() => setShowPartnerModal(true)}
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Plus className="h-3.5 w-3.5" /> New Partner Pool
           </Button>
@@ -1333,13 +1337,13 @@ export function EventEditorClient({
             return (
               <div
                 key={idx}
-                className="bg-surface-950 border-surface-800 flex items-center justify-between gap-3 rounded-xl border p-3"
+                className="bg-background border-border flex items-center justify-between gap-3 rounded-xl border p-3"
               >
                 <div>
-                  <p className="text-surface-100 text-xs font-bold">
+                  <p className="text-foreground text-xs font-bold">
                     {partnerObj?.name ?? "Partner"}
                   </p>
-                  <p className="text-surface-400 text-[11px]">
+                  <p className="text-muted-foreground text-xs">
                     {partnerObj?.category ?? "General"}
                   </p>
                 </div>
@@ -1352,7 +1356,7 @@ export function EventEditorClient({
                       copy[idx].tier = e.target.value as PartnerTier;
                       setAssignedPartners(copy);
                     }}
-                    className="bg-surface-900 border-surface-700 text-surface-200 rounded border px-2 py-1 text-xs"
+                    className="bg-card border-border text-foreground rounded border px-2 py-1 text-xs"
                   >
                     <option value={PartnerTier.TITLE}>Title Sponsor</option>
                     <option value={PartnerTier.GOLD}>Gold Sponsor</option>
@@ -1364,7 +1368,7 @@ export function EventEditorClient({
 
                   <button
                     onClick={() => setAssignedPartners((prev) => prev.filter((_, i) => i !== idx))}
-                    className="text-surface-500 p-1 hover:text-red-400"
+                    className="text-muted-foreground hover:text-destructive p-1"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -1388,7 +1392,7 @@ export function EventEditorClient({
               }
               e.target.value = "";
             }}
-            className="bg-surface-950 border-surface-700 text-surface-300 rounded-lg border p-2 text-xs focus:outline-none"
+            className="bg-background border-border text-muted-foreground rounded-lg border p-2 text-xs focus:outline-none"
           >
             <option value="">+ Assign partner from pool...</option>
             {partnersPool
@@ -1403,10 +1407,10 @@ export function EventEditorClient({
       </div>
 
       {/* Section 10: FAQs */}
-      <div className="bg-surface-900/50 border-surface-800 space-y-4 rounded-2xl border p-6">
+      <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-surface-100 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-            <HelpCircle className="h-4 w-4 text-purple-400" />
+          <h2 className="text-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+            <HelpCircle className="text-primary h-4 w-4" />
             <span>Frequently Asked Questions ({faqs.length})</span>
           </h2>
           <Button
@@ -1415,7 +1419,7 @@ export function EventEditorClient({
             onClick={() =>
               setFaqs((prev) => [...prev, { question: "New Question?", answer: "Answer here." }])
             }
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Plus className="h-3.5 w-3.5" /> Add FAQ
           </Button>
@@ -1425,7 +1429,7 @@ export function EventEditorClient({
           {faqs.map((f, idx) => (
             <div
               key={idx}
-              className="bg-surface-950 border-surface-800 space-y-2 rounded-xl border p-3.5"
+              className="bg-background border-border space-y-2 rounded-xl border p-3.5"
             >
               <div className="flex items-center justify-between">
                 <input
@@ -1437,11 +1441,11 @@ export function EventEditorClient({
                     setFaqs(copy);
                   }}
                   placeholder="Question"
-                  className="bg-surface-900 border-surface-700 text-surface-100 w-full rounded border p-1.5 text-xs font-bold"
+                  className="bg-card border-border text-foreground w-full rounded border p-1.5 text-xs font-bold"
                 />
                 <button
                   onClick={() => setFaqs((prev) => prev.filter((_, i) => i !== idx))}
-                  className="text-surface-500 ml-2 p-1 hover:text-red-400"
+                  className="text-muted-foreground hover:text-destructive ml-2 p-1"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -1456,7 +1460,7 @@ export function EventEditorClient({
                   setFaqs(copy);
                 }}
                 placeholder="Answer details..."
-                className="bg-surface-900 border-surface-700 text-surface-300 w-full rounded border p-1.5 text-xs"
+                className="bg-card border-border text-muted-foreground w-full rounded border p-1.5 text-xs"
               />
             </div>
           ))}
@@ -1466,29 +1470,29 @@ export function EventEditorClient({
       {/* Modal: Quick Create Speaker */}
       {showSpeakerModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-4 rounded-2xl border p-5">
-            <h3 className="text-surface-100 text-sm font-bold">Add Speaker to Global Pool</h3>
+          <div className="bg-card border-border w-full max-w-md space-y-4 rounded-2xl border p-5">
+            <h3 className="text-foreground text-sm font-bold">Add Speaker to Global Pool</h3>
             <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Speaker Full Name"
                 value={newSpeakerName}
                 onChange={(e) => setNewSpeakerName(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded border p-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="Organisation (e.g. Google, Razorpay)"
                 value={newSpeakerOrg}
                 onChange={(e) => setNewSpeakerOrg(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded border p-2 text-xs"
               />
               <input
                 type="text"
                 placeholder="Designation (e.g. Senior Staff Engineer)"
                 value={newSpeakerRole}
                 onChange={(e) => setNewSpeakerRole(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded border p-2 text-xs"
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
@@ -1511,20 +1515,20 @@ export function EventEditorClient({
       {/* Modal: Quick Create Partner */}
       {showPartnerModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-4 rounded-2xl border p-5">
-            <h3 className="text-surface-100 text-sm font-bold">Add Partner to Global Pool</h3>
+          <div className="bg-card border-border w-full max-w-md space-y-4 rounded-2xl border p-5">
+            <h3 className="text-foreground text-sm font-bold">Add Partner to Global Pool</h3>
             <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Partner / Brand Name"
                 value={newPartnerName}
                 onChange={(e) => setNewPartnerName(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded border p-2 text-xs"
               />
               <select
                 value={newPartnerCategory}
                 onChange={(e) => setNewPartnerCategory(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded border p-2 text-xs"
               >
                 <option value="Community">Community Organization</option>
                 <option value="Brand">Corporate Tech Brand</option>

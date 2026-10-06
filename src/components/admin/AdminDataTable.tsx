@@ -1,6 +1,5 @@
 // src/components/admin/AdminDataTable.tsx
 // Universal Data Table with Search, Filter, Sort, Pagination, and CSV Export
-// Meets PRD §22 admin data table requirements.
 
 "use client";
 
@@ -21,14 +20,11 @@ import { Button } from "@/components/ui/Button";
 export interface ColumnDef<T> {
   header: string;
   accessorKey?: keyof T;
-  // Custom cell renderer
   cell?: (item: T) => React.ReactNode;
-  // Custom sort function or sort key
   sortable?: boolean;
   sortAccessor?: (item: T) => string | number | Date | boolean | null | undefined;
   className?: string;
   headerClassName?: string;
-  // If true, hide on mobile
   hideOnMobile?: boolean;
 }
 
@@ -91,7 +87,6 @@ export function AdminDataTable<T extends { id?: string | number }>({
         if (searchFilter) {
           if (!searchFilter(item, q)) return false;
         } else {
-          // Default string search across all primitive values
           const values = Object.values(item as Record<string, unknown>)
             .map((v) => (v === null || v === undefined ? "" : String(v).toLowerCase()))
             .join(" ");
@@ -99,18 +94,17 @@ export function AdminDataTable<T extends { id?: string | number }>({
         }
       }
 
-      // Dropdown filters
+      // Filter matching
       for (const f of filters) {
-        const selectedValue = activeFilters[f.label];
-        if (selectedValue && selectedValue !== "ALL") {
-          let itemValue: string;
+        const selectedVal = activeFilters[f.label];
+        if (selectedVal && selectedVal !== "ALL") {
+          let itemVal: unknown = "";
           if (typeof f.key === "function") {
-            itemValue = f.key(item);
+            itemVal = f.key(item);
           } else {
-            const raw = (item as Record<string, unknown>)[f.key as string];
-            itemValue = raw === null || raw === undefined ? "" : String(raw);
+            itemVal = item[f.key];
           }
-          if (itemValue !== selectedValue) {
+          if (String(itemVal) !== selectedVal) {
             return false;
           }
         }
@@ -124,78 +118,57 @@ export function AdminDataTable<T extends { id?: string | number }>({
   const sortedData = React.useMemo(() => {
     if (!sortKey) return filteredData;
 
-    const column = columns.find(
-      (c) => String(c.accessorKey) === sortKey || c.header.toLowerCase() === sortKey.toLowerCase()
+    const col = columns.find(
+      (c) => (c.accessorKey && String(c.accessorKey) === sortKey) || c.header === sortKey
     );
 
     return [...filteredData].sort((a, b) => {
       let valA: unknown;
       let valB: unknown;
 
-      if (column?.sortAccessor) {
-        valA = column.sortAccessor(a);
-        valB = column.sortAccessor(b);
-      } else if (column?.accessorKey) {
-        valA = a[column.accessorKey];
-        valB = b[column.accessorKey];
-      } else {
-        return 0;
+      if (col?.sortAccessor) {
+        valA = col.sortAccessor(a);
+        valB = col.sortAccessor(b);
+      } else if (col?.accessorKey) {
+        valA = a[col.accessorKey];
+        valB = b[col.accessorKey];
       }
 
       if (valA === valB) return 0;
       if (valA === null || valA === undefined) return 1;
       if (valB === null || valB === undefined) return -1;
 
-      let result = 0;
-      if (valA instanceof Date && valB instanceof Date) {
-        result = valA.getTime() - valB.getTime();
-      } else if (typeof valA === "number" && typeof valB === "number") {
-        result = valA - valB;
-      } else {
-        result = String(valA).localeCompare(String(valB));
+      if (typeof valA === "number" && typeof valB === "number") {
+        return sortDirection === "asc" ? valA - valB : valB - valA;
       }
 
-      return sortDirection === "asc" ? result : -result;
+      const strA = String(valA).toLowerCase();
+      const strB = String(valB).toLowerCase();
+      return sortDirection === "asc" ? strA.localeCompare(strB) : strB.localeCompare(strA);
     });
   }, [filteredData, sortKey, sortDirection, columns]);
 
   // 3. Paginate
-  const totalPages = Math.ceil(sortedData.length / rowsPerPage) || 1;
-  const safeCurrentPage = Math.min(Math.max(currentPage, 1), totalPages);
+  const totalPages = Math.max(1, Math.ceil(sortedData.length / rowsPerPage));
   const paginatedData = React.useMemo(() => {
-    const start = (safeCurrentPage - 1) * rowsPerPage;
+    const start = (currentPage - 1) * rowsPerPage;
     return sortedData.slice(start, start + rowsPerPage);
-  }, [sortedData, safeCurrentPage, rowsPerPage]);
+  }, [sortedData, currentPage, rowsPerPage]);
 
   const handleSort = (col: ColumnDef<T>) => {
-    if (!col.sortable && !col.accessorKey) return;
     const key = col.accessorKey ? String(col.accessorKey) : col.header;
     if (sortKey === key) {
-      if (sortDirection === "asc") {
-        setSortDirection("desc");
-      } else {
-        setSortKey(null);
-      }
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortKey(key);
       setSortDirection("asc");
     }
   };
 
-  // 4. CSV Export
   const handleExportCsv = () => {
-    if (sortedData.length === 0) {
-      alert("No data to export");
-      return;
-    }
-
-    // Prepare headers
-    const exportableCols = columns.filter((c) => c.accessorKey || c.header);
-    const headers = exportableCols.map((c) => `"${c.header.replace(/"/g, '""')}"`);
-
-    // Prepare rows
+    const headers = columns.map((c) => `"${c.header.replace(/"/g, '""')}"`);
     const rows = sortedData.map((item) => {
-      return exportableCols
+      return columns
         .map((c) => {
           let val = "";
           if (c.sortAccessor) {
@@ -230,7 +203,7 @@ export function AdminDataTable<T extends { id?: string | number }>({
         <div className="flex flex-1 flex-wrap items-center gap-2">
           {/* Search Box */}
           <div className="relative max-w-sm min-w-[220px] flex-1">
-            <Search className="text-surface-500 absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <input
               type="text"
               placeholder={searchPlaceholder}
@@ -239,7 +212,7 @@ export function AdminDataTable<T extends { id?: string | number }>({
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="border-surface-700 bg-surface-900/80 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-lg border py-2 pr-8 pl-9 text-xs transition-colors focus:outline-none"
+              className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-lg border py-2 pr-8 pl-9 text-xs transition-colors focus:outline-none"
             />
             {searchQuery && (
               <button
@@ -247,7 +220,7 @@ export function AdminDataTable<T extends { id?: string | number }>({
                   setSearchQuery("");
                   setCurrentPage(1);
                 }}
-                className="text-surface-500 hover:text-surface-300 absolute top-1/2 right-2.5 -translate-y-1/2"
+                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -266,7 +239,7 @@ export function AdminDataTable<T extends { id?: string | number }>({
                   }));
                   setCurrentPage(1);
                 }}
-                className="border-surface-700 bg-surface-900 text-surface-200 focus:border-brand-500 rounded-lg border py-2 pr-8 pl-3 text-xs focus:outline-none"
+                className="border-input bg-background text-foreground focus:border-primary rounded-lg border py-2 pr-8 pl-3 text-xs focus:outline-none"
               >
                 <option value="ALL">{f.label}: All</option>
                 {f.options.map((opt) => (
@@ -278,7 +251,7 @@ export function AdminDataTable<T extends { id?: string | number }>({
             </div>
           ))}
 
-          {/* Clear Filters Button if any active */}
+          {/* Clear Filters Button */}
           {(searchQuery || Object.values(activeFilters).some((v) => v !== "ALL")) && (
             <button
               onClick={() => {
@@ -286,7 +259,7 @@ export function AdminDataTable<T extends { id?: string | number }>({
                 setActiveFilters({});
                 setCurrentPage(1);
               }}
-              className="text-brand-400 hover:text-brand-300 flex items-center gap-1 text-xs font-medium"
+              className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs font-medium"
             >
               <X className="h-3.5 w-3.5" /> Clear
             </button>
@@ -297,22 +270,22 @@ export function AdminDataTable<T extends { id?: string | number }>({
         <div className="flex items-center gap-2">
           {toolbarRight}
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={handleExportCsv}
-            className="border-surface-700 hover:border-surface-600 bg-surface-900 text-surface-200 flex items-center gap-1.5 text-xs font-semibold"
+            className="flex items-center gap-1.5 text-xs font-semibold"
           >
             <Download className="h-3.5 w-3.5" /> Export CSV ({sortedData.length})
           </Button>
         </div>
       </div>
 
-      {/* Table Container */}
-      <div className="border-surface-800 bg-surface-900/40 relative overflow-hidden rounded-xl border">
+      {/* Table Container with horizontal scroll wrapper */}
+      <div className="border-border bg-card relative overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            {/* Header */}
-            <thead className="border-surface-800 bg-surface-900/90 text-surface-400 border-b font-semibold tracking-wider uppercase">
+            {/* Sticky Header bg-card */}
+            <thead className="border-border bg-card text-muted-foreground sticky top-0 z-10 border-b font-semibold tracking-wider uppercase">
               <tr>
                 {columns.map((col, idx) => {
                   const isSortable = col.sortable || Boolean(col.accessorKey);
@@ -324,7 +297,7 @@ export function AdminDataTable<T extends { id?: string | number }>({
                       key={idx}
                       onClick={() => isSortable && handleSort(col)}
                       className={`px-4 py-3.5 select-none ${
-                        isSortable ? "hover:text-surface-100 cursor-pointer" : ""
+                        isSortable ? "hover:text-foreground cursor-pointer" : ""
                       } ${col.hideOnMobile ? "hidden md:table-cell" : ""} ${
                         col.headerClassName || ""
                       }`}
@@ -332,12 +305,12 @@ export function AdminDataTable<T extends { id?: string | number }>({
                       <div className="flex items-center gap-1.5">
                         <span>{col.header}</span>
                         {isSortable && (
-                          <span className="text-surface-500">
+                          <span className="text-muted-foreground">
                             {isCurrentSort ? (
                               sortDirection === "asc" ? (
-                                <ChevronUp className="text-brand-400 h-3.5 w-3.5" />
+                                <ChevronUp className="text-primary h-3.5 w-3.5" />
                               ) : (
-                                <ChevronDown className="text-brand-400 h-3.5 w-3.5" />
+                                <ChevronDown className="text-primary h-3.5 w-3.5" />
                               )
                             ) : (
                               <ChevronsUpDown className="h-3 w-3 opacity-40" />
@@ -351,16 +324,16 @@ export function AdminDataTable<T extends { id?: string | number }>({
               </tr>
             </thead>
 
-            {/* Body */}
-            <tbody className="divide-surface-800/60 divide-y">
+            {/* Body (row hover bg-muted, zebra none) */}
+            <tbody className="divide-border divide-y">
               {paginatedData.length === 0 ? (
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="text-surface-400 py-12 text-center text-sm"
+                    className="text-muted-foreground py-12 text-center text-sm"
                   >
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <Filter className="text-surface-600 h-8 w-8" />
+                      <Filter className="text-muted-foreground h-8 w-8" />
                       <p>{emptyMessage}</p>
                     </div>
                   </td>
@@ -369,12 +342,12 @@ export function AdminDataTable<T extends { id?: string | number }>({
                 paginatedData.map((item, rowIdx) => (
                   <tr
                     key={item.id ? String(item.id) : rowIdx}
-                    className="hover:bg-surface-800/40 transition-colors"
+                    className="hover:bg-muted transition-colors"
                   >
                     {columns.map((col, colIdx) => (
                       <td
                         key={colIdx}
-                        className={`text-surface-300 px-4 py-3.5 ${
+                        className={`text-foreground px-4 py-3.5 ${
                           col.hideOnMobile ? "hidden md:table-cell" : ""
                         } ${col.className || ""}`}
                       >
@@ -393,28 +366,28 @@ export function AdminDataTable<T extends { id?: string | number }>({
         </div>
 
         {/* Pagination Footer */}
-        <div className="border-surface-800 bg-surface-900/60 text-surface-400 flex flex-col items-center justify-between gap-3 border-t px-4 py-3 text-xs sm:flex-row">
+        <div className="border-border bg-card text-muted-foreground flex flex-col items-center justify-between gap-3 border-t px-4 py-3 text-xs sm:flex-row">
           {/* Record summary */}
           <div className="flex items-center gap-3">
             <span>
               Showing{" "}
-              <strong className="text-surface-200">
+              <strong className="text-foreground">
                 {sortedData.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1}
               </strong>{" "}
               to{" "}
-              <strong className="text-surface-200">
+              <strong className="text-foreground">
                 {Math.min(currentPage * rowsPerPage, sortedData.length)}
               </strong>{" "}
-              of <strong className="text-surface-200">{sortedData.length}</strong> entries
+              of <strong className="text-foreground">{sortedData.length}</strong> entries
             </span>
 
             {/* Page size dropdown */}
-            <div className="border-surface-800 flex items-center gap-1.5 border-l pl-3">
+            <div className="border-border flex items-center gap-1.5 border-l pl-3">
               <span>Show:</span>
               <select
                 value={rowsPerPage}
                 onChange={(e) => setRowsPerPage(Number(e.target.value))}
-                className="border-surface-700 bg-surface-900 text-surface-200 rounded border px-2 py-0.5 text-xs focus:outline-none"
+                className="border-input bg-background text-foreground rounded border px-2 py-0.5 text-xs focus:outline-none"
               >
                 <option value={10}>10</option>
                 <option value={25}>25</option>
@@ -429,21 +402,21 @@ export function AdminDataTable<T extends { id?: string | number }>({
             <button
               onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
               disabled={currentPage <= 1}
-              className="border-surface-800 bg-surface-900 hover:bg-surface-800 text-surface-300 rounded border p-1.5 disabled:cursor-not-allowed disabled:opacity-40"
+              className="border-border bg-background hover:bg-muted text-foreground rounded border p-1.5 disabled:cursor-not-allowed disabled:opacity-40"
               title="Previous Page"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
 
-            <span className="text-surface-300 px-2">
-              Page <strong className="text-surface-100">{currentPage}</strong> of{" "}
-              <strong className="text-surface-100">{totalPages}</strong>
+            <span className="text-muted-foreground px-2">
+              Page <strong className="text-foreground">{currentPage}</strong> of{" "}
+              <strong className="text-foreground">{totalPages}</strong>
             </span>
 
             <button
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
               disabled={currentPage >= totalPages}
-              className="border-surface-800 bg-surface-900 hover:bg-surface-800 text-surface-300 rounded border p-1.5 disabled:cursor-not-allowed disabled:opacity-40"
+              className="border-border bg-background hover:bg-muted text-foreground rounded border p-1.5 disabled:cursor-not-allowed disabled:opacity-40"
               title="Next Page"
             >
               <ChevronRight className="h-4 w-4" />

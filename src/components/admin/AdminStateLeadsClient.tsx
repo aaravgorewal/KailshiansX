@@ -119,8 +119,8 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-100 text-xs font-bold">{item.name}</span>
-          <div className="text-surface-400 flex items-center gap-1.5 text-[11px]">
+          <span className="text-foreground text-xs font-bold">{item.name}</span>
+          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
             <span>{item.email}</span>
             {item.phone && <span>· {item.phone}</span>}
           </div>
@@ -133,8 +133,8 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-200 block text-xs font-semibold">{item.state}</span>
-          <span className="text-surface-400 text-[11px]">
+          <span className="text-foreground block text-xs font-semibold">{item.state}</span>
+          <span className="text-muted-foreground text-xs">
             {item.citiesCovered || item.city || "Statewide"}
           </span>
         </div>
@@ -145,7 +145,7 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
       accessorKey: "currentRole",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-300 text-xs">{item.currentRole || "Professional"}</span>
+        <span className="text-muted-foreground text-xs">{item.currentRole || "Professional"}</span>
       ),
     },
     {
@@ -156,7 +156,7 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
         <select
           value={item.status}
           onChange={(e) => handleStatusChange(item.id, e.target.value)}
-          className="bg-surface-900 border-surface-700 text-surface-200 focus:border-brand-500 rounded border px-2 py-1 font-mono text-xs focus:outline-none"
+          className="bg-card border-border text-foreground focus:border-primary rounded border px-2 py-1 font-mono text-xs focus:outline-none"
         >
           {STATUS_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -172,7 +172,7 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
       sortable: true,
       sortAccessor: (item) => new Date(item.createdAt).getTime(),
       cell: (item) => (
-        <span className="text-surface-400 text-xs">{formatDate(item.createdAt)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.createdAt)}</span>
       ),
     },
     {
@@ -183,7 +183,7 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
             size="sm"
             variant="outline"
             onClick={() => openReviewModal(item)}
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Eye className="h-3.5 w-3.5" /> Review
           </Button>
@@ -204,20 +204,20 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-surface-50 text-2xl font-bold">State Leads Pipeline</h1>
-          <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+          <h1 className="text-foreground text-2xl font-bold">State Leads Pipeline</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
             Regional directors managing state ecosystem partnerships, venue budgets, and chapter
             growth.
           </p>
         </div>
 
-        <div className="bg-surface-900 border-surface-800 flex items-center self-start rounded-lg border p-1 sm:self-auto">
+        <div className="bg-card border-border flex items-center self-start rounded-lg border p-1 sm:self-auto">
           <button
             onClick={() => setViewMode("table")}
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
               viewMode === "table"
-                ? "bg-surface-800 text-surface-100 shadow-sm"
-                : "text-surface-400 hover:text-surface-200"
+                ? "bg-muted text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <List className="h-3.5 w-3.5" /> Table
@@ -226,8 +226,8 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
             onClick={() => setViewMode("kanban")}
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
               viewMode === "kanban"
-                ? "bg-surface-800 text-surface-100 shadow-sm"
-                : "text-surface-400 hover:text-surface-200"
+                ? "bg-muted text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <LayoutGrid className="h-3.5 w-3.5" /> Kanban
@@ -265,24 +265,24 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
       >
         {selectedApp && (
           <div className="space-y-4">
-            <div className="bg-surface-950 border-surface-800 grid grid-cols-2 gap-3 rounded-xl border p-3.5 text-xs">
+            <div className="bg-background border-border grid grid-cols-2 gap-3 rounded-xl border p-3.5 text-xs">
               <div>
-                <span className="text-surface-500 block font-semibold">Email:</span>
-                <span className="text-surface-200 font-medium">{selectedApp.email}</span>
+                <span className="text-muted-foreground block font-semibold">Email:</span>
+                <span className="text-foreground font-medium">{selectedApp.email}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Phone:</span>
-                <span className="text-surface-200 font-medium">{selectedApp.phone || "—"}</span>
+                <span className="text-muted-foreground block font-semibold">Phone:</span>
+                <span className="text-foreground font-medium">{selectedApp.phone || "—"}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Current Role:</span>
-                <span className="text-surface-200 font-medium">
+                <span className="text-muted-foreground block font-semibold">Current Role:</span>
+                <span className="text-foreground font-medium">
                   {selectedApp.currentRole || "—"}
                 </span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Hours / Week:</span>
-                <span className="text-surface-200 font-medium">
+                <span className="text-muted-foreground block font-semibold">Hours / Week:</span>
+                <span className="text-foreground font-medium">
                   {selectedApp.availabilityHours || "—"}
                 </span>
               </div>
@@ -293,7 +293,7 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
                 <a
                   href={selectedApp.linkedin}
                   target="_blank"
-                  className="text-brand-400 hover:text-brand-300 flex items-center gap-1 text-xs font-semibold"
+                  className="text-primary hover:text-primary flex items-center gap-1 text-xs font-semibold"
                 >
                   <span>LinkedIn Profile</span>
                   <ExternalLink className="h-3 w-3" />
@@ -302,31 +302,31 @@ export function AdminStateLeadsClient({ initialApplications }: AdminStateLeadsCl
             )}
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">
                 Leadership Evidence & Track Record
               </h4>
-              <p className="text-surface-300 bg-surface-950 border-surface-800 rounded-lg border p-3 text-xs whitespace-pre-wrap">
+              <p className="text-muted-foreground bg-background border-border rounded-lg border p-3 text-xs whitespace-pre-wrap">
                 {selectedApp.leadershipEvidence || "No leadership evidence provided."}
               </p>
             </div>
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">
                 Community Vision for {selectedApp.state}
               </h4>
-              <p className="text-surface-300 bg-surface-950 border-surface-800 rounded-lg border p-3 text-xs whitespace-pre-wrap">
+              <p className="text-muted-foreground bg-background border-border rounded-lg border p-3 text-xs whitespace-pre-wrap">
                 {selectedApp.communityVision || "No community vision statement provided."}
               </p>
             </div>
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">Admin Notes</h4>
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">Admin Notes</h4>
               <textarea
                 rows={3}
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
                 placeholder="Internal interview notes, committee screening remarks..."
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
               />
               <div className="mt-2 flex justify-end">
                 <Button

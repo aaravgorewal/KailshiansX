@@ -82,7 +82,7 @@ export function AdminRegistrationsClient({
       accessorKey: "registrationCode",
       sortable: true,
       cell: (item) => (
-        <span className="text-brand-300 font-mono text-xs font-bold">{item.registrationCode}</span>
+        <span className="text-primary font-mono text-xs font-bold">{item.registrationCode}</span>
       ),
     },
     {
@@ -91,8 +91,8 @@ export function AdminRegistrationsClient({
       sortable: true,
       cell: (item) => (
         <div>
-          <p className="text-surface-100 font-semibold">{item.name}</p>
-          <div className="text-surface-400 mt-0.5 flex items-center gap-2 text-[11px]">
+          <p className="text-foreground font-semibold">{item.name}</p>
+          <div className="text-muted-foreground mt-0.5 flex items-center gap-2 text-xs">
             <span>{item.email}</span>
             {item.phone && (
               <>
@@ -102,7 +102,7 @@ export function AdminRegistrationsClient({
             )}
           </div>
           {item.college && (
-            <p className="text-surface-500 max-w-[200px] truncate text-[10px]">{item.college}</p>
+            <p className="text-muted-foreground max-w-[200px] truncate text-xs">{item.college}</p>
           )}
         </div>
       ),
@@ -112,7 +112,7 @@ export function AdminRegistrationsClient({
       accessorKey: "eventTitle",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-200 block max-w-[220px] truncate text-xs font-medium">
+        <span className="text-foreground block max-w-[220px] truncate text-xs font-medium">
           {item.eventTitle}
         </span>
       ),
@@ -123,8 +123,8 @@ export function AdminRegistrationsClient({
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-200 text-xs font-semibold">{item.ticketTier}</span>
-          <p className="text-surface-400 font-mono text-[11px]">
+          <span className="text-foreground text-xs font-semibold">{item.ticketTier}</span>
+          <p className="text-muted-foreground font-mono text-xs">
             {item.ticketPrice > 0 ? `₹${item.ticketPrice}` : "Free Pass"}
           </p>
         </div>
@@ -142,7 +142,7 @@ export function AdminRegistrationsClient({
             value={item.status}
             disabled={isBusy}
             onChange={(e) => handleStatusChange(item.id, e.target.value as RegistrationStatus)}
-            className="bg-surface-900 border-surface-700 text-surface-200 focus:border-brand-500 rounded border px-2 py-1 text-xs focus:outline-none disabled:opacity-50"
+            className="bg-card border-border text-foreground focus:border-primary rounded border px-2 py-1 text-xs focus:outline-none disabled:opacity-50"
           >
             <option value={RegistrationStatus.CONFIRMED}>CONFIRMED</option>
             <option value={RegistrationStatus.PENDING}>PENDING</option>
@@ -165,8 +165,8 @@ export function AdminRegistrationsClient({
             disabled={isBusy}
             className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
               item.checkedIn
-                ? "border border-emerald-800 bg-emerald-950/60 text-emerald-300"
-                : "bg-surface-800 text-surface-400 hover:text-surface-200 hover:bg-surface-700"
+                ? "border-success/30 bg-success/10 text-success border"
+                : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
             title={item.checkedIn ? "Click to revoke check-in" : "Click to mark checked-in"}
           >
@@ -182,7 +182,7 @@ export function AdminRegistrationsClient({
       sortable: true,
       sortAccessor: (item) => new Date(item.createdAt).getTime(),
       cell: (item) => (
-        <span className="text-surface-400 text-xs">{formatDate(item.createdAt)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.createdAt)}</span>
       ),
     },
   ];
@@ -216,8 +216,8 @@ export function AdminRegistrationsClient({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-surface-50 text-2xl font-bold">Registrations & Passes</h1>
-        <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+        <h1 className="text-foreground text-2xl font-bold">Registrations & Passes</h1>
+        <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
           Audited roster of attendee passes, payment status, and gate attendance.
         </p>
       </div>

@@ -191,8 +191,8 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-100 block text-xs font-bold">{item.organisation}</span>
-          <div className="text-surface-400 flex items-center gap-1.5 text-[11px]">
+          <span className="text-foreground block text-xs font-bold">{item.organisation}</span>
+          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
             <span>{item.contactPerson}</span>
             <span>·</span>
             <span>{item.email}</span>
@@ -205,7 +205,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
       accessorKey: "type",
       sortable: true,
       cell: (item) => (
-        <Badge variant="outline" size="sm" className="text-[10px]">
+        <Badge variant="outline" size="sm" className="text-xs">
           {item.type}
         </Badge>
       ),
@@ -215,7 +215,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
       accessorKey: "cityName",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-300 text-xs">{item.cityName || "National"}</span>
+        <span className="text-muted-foreground text-xs">{item.cityName || "National"}</span>
       ),
     },
     {
@@ -226,7 +226,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
         <select
           value={item.stage}
           onChange={(e) => handleStageChange(item.id, e.target.value)}
-          className="bg-surface-900 border-surface-700 text-surface-200 focus:border-brand-500 rounded border px-2 py-1 font-mono text-xs focus:outline-none"
+          className="bg-card border-border text-foreground focus:border-primary rounded border px-2 py-1 font-mono text-xs focus:outline-none"
         >
           {STAGE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -242,7 +242,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
       sortable: true,
       sortAccessor: (item) => new Date(item.createdAt).getTime(),
       cell: (item) => (
-        <span className="text-surface-400 text-xs">{formatDate(item.createdAt)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.createdAt)}</span>
       ),
     },
     {
@@ -253,7 +253,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
             size="sm"
             variant="outline"
             onClick={() => openReviewModal(item)}
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Eye className="h-3.5 w-3.5" /> Dossier
           </Button>
@@ -279,21 +279,21 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-surface-50 text-2xl font-bold">Collaborations & Partnerships</h1>
-          <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+          <h1 className="text-foreground text-2xl font-bold">Collaborations & Partnerships</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
             Ecosystem pipeline for university venues, developer communities, and corporate sponsors.
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto">
           {/* View mode switcher */}
-          <div className="bg-surface-900 border-surface-800 flex items-center rounded-lg border p-1">
+          <div className="bg-card border-border flex items-center rounded-lg border p-1">
             <button
               onClick={() => setViewMode("table")}
               className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                 viewMode === "table"
-                  ? "bg-surface-800 text-surface-100 shadow-sm"
-                  : "text-surface-400 hover:text-surface-200"
+                  ? "bg-muted text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <List className="h-3.5 w-3.5" /> Table
@@ -302,8 +302,8 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
               onClick={() => setViewMode("kanban")}
               className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                 viewMode === "kanban"
-                  ? "bg-surface-800 text-surface-100 shadow-sm"
-                  : "text-surface-400 hover:text-surface-200"
+                  ? "bg-muted text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <LayoutGrid className="h-3.5 w-3.5" /> Kanban
@@ -313,7 +313,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
           <Button
             size="sm"
             onClick={() => setShowCreateModal(true)}
-            className="bg-brand-600 hover:bg-brand-500 shadow-brand-600/20 flex items-center gap-1.5 text-xs font-bold text-white shadow-md"
+            className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 text-xs font-bold text-white shadow-md"
           >
             <Plus className="h-4 w-4" />
             <span>New Lead</span>
@@ -351,53 +351,53 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
       >
         {selectedLead && (
           <div className="space-y-4">
-            <div className="bg-surface-950 border-surface-800 grid grid-cols-2 gap-3 rounded-xl border p-3.5 text-xs">
+            <div className="bg-background border-border grid grid-cols-2 gap-3 rounded-xl border p-3.5 text-xs">
               <div>
-                <span className="text-surface-500 block font-semibold">Contact:</span>
-                <span className="text-surface-200 font-medium">{selectedLead.contactPerson}</span>
+                <span className="text-muted-foreground block font-semibold">Contact:</span>
+                <span className="text-foreground font-medium">{selectedLead.contactPerson}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Email:</span>
-                <span className="text-surface-200 font-medium">{selectedLead.email}</span>
+                <span className="text-muted-foreground block font-semibold">Email:</span>
+                <span className="text-foreground font-medium">{selectedLead.email}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Phone:</span>
-                <span className="text-surface-200 font-medium">{selectedLead.phone || "—"}</span>
+                <span className="text-muted-foreground block font-semibold">Phone:</span>
+                <span className="text-foreground font-medium">{selectedLead.phone || "—"}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Website:</span>
-                <span className="text-surface-200 font-medium">{selectedLead.website || "—"}</span>
+                <span className="text-muted-foreground block font-semibold">Website:</span>
+                <span className="text-foreground font-medium">{selectedLead.website || "—"}</span>
               </div>
             </div>
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">
                 Proposed Event / Engagement
               </h4>
-              <p className="text-surface-300 bg-surface-950 border-surface-800 rounded-lg border p-3 text-xs whitespace-pre-wrap">
+              <p className="text-muted-foreground bg-background border-border rounded-lg border p-3 text-xs whitespace-pre-wrap">
                 {selectedLead.proposedEvent || selectedLead.message || "No description provided."}
               </p>
             </div>
 
             {selectedLead.resourcesOffered && (
               <div>
-                <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">
+                <h4 className="text-foreground mb-1 text-xs font-bold uppercase">
                   Resources Offered (Auditorium, AV, Catering, Budget)
                 </h4>
-                <p className="text-surface-300 bg-surface-950 border-surface-800 rounded-lg border p-3 text-xs whitespace-pre-wrap">
+                <p className="text-muted-foreground bg-background border-border rounded-lg border p-3 text-xs whitespace-pre-wrap">
                   {selectedLead.resourcesOffered}
                 </p>
               </div>
             )}
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">Internal Notes</h4>
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">Internal Notes</h4>
               <textarea
                 rows={3}
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
                 placeholder="Meeting summary, term sheet details, partnership commitments..."
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
               />
               <div className="mt-2 flex justify-end">
                 <Button
@@ -425,23 +425,25 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
-                Organisation <span className="text-red-400">*</span>
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                Organisation <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={newOrg}
                 onChange={(e) => setNewOrg(e.target.value)}
                 placeholder="e.g. BITS Pilani / AWS User Group"
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2 text-xs"
               />
             </div>
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">Lead Type</label>
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                Lead Type
+              </label>
               <select
                 value={newType}
                 onChange={(e) => setNewType(e.target.value as CollaborationType)}
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2 text-xs"
               >
                 {TYPE_OPTIONS.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -454,34 +456,34 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
-                Contact Person <span className="text-red-400">*</span>
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                Contact Person <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={newContact}
                 onChange={(e) => setNewContact(e.target.value)}
                 placeholder="Dr. Rajesh / Neha Sharma"
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2 text-xs"
               />
             </div>
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
-                Email Address <span className="text-red-400">*</span>
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                Email Address <span className="text-destructive">*</span>
               </label>
               <input
                 type="email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
                 placeholder="partner@college.edu.in"
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2 text-xs"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                 Phone Number
               </label>
               <input
@@ -489,11 +491,11 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
                 placeholder="+91 9876543210"
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2 text-xs"
               />
             </div>
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                 City / Region
               </label>
               <input
@@ -501,13 +503,13 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
                 value={newCity}
                 onChange={(e) => setNewCity(e.target.value)}
                 placeholder="Pilani / Jaipur"
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2 text-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-surface-300 mb-1 block text-xs font-semibold">
+            <label className="text-muted-foreground mb-1 block text-xs font-semibold">
               Proposal / Discussion Notes
             </label>
             <textarea
@@ -515,11 +517,11 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Summary of mutual interests, requested event dates, or sponsorship tiers..."
-              className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2 text-xs"
+              className="bg-background border-border text-foreground w-full rounded-lg border p-2 text-xs"
             />
           </div>
 
-          <div className="border-surface-800 flex justify-end gap-2 border-t pt-2">
+          <div className="border-border flex justify-end gap-2 border-t pt-2">
             <Button
               variant="outline"
               size="sm"
@@ -532,7 +534,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
               size="sm"
               onClick={handleCreateLead}
               disabled={isUpdating}
-              className="bg-brand-600 hover:bg-brand-500 text-xs font-bold text-white"
+              className="bg-primary-hover hover:bg-primary text-xs font-bold text-white"
             >
               {isUpdating ? "Saving..." : "Create Lead"}
             </Button>

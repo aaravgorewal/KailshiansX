@@ -89,11 +89,11 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-200 block font-mono text-xs font-semibold">
+          <span className="text-foreground block font-mono text-xs font-semibold">
             {item.razorpayOrderId}
           </span>
           {item.razorpayPaymentId && (
-            <span className="text-surface-500 block font-mono text-[11px]">
+            <span className="text-muted-foreground block font-mono text-xs">
               Pay: {item.razorpayPaymentId}
             </span>
           )}
@@ -106,9 +106,9 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
       sortable: true,
       cell: (item) => (
         <div>
-          <p className="text-surface-100 font-semibold">{item.attendeeName}</p>
-          <p className="text-surface-500 text-[11px]">{item.attendeeEmail}</p>
-          <span className="text-brand-400 font-mono text-[10px]">{item.registrationCode}</span>
+          <p className="text-foreground font-semibold">{item.attendeeName}</p>
+          <p className="text-muted-foreground text-xs">{item.attendeeEmail}</p>
+          <span className="text-primary font-mono text-xs">{item.registrationCode}</span>
         </div>
       ),
     },
@@ -117,7 +117,7 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
       accessorKey: "eventTitle",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-300 block max-w-[200px] truncate text-xs">
+        <span className="text-muted-foreground block max-w-[200px] truncate text-xs">
           {item.eventTitle}
         </span>
       ),
@@ -127,7 +127,7 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
       accessorKey: "amount",
       sortable: true,
       cell: (item) => (
-        <span className="text-surface-100 font-mono text-xs font-bold">
+        <span className="text-foreground font-mono text-xs font-bold">
           ₹{item.amount.toLocaleString("en-IN")}
         </span>
       ),
@@ -159,7 +159,7 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
       sortable: true,
       sortAccessor: (item) => new Date(item.createdAt).getTime(),
       cell: (item) => (
-        <span className="text-surface-400 text-xs">{formatDate(item.createdAt)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.createdAt)}</span>
       ),
     },
     {
@@ -174,14 +174,14 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
                 variant="outline"
                 size="sm"
                 onClick={() => handleOpenRefund(item)}
-                className="border-surface-700 bg-surface-900 flex items-center gap-1 text-xs text-amber-300 hover:bg-amber-950/30"
+                className="border-border bg-card text-warning hover:bg-muted flex items-center gap-1 text-xs"
               >
                 <RotateCcw className="h-3.5 w-3.5" /> Refund
               </Button>
             ) : item.status === PaymentStatus.REFUNDED ? (
-              <span className="text-surface-500 text-[11px] italic">Refunded</span>
+              <span className="text-muted-foreground text-xs italic">Refunded</span>
             ) : (
-              <span className="text-surface-500 text-[11px]">—</span>
+              <span className="text-muted-foreground text-xs">—</span>
             )}
           </div>
         );
@@ -205,8 +205,8 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-surface-50 text-2xl font-bold">Payments & Gateway</h1>
-        <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+        <h1 className="text-foreground text-2xl font-bold">Payments & Gateway</h1>
+        <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
           Razorpay capture logs, transaction verification, and atomic refund processing.
         </p>
       </div>
@@ -232,13 +232,13 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
         {selectedForRefund && (
           <div className="space-y-4">
             {feedback && (
-              <div className="rounded-lg border border-red-800 bg-red-950/40 p-3 text-xs font-semibold text-red-300">
+              <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border p-3 text-xs font-semibold">
                 {feedback}
               </div>
             )}
 
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                 Refund Amount (₹ INR)
               </label>
               <input
@@ -246,15 +246,15 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(e.target.value)}
                 max={selectedForRefund.amount}
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 font-mono text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 font-mono text-xs"
               />
-              <p className="text-surface-500 mt-1 text-[10px]">
+              <p className="text-muted-foreground mt-1 text-xs">
                 Original amount: ₹{selectedForRefund.amount}. Leave blank or equal for full refund.
               </p>
             </div>
 
             <div>
-              <label className="text-surface-300 mb-1 block text-xs font-semibold">
+              <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                 Reason for Refund
               </label>
               <textarea
@@ -262,11 +262,11 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
                 value={refundReason}
                 onChange={(e) => setRefundReason(e.target.value)}
                 placeholder="e.g. Event date rescheduled / attendee emergency withdrawal"
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
               />
             </div>
 
-            <div className="border-surface-800 flex justify-end gap-2 border-t pt-2">
+            <div className="border-border flex justify-end gap-2 border-t pt-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -280,7 +280,7 @@ export function AdminPaymentsClient({ initialPayments }: AdminPaymentsClientProp
                 size="sm"
                 onClick={handleExecuteRefund}
                 disabled={isProcessing}
-                className="bg-red-600 text-xs font-bold text-white hover:bg-red-500"
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground text-xs font-bold"
               >
                 {isProcessing ? "Processing..." : "Confirm & Issue Refund"}
               </Button>

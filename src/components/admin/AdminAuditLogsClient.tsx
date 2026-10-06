@@ -58,9 +58,9 @@ export function AdminAuditLogsClient({ initialLogs }: AdminAuditLogsClientProps)
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-100 text-xs font-semibold">{item.entityType}</span>
+          <span className="text-foreground text-xs font-semibold">{item.entityType}</span>
           {item.entityId && (
-            <span className="text-surface-500 block max-w-[150px] truncate font-mono text-[10px]">
+            <span className="text-muted-foreground block max-w-[150px] truncate font-mono text-xs">
               ID: {item.entityId}
             </span>
           )}
@@ -73,8 +73,8 @@ export function AdminAuditLogsClient({ initialLogs }: AdminAuditLogsClientProps)
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-200 block text-xs font-medium">{item.userName}</span>
-          <span className="text-surface-500 text-[11px]">{item.userEmail}</span>
+          <span className="text-foreground block text-xs font-medium">{item.userName}</span>
+          <span className="text-muted-foreground text-xs">{item.userEmail}</span>
         </div>
       ),
     },
@@ -85,8 +85,8 @@ export function AdminAuditLogsClient({ initialLogs }: AdminAuditLogsClientProps)
       sortAccessor: (item) => new Date(item.createdAt).getTime(),
       cell: (item) => (
         <div>
-          <span className="text-surface-300 block text-xs">{formatDate(item.createdAt)}</span>
-          <span className="text-surface-500 text-[10px]">
+          <span className="text-muted-foreground block text-xs">{formatDate(item.createdAt)}</span>
+          <span className="text-muted-foreground text-xs">
             {new Date(item.createdAt).toLocaleTimeString()}
           </span>
         </div>
@@ -100,7 +100,7 @@ export function AdminAuditLogsClient({ initialLogs }: AdminAuditLogsClientProps)
             size="sm"
             variant="outline"
             onClick={() => setSelectedLog(item)}
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Eye className="h-3.5 w-3.5" /> Diff
           </Button>
@@ -126,8 +126,8 @@ export function AdminAuditLogsClient({ initialLogs }: AdminAuditLogsClientProps)
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-surface-50 text-2xl font-bold">Audit Trail & Forensic Logs</h1>
-        <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+        <h1 className="text-foreground text-2xl font-bold">Audit Trail & Forensic Logs</h1>
+        <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
           Immutable ledger recording all administrative mutations, publish actions, and role
           upgrades.
         </p>
@@ -159,37 +159,35 @@ export function AdminAuditLogsClient({ initialLogs }: AdminAuditLogsClientProps)
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <h4 className="text-surface-400 mb-1 text-xs font-bold uppercase">
+                <h4 className="text-muted-foreground mb-1 text-xs font-bold uppercase">
                   Before Mutation
                 </h4>
-                <div className="bg-surface-950 border-surface-800 text-surface-300 max-h-80 overflow-y-auto rounded-xl border p-3 font-mono text-[11px]">
+                <div className="bg-background border-border text-muted-foreground max-h-80 overflow-y-auto rounded-xl border p-3 font-mono text-xs">
                   {selectedLog.before ? (
                     <pre className="whitespace-pre-wrap">
                       {JSON.stringify(selectedLog.before, null, 2)}
                     </pre>
                   ) : (
-                    <span className="text-surface-600 italic">None (New Record Creation)</span>
+                    <span className="text-muted-foreground italic">None (New Record Creation)</span>
                   )}
                 </div>
               </div>
 
               <div>
-                <h4 className="mb-1 text-xs font-bold text-emerald-400 uppercase">
-                  After Mutation
-                </h4>
-                <div className="bg-surface-950 border-surface-800 max-h-80 overflow-y-auto rounded-xl border p-3 font-mono text-[11px] text-emerald-300">
+                <h4 className="text-success mb-1 text-xs font-bold uppercase">After Mutation</h4>
+                <div className="bg-background border-border text-success max-h-80 overflow-y-auto rounded-xl border p-3 font-mono text-xs">
                   {selectedLog.after ? (
                     <pre className="whitespace-pre-wrap">
                       {JSON.stringify(selectedLog.after, null, 2)}
                     </pre>
                   ) : (
-                    <span className="text-surface-600 italic">None (Record Deleted)</span>
+                    <span className="text-muted-foreground italic">None (Record Deleted)</span>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="border-surface-800 flex justify-end border-t pt-2">
+            <div className="border-border flex justify-end border-t pt-2">
               <Button
                 variant="outline"
                 size="sm"

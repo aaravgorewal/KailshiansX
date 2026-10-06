@@ -124,8 +124,8 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-100 text-xs font-bold">{item.name}</span>
-          <div className="text-surface-400 flex items-center gap-1.5 text-[11px]">
+          <span className="text-foreground text-xs font-bold">{item.name}</span>
+          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
             <span>{item.email}</span>
             {item.phone && <span>· {item.phone}</span>}
           </div>
@@ -138,10 +138,10 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-200 block max-w-[200px] truncate text-xs font-medium">
+          <span className="text-foreground block max-w-[200px] truncate text-xs font-medium">
             {item.college}
           </span>
-          <span className="text-surface-400 text-[11px]">
+          <span className="text-muted-foreground text-xs">
             {item.courseYear || "Undergraduate"} {item.city ? `(${item.city})` : ""}
           </span>
         </div>
@@ -155,7 +155,7 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
         <select
           value={item.status}
           onChange={(e) => handleStatusChange(item.id, e.target.value)}
-          className="bg-surface-900 border-surface-700 text-surface-200 focus:border-brand-500 rounded border px-2 py-1 font-mono text-xs focus:outline-none"
+          className="bg-card border-border text-foreground focus:border-primary rounded border px-2 py-1 font-mono text-xs focus:outline-none"
         >
           {STATUS_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -171,7 +171,7 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
       sortable: true,
       sortAccessor: (item) => new Date(item.createdAt).getTime(),
       cell: (item) => (
-        <span className="text-surface-400 text-xs">{formatDate(item.createdAt)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.createdAt)}</span>
       ),
     },
     {
@@ -182,7 +182,7 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
             size="sm"
             variant="outline"
             onClick={() => openReviewModal(item)}
-            className="border-surface-700 bg-surface-900 text-surface-200 flex items-center gap-1 text-xs"
+            className="border-border bg-card text-foreground flex items-center gap-1 text-xs"
           >
             <Eye className="h-3.5 w-3.5" /> Review
           </Button>
@@ -203,20 +203,20 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-surface-50 text-2xl font-bold">Campus Leads Pipeline</h1>
-          <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+          <h1 className="text-foreground text-2xl font-bold">Campus Leads Pipeline</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
             Evaluate collegiate leaders driving developer clubs and campus hackathon qualifiers.
           </p>
         </div>
 
         {/* View mode switcher */}
-        <div className="bg-surface-900 border-surface-800 flex items-center self-start rounded-lg border p-1 sm:self-auto">
+        <div className="bg-card border-border flex items-center self-start rounded-lg border p-1 sm:self-auto">
           <button
             onClick={() => setViewMode("table")}
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
               viewMode === "table"
-                ? "bg-surface-800 text-surface-100 shadow-sm"
-                : "text-surface-400 hover:text-surface-200"
+                ? "bg-muted text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <List className="h-3.5 w-3.5" /> Table
@@ -225,8 +225,8 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
             onClick={() => setViewMode("kanban")}
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
               viewMode === "kanban"
-                ? "bg-surface-800 text-surface-100 shadow-sm"
-                : "text-surface-400 hover:text-surface-200"
+                ? "bg-muted text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <LayoutGrid className="h-3.5 w-3.5" /> Kanban
@@ -264,24 +264,22 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
       >
         {selectedApp && (
           <div className="space-y-4">
-            <div className="bg-surface-950 border-surface-800 grid grid-cols-2 gap-3 rounded-xl border p-3.5 text-xs">
+            <div className="bg-background border-border grid grid-cols-2 gap-3 rounded-xl border p-3.5 text-xs">
               <div>
-                <span className="text-surface-500 block font-semibold">Email:</span>
-                <span className="text-surface-200 font-medium">{selectedApp.email}</span>
+                <span className="text-muted-foreground block font-semibold">Email:</span>
+                <span className="text-foreground font-medium">{selectedApp.email}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Phone:</span>
-                <span className="text-surface-200 font-medium">{selectedApp.phone || "—"}</span>
+                <span className="text-muted-foreground block font-semibold">Phone:</span>
+                <span className="text-foreground font-medium">{selectedApp.phone || "—"}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Course / Year:</span>
-                <span className="text-surface-200 font-medium">
-                  {selectedApp.courseYear || "—"}
-                </span>
+                <span className="text-muted-foreground block font-semibold">Course / Year:</span>
+                <span className="text-foreground font-medium">{selectedApp.courseYear || "—"}</span>
               </div>
               <div>
-                <span className="text-surface-500 block font-semibold">Availability:</span>
-                <span className="text-surface-200 font-medium">
+                <span className="text-muted-foreground block font-semibold">Availability:</span>
+                <span className="text-foreground font-medium">
                   {selectedApp.availability || "—"}
                 </span>
               </div>
@@ -292,7 +290,7 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
                 <a
                   href={selectedApp.linkedin}
                   target="_blank"
-                  className="text-brand-400 hover:text-brand-300 flex items-center gap-1 text-xs font-semibold"
+                  className="text-primary hover:text-primary flex items-center gap-1 text-xs font-semibold"
                 >
                   <span>LinkedIn Profile</span>
                   <ExternalLink className="h-3 w-3" />
@@ -301,40 +299,38 @@ export function AdminCampusLeadsClient({ initialApplications }: AdminCampusLeads
             )}
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">
                 Technical Experience & Background
               </h4>
-              <p className="text-surface-300 bg-surface-950 border-surface-800 rounded-lg border p-3 text-xs whitespace-pre-wrap">
+              <p className="text-muted-foreground bg-background border-border rounded-lg border p-3 text-xs whitespace-pre-wrap">
                 {selectedApp.experience || "No experience summary provided."}
               </p>
             </div>
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">
                 Community Involvement
               </h4>
-              <p className="text-surface-300 bg-surface-950 border-surface-800 rounded-lg border p-3 text-xs whitespace-pre-wrap">
+              <p className="text-muted-foreground bg-background border-border rounded-lg border p-3 text-xs whitespace-pre-wrap">
                 {selectedApp.communityInvolvement || "No previous community involvement details."}
               </p>
             </div>
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">
-                Why KailshiansX?
-              </h4>
-              <p className="text-surface-300 bg-surface-950 border-surface-800 rounded-lg border p-3 text-xs whitespace-pre-wrap">
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">Why KailshiansX?</h4>
+              <p className="text-muted-foreground bg-background border-border rounded-lg border p-3 text-xs whitespace-pre-wrap">
                 {selectedApp.whyKailshiansX || "No motivation statement provided."}
               </p>
             </div>
 
             <div>
-              <h4 className="text-surface-200 mb-1 text-xs font-bold uppercase">Admin Notes</h4>
+              <h4 className="text-foreground mb-1 text-xs font-bold uppercase">Admin Notes</h4>
               <textarea
                 rows={3}
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
                 placeholder="Internal interview notes, screening feedback..."
-                className="bg-surface-950 border-surface-700 text-surface-100 w-full rounded-lg border p-2.5 text-xs"
+                className="bg-background border-border text-foreground w-full rounded-lg border p-2.5 text-xs"
               />
               <div className="mt-2 flex justify-end">
                 <Button

@@ -36,8 +36,8 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
       sortable: true,
       cell: (item) => (
         <div>
-          <span className="text-surface-100 block text-xs font-bold">{item.title}</span>
-          <span className="text-surface-500 font-mono text-[11px]">/events/{item.slug}</span>
+          <span className="text-foreground block text-xs font-bold">{item.title}</span>
+          <span className="text-muted-foreground font-mono text-xs">/events/{item.slug}</span>
         </div>
       ),
     },
@@ -46,7 +46,7 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
       accessorKey: "category",
       sortable: true,
       cell: (item) => (
-        <span className="bg-surface-800 text-brand-300 rounded px-2 py-0.5 text-[10px] font-bold uppercase">
+        <span className="bg-muted text-primary rounded px-2 py-0.5 text-xs font-bold uppercase">
           {item.category ?? "Technical Lab"}
         </span>
       ),
@@ -55,20 +55,22 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
       header: "Instructor(s)",
       accessorKey: "instructors",
       sortable: true,
-      cell: (item) => <span className="text-surface-300 text-xs">{item.instructors || "TBA"}</span>,
+      cell: (item) => (
+        <span className="text-muted-foreground text-xs">{item.instructors || "TBA"}</span>
+      ),
     },
     {
       header: "City",
       accessorKey: "cityName",
       sortable: true,
-      cell: (item) => <span className="text-surface-300 text-xs">{item.cityName}</span>,
+      cell: (item) => <span className="text-muted-foreground text-xs">{item.cityName}</span>,
     },
     {
       header: "Seats Filled",
       accessorKey: "registrationsCount",
       sortable: true,
       cell: (item) => (
-        <span className="text-brand-400 font-mono text-xs font-bold">
+        <span className="text-primary font-mono text-xs font-bold">
           {item.registrationsCount} / {item.maxCapacity ?? "∞"}
         </span>
       ),
@@ -79,7 +81,7 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
       sortable: true,
       sortAccessor: (item) => new Date(item.startDate).getTime(),
       cell: (item) => (
-        <span className="text-surface-400 text-xs">{formatDate(item.startDate)}</span>
+        <span className="text-muted-foreground text-xs">{formatDate(item.startDate)}</span>
       ),
     },
     {
@@ -107,7 +109,7 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
         <div className="flex items-center justify-end gap-1.5">
           <Link
             href={`/admin/events/${item.id}/edit`}
-            className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded p-1"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1"
             title="Edit workshop details"
           >
             <Edit2 className="h-4 w-4" />
@@ -115,7 +117,7 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
           <Link
             href={`/events/${item.slug}`}
             target="_blank"
-            className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded p-1"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1"
             title="Preview public workshop page"
           >
             <ExternalLink className="h-4 w-4" />
@@ -141,8 +143,8 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-surface-50 text-2xl font-bold">Workshops & Hands-on Labs</h1>
-          <p className="text-surface-400 mt-0.5 text-xs sm:text-sm">
+          <h1 className="text-foreground text-2xl font-bold">Workshops & Hands-on Labs</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs sm:text-sm">
             Practical engineering masterclasses (Rust, Distributed Systems, AI Agents,
             High-Concurrency).
           </p>
@@ -150,7 +152,7 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
 
         <Link
           href="/admin/events/new"
-          className="bg-brand-600 hover:bg-brand-500 shadow-brand-600/20 flex items-center gap-1.5 self-start rounded-lg px-3.5 py-2 text-xs font-bold text-white shadow-md transition-all sm:self-auto"
+          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start rounded-lg px-3.5 py-2 text-xs font-bold text-white shadow-md transition-all sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>New Workshop</span>

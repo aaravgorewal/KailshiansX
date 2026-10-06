@@ -346,18 +346,18 @@ export function AdminCmsClient({
   return (
     <div className="space-y-8">
       {/* ─── TABS HEADER ────────────────────────────────────────────────────── */}
-      <div className="border-surface-800 flex flex-wrap items-center gap-2 border-b pb-3">
+      <div className="border-border flex flex-wrap items-center gap-2 border-b pb-3">
         <button
           onClick={() => setActiveTab("applications")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "applications"
-              ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-              : "text-surface-400 hover:text-surface-100 hover:bg-surface-800"
+              ? "bg-primary text-white shadow-md"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           <Briefcase className="size-4" />
           <span>Team Applications</span>
-          <span className="ml-1.5 rounded-full bg-black/20 px-2 py-0.5 text-[10px]">
+          <span className="ml-1.5 rounded-full bg-black/20 px-2 py-0.5 text-xs">
             {applications.length}
           </span>
         </button>
@@ -366,13 +366,13 @@ export function AdminCmsClient({
           onClick={() => setActiveTab("core-team")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "core-team"
-              ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-              : "text-surface-400 hover:text-surface-100 hover:bg-surface-800"
+              ? "bg-primary text-white shadow-md"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           <Users className="size-4" />
           <span>Core Team Directory</span>
-          <span className="ml-1.5 rounded-full bg-black/20 px-2 py-0.5 text-[10px]">
+          <span className="ml-1.5 rounded-full bg-black/20 px-2 py-0.5 text-xs">
             {members.length}
           </span>
         </button>
@@ -381,8 +381,8 @@ export function AdminCmsClient({
           onClick={() => setActiveTab("founder")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "founder"
-              ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-              : "text-surface-400 hover:text-surface-100 hover:bg-surface-800"
+              ? "bg-primary text-white shadow-md"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           <FileText className="size-4" />
@@ -393,8 +393,8 @@ export function AdminCmsClient({
           onClick={() => setActiveTab("who-we-are")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "who-we-are"
-              ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-              : "text-surface-400 hover:text-surface-100 hover:bg-surface-800"
+              ? "bg-primary text-white shadow-md"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           <Building2 className="size-4" />
@@ -408,22 +408,22 @@ export function AdminCmsClient({
       {activeTab === "applications" && (
         <div className="space-y-6">
           {appSuccessMessage && (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-400">
+            <div className="border-success/30 bg-success/10 text-success flex items-center gap-2 rounded-xl border p-3 text-xs">
               <CheckCircle2 className="size-4" />
               <span>{appSuccessMessage}</span>
             </div>
           )}
 
           {/* Filters & Search */}
-          <div className="bg-surface-900/60 border-surface-800 flex flex-col items-stretch gap-4 rounded-2xl border p-4 sm:flex-row sm:items-center">
+          <div className="bg-card border-border flex flex-col items-stretch gap-4 rounded-2xl border p-4 sm:flex-row sm:items-center">
             <div className="relative flex-1">
-              <Search className="text-surface-400 absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+              <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search candidates by name, email, or role..."
                 value={appSearch}
                 onChange={(e) => setAppSearch(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border py-2 pr-4 pl-9 text-xs focus:outline-none"
+                className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-xl border py-2 pr-4 pl-9 text-xs focus:outline-none"
               />
             </div>
 
@@ -431,7 +431,7 @@ export function AdminCmsClient({
               <select
                 value={appStatusFilter}
                 onChange={(e) => setAppStatusFilter(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-200 focus:border-brand-500 rounded-xl border px-3 py-2 text-xs focus:outline-none"
+                className="bg-background border-border text-foreground focus:border-primary rounded-xl border px-3 py-2 text-xs focus:outline-none"
               >
                 <option value="ALL">All Statuses</option>
                 {TEAM_APPLICATION_STATUSES.map((statusKey) => (
@@ -444,7 +444,7 @@ export function AdminCmsClient({
               <select
                 value={appAreaFilter}
                 onChange={(e) => setAppAreaFilter(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-200 focus:border-brand-500 rounded-xl border px-3 py-2 text-xs focus:outline-none"
+                className="bg-background border-border text-foreground focus:border-primary rounded-xl border px-3 py-2 text-xs focus:outline-none"
               >
                 <option value="ALL">All Roles</option>
                 {TEAM_AREAS.map((areaName) => (
@@ -459,13 +459,13 @@ export function AdminCmsClient({
           {/* Applications List */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="space-y-3 lg:col-span-2">
-              <div className="text-surface-400 flex items-center justify-between px-1 font-mono text-xs">
+              <div className="text-muted-foreground flex items-center justify-between px-1 font-mono text-xs">
                 <span>{filteredApps.length} Candidates Found</span>
                 <span>Workflow: New → Reviewing → Interview → Selected → Rejected</span>
               </div>
 
               {filteredApps.length === 0 ? (
-                <div className="border-surface-800 bg-surface-900/40 text-surface-400 rounded-2xl border p-8 text-center text-xs">
+                <div className="border-border bg-card text-muted-foreground rounded-2xl border p-8 text-center text-xs">
                   No applications match your filter criteria.
                 </div>
               ) : (
@@ -482,19 +482,19 @@ export function AdminCmsClient({
                       }}
                       className={`cursor-pointer rounded-2xl border p-4 transition-all ${
                         isSelected
-                          ? "border-brand-500 bg-brand-500/5 shadow-md"
-                          : "border-surface-800 bg-surface-900/40 hover:border-surface-700"
+                          ? "border-primary bg-primary/5 shadow-md"
+                          : "border-border bg-card hover:border-border"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="text-surface-50 text-sm font-bold">{app.name}</h4>
-                            <span className="bg-surface-800 text-surface-300 border-surface-700 rounded-full border px-2 py-0.5 font-mono text-[10px]">
+                            <h4 className="text-foreground text-sm font-bold">{app.name}</h4>
+                            <span className="bg-muted text-muted-foreground border-border rounded-full border px-2 py-0.5 font-mono text-xs">
                               {app.area}
                             </span>
                           </div>
-                          <p className="text-surface-400 mt-0.5 text-xs">
+                          <p className="text-muted-foreground mt-0.5 text-xs">
                             {app.email} • {app.roleApplied || "Open Opening"}
                           </p>
                         </div>
@@ -504,13 +504,13 @@ export function AdminCmsClient({
                         </Badge>
                       </div>
 
-                      <div className="text-surface-400 border-surface-800/60 mt-3 flex items-center justify-between border-t pt-2 text-xs">
+                      <div className="text-muted-foreground border-border mt-3 flex items-center justify-between border-t pt-2 text-xs">
                         <span className="max-w-[280px] truncate">
                           {app.experience
                             ? app.experience.slice(0, 50) + "..."
                             : "No experience notes"}
                         </span>
-                        <span className="shrink-0 font-mono text-[11px]">
+                        <span className="shrink-0 font-mono text-xs">
                           Applied {new Date(app.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -523,13 +523,13 @@ export function AdminCmsClient({
             {/* Candidate Detail & Workflow Actions Drawer */}
             <div className="lg:col-span-1">
               {selectedApp ? (
-                <div className="border-surface-800 bg-surface-900/80 sticky top-6 space-y-5 rounded-2xl border p-5">
-                  <div className="border-surface-800 flex items-start justify-between gap-3 border-b pb-3">
+                <div className="border-border bg-card sticky top-6 space-y-5 rounded-2xl border p-5">
+                  <div className="border-border flex items-start justify-between gap-3 border-b pb-3">
                     <div>
-                      <h3 className="text-surface-50 text-base font-bold">{selectedApp.name}</h3>
-                      <p className="text-surface-400 text-xs">{selectedApp.email}</p>
+                      <h3 className="text-foreground text-base font-bold">{selectedApp.name}</h3>
+                      <p className="text-muted-foreground text-xs">{selectedApp.email}</p>
                       {selectedApp.phone && (
-                        <p className="text-surface-400 text-xs">{selectedApp.phone}</p>
+                        <p className="text-muted-foreground text-xs">{selectedApp.phone}</p>
                       )}
                     </div>
                     <Badge
@@ -543,10 +543,10 @@ export function AdminCmsClient({
                   {/* Candidate Dossier */}
                   <div className="space-y-3 text-xs">
                     <div>
-                      <span className="text-surface-400 font-mono text-[10px] uppercase">
+                      <span className="text-muted-foreground font-mono text-xs uppercase">
                         Functional Area &amp; Position
                       </span>
-                      <p className="text-surface-100 font-semibold">
+                      <p className="text-foreground font-semibold">
                         {selectedApp.area} • {selectedApp.roleApplied || "General Volunteer"}
                       </p>
                     </div>
@@ -558,7 +558,7 @@ export function AdminCmsClient({
                           href={selectedApp.resumeUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-surface-800 text-brand-300 hover:text-brand-200 border-surface-700 flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs"
+                          className="bg-muted text-primary hover:text-primary-hover border-border flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs"
                         >
                           <FileText className="size-3" />
                           <span>Resume</span>
@@ -570,7 +570,7 @@ export function AdminCmsClient({
                           href={selectedApp.portfolio}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-surface-800 text-surface-200 border-surface-700 flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs hover:text-white"
+                          className="bg-muted text-foreground border-border flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs hover:text-white"
                         >
                           <Globe className="size-3" />
                           <span>Portfolio / GitHub</span>
@@ -581,7 +581,7 @@ export function AdminCmsClient({
                           href={selectedApp.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-surface-800 text-surface-200 border-surface-700 flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs hover:text-white"
+                          className="bg-muted text-foreground border-border flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs hover:text-white"
                         >
                           <LinkedinIcon className="size-3" />
                           <span>LinkedIn</span>
@@ -591,10 +591,10 @@ export function AdminCmsClient({
 
                     {selectedApp.experience && (
                       <div>
-                        <span className="text-surface-400 font-mono text-[10px] uppercase">
+                        <span className="text-muted-foreground font-mono text-xs uppercase">
                           Relevant Experience
                         </span>
-                        <p className="bg-surface-950 border-surface-800 text-surface-300 mt-1 max-h-32 overflow-y-auto rounded-xl border p-2.5 text-xs leading-relaxed whitespace-pre-wrap">
+                        <p className="bg-background border-border text-muted-foreground mt-1 max-h-32 overflow-y-auto rounded-xl border p-2.5 text-xs leading-relaxed whitespace-pre-wrap">
                           {selectedApp.experience}
                         </p>
                       </div>
@@ -602,10 +602,10 @@ export function AdminCmsClient({
 
                     {selectedApp.motivation && (
                       <div>
-                        <span className="text-surface-400 font-mono text-[10px] uppercase">
+                        <span className="text-muted-foreground font-mono text-xs uppercase">
                           Why KailshiansX?
                         </span>
-                        <p className="bg-surface-950 border-surface-800 text-surface-300 mt-1 max-h-32 overflow-y-auto rounded-xl border p-2.5 text-xs leading-relaxed whitespace-pre-wrap">
+                        <p className="bg-background border-border text-muted-foreground mt-1 max-h-32 overflow-y-auto rounded-xl border p-2.5 text-xs leading-relaxed whitespace-pre-wrap">
                           {selectedApp.motivation}
                         </p>
                       </div>
@@ -613,8 +613,8 @@ export function AdminCmsClient({
                   </div>
 
                   {/* Status Progression Workflow */}
-                  <div className="border-surface-800 space-y-3 border-t pt-3">
-                    <span className="text-surface-400 block font-mono text-[10px] tracking-wider uppercase">
+                  <div className="border-border space-y-3 border-t pt-3">
+                    <span className="text-muted-foreground block font-mono text-xs tracking-wider uppercase">
                       Workflow Actions
                     </span>
 
@@ -640,7 +640,7 @@ export function AdminCmsClient({
                         variant={selectedApp.status === "SELECTED" ? "default" : "outline"}
                         disabled={updatingAppId === selectedApp.id}
                         onClick={() => handleUpdateStatus(selectedApp.id, "SELECTED")}
-                        className="border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+                        className="border-success/40 text-success hover:bg-success/10"
                       >
                         Select
                       </Button>
@@ -649,7 +649,7 @@ export function AdminCmsClient({
                         variant={selectedApp.status === "REJECTED" ? "default" : "outline"}
                         disabled={updatingAppId === selectedApp.id}
                         onClick={() => handleUpdateStatus(selectedApp.id, "REJECTED")}
-                        className="border-red-500/40 text-red-400 hover:bg-red-500/10"
+                        className="border-destructive/40 text-destructive hover:bg-destructive/10"
                       >
                         Reject
                       </Button>
@@ -657,7 +657,7 @@ export function AdminCmsClient({
 
                     {/* Admin Notes */}
                     <div className="space-y-2 pt-2">
-                      <label className="text-surface-400 font-mono text-[11px]">
+                      <label className="text-muted-foreground font-mono text-xs">
                         Internal Reviewer Notes:
                       </label>
                       <textarea
@@ -665,7 +665,7 @@ export function AdminCmsClient({
                         value={adminNotes}
                         onChange={(e) => setAdminNotes(e.target.value)}
                         placeholder="Add review feedback, interview impressions, or domain fit notes..."
-                        className="bg-surface-950 border-surface-700 text-surface-100 placeholder:text-surface-500 focus:border-brand-500 w-full rounded-xl border p-2.5 text-xs focus:outline-none"
+                        className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-xl border p-2.5 text-xs focus:outline-none"
                       />
                       <Button
                         size="sm"
@@ -683,7 +683,7 @@ export function AdminCmsClient({
                   </div>
                 </div>
               ) : (
-                <div className="border-surface-800 bg-surface-900/40 text-surface-400 rounded-2xl border p-8 text-center text-xs">
+                <div className="border-border bg-card text-muted-foreground rounded-2xl border p-8 text-center text-xs">
                   Select a candidate from the left to view dossier and advance through workflow.
                 </div>
               )}
@@ -698,7 +698,7 @@ export function AdminCmsClient({
       {activeTab === "core-team" && (
         <div className="space-y-6">
           {memberSuccessMsg && (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-400">
+            <div className="border-success/30 bg-success/10 text-success flex items-center gap-2 rounded-xl border p-3 text-xs">
               <CheckCircle2 className="size-4" />
               <span>{memberSuccessMsg}</span>
             </div>
@@ -706,8 +706,8 @@ export function AdminCmsClient({
 
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-surface-50 text-base font-bold">Core Team Directory</h3>
-              <p className="text-surface-400 text-xs">
+              <h3 className="text-foreground text-base font-bold">Core Team Directory</h3>
+              <p className="text-muted-foreground text-xs">
                 Organized across 7 categories with role, ownership bio, photo, and links.
               </p>
             </div>
@@ -741,16 +741,16 @@ export function AdminCmsClient({
           {isEditingMember && (
             <form
               onSubmit={handleSaveMember}
-              className="border-brand-500/40 bg-surface-900/90 space-y-4 rounded-2xl border p-6 backdrop-blur-md"
+              className="border-primary/40 bg-card space-y-4 rounded-2xl border p-6 backdrop-blur-md"
             >
-              <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-                <h4 className="text-surface-50 text-sm font-bold">
+              <div className="border-border flex items-center justify-between border-b pb-3">
+                <h4 className="text-foreground text-sm font-bold">
                   {memberFormData.id ? "Edit Team Member" : "Add Core Team Member"}
                 </h4>
                 <button
                   type="button"
                   onClick={() => setIsEditingMember(false)}
-                  className="text-surface-400 hover:text-white"
+                  className="text-muted-foreground hover:text-white"
                 >
                   <XCircle className="size-5" />
                 </button>
@@ -758,34 +758,38 @@ export function AdminCmsClient({
 
               <div className="grid grid-cols-1 gap-4 text-xs sm:grid-cols-2">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Full Name *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Full Name *
+                  </label>
                   <input
                     type="text"
                     required
                     value={memberFormData.name || ""}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, name: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Role / Title *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Role / Title *
+                  </label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Lead Systems Architect"
                     value={memberFormData.role || ""}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, role: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Category *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Category *</label>
                   <select
                     value={memberFormData.category || "technology"}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, category: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   >
                     {CORE_TEAM_CATEGORIES.map((c) => (
                       <option key={c.key} value={c.key}>
@@ -796,18 +800,18 @@ export function AdminCmsClient({
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Photo URL</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Photo URL</label>
                   <input
                     type="url"
                     placeholder="https://..."
                     value={memberFormData.photo || ""}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, photo: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="text-surface-300 mb-1 block font-medium">
+                  <label className="text-muted-foreground mb-1 block font-medium">
                     Bio &amp; Scope of Ownership
                   </label>
                   <textarea
@@ -815,42 +819,46 @@ export function AdminCmsClient({
                     placeholder="Detail core responsibilities, engineering ownership, and background..."
                     value={memberFormData.bio || ""}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, bio: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">LinkedIn URL</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    LinkedIn URL
+                  </label>
                   <input
                     type="url"
                     value={memberFormData.linkedin || ""}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, linkedin: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Twitter URL</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Twitter URL
+                  </label>
                   <input
                     type="url"
                     value={memberFormData.twitter || ""}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, twitter: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">GitHub URL</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">GitHub URL</label>
                   <input
                     type="url"
                     value={memberFormData.github || ""}
                     onChange={(e) => setMemberFormData((p) => ({ ...p, github: e.target.value }))}
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Sort Order</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Sort Order</label>
                   <input
                     type="number"
                     value={memberFormData.sortOrder ?? 0}
@@ -860,12 +868,12 @@ export function AdminCmsClient({
                         sortOrder: parseInt(e.target.value) || 0,
                       }))
                     }
-                    className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                    className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-3">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-3">
                 <Button
                   type="button"
                   variant="secondary"
@@ -890,10 +898,10 @@ export function AdminCmsClient({
               return (
                 <div
                   key={m.id}
-                  className="border-surface-800 bg-surface-900/50 group relative space-y-3 rounded-2xl border p-4"
+                  className="border-border bg-card group relative space-y-3 rounded-2xl border p-4"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="bg-surface-800 border-surface-700 relative size-12 shrink-0 overflow-hidden rounded-xl border">
+                    <div className="bg-muted border-border relative size-12 shrink-0 overflow-hidden rounded-xl border">
                       {m.photo ? (
                         <Image
                           src={m.photo}
@@ -903,15 +911,15 @@ export function AdminCmsClient({
                           className="object-cover"
                         />
                       ) : (
-                        <div className="text-surface-400 flex size-full items-center justify-center text-xs font-bold">
+                        <div className="text-muted-foreground flex size-full items-center justify-center text-xs font-bold">
                           {m.name.slice(0, 2).toUpperCase()}
                         </div>
                       )}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-surface-50 truncate text-sm font-bold">{m.name}</h4>
-                      <p className="text-brand-300 truncate text-xs">{m.role}</p>
+                      <h4 className="text-foreground truncate text-sm font-bold">{m.name}</h4>
+                      <p className="text-primary truncate text-xs">{m.role}</p>
                       <Badge variant="surface" size="sm" className="mt-1">
                         {categoryTitle}
                       </Badge>
@@ -919,11 +927,13 @@ export function AdminCmsClient({
                   </div>
 
                   {m.bio && (
-                    <p className="text-surface-300 line-clamp-2 text-xs leading-relaxed">{m.bio}</p>
+                    <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
+                      {m.bio}
+                    </p>
                   )}
 
-                  <div className="border-surface-800/80 flex items-center justify-between border-t pt-2 text-xs">
-                    <span className="text-surface-400 font-mono text-[10px]">
+                  <div className="border-border flex items-center justify-between border-t pt-2 text-xs">
+                    <span className="text-muted-foreground font-mono text-xs">
                       Order: {m.sortOrder}
                     </span>
 
@@ -933,14 +943,14 @@ export function AdminCmsClient({
                           setMemberFormData(m);
                           setIsEditingMember(true);
                         }}
-                        className="text-surface-400 hover:bg-surface-800 rounded-lg p-1.5 hover:text-white"
+                        className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5"
                         title="Edit member"
                       >
                         <Edit2 className="size-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteMember(m.id)}
-                        className="rounded-lg p-1.5 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                        className="text-destructive hover:bg-destructive/10 rounded-lg p-1.5"
                         title="Delete member"
                       >
                         <Trash2 className="size-3.5" />
@@ -960,64 +970,63 @@ export function AdminCmsClient({
       {activeTab === "founder" && (
         <form onSubmit={handleSaveFounder} className="space-y-6">
           {founderSuccessMsg && (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-400">
+            <div className="border-success/30 bg-success/10 text-success flex items-center gap-2 rounded-xl border p-3 text-xs">
               <CheckCircle2 className="size-4" />
               <span>{founderSuccessMsg}</span>
             </div>
           )}
 
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-2xl border p-6">
-            <h3 className="text-surface-50 text-base font-bold">Founder Profile &amp; Story</h3>
-            <p className="text-surface-400 text-xs">
-              PRD §16: Message, why it was created, philosophy, milestones, and links (not a
-              resume).
+          <div className="border-border bg-card space-y-4 rounded-2xl border p-6">
+            <h3 className="text-foreground text-base font-bold">Founder Profile &amp; Story</h3>
+            <p className="text-muted-foreground text-xs">
+              : Message, why it was created, philosophy, milestones, and links (not a resume).
             </p>
 
             <div className="grid grid-cols-1 gap-4 text-xs sm:grid-cols-2">
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Founder Name</label>
+                <label className="text-muted-foreground mb-1 block font-medium">Founder Name</label>
                 <input
                   type="text"
                   required
                   value={founderForm.founderName}
                   onChange={(e) => setFounderForm((p) => ({ ...p, founderName: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Tagline</label>
+                <label className="text-muted-foreground mb-1 block font-medium">Tagline</label>
                 <input
                   type="text"
                   required
                   value={founderForm.tagline}
                   onChange={(e) => setFounderForm((p) => ({ ...p, tagline: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Photo URL</label>
+                <label className="text-muted-foreground mb-1 block font-medium">Photo URL</label>
                 <input
                   type="url"
                   value={founderForm.photo || ""}
                   onChange={(e) => setFounderForm((p) => ({ ...p, photo: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">LinkedIn URL</label>
+                <label className="text-muted-foreground mb-1 block font-medium">LinkedIn URL</label>
                 <input
                   type="url"
                   value={founderForm.linkedin || ""}
                   onChange={(e) => setFounderForm((p) => ({ ...p, linkedin: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="text-surface-300 mb-1 block font-medium">
+                <label className="text-muted-foreground mb-1 block font-medium">
                   Personal Letter / Founder Message
                 </label>
                 <textarea
@@ -1025,12 +1034,12 @@ export function AdminCmsClient({
                   required
                   value={founderForm.message}
                   onChange={(e) => setFounderForm((p) => ({ ...p, message: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="text-surface-300 mb-1 block font-medium">
+                <label className="text-muted-foreground mb-1 block font-medium">
                   Community Philosophy
                 </label>
                 <textarea
@@ -1038,18 +1047,18 @@ export function AdminCmsClient({
                   required
                   value={founderForm.philosophy}
                   onChange={(e) => setFounderForm((p) => ({ ...p, philosophy: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Milestones Editor */}
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-2xl border p-6">
+          <div className="border-border bg-card space-y-4 rounded-2xl border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-surface-50 text-sm font-bold">Milestones Timeline</h4>
-                <p className="text-surface-400 text-xs">
+                <h4 className="text-foreground text-sm font-bold">Milestones Timeline</h4>
+                <p className="text-muted-foreground text-xs">
                   Chronological progression of KailshiansX milestones.
                 </p>
               </div>
@@ -1063,7 +1072,7 @@ export function AdminCmsClient({
               {founderForm.milestones.map((m, idx) => (
                 <div
                   key={idx}
-                  className="border-surface-800 bg-surface-950 space-y-2 rounded-xl border p-3"
+                  className="border-border bg-background space-y-2 rounded-xl border p-3"
                 >
                   <div className="flex items-center gap-3">
                     <input
@@ -1079,7 +1088,7 @@ export function AdminCmsClient({
                           ),
                         }));
                       }}
-                      className="bg-surface-900 border-surface-700 text-surface-100 w-24 rounded-lg border p-2 font-mono text-xs"
+                      className="bg-card border-border text-foreground w-24 rounded-lg border p-2 font-mono text-xs"
                     />
 
                     <input
@@ -1095,13 +1104,13 @@ export function AdminCmsClient({
                           ),
                         }));
                       }}
-                      className="bg-surface-900 border-surface-700 text-surface-100 flex-1 rounded-lg border p-2 text-xs font-bold"
+                      className="bg-card border-border text-foreground flex-1 rounded-lg border p-2 text-xs font-bold"
                     />
 
                     <button
                       type="button"
                       onClick={() => handleRemoveMilestone(idx)}
-                      className="p-1.5 text-red-400 hover:text-red-300"
+                      className="text-destructive p-1.5 hover:opacity-80"
                     >
                       <Trash2 className="size-4" />
                     </button>
@@ -1120,7 +1129,7 @@ export function AdminCmsClient({
                         ),
                       }));
                     }}
-                    className="bg-surface-900 border-surface-700 text-surface-200 w-full rounded-lg border p-2 text-xs"
+                    className="bg-card border-border text-foreground w-full rounded-lg border p-2 text-xs"
                   />
                 </div>
               ))}
@@ -1142,47 +1151,47 @@ export function AdminCmsClient({
       {activeTab === "who-we-are" && (
         <form onSubmit={handleSaveWhoWeAre} className="space-y-6">
           {whoWeAreSuccessMsg && (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-400">
+            <div className="border-success/30 bg-success/10 text-success flex items-center gap-2 rounded-xl border p-3 text-xs">
               <CheckCircle2 className="size-4" />
               <span>{whoWeAreSuccessMsg}</span>
             </div>
           )}
 
           {/* Core Mandate & Positioning */}
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-2xl border p-6">
-            <h3 className="text-surface-50 text-base font-bold">
+          <div className="border-border bg-card space-y-4 rounded-2xl border p-6">
+            <h3 className="text-foreground text-base font-bold">
               Ecosystem Mandate &amp; KWS Charter
             </h3>
-            <p className="text-surface-400 text-xs">
-              PRD §17: Positions KailshiansX as the developer events &amp; community initiative of
+            <p className="text-muted-foreground text-xs">
+              : Positions KailshiansX as the developer events &amp; community initiative of
               Kailshians Web Services.
             </p>
 
             <div className="grid grid-cols-1 gap-4 text-xs sm:grid-cols-2">
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Page Title</label>
+                <label className="text-muted-foreground mb-1 block font-medium">Page Title</label>
                 <input
                   type="text"
                   required
                   value={whoWeAreForm.title}
                   onChange={(e) => setWhoWeAreForm((p) => ({ ...p, title: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Badge</label>
+                <label className="text-muted-foreground mb-1 block font-medium">Badge</label>
                 <input
                   type="text"
                   required
                   value={whoWeAreForm.badge}
                   onChange={(e) => setWhoWeAreForm((p) => ({ ...p, badge: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="text-surface-300 mb-1 block font-medium">
+                <label className="text-muted-foreground mb-1 block font-medium">
                   Initiative Notice (Kailshians Web Services Charter)
                 </label>
                 <textarea
@@ -1192,12 +1201,14 @@ export function AdminCmsClient({
                   onChange={(e) =>
                     setWhoWeAreForm((p) => ({ ...p, initiativeNotice: e.target.value }))
                   }
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="text-surface-300 mb-1 block font-medium">Intro Description</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Intro Description
+                </label>
                 <textarea
                   rows={2}
                   required
@@ -1205,42 +1216,46 @@ export function AdminCmsClient({
                   onChange={(e) =>
                     setWhoWeAreForm((p) => ({ ...p, introDescription: e.target.value }))
                   }
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Mission Statement</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Mission Statement
+                </label>
                 <textarea
                   rows={3}
                   required
                   value={whoWeAreForm.mission}
                   onChange={(e) => setWhoWeAreForm((p) => ({ ...p, mission: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Vision Statement</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Vision Statement
+                </label>
                 <textarea
                   rows={3}
                   required
                   value={whoWeAreForm.vision}
                   onChange={(e) => setWhoWeAreForm((p) => ({ ...p, vision: e.target.value }))}
-                  className="bg-surface-950 border-surface-700 text-surface-100 focus:border-brand-500 w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border p-2.5 leading-relaxed focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Constitutional Values */}
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-2xl border p-6">
-            <h4 className="text-surface-50 text-sm font-bold">Constitutional Values</h4>
+          <div className="border-border bg-card space-y-4 rounded-2xl border p-6">
+            <h4 className="text-foreground text-sm font-bold">Constitutional Values</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {whoWeAreForm.values.map((v, idx) => (
                 <div
                   key={idx}
-                  className="border-surface-800 bg-surface-950 space-y-2 rounded-xl border p-3 text-xs"
+                  className="border-border bg-background space-y-2 rounded-xl border p-3 text-xs"
                 >
                   <div className="flex gap-2">
                     <input
@@ -1256,7 +1271,7 @@ export function AdminCmsClient({
                           ),
                         }));
                       }}
-                      className="bg-surface-900 border-surface-700 text-surface-100 w-1/2 rounded-lg border p-2 font-bold"
+                      className="bg-card border-border text-foreground w-1/2 rounded-lg border p-2 font-bold"
                     />
                     <input
                       type="text"
@@ -1271,7 +1286,7 @@ export function AdminCmsClient({
                           ),
                         }));
                       }}
-                      className="bg-surface-900 border-surface-700 text-surface-300 w-1/2 rounded-lg border p-2 font-mono text-[11px]"
+                      className="bg-card border-border text-muted-foreground w-1/2 rounded-lg border p-2 font-mono text-xs"
                     />
                   </div>
                   <textarea
@@ -1286,7 +1301,7 @@ export function AdminCmsClient({
                         ),
                       }));
                     }}
-                    className="bg-surface-900 border-surface-700 text-surface-200 w-full rounded-lg border p-2"
+                    className="bg-card border-border text-foreground w-full rounded-lg border p-2"
                   />
                 </div>
               ))}
@@ -1294,13 +1309,13 @@ export function AdminCmsClient({
           </div>
 
           {/* Operational Pillars */}
-          <div className="border-surface-800 bg-surface-900/60 space-y-4 rounded-2xl border p-6">
-            <h4 className="text-surface-50 text-sm font-bold">Operational Pillars (What We Do)</h4>
+          <div className="border-border bg-card space-y-4 rounded-2xl border p-6">
+            <h4 className="text-foreground text-sm font-bold">Operational Pillars (What We Do)</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {whoWeAreForm.pillars.map((pillar, idx) => (
                 <div
                   key={idx}
-                  className="border-surface-800 bg-surface-950 space-y-2 rounded-xl border p-3 text-xs"
+                  className="border-border bg-background space-y-2 rounded-xl border p-3 text-xs"
                 >
                   <div className="flex gap-2">
                     <input
@@ -1316,7 +1331,7 @@ export function AdminCmsClient({
                           ),
                         }));
                       }}
-                      className="bg-surface-900 border-surface-700 text-surface-100 flex-1 rounded-lg border p-2 font-bold"
+                      className="bg-card border-border text-foreground flex-1 rounded-lg border p-2 font-bold"
                     />
                     <input
                       type="text"
@@ -1331,7 +1346,7 @@ export function AdminCmsClient({
                           ),
                         }));
                       }}
-                      className="bg-surface-900 border-surface-700 text-surface-300 w-24 rounded-lg border p-2 font-mono text-[11px]"
+                      className="bg-card border-border text-muted-foreground w-24 rounded-lg border p-2 font-mono text-xs"
                     />
                   </div>
                   <input
@@ -1347,7 +1362,7 @@ export function AdminCmsClient({
                         ),
                       }));
                     }}
-                    className="bg-surface-900 border-surface-700 text-surface-300 w-full rounded-lg border p-2 font-mono text-[11px]"
+                    className="bg-card border-border text-muted-foreground w-full rounded-lg border p-2 font-mono text-xs"
                   />
                   <textarea
                     rows={2}
@@ -1361,7 +1376,7 @@ export function AdminCmsClient({
                         ),
                       }));
                     }}
-                    className="bg-surface-900 border-surface-700 text-surface-200 w-full rounded-lg border p-2"
+                    className="bg-card border-border text-foreground w-full rounded-lg border p-2"
                   />
                 </div>
               ))}

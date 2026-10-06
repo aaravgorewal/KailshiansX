@@ -61,23 +61,23 @@ export function AdminModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+        className="bg-scrim fixed inset-0 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
       <div
-        className={`relative w-full ${maxWidthClass} bg-surface-900 border-surface-800 z-10 flex max-h-[90vh] flex-col overflow-hidden rounded-2xl border shadow-2xl`}
+        className={`relative w-full ${maxWidthClass} bg-card border-border z-10 flex max-h-[90vh] flex-col overflow-hidden rounded-lg border`}
       >
         {/* Header */}
-        <div className="border-surface-800 bg-surface-900/90 flex items-center justify-between border-b p-5">
+        <div className="border-border bg-card flex items-center justify-between border-b p-5">
           <div>
-            <h3 className="text-surface-100 text-base font-bold">{title}</h3>
-            {description && <p className="text-surface-400 mt-0.5 text-xs">{description}</p>}
+            <h3 className="text-foreground text-base font-semibold">{title}</h3>
+            {description && <p className="text-muted-foreground mt-0.5 text-xs">{description}</p>}
           </div>
           <button
             onClick={onClose}
-            className="text-surface-400 hover:text-surface-200 hover:bg-surface-800 rounded-lg p-1.5 transition-colors"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-md p-1.5 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>

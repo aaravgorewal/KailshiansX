@@ -1,5 +1,5 @@
 // src/components/admin/AdminSidebar.tsx
-// Comprehensive responsive sidebar for Admin modules from PRD §22
+// Responsive sidebar for Admin modules using design tokens
 
 "use client";
 
@@ -36,7 +36,6 @@ import {
   X,
   ExternalLink,
 } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
 
 interface NavGroup {
   label: string;
@@ -45,7 +44,6 @@ interface NavGroup {
     href: string;
     icon: React.ComponentType<{ className?: string }>;
     badge?: string;
-    badgeVariant?: "default" | "brand" | "success" | "warning" | "destructive" | "outline";
   }[];
 }
 
@@ -67,56 +65,20 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Tech Talks", href: "/admin/tech-talks", icon: Mic },
       { label: "Meetup Series", href: "/admin/meetup-series", icon: Layers },
       { label: "Hackathon Series", href: "/admin/hackathon-series", icon: Trophy },
-      {
-        label: "Hackathons Engine",
-        href: "/admin/hackathons",
-        icon: Award,
-        badge: "Engine",
-        badgeVariant: "brand",
-      },
-      {
-        label: "Event P&L",
-        href: "/admin/pnl",
-        icon: DollarSign,
-        badge: "PRD §23",
-        badgeVariant: "success",
-      },
+      { label: "Hackathons Engine", href: "/admin/hackathons", icon: Award },
+      { label: "Event P&L", href: "/admin/pnl", icon: DollarSign },
     ],
   },
   {
     label: "People & Pipelines",
     items: [
       { label: "Participants", href: "/admin/participants", icon: Users },
-      {
-        label: "Leader Portal",
-        href: "/lead",
-        icon: Award,
-        badge: "Portal",
-        badgeVariant: "brand",
-      },
-      {
-        label: "Campus Leads",
-        href: "/admin/campus-leads",
-        icon: GraduationCap,
-        badge: "PRD §11",
-        badgeVariant: "default",
-      },
-      {
-        label: "State Leads",
-        href: "/admin/state-leads",
-        icon: MapPin,
-        badge: "PRD §12",
-        badgeVariant: "default",
-      },
+      { label: "Leader Portal", href: "/lead", icon: Award },
+      { label: "Campus Leads", href: "/admin/campus-leads", icon: GraduationCap },
+      { label: "State Leads", href: "/admin/state-leads", icon: MapPin },
       { label: "Team Applications", href: "/admin/team-applications", icon: Briefcase },
       { label: "Collaborations", href: "/admin/collaborations", icon: Handshake },
-      {
-        label: "Sponsor CRM",
-        href: "/admin/sponsors",
-        icon: Building2,
-        badge: "CRM",
-        badgeVariant: "brand",
-      },
+      { label: "Sponsor CRM", href: "/admin/sponsors", icon: Building2 },
     ],
   },
   {
@@ -125,13 +87,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Community", href: "/admin/community", icon: Globe },
       { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
       { label: "Content CMS", href: "/admin/cms", icon: FileText },
-      {
-        label: "Certificates",
-        href: "/admin/certificates",
-        icon: Award,
-        badge: "Phase 2",
-        badgeVariant: "brand",
-      },
+      { label: "Certificates", href: "/admin/certificates", icon: Award },
     ],
   },
   {
@@ -173,7 +129,7 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
       <div className="fixed top-3 left-3 z-50 lg:hidden">
         <button
           onClick={() => setIsMobileOpen((v) => !v)}
-          className="bg-surface-900 border-surface-800 text-surface-200 rounded-lg border p-2 shadow-lg"
+          className="bg-card border-border text-foreground rounded-lg border p-2"
           aria-label="Toggle Admin Navigation"
         >
           {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -183,29 +139,29 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
       {/* Mobile Backdrop */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm lg:hidden"
+          className="bg-scrim fixed inset-0 z-40 backdrop-blur-sm lg:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
 
-      {/* Sidebar Container */}
+      {/* Sidebar Container: bg-card border-r border-border */}
       <aside
-        className={`bg-surface-950 border-surface-850/80 fixed top-0 bottom-0 left-0 z-40 flex flex-col border-r transition-all duration-300 ${
+        className={`bg-card border-border fixed top-0 bottom-0 left-0 z-40 flex flex-col border-r transition-all duration-150 ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         } ${isCollapsed ? "w-20" : "w-64"}`}
       >
         {/* Brand Header */}
-        <div className="border-surface-850/80 bg-surface-950 flex h-16 items-center justify-between border-b px-4">
+        <div className="border-border bg-card flex h-16 items-center justify-between border-b px-4">
           <Link href="/admin" className="flex items-center gap-2.5 truncate">
-            <div className="bg-brand-600 text-surface-50 shadow-brand-600/30 flex h-8 w-8 items-center justify-center rounded-lg text-sm font-black shadow-md">
+            <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold">
               KX
             </div>
             {!isCollapsed && (
               <div className="truncate">
-                <span className="text-surface-100 text-sm font-bold tracking-tight">
+                <span className="text-foreground text-sm font-bold tracking-tight">
                   KailshiansX
                 </span>
-                <span className="text-brand-400 block text-[10px] font-semibold tracking-wider uppercase">
+                <span className="text-muted-foreground block text-xs font-medium">
                   Control Room
                 </span>
               </div>
@@ -215,7 +171,7 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
           {/* Desktop collapse toggle */}
           <button
             onClick={() => setIsCollapsed((v) => !v)}
-            className="text-surface-400 hover:text-surface-200 hover:bg-surface-900 hidden rounded-md p-1.5 transition-colors lg:flex"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted hidden rounded-md p-1.5 transition-colors lg:flex"
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             {isCollapsed ? (
@@ -228,18 +184,16 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
 
         {/* User Status Bar */}
         {!isCollapsed && (
-          <div className="border-surface-850/60 bg-surface-900/40 border-b px-4 py-3">
+          <div className="border-border bg-muted/40 border-b px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="truncate">
-                <p className="text-surface-200 truncate text-xs font-semibold">{userName}</p>
-                <span className="py-0.2 bg-brand-500/10 text-brand-400 border-brand-500/20 mt-0.5 inline-block rounded border px-1.5 font-mono text-[10px] font-medium">
-                  {userRole}
-                </span>
+                <p className="text-foreground truncate text-xs font-semibold">{userName}</p>
+                <p className="text-muted-foreground mt-0.5 text-xs">{userRole}</p>
               </div>
               <Link
                 href="/"
                 target="_blank"
-                className="text-surface-400 hover:text-brand-300 flex items-center gap-1 text-[11px]"
+                className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs"
                 title="Open Public Site in New Tab"
               >
                 <span>Site</span>
@@ -254,7 +208,7 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
           {NAV_GROUPS.map((group) => (
             <div key={group.label} className="space-y-1">
               {!isCollapsed && (
-                <p className="text-surface-500 mb-1.5 px-2.5 text-[10px] font-bold tracking-wider uppercase">
+                <p className="text-muted-foreground mb-1.5 px-2.5 text-xs font-semibold tracking-wider uppercase">
                   {group.label}
                 </p>
               )}
@@ -268,26 +222,22 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
                     key={item.href}
                     href={item.href}
                     title={isCollapsed ? item.label : undefined}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-[background-color,color] duration-150 ${
                       active
-                        ? "bg-brand-600/15 text-brand-300 border-brand-500/30 border font-semibold"
-                        : "text-surface-400 hover:text-surface-100 hover:bg-surface-900/80"
+                        ? "bg-muted text-foreground border-primary border-l-2 font-semibold"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
                     } ${isCollapsed ? "justify-center px-2" : ""}`}
                   >
                     <Icon
-                      className={`h-4 w-4 flex-shrink-0 ${
-                        active ? "text-brand-400" : "text-surface-400 group-hover:text-surface-200"
+                      className={`h-4 w-4 shrink-0 ${
+                        active ? "text-primary" : "text-muted-foreground"
                       }`}
                     />
                     {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
                     {!isCollapsed && item.badge && (
-                      <Badge
-                        variant={item.badgeVariant ?? "default"}
-                        size="sm"
-                        className="py-0.2 px-1.5 text-[10px]"
-                      >
+                      <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs font-medium">
                         {item.badge}
-                      </Badge>
+                      </span>
                     )}
                   </Link>
                 );
@@ -297,10 +247,10 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
         </div>
 
         {/* Footer Quick Links */}
-        <div className="border-surface-850/80 bg-surface-950 border-t p-3">
+        <div className="border-border bg-card border-t p-3">
           <Link
             href="/admin/events/new"
-            className={`bg-brand-600 hover:bg-brand-500 shadow-brand-600/20 flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-white shadow-md transition-all ${
+            className={`bg-primary text-primary-foreground hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-[background-color] duration-150 ${
               isCollapsed ? "p-2" : ""
             }`}
             title="Create New Event"
