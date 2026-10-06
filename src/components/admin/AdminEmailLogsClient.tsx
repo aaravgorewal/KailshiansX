@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { retryAdminEmailLog, processAdminEmailQueue } from "@/server/admin/actions";
 import { EmailJobStatus, EmailTemplate } from "@prisma/client";
-import { formatDate } from "@/lib/utils";
+import { formatDate, cn } from "@/lib/utils";
 
 export interface EmailLogListItem {
   id: string;
@@ -292,7 +292,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-muted-foreground h-7 px-2 text-xs hover:text-white"
+                className="text-muted-foreground hover:text-foreground h-7 px-2 text-xs"
                 onClick={() => setPreviewLog(item)}
                 title="Preview Rendered Email"
               >
@@ -303,7 +303,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
             <Button
               variant="ghost"
               size="sm"
-              className="text-muted-foreground h-7 px-2 text-xs hover:text-white"
+              className="text-muted-foreground hover:text-foreground h-7 px-2 text-xs"
               onClick={() => setDetailsLog(item)}
               title="Inspect JSON Payload & Error Details"
             >
@@ -314,7 +314,7 @@ export function AdminEmailLogsClient({ initialLogs, initialStats }: AdminEmailLo
               <Button
                 variant="secondary"
                 size="sm"
-                className="bg-primary-hover/20 text-primary hover:bg-primary-hover border-primary/30 h-7 border px-2.5 text-xs hover:text-white"
+                className="bg-primary-hover/20 text-primary hover:bg-primary-hover border-primary/30 hover:text-primary-foreground h-7 border px-2.5 text-xs"
                 onClick={() => handleRetry(item.id)}
                 disabled={isRetrying}
                 title="Retry Send Now"

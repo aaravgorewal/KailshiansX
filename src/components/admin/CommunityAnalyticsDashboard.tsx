@@ -122,7 +122,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               <Zap className="h-3.5 w-3.5" />
               <span>Executive Intelligence</span>
             </div>
-            <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+            <h1 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
               Community Analytics & Success Metrics
             </h1>
             <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed">
@@ -151,8 +151,8 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             onClick={() => setActiveTab("EXECUTIVE")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "EXECUTIVE"
-                ? "bg-primary text-white shadow-md"
-                : "bg-background text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-md"
+                : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
             <BarChart3 className="h-4 w-4" />
@@ -163,8 +163,8 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             onClick={() => setActiveTab("AUDIENCE")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "AUDIENCE"
-                ? "bg-primary text-white shadow-md"
-                : "bg-background text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-md"
+                : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
             <Users className="h-4 w-4" />
@@ -175,8 +175,8 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             onClick={() => setActiveTab("LEADERSHIP")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "LEADERSHIP"
-                ? "bg-primary text-white shadow-md"
-                : "bg-background text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-md"
+                : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
             <MapPin className="h-4 w-4" />
@@ -187,8 +187,8 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             onClick={() => setActiveTab("COMMERCIAL")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
               activeTab === "COMMERCIAL"
-                ? "bg-primary text-white shadow-md"
-                : "bg-background text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-md"
+                : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
             <DollarSign className="h-4 w-4" />
@@ -223,7 +223,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 1. Monthly Active Builders (MAU)
               </span>
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-3xl font-black text-white">
+                <span className="text-foreground text-3xl font-black">
                   {metrics.mau.current30d.toLocaleString()}
                 </span>
                 <span className="text-success text-xs font-bold">
@@ -243,7 +243,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 4. Repeat Attendee Rate
               </span>
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-3xl font-black text-white">
+                <span className="text-foreground text-3xl font-black">
                   {metrics.repeatAttendees.repeatAttendanceRate}%
                 </span>
                 <span className="text-primary text-xs font-bold">
@@ -260,7 +260,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 12. Role Progression Rate ()
               </span>
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-3xl font-black text-white">
+                <span className="text-foreground text-3xl font-black">
                   {metrics.roleProgression.progressionRatePct}%
                 </span>
                 <span className="text-primary text-xs font-bold">
@@ -281,7 +281,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">2. Event Registrations</span>
                 <Calendar className="text-primary h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.registrations.totalLifetime.toLocaleString()}
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
@@ -292,7 +292,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Confirmed Attendees:</span>
-                <span className="font-medium text-white">
+                <span className="text-foreground font-medium">
                   {metrics.registrations.totalConfirmed}
                 </span>
               </div>
@@ -304,12 +304,12 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">3. Paid Ticket Conversion</span>
                 <Percent className="text-success h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.paidConversion.conversionRate}%
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Paid Passes Sold:</span>
-                <span className="font-medium text-white">
+                <span className="text-foreground font-medium">
                   {metrics.paidConversion.paidTickets} / {metrics.paidConversion.totalTickets}
                 </span>
               </div>
@@ -327,7 +327,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">5. Workshop & Talk Attendance</span>
                 <Activity className="text-primary h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.workshopTalkParticipation.combinedAttendees.toLocaleString()}
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
@@ -336,7 +336,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Average Attendance:</span>
-                <span className="font-medium text-white">
+                <span className="text-foreground font-medium">
                   ~{metrics.workshopTalkParticipation.avgAttendeesPerSession} / session
                 </span>
               </div>
@@ -348,7 +348,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">6. Campus Lead Activation</span>
                 <Building2 className="text-primary h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.leadApplications.campus.activationRate}%
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
@@ -359,7 +359,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Colleges Represented:</span>
-                <span className="font-medium text-white">
+                <span className="text-foreground font-medium">
                   {metrics.leadApplications.campus.uniqueColleges} colleges
                 </span>
               </div>
@@ -371,19 +371,19 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">7. State Lead Coverage</span>
                 <MapPin className="text-destructive h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.stateCoverage.coveragePct}%
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Covered Territories:</span>
-                <strong className="font-bold text-white">
+                <strong className="text-foreground font-bold">
                   {metrics.stateCoverage.coveredCount} / {metrics.stateCoverage.totalStatesAndUTs}{" "}
                   States & UTs
                 </strong>
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Active State Executives:</span>
-                <span className="font-medium text-white">
+                <span className="text-foreground font-medium">
                   {metrics.leadApplications.state.active} leads
                 </span>
               </div>
@@ -395,12 +395,14 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">8. Inbound Collaboration Leads</span>
                 <Users className="text-primary h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.collaborationLeads.conversionRate}%
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Total Inbound Leads:</span>
-                <span className="font-medium text-white">{metrics.collaborationLeads.total}</span>
+                <span className="text-foreground font-medium">
+                  {metrics.collaborationLeads.total}
+                </span>
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Confirmed / Won:</span>
@@ -416,12 +418,12 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">9. Sponsor Conversion</span>
                 <DollarSign className="text-success h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.sponsorConversion.conversionRate}%
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Deals Won:</span>
-                <strong className="font-medium text-white">
+                <strong className="text-foreground font-medium">
                   {metrics.sponsorConversion.wonDeals} / {metrics.sponsorConversion.totalDeals}
                 </strong>
               </div>
@@ -454,7 +456,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Profitable Events Ratio:</span>
-                <span className="font-medium text-white">
+                <span className="text-foreground font-medium">
                   {metrics.profitability.profitableEventsRatio}%
                 </span>
               </div>
@@ -466,12 +468,14 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 <span className="font-bold">11. Certificate Delivery Rate</span>
                 <Award className="text-primary h-4 w-4" />
               </div>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.certificates.deliveryRatePct}%
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
                 <span>Certificates Generated:</span>
-                <span className="font-medium text-white">{metrics.certificates.totalIssued}</span>
+                <span className="text-foreground font-medium">
+                  {metrics.certificates.totalIssued}
+                </span>
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
                 <span>Claimed / Verified:</span>
@@ -490,7 +494,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Format Breakdown */}
             <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
-              <h2 className="flex items-center gap-2 text-lg font-bold text-white">
+              <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <Calendar className="text-primary h-5 w-5" />
                 Registrations by Event Format
               </h2>
@@ -507,7 +511,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                   return (
                     <div key={format} className="space-y-1">
                       <div className="flex justify-between text-xs">
-                        <span className="font-bold text-white">{format}</span>
+                        <span className="text-foreground font-bold">{format}</span>
                         <span className="text-muted-foreground">
                           {count} ({pct}%)
                         </span>
@@ -526,7 +530,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
             {/* Repeat Attendee Cohorts */}
             <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
-              <h2 className="flex items-center gap-2 text-lg font-bold text-white">
+              <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <Users className="text-primary h-5 w-5" />
                 Builder Loyalty Cohorts
               </h2>
@@ -537,7 +541,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               <div className="mt-6 grid grid-cols-3 gap-3">
                 <div className="border-border bg-background rounded-2xl border p-4 text-center">
                   <span className="text-muted-foreground text-xs">1 Event</span>
-                  <p className="mt-1 text-2xl font-bold text-white">
+                  <p className="text-foreground mt-1 text-2xl font-bold">
                     {metrics.repeatAttendees.loyaltyTiers.singleEvent}
                   </p>
                   <span className="text-muted-foreground text-xs">First-Time Attendees</span>
@@ -563,7 +567,9 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               <div className="border-border bg-background text-muted-foreground mt-6 space-y-1 rounded-2xl border p-4 text-xs">
                 <div className="flex justify-between">
                   <span>Total Unique Attendees:</span>
-                  <strong className="text-white">{metrics.repeatAttendees.uniqueAttendees}</strong>
+                  <strong className="text-foreground">
+                    {metrics.repeatAttendees.uniqueAttendees}
+                  </strong>
                 </div>
                 <div className="flex justify-between">
                   <span>Overall Repeat Rate:</span>
@@ -583,7 +589,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
           <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <h2 className="flex items-center gap-2 text-lg font-bold text-white">
+                <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                   <MapPin className="text-destructive h-5 w-5" />
                   State Lead Territorial Coverage ({metrics.stateCoverage.coveredCount}/36)
                 </h2>
@@ -641,7 +647,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               <span className="text-muted-foreground text-xs font-bold uppercase">
                 Campus Applications
               </span>
-              <p className="mt-2 text-2xl font-bold text-white">
+              <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.leadApplications.campus.totalApplications}
               </p>
               <span className="text-muted-foreground mt-1 block text-xs">
@@ -682,7 +688,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* P&L Statement Rollup */}
             <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
-              <h2 className="flex items-center gap-2 text-lg font-bold text-white">
+              <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <DollarSign className="text-success h-5 w-5" />
                 Event P&L Financial Rollup ()
               </h2>
@@ -693,13 +699,13 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               <div className="mt-6 space-y-3">
                 <div className="bg-background flex justify-between rounded-xl p-3 text-xs">
                   <span className="text-muted-foreground">Paid Ticket Sales:</span>
-                  <span className="font-bold text-white">
+                  <span className="text-foreground font-bold">
                     ₹{metrics.profitability.ticketRevenue.toLocaleString("en-IN")}
                   </span>
                 </div>
                 <div className="bg-background flex justify-between rounded-xl p-3 text-xs">
                   <span className="text-muted-foreground">Sponsor Invoices (Paid):</span>
-                  <span className="font-bold text-white">
+                  <span className="text-foreground font-bold">
                     ₹{metrics.profitability.sponsorRevenue.toLocaleString("en-IN")}
                   </span>
                 </div>
@@ -725,7 +731,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
             {/* Sponsor Pipeline */}
             <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
-              <h2 className="flex items-center gap-2 text-lg font-bold text-white">
+              <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <TrendingUp className="text-primary h-5 w-5" />
                 Sponsor Pipeline & Conversions
               </h2>
@@ -736,7 +742,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               <div className="mt-6 grid grid-cols-2 gap-4">
                 <div className="border-border bg-background rounded-2xl border p-4">
                   <span className="text-muted-foreground text-xs">Total Pipeline Value</span>
-                  <p className="mt-1 text-xl font-bold text-white">
+                  <p className="text-foreground mt-1 text-xl font-bold">
                     ₹{metrics.sponsorConversion.totalPipelineValue.toLocaleString("en-IN")}
                   </p>
                   <span className="text-muted-foreground text-xs">
@@ -757,7 +763,9 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
               {/* Collaboration Leads */}
               <div className="border-border text-muted-foreground mt-6 space-y-2 border-t pt-4 text-xs">
-                <span className="block font-bold text-white">Collaboration Leads Pipeline:</span>
+                <span className="text-foreground block font-bold">
+                  Collaboration Leads Pipeline:
+                </span>
                 <div className="flex justify-between">
                   <span>Inbound Leads: {metrics.collaborationLeads.total}</span>
                   <span>

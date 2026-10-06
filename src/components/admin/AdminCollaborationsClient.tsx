@@ -313,7 +313,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
           <Button
             size="sm"
             onClick={() => setShowCreateModal(true)}
-            className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 text-xs font-bold text-white shadow-md"
+            className="bg-primary-hover hover:bg-primary text-primary-foreground flex items-center gap-1.5 text-xs font-bold shadow-md"
           >
             <Plus className="h-4 w-4" />
             <span>New Lead</span>
@@ -534,7 +534,7 @@ export function AdminCollaborationsClient({ initialLeads }: AdminCollaborationsC
               size="sm"
               onClick={handleCreateLead}
               disabled={isUpdating}
-              className="bg-primary-hover hover:bg-primary text-xs font-bold text-white"
+              className="bg-primary-hover hover:bg-primary text-primary-foreground text-xs font-bold"
             >
               {isUpdating ? "Saving..." : "Create Lead"}
             </Button>

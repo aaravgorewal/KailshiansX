@@ -237,7 +237,7 @@ export function AdminSeriesClient({ initialSeries, kind }: AdminSeriesClientProp
         <Button
           size="sm"
           onClick={handleOpenCreate}
-          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start text-xs font-bold text-white shadow-md sm:self-auto"
+          className="bg-primary-hover hover:bg-primary text-primary-foreground flex items-center gap-1.5 self-start text-xs font-bold shadow-md sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>New {isMeetup ? "Meetup Series" : "Hackathon Series"}</span>
@@ -372,7 +372,7 @@ export function AdminSeriesClient({ initialSeries, kind }: AdminSeriesClientProp
               size="sm"
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-primary-hover hover:bg-primary text-xs text-white"
+              className="bg-primary-hover hover:bg-primary text-primary-foreground text-xs"
             >
               {isSaving ? "Saving..." : "Save Series"}
             </Button>

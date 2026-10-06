@@ -113,7 +113,7 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
         <Button
           size="sm"
           onClick={() => setModalOpen(true)}
-          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start text-xs font-bold text-white shadow-md sm:self-auto"
+          className="bg-primary-hover hover:bg-primary text-primary-foreground flex items-center gap-1.5 self-start text-xs font-bold shadow-md sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Add Regional City</span>
@@ -176,7 +176,7 @@ export function AdminCommunityClient({ initialCities }: AdminCommunityClientProp
               size="sm"
               onClick={handleCreateCity}
               disabled={isSaving}
-              className="bg-primary-hover hover:bg-primary text-xs text-white"
+              className="bg-primary-hover hover:bg-primary text-primary-foreground text-xs"
             >
               {isSaving ? "Saving..." : "Add City"}
             </Button>

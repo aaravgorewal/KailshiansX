@@ -269,7 +269,7 @@ export function AdminGalleryManagerClient({
         <Button
           size="sm"
           onClick={() => setModalOpen(true)}
-          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start text-xs font-bold text-white shadow-md sm:self-auto"
+          className="bg-primary-hover hover:bg-primary text-primary-foreground flex items-center gap-1.5 self-start text-xs font-bold shadow-md sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>New Album</span>
@@ -384,7 +384,7 @@ export function AdminGalleryManagerClient({
               size="sm"
               onClick={handleCreateAlbum}
               disabled={isSaving}
-              className="bg-primary-hover hover:bg-primary text-xs text-white"
+              className="bg-primary-hover hover:bg-primary text-primary-foreground text-xs"
             >
               {isSaving ? "Creating..." : "Create Album"}
             </Button>

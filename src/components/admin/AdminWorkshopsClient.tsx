@@ -152,7 +152,7 @@ export function AdminWorkshopsClient({ initialWorkshops }: AdminWorkshopsClientP
 
         <Link
           href="/admin/events/new"
-          className="bg-primary-hover hover:bg-primary flex items-center gap-1.5 self-start rounded-lg px-3.5 py-2 text-xs font-bold text-white shadow-md transition-all sm:self-auto"
+          className="bg-primary-hover hover:bg-primary text-primary-foreground flex items-center gap-1.5 self-start rounded-lg px-3.5 py-2 text-xs font-bold shadow-md transition-all sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>New Workshop</span>

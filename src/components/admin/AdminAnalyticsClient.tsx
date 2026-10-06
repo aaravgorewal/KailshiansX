@@ -109,8 +109,8 @@ export function AdminAnalyticsClient({
             onClick={() => setViewMode("COMMUNITY")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               viewMode === "COMMUNITY"
-                ? "bg-primary text-white shadow-md"
-                : "text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-md"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <Layers className="h-4 w-4" />
@@ -121,8 +121,8 @@ export function AdminAnalyticsClient({
             onClick={() => setViewMode("OPERATIONAL")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               viewMode === "OPERATIONAL"
-                ? "bg-primary text-white shadow-md"
-                : "text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-md"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <TrendingUp className="h-4 w-4" />

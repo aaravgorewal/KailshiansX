@@ -27,6 +27,7 @@ import {
 import { LinkedinIcon } from "@/components/ui/social-icons";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import {
   TEAM_AREAS,
   TEAM_APPLICATION_STATUSES,
@@ -351,13 +352,20 @@ export function AdminCmsClient({
           onClick={() => setActiveTab("applications")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "applications"
-              ? "bg-primary text-white shadow-md"
+              ? "bg-primary text-primary-foreground shadow-md"
               : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           <Briefcase className="size-4" />
           <span>Team Applications</span>
-          <span className="ml-1.5 rounded-full bg-black/20 px-2 py-0.5 text-xs">
+          <span
+            className={cn(
+              "ml-1.5 rounded-full px-2 py-0.5 font-mono text-xs",
+              activeTab === "applications"
+                ? "border-primary-foreground/30 text-primary-foreground border"
+                : "bg-muted text-muted-foreground"
+            )}
+          >
             {applications.length}
           </span>
         </button>
@@ -366,13 +374,20 @@ export function AdminCmsClient({
           onClick={() => setActiveTab("core-team")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "core-team"
-              ? "bg-primary text-white shadow-md"
+              ? "bg-primary text-primary-foreground shadow-md"
               : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           <Users className="size-4" />
           <span>Core Team Directory</span>
-          <span className="ml-1.5 rounded-full bg-black/20 px-2 py-0.5 text-xs">
+          <span
+            className={cn(
+              "ml-1.5 rounded-full px-2 py-0.5 font-mono text-xs",
+              activeTab === "core-team"
+                ? "border-primary-foreground/30 text-primary-foreground border"
+                : "bg-muted text-muted-foreground"
+            )}
+          >
             {members.length}
           </span>
         </button>
@@ -381,7 +396,7 @@ export function AdminCmsClient({
           onClick={() => setActiveTab("founder")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "founder"
-              ? "bg-primary text-white shadow-md"
+              ? "bg-primary text-primary-foreground shadow-md"
               : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
@@ -393,7 +408,7 @@ export function AdminCmsClient({
           onClick={() => setActiveTab("who-we-are")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium transition-all ${
             activeTab === "who-we-are"
-              ? "bg-primary text-white shadow-md"
+              ? "bg-primary text-primary-foreground shadow-md"
               : "text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
@@ -570,7 +585,7 @@ export function AdminCmsClient({
                           href={selectedApp.portfolio}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-muted text-foreground border-border flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs hover:text-white"
+                          className="bg-muted text-foreground border-border hover:text-foreground flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs"
                         >
                           <Globe className="size-3" />
                           <span>Portfolio / GitHub</span>
@@ -581,7 +596,7 @@ export function AdminCmsClient({
                           href={selectedApp.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-muted text-foreground border-border flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs hover:text-white"
+                          className="bg-muted text-foreground border-border hover:text-foreground flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs"
                         >
                           <LinkedinIcon className="size-3" />
                           <span>LinkedIn</span>
@@ -750,7 +765,7 @@ export function AdminCmsClient({
                 <button
                   type="button"
                   onClick={() => setIsEditingMember(false)}
-                  className="text-muted-foreground hover:text-white"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <XCircle className="size-5" />
                 </button>
