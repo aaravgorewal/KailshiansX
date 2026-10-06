@@ -136,6 +136,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(){try{var d=document.documentElement,c=d.classList;var e=localStorage.getItem("theme");if("dark"===e||(!e&&window.matchMedia("(prefers-color-scheme: dark)").matches)||(e==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches)){c.add("dark")}else{c.remove("dark")}}catch(t){}}();`,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />

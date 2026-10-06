@@ -136,7 +136,8 @@ export default async function HomePage() {
     db.stateLead.count({ where: { status: "ACTIVE" } }),
   ]);
 
-  const calculatedBuilders = Math.max(totalRegistrations * 15 + 2400, 2500);
+  const showImpactCounters =
+    totalRegistrations > 0 || totalPublishedEvents > 0 || totalCities > 0 || totalColleges > 0;
 
   // ─── 3. Query Series with Editions & Cities ─────────────────────────────────
   const seriesList = await db.series.findMany({
@@ -212,6 +213,15 @@ export default async function HomePage() {
     },
     take: 3,
   });
+
+  const activeStateLeads = await db.stateLead.findMany({
+    where: { status: "ACTIVE" },
+    select: { state: true },
+    take: 4,
+  });
+  const stateRegions = Array.from(
+    new Set(activeStateLeads.map((s) => s.state).filter(Boolean) as string[])
+  );
 
   // ─── 7. Query Gallery Highlights ────────────────────────────────────────────
   const galleryHighlights = await db.galleryImage.findMany({
@@ -460,259 +470,273 @@ export default async function HomePage() {
         {/* ═══════════════════════════════════════════════════════════════════════
             3. IMPACT COUNTERS (py-12, plain numbers, muted labels, border-y)
         ═══════════════════════════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="section-impact-counters"
-          className="border-border bg-card border-y py-12"
-        >
-          <div className="container-page">
-            <SectionHeader
-              title="Powering India's Builder Revolution"
-              description="Transparent numbers driven by active database records, registrations, and campus chapters."
-              align="center"
-              className="mb-10"
-            />
+        {showImpactCounters && (
+          <section
+            aria-labelledby="section-impact-counters"
+            className="border-border bg-card border-y py-12"
+          >
+            <div className="container-page">
+              <SectionHeader
+                title="Powering India's Builder Revolution"
+                description="Transparent numbers driven by active database records, registrations, and campus chapters."
+                align="center"
+                className="mb-10"
+              />
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCounter
-                value={calculatedBuilders}
-                suffix="+"
-                label="Developers & Builders"
-                description="Registered members across workshops, hackathons, and regional chapters."
-                duration={2.2}
-              />
-              <StatCounter
-                value={totalPublishedEvents}
-                suffix="+"
-                label="Published Events"
-                description="Community-first gatherings organized with zero commercial compromise."
-                duration={1.8}
-              />
-              <StatCounter
-                value={Math.max(totalCities, 5)}
-                suffix="+"
-                label="Cities Covered"
-                description="Active chapters in Tier-1, Tier-2, and Himalayan tech hubs."
-                duration={2.0}
-              />
-              <StatCounter
-                value={Math.max(totalColleges, 12)}
-                suffix="+"
-                label="Colleges & Chapters"
-                description="Campus leads driving hack sprints and open-source study groups."
-                duration={2.4}
-              />
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {totalRegistrations > 0 && (
+                  <StatCounter
+                    value={totalRegistrations}
+                    suffix="+"
+                    label="Registrations"
+                    description="Registered participants across workshops, hackathons, and regional chapters."
+                    duration={2.2}
+                  />
+                )}
+                {totalPublishedEvents > 0 && (
+                  <StatCounter
+                    value={totalPublishedEvents}
+                    suffix="+"
+                    label="Published Events"
+                    description="Community-first gatherings organized with zero commercial compromise."
+                    duration={1.8}
+                  />
+                )}
+                {totalCities > 0 && (
+                  <StatCounter
+                    value={totalCities}
+                    suffix="+"
+                    label="Cities Covered"
+                    description="Active chapters in Tier-1, Tier-2, and regional tech hubs."
+                    duration={2.0}
+                  />
+                )}
+                {totalColleges > 0 && (
+                  <StatCounter
+                    value={totalColleges}
+                    suffix="+"
+                    label="Colleges & Chapters"
+                    description="Campus leads driving hack sprints and open-source study groups."
+                    duration={2.4}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ═══════════════════════════════════════════════════════════════════════
             4. FEATURED MEETUP & HACKATHON SERIES (FROM DB)
         ═══════════════════════════════════════════════════════════════════════════ */}
-        <section aria-labelledby="section-series" className="bg-background py-16 sm:py-20">
-          <div className="container-page">
-            <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <SectionHeader
-                title="Meetup & Hackathon Series"
-                description="Dedicated properties engineered for recurring regional impact. Each series builds long-term community momentum."
-                align="left"
-              />
-              <div className="flex items-center gap-3">
-                <Button asChild variant="secondary" size="sm">
-                  <Link href="/meetup-series">Meetup Series</Link>
-                </Button>
-                <Button asChild variant="secondary" size="sm">
-                  <Link href="/hackathon-series">Hackathon Series</Link>
-                </Button>
+        {seriesList.length > 0 && (
+          <section aria-labelledby="section-series" className="bg-background py-16 sm:py-20">
+            <div className="container-page">
+              <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <SectionHeader
+                  title="Meetup & Hackathon Series"
+                  description="Dedicated properties engineered for recurring regional impact. Each series builds long-term community momentum."
+                  align="left"
+                />
+                <div className="flex items-center gap-3">
+                  <Button asChild variant="secondary" size="sm">
+                    <Link href="/meetup-series">Meetup Series</Link>
+                  </Button>
+                  <Button asChild variant="secondary" size="sm">
+                    <Link href="/hackathon-series">Hackathon Series</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {seriesList.slice(0, 3).map((series) => {
+                  const citiesCovered = Array.from(
+                    new Set(
+                      series.editions
+                        .map((ed) => ed.event?.city?.name)
+                        .filter((c): c is string => Boolean(c))
+                    )
+                  );
+
+                  return (
+                    <SeriesCard
+                      key={series.id}
+                      name={series.name}
+                      kind={series.kind as "MEETUP" | "HACKATHON"}
+                      tagline={series.tagline || "Developer Community Series"}
+                      description={series.description || undefined}
+                      editionsCount={series.editions.length}
+                      citiesCount={citiesCovered.length > 0 ? citiesCovered.length : undefined}
+                      cities={citiesCovered}
+                      href={series.kind === "HACKATHON" ? "/hackathon-series" : "/meetup-series"}
+                      badgeText={
+                        series.kind === "HACKATHON" ? "Prize Pool Track" : "Flagship Series"
+                      }
+                    />
+                  );
+                })}
               </div>
             </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {seriesList.slice(0, 3).map((series) => {
-                const citiesCovered = Array.from(
-                  new Set(
-                    series.editions
-                      .map((ed) => ed.event?.city?.name)
-                      .filter((c): c is string => Boolean(c))
-                  )
-                );
-
-                return (
-                  <SeriesCard
-                    key={series.id}
-                    name={series.name}
-                    kind={series.kind as "MEETUP" | "HACKATHON"}
-                    tagline={series.tagline || "Developer Community Series"}
-                    description={series.description || undefined}
-                    editionsCount={Math.max(series.editions.length, 1)}
-                    citiesCount={citiesCovered.length > 0 ? citiesCovered.length : undefined}
-                    cities={
-                      citiesCovered.length > 0 ? citiesCovered : ["Jaipur", "Delhi", "Chandigarh"]
-                    }
-                    href={series.kind === "HACKATHON" ? "/hackathon-series" : "/meetup-series"}
-                    badgeText={series.kind === "HACKATHON" ? "Prize Pool Track" : "Flagship Series"}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ═══════════════════════════════════════════════════════════════════════
             5. TECH TALKS (FROM DB)
-        ═══════════════════════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="section-techtalks"
-          className="border-border bg-card/40 border-t py-16 sm:py-20"
-        >
-          <div className="container-page">
-            <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <SectionHeader
-                title="Deep-Dive Tech Talks"
-                description="Zero sales pitches. Real production war stories on distributed systems, generative AI, and scale."
-                align="left"
-              />
-              <Button
-                asChild
-                variant="secondary"
-                size="sm"
-                rightIcon={<ArrowRight className="size-4" />}
-              >
-                <Link href="/tech-talks">All Tech Talks</Link>
-              </Button>
-            </div>
+        ═══════════════════════════════════════════════════════════════════════════ */}
+        {(techTalkEvents.length > 0 || featuredTechTalkResource) && (
+          <section
+            aria-labelledby="section-techtalks"
+            className="border-border bg-card/40 border-t py-16 sm:py-20"
+          >
+            <div className="container-page">
+              <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <SectionHeader
+                  title="Deep-Dive Tech Talks"
+                  description="Zero sales pitches. Real production war stories on distributed systems, generative AI, and scale."
+                  align="left"
+                />
+                <Button
+                  asChild
+                  variant="secondary"
+                  size="sm"
+                  rightIcon={<ArrowRight className="size-4" />}
+                >
+                  <Link href="/tech-talks">All Tech Talks</Link>
+                </Button>
+              </div>
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-              {/* Highlight Featured Tech Talk Resource */}
-              {featuredTechTalkResource && (
-                <Card className="flex flex-col justify-between p-6 sm:p-7 lg:col-span-1">
-                  <div>
-                    <Badge variant="neutral" size="sm" className="mb-3">
-                      Featured Keynote
-                    </Badge>
-                    <h3 className="text-foreground text-xl leading-snug font-bold">
-                      {featuredTechTalkResource.event?.title || "Keynote Architecture Session"}
-                    </h3>
-                    <div className="text-muted-foreground mt-3 flex items-center gap-2 font-mono text-xs">
-                      <Video className="text-foreground size-3.5" aria-hidden="true" />
-                      <span>Recording Available</span>
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                {/* Highlight Featured Tech Talk Resource */}
+                {featuredTechTalkResource && (
+                  <Card className="flex flex-col justify-between p-6 sm:p-7 lg:col-span-1">
+                    <div>
+                      <Badge variant="neutral" size="sm" className="mb-3">
+                        Featured Keynote
+                      </Badge>
+                      <h3 className="text-foreground text-xl leading-snug font-bold">
+                        {featuredTechTalkResource.event?.title || "Keynote Architecture Session"}
+                      </h3>
+                      <div className="text-muted-foreground mt-3 flex items-center gap-2 font-mono text-xs">
+                        <Video className="text-foreground size-3.5" aria-hidden="true" />
+                        <span>Recording Available</span>
+                      </div>
+
+                      {keyTakeaways.length > 0 && (
+                        <div className="mt-6 space-y-2">
+                          <span className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
+                            Key Engineering Lessons:
+                          </span>
+                          <ul className="text-muted-foreground space-y-2 text-xs">
+                            {keyTakeaways.slice(0, 3).map((point: string, idx: number) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <CheckCircle2 className="text-foreground mt-0.5 size-3.5 shrink-0" />
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
 
-                    {keyTakeaways.length > 0 && (
-                      <div className="mt-6 space-y-2">
-                        <span className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
-                          Key Engineering Lessons:
-                        </span>
-                        <ul className="text-muted-foreground space-y-2 text-xs">
-                          {keyTakeaways.slice(0, 3).map((point: string, idx: number) => (
-                            <li key={idx} className="flex items-start gap-2">
-                              <CheckCircle2 className="text-foreground mt-0.5 size-3.5 shrink-0" />
-                              <span>{point}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="border-border mt-8 flex items-center justify-between border-t pt-6">
-                    {featuredTechTalkResource.speaker ? (
-                      <div>
-                        <div className="text-foreground text-sm font-semibold">
-                          {featuredTechTalkResource.speaker.name}
+                    <div className="border-border mt-8 flex items-center justify-between border-t pt-6">
+                      {featuredTechTalkResource.speaker ? (
+                        <div>
+                          <div className="text-foreground text-sm font-semibold">
+                            {featuredTechTalkResource.speaker.name}
+                          </div>
+                          <div className="text-muted-foreground text-xs">
+                            {featuredTechTalkResource.speaker.designation} •{" "}
+                            {featuredTechTalkResource.speaker.organisation}
+                          </div>
                         </div>
-                        <div className="text-muted-foreground text-xs">
-                          {featuredTechTalkResource.speaker.designation} •{" "}
-                          {featuredTechTalkResource.speaker.organisation}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-muted-foreground text-xs">Keynote Speaker</div>
-                    )}
-                    <Button asChild size="sm" variant="secondary">
-                      <Link
-                        href={featuredTechTalkResource.videoUrl || "/tech-talks"}
-                        target="_blank"
-                      >
-                        Watch Talk
-                      </Link>
-                    </Button>
-                  </div>
-                </Card>
-              )}
+                      ) : (
+                        <div className="text-muted-foreground text-xs">Keynote Speaker</div>
+                      )}
+                      <Button asChild size="sm" variant="secondary">
+                        <Link
+                          href={featuredTechTalkResource.videoUrl || "/tech-talks"}
+                          target="_blank"
+                        >
+                          Watch Talk
+                        </Link>
+                      </Button>
+                    </div>
+                  </Card>
+                )}
 
-              {/* Grid of Tech Talk Events */}
-              <div
-                className={
-                  featuredTechTalkResource
-                    ? "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-2"
-                    : "grid grid-cols-1 gap-6 sm:grid-cols-3 lg:col-span-3"
-                }
-              >
-                {techTalkEvents.map((event) => (
-                  <EventCard
-                    key={event.id}
-                    title={event.title}
-                    slug={event.slug}
-                    type="TECH_TALK"
-                    status={event.status as EventStatus}
-                    startDate={event.startDate}
-                    endDate={event.endDate || undefined}
-                    venue={event.venue || undefined}
-                    city={event.city?.name || undefined}
-                    coverUrl={event.coverImage || undefined}
-                    isFree={true}
-                    attendeeCount={event._count.registrations}
-                    speakerCount={event._count.speakers}
-                    tags={["TechTalk", "Architecture"]}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Featured Community Speakers */}
-            {featuredSpeakers.length > 0 && (
-              <div className="border-border mt-14 border-t pt-12">
-                <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h4 className="text-foreground text-xl font-bold">
-                      Featured Keynote &amp; Session Speakers
-                    </h4>
-                    <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
-                      Distinguished architects, open-source maintainers, and tech leads sharing real
-                      production lessons.
-                    </p>
-                  </div>
-                  <Button asChild variant="secondary" size="sm">
-                    <Link href="/tech-talks">View All Speakers</Link>
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {featuredSpeakers.map((speaker) => (
-                    <SpeakerCard
-                      key={speaker.id}
-                      name={speaker.name}
-                      role={speaker.designation || "Community Speaker"}
-                      company={speaker.organisation || "KWS Ecosystem"}
-                      avatarUrl={speaker.photo || undefined}
-                      bio={speaker.bio || undefined}
-                      speakerRole={"SPEAKER" as SpeakerRole}
-                      topics={["Distributed Systems", "Cloud Native", "AI Systems"]}
-                      socials={{
-                        twitter: speaker.twitter || undefined,
-                        linkedin: speaker.linkedin || undefined,
-                        github: speaker.github || undefined,
-                        website: speaker.website || undefined,
-                      }}
-                      sessionsCount={speaker.eventSpeakers.length}
-                      href="/tech-talks"
+                {/* Grid of Tech Talk Events */}
+                <div
+                  className={
+                    featuredTechTalkResource
+                      ? "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-2"
+                      : "grid grid-cols-1 gap-6 sm:grid-cols-3 lg:col-span-3"
+                  }
+                >
+                  {techTalkEvents.map((event) => (
+                    <EventCard
+                      key={event.id}
+                      title={event.title}
+                      slug={event.slug}
+                      type="TECH_TALK"
+                      status={event.status as EventStatus}
+                      startDate={event.startDate}
+                      endDate={event.endDate || undefined}
+                      venue={event.venue || undefined}
+                      city={event.city?.name || undefined}
+                      coverUrl={event.coverImage || undefined}
+                      isFree={true}
+                      attendeeCount={event._count.registrations}
+                      speakerCount={event._count.speakers}
+                      tags={["TechTalk", "Architecture"]}
                     />
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-        </section>
+
+              {/* Featured Community Speakers */}
+              {featuredSpeakers.length > 0 && (
+                <div className="border-border mt-14 border-t pt-12">
+                  <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <h4 className="text-foreground text-xl font-bold">
+                        Featured Keynote &amp; Session Speakers
+                      </h4>
+                      <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
+                        Distinguished architects, open-source maintainers, and tech leads sharing
+                        real production lessons.
+                      </p>
+                    </div>
+                    <Button asChild variant="secondary" size="sm">
+                      <Link href="/tech-talks">View All Speakers</Link>
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {featuredSpeakers.map((speaker) => (
+                      <SpeakerCard
+                        key={speaker.id}
+                        name={speaker.name}
+                        role={speaker.designation || "Community Speaker"}
+                        company={speaker.organisation || "KWS Ecosystem"}
+                        avatarUrl={speaker.photo || undefined}
+                        bio={speaker.bio || undefined}
+                        speakerRole={"SPEAKER" as SpeakerRole}
+                        topics={["Distributed Systems", "Cloud Native", "AI Systems"]}
+                        socials={{
+                          twitter: speaker.twitter || undefined,
+                          linkedin: speaker.linkedin || undefined,
+                          github: speaker.github || undefined,
+                          website: speaker.website || undefined,
+                        }}
+                        sessionsCount={speaker.eventSpeakers.length}
+                        href="/tech-talks"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* ═══════════════════════════════════════════════════════════════════════
             6. WORKSHOPS (FROM DB)
@@ -811,16 +835,22 @@ export default async function HomePage() {
                     <div className="text-foreground flex items-center justify-between font-semibold">
                       <span>Active Chapters</span>
                       <span className="text-muted-foreground font-mono">
-                        {Math.max(totalCampusLeads, 1)}+ Colleges
+                        {totalCampusLeads > 0
+                          ? `${totalCampusLeads}+ Colleges`
+                          : "Applications Open"}
                       </span>
                     </div>
-                    {activeCampusLeads.length > 0 && (
+                    {activeCampusLeads.length > 0 ? (
                       <p className="text-muted-foreground mt-1 truncate text-xs">
                         e.g.{" "}
                         {activeCampusLeads
                           .map((cl) => cl.college?.name)
                           .filter(Boolean)
                           .join(", ")}
+                      </p>
+                    ) : (
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        New campus chapters opening soon
                       </p>
                     )}
                   </div>
@@ -861,11 +891,13 @@ export default async function HomePage() {
                     <div className="text-foreground flex items-center justify-between font-semibold">
                       <span>State Chapters</span>
                       <span className="text-muted-foreground font-mono">
-                        {Math.max(totalStateLeads, 1)}+ Regions
+                        {totalStateLeads > 0 ? `${totalStateLeads}+ Regions` : "Applications Open"}
                       </span>
                     </div>
                     <p className="text-muted-foreground mt-1 text-xs">
-                      Rajasthan, Punjab &amp; Tri-City Tech Hubs
+                      {stateRegions.length > 0
+                        ? `${stateRegions.join(", ")} Chapters`
+                        : "Regional chapters opening nationwide"}
                     </p>
                   </div>
                 </div>
