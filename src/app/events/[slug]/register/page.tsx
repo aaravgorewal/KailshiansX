@@ -23,9 +23,16 @@ export async function generateMetadata({ params }: EventRegisterPageProps): Prom
 
   if (!event) return { title: "Register | KailshiansX" };
 
+  const title = `Register: ${event.title} | KailshiansX`;
+  const description = `Claim your pass for ${event.title}. Verified developer gatherings across India.`;
   return {
-    title: `Register: ${event.title} | KailshiansX`,
-    description: `Claim your pass for ${event.title}. Verified developer gatherings across India.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: event.coverImage ? [{ url: event.coverImage }] : undefined,
+    },
   };
 }
 

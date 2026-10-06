@@ -11,9 +11,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const title = `${slug.toUpperCase()} Developer Chapter | KailshiansX`;
+  const description =
+    "Official KailshiansX campus developer chapter and regional meetup community.";
   return {
-    title: `${slug.toUpperCase()} Developer Chapter | KailshiansX`,
-    description: "Official KailshiansX campus developer chapter and regional meetup community.",
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+    },
   };
 }
 

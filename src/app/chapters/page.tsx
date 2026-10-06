@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: "Campus Chapters & Regional Hubs | KailshiansX",
   description:
     "Discover localized builder chapters, campus leads, and regional meetup networks across India.",
+  openGraph: {
+    title: "Campus Chapters & Regional Hubs | KailshiansX",
+    description:
+      "Discover localized builder chapters, campus leads, and regional meetup networks across India.",
+  },
 };
 
 export default async function ChaptersPage() {
