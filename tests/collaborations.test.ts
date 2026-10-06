@@ -18,7 +18,7 @@ import {
   sendCollaborationInternalNotificationEmail,
 } from "../src/server/email/confirmation";
 
-describe("Collaborations Funnel & Pipeline (PRD §13)", () => {
+describe("Collaborations Funnel & Pipeline ()", () => {
   const createdLeadIds: string[] = [];
 
   after(async () => {
@@ -144,7 +144,7 @@ describe("Collaborations Funnel & Pipeline (PRD §13)", () => {
     });
   });
 
-  describe("Server Action Submissions & Pipeline Creation (PRD §13)", () => {
+  describe("Server Action Submissions & Pipeline Creation ()", () => {
     it("should reject bot submissions when honeypot is populated", async () => {
       const botPayload = {
         organisation: "Bot Company",
@@ -302,7 +302,7 @@ describe("Collaborations Funnel & Pipeline (PRD §13)", () => {
     });
   });
 
-  describe("Email Auto-Acknowledgement & Team Notification (PRD §13)", () => {
+  describe("Email Auto-Acknowledgement & Team Notification ()", () => {
     it("should dispatch auto-acknowledgement email without error", async () => {
       const res = await sendCollaborationAcknowledgementEmail({
         email: "test.submitter@company.com",

@@ -1,5 +1,5 @@
 // tests/team-cms.test.ts
-// Test suite for /join-team, /core-team, /founder, /who-we-are, and Admin CMS (PRD §14, §15, §16, §17)
+// Test suite for /join-team, /core-team, /founder, /who-we-are, and Admin CMS (, , , )
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
@@ -24,7 +24,7 @@ import {
 } from "../src/server/cms/content";
 import { db } from "../src/lib/db";
 
-describe("Team, Founder, Who We Are & Admin CMS (PRD §14, §15, §16, §17)", () => {
+describe("Team, Founder, Who We Are & Admin CMS (, , , )", () => {
   describe("Team Areas & Openings Definition", () => {
     it("should include all 11 role-wise openings requested", () => {
       const expected = [

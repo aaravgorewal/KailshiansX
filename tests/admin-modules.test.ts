@@ -1,5 +1,5 @@
 // tests/admin-modules.test.ts
-// Test suite for PRD §22 Admin Control Room: Events, Pipelines, Data Mutations, and Audit Logs
+// Test suite for Admin Control Room: Events, Pipelines, Data Mutations, and Audit Logs
 
 import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
@@ -16,7 +16,7 @@ import {
   SeriesKind,
 } from "@prisma/client";
 
-describe("Admin Control Room & Modules (PRD §22)", () => {
+describe("Admin Control Room & Modules ()", () => {
   let testEventId: string;
   let testCityId: string;
   let testPartnerId: string;

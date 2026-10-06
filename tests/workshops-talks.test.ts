@@ -10,7 +10,7 @@ import {
   requestCollegeWorkshopSchema,
 } from "../src/lib/validations/workshop-forms";
 
-describe("Workshops & Tech Talks (PRD §6 & §7)", () => {
+describe("Workshops & Tech Talks ()", () => {
   describe("Workshops Queries & Category Filtering", () => {
     it("should fetch upcoming workshops successfully", async () => {
       const res = await getWorkshops({ tab: "upcoming" });

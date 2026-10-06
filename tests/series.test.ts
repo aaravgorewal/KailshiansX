@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 
 import { getSeriesList, getSeriesBySlug } from "../src/server/events/series";
 
-describe("Meetup Series & Hackathon Series (PRD §8 & §9)", () => {
-  describe("Meetup Series Queries & Auto-Computed Impact Stats (PRD §8)", () => {
+describe("Meetup Series & Hackathon Series ()", () => {
+  describe("Meetup Series Queries & Auto-Computed Impact Stats ()", () => {
     it("should fetch all Meetup Series (RaibarX, PadharoX, TricityX)", async () => {
       const meetups = await getSeriesList("MEETUP");
       assert.ok(Array.isArray(meetups));
@@ -53,7 +53,7 @@ describe("Meetup Series & Hackathon Series (PRD §8 & §9)", () => {
     });
   });
 
-  describe("Hackathon Series Queries & Edition Features (PRD §9)", () => {
+  describe("Hackathon Series Queries & Edition Features ()", () => {
     it("should fetch all Hackathon Series (NirmanX, AarambhX)", async () => {
       const hackathons = await getSeriesList("HACKATHON");
       assert.ok(Array.isArray(hackathons));

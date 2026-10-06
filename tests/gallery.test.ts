@@ -1,5 +1,5 @@
 // tests/gallery.test.ts
-// Test suite for KailshiansX Gallery (PRD §18)
+// Test suite for KailshiansX Gallery ()
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
@@ -7,7 +7,7 @@ import { getGalleryOverview, getGalleryAlbumById } from "../src/server/gallery/q
 import { GALLERY_CATEGORIES } from "../src/lib/gallery";
 import { createPresignedUploadUrl } from "../src/lib/storage";
 
-describe("Gallery System (PRD §18)", () => {
+describe("Gallery System ()", () => {
   describe("Gallery Categories & Navigation", () => {
     it("should define all 6 required categories plus ALL", () => {
       const keys = GALLERY_CATEGORIES.map((c) => c.key);
