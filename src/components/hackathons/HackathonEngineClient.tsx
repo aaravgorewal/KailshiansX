@@ -560,7 +560,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                             {m.role}
                           </span>
                           {m.userId === data.userTeam?.leaderId && (
-                            <span className="text-primary text-[9px] font-bold">★ Lead</span>
+                            <span className="text-primary text-xs font-bold">★ Lead</span>
                           )}
                         </div>
                       </div>

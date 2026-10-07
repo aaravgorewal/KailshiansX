@@ -295,7 +295,7 @@ export function GalleryOverviewClient({
       ) : (
         /* Grouped By Event View */
         <div className="space-y-10">
-          {groupedByEvent.eventGroups.map((group) => {
+          {groupedByEvent.eventGroups.map((group, groupIdx) => {
             const ev = group.event!;
             return (
               <section key={ev.id} className="space-y-4">
@@ -328,7 +328,7 @@ export function GalleryOverviewClient({
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {group.albums.map((album) => (
+                  {group.albums.map((album, albumIdx) => (
                     <AlbumCard
                       key={album.id}
                       id={album.id}
@@ -338,6 +338,7 @@ export function GalleryOverviewClient({
                       photoCount={album._count.images}
                       event={album.event}
                       previewImages={album.images}
+                      priority={groupIdx === 0 && albumIdx === 0}
                     />
                   ))}
                 </div>

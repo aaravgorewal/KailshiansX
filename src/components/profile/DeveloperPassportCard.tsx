@@ -85,7 +85,7 @@ export function DeveloperPassportCard({ passport, isOwner = false, onVisibilityC
                 {user.name.charAt(0).toUpperCase()}
               </div>
             )}
-            <div className="text-foreground bg-background/80 absolute inset-x-0 bottom-0 py-0.5 text-center text-[9px] font-bold tracking-widest uppercase backdrop-blur-xs">
+            <div className="text-foreground bg-background/80 absolute inset-x-0 bottom-0 py-0.5 text-center text-xs font-bold tracking-widest uppercase">
               Pass ID
             </div>
           </div>

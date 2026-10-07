@@ -84,7 +84,7 @@ export function EventCard({
   return (
     <Card
       className={cn(
-        "group border-border bg-card hover:border-primary/50 relative flex flex-col justify-between overflow-hidden border transition-colors",
+        "group border-border bg-card hover:border-primary/50 relative flex h-full flex-col justify-between overflow-hidden border transition-colors",
         className
       )}
     >
@@ -137,7 +137,10 @@ export function EventCard({
           </div>
 
           {/* Title with full card clickable ::after overlay */}
-          <h3 className="text-foreground hover:text-accent-text line-clamp-2 text-base font-bold transition-colors sm:text-lg">
+          <h3
+            className="text-foreground hover:text-accent-text line-clamp-2 text-base font-bold transition-colors sm:text-lg"
+            title={title}
+          >
             <Link
               href={href}
               className="after:absolute after:inset-0 after:z-0 focus-visible:underline focus-visible:outline-none"
@@ -149,7 +152,10 @@ export function EventCard({
           {/* Location */}
           <div className="text-muted-foreground mt-2.5 flex items-center gap-1.5 text-xs">
             <MapPin className="text-muted-foreground size-3.5 shrink-0" aria-hidden="true" />
-            <span className="truncate">
+            <span
+              className="truncate"
+              title={venue ? `${venue}, ${city || "India"}` : city || "India"}
+            >
               {venue ? `${venue}, ` : ""}
               <strong className="text-foreground font-medium">{city || "India"}</strong>
             </span>

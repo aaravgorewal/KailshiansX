@@ -80,7 +80,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
         aria-expanded={open}
         aria-haspopup="true"
         className={cn(
-          "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color] duration-150",
+          "focus-visible:ring-ring flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
           isActive
             ? "text-foreground underline underline-offset-4"
             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -108,7 +108,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
                 onClick={() => setOpen(false)}
                 role="menuitem"
                 className={cn(
-                  "block rounded-md px-3 py-2 text-sm transition-[background-color,color] duration-150",
+                  "focus-visible:ring-ring block rounded-md px-3 py-2 text-sm transition-[background-color,color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                   isChildActive
                     ? "bg-muted/60 text-foreground font-medium underline underline-offset-4"
                     : "text-foreground hover:bg-muted"
@@ -139,7 +139,7 @@ function DesktopNavLink({ item }: { item: NavItem }) {
     <Link
       href={item.href}
       className={cn(
-        "rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color] duration-150",
+        "focus-visible:ring-ring rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
         isActive
           ? "text-foreground underline underline-offset-4"
           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -353,7 +353,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
               <Link
                 href="/signin"
                 id="nav-signin-btn"
-                className="text-foreground hover:bg-muted hidden items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition-[background-color] duration-150 sm:inline-flex"
+                className="focus-visible:ring-ring text-foreground hover:bg-muted hidden items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 sm:inline-flex"
               >
                 Sign in
               </Link>
@@ -362,7 +362,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
             {/* Desktop Explore Events CTA */}
             <Link
               href="/events"
-              className="bg-primary text-primary-foreground hover:bg-primary-hover hidden items-center justify-center rounded-lg px-3.5 py-1.5 text-sm font-medium transition-[background-color] duration-150 sm:inline-flex"
+              className="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary-hover hidden items-center justify-center rounded-lg px-3.5 py-1.5 text-sm font-medium transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 sm:inline-flex"
             >
               Explore Events
             </Link>
@@ -370,7 +370,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
             {/* Mobile: compact "Events" button before the hamburger */}
             <Link
               href="/events"
-              className="bg-primary text-primary-foreground hover:bg-primary-hover inline-flex items-center justify-center rounded-lg px-2.5 py-1 text-xs font-medium transition-[background-color] duration-150 sm:hidden"
+              className="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary-hover inline-flex items-center justify-center rounded-lg px-2.5 py-1 text-xs font-medium transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 sm:hidden"
             >
               Events
             </Link>
@@ -381,7 +381,7 @@ export function Navbar({ user }: { user: NavbarUser }) {
               onClick={() => setDrawerOpen(true)}
               aria-label="Open navigation menu"
               aria-expanded={drawerOpen}
-              className="text-foreground hover:bg-muted inline-flex items-center justify-center rounded-lg p-2 transition-[background-color] duration-150 lg:hidden"
+              className="focus-visible:ring-ring text-foreground hover:bg-muted inline-flex items-center justify-center rounded-lg p-2 transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 lg:hidden"
             >
               <Menu size={20} />
             </button>

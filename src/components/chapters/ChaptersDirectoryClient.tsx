@@ -92,7 +92,7 @@ export function ChaptersDirectoryClient({
       {/* Directory Grid */}
       <div className="mx-auto max-w-7xl px-4 pt-12 sm:px-6 lg:px-8">
         {/* Controls */}
-        <div className="border-border bg-card flex flex-col justify-between gap-4 rounded-3xl border p-5 backdrop-blur-md sm:flex-row sm:items-center">
+        <div className="border-border bg-card flex flex-col justify-between gap-4 rounded-xl border p-4 sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-2">
             {[
               { id: "ALL", label: `All Chapters (${chapters.length})` },
@@ -102,7 +102,7 @@ export function ChaptersDirectoryClient({
               <button
                 key={f.id}
                 onClick={() => setFilterType(f.id)}
-                className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
+                className={`focus-visible:ring-ring rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                   filterType === f.id
                     ? "bg-primary text-primary-foreground"
                     : "bg-background text-muted-foreground hover:text-foreground"
@@ -120,7 +120,7 @@ export function ChaptersDirectoryClient({
               placeholder="Search by college, city, or state..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-border bg-background placeholder:text-muted-foreground text-foreground focus:border-primary w-full rounded-xl border py-2 pr-3 pl-9 text-xs focus:outline-none"
+              className="border-border bg-background placeholder:text-muted-foreground text-foreground focus:border-primary w-full rounded-lg border py-2 pr-3 pl-9 text-xs focus:outline-none"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export function ChaptersDirectoryClient({
           {filtered.map((ch) => (
             <div
               key={ch.id}
-              className="group border-border bg-card hover:border-border flex flex-col justify-between rounded-3xl border p-6 backdrop-blur-md transition-all hover:shadow-md"
+              className="group border-border bg-card hover:border-muted-foreground flex h-full flex-col justify-between rounded-xl border p-6 transition-colors"
             >
               <div>
                 <div className="flex items-center justify-between">
@@ -149,14 +149,19 @@ export function ChaptersDirectoryClient({
                   </span>
                 </div>
 
-                <h3 className="text-foreground group-hover:text-primary mt-4 text-xl font-bold transition-colors">
+                <h3
+                  title={ch.name}
+                  className="text-foreground group-hover:text-primary mt-4 text-xl font-bold transition-colors"
+                >
                   {ch.name}
                 </h3>
 
                 {ch.institution && (
                   <p className="text-muted-foreground mt-1 flex items-center gap-1.5 text-xs">
                     <Award className="text-primary h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">{ch.institution}</span>
+                    <span title={ch.institution} className="truncate">
+                      {ch.institution}
+                    </span>
                   </p>
                 )}
 
@@ -168,7 +173,10 @@ export function ChaptersDirectoryClient({
                 )}
 
                 {ch.description && (
-                  <p className="text-muted-foreground mt-3 line-clamp-2 text-xs leading-relaxed">
+                  <p
+                    title={ch.description}
+                    className="text-muted-foreground mt-3 line-clamp-2 text-xs leading-relaxed"
+                  >
                     {ch.description}
                   </p>
                 )}
@@ -205,7 +213,7 @@ export function ChaptersDirectoryClient({
         </div>
 
         {filtered.length === 0 && (
-          <div className="border-border text-muted-foreground rounded-3xl border border-dashed py-16 text-center text-sm">
+          <div className="border-border text-muted-foreground rounded-xl border border-dashed py-16 text-center text-sm">
             No chapters found matching your filter.
           </div>
         )}

@@ -129,7 +129,7 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
       <div className="fixed top-3 left-3 z-50 lg:hidden">
         <button
           onClick={() => setIsMobileOpen((v) => !v)}
-          className="bg-card border-border text-foreground rounded-lg border p-2"
+          className="bg-card border-border text-foreground hover:bg-muted focus-visible:ring-ring rounded-lg border p-2 transition-[background-color,opacity] focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
           aria-label="Toggle Admin Navigation"
         >
           {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -152,7 +152,10 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
       >
         {/* Brand Header */}
         <div className="border-border bg-card flex h-16 items-center justify-between border-b px-4">
-          <Link href="/admin" className="flex items-center gap-2.5 truncate">
+          <Link
+            href="/admin"
+            className="focus-visible:ring-ring flex items-center gap-2.5 truncate rounded-lg transition-opacity focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
+          >
             <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold">
               KX
             </div>
@@ -171,7 +174,7 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
           {/* Desktop collapse toggle */}
           <button
             onClick={() => setIsCollapsed((v) => !v)}
-            className="text-muted-foreground hover:text-foreground hover:bg-muted hidden rounded-md p-1.5 transition-colors lg:flex"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:ring-ring hidden rounded-md p-1.5 transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80 lg:flex"
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             {isCollapsed ? (
@@ -187,13 +190,15 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
           <div className="border-border bg-muted/40 border-b px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="truncate">
-                <p className="text-foreground truncate text-xs font-semibold">{userName}</p>
+                <p title={userName} className="text-foreground truncate text-xs font-semibold">
+                  {userName}
+                </p>
                 <p className="text-muted-foreground mt-0.5 text-xs">{userRole}</p>
               </div>
               <Link
                 href="/"
                 target="_blank"
-                className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs"
+                className="text-muted-foreground hover:text-foreground focus-visible:ring-ring flex items-center gap-1 rounded text-xs transition-opacity focus-visible:ring-1 focus-visible:outline-none active:opacity-80"
                 title="Open Public Site in New Tab"
               >
                 <span>Site</span>
@@ -221,8 +226,8 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
                   <Link
                     key={item.href}
                     href={item.href}
-                    title={isCollapsed ? item.label : undefined}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-[background-color,color] duration-150 ${
+                    title={item.label}
+                    className={`focus-visible:ring-ring flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                       active
                         ? "bg-muted text-foreground border-primary border-l-2 font-semibold"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -250,7 +255,7 @@ export function AdminSidebar({ userRole = "ADMIN", userName = "Admin User" }: Ad
         <div className="border-border bg-card border-t p-3">
           <Link
             href="/admin/events/new"
-            className={`bg-primary text-primary-foreground hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-[background-color] duration-150 ${
+            className={`bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:ring-ring flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
               isCollapsed ? "p-2" : ""
             }`}
             title="Create New Event"

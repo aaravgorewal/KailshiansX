@@ -111,7 +111,7 @@ export function JoinTeamClient() {
       {/* ─── 1. Role-Wise Openings Directory ──────────────────────────────── */}
       <section className="space-y-8" id="openings">
         <div>
-          <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
+          <h2 className="text-foreground text-2xl font-bold tracking-tight text-balance sm:text-3xl">
             Open Core Volunteer & Leadership Positions
           </h2>
           <p className="text-muted-foreground mt-2 max-w-3xl text-sm">
@@ -127,7 +127,7 @@ export function JoinTeamClient() {
             type="button"
             onClick={() => setSelectedArea("ALL")}
             className={cn(
-              "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[border-color,background-color] duration-150",
+              "focus-visible:ring-ring shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[border-color,background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
               selectedArea === "ALL"
                 ? "border-primary bg-primary text-primary-foreground font-semibold"
                 : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
@@ -144,7 +144,7 @@ export function JoinTeamClient() {
                 type="button"
                 onClick={() => setSelectedArea(area)}
                 className={cn(
-                  "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[border-color,background-color] duration-150",
+                  "focus-visible:ring-ring shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[border-color,background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                   isSelected
                     ? "border-primary bg-primary text-primary-foreground font-semibold"
                     : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
@@ -171,7 +171,7 @@ export function JoinTeamClient() {
         {/* Openings Grid */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {filteredOpenings.map((opening) => (
-            <Card key={opening.id} className="flex flex-col justify-between p-6">
+            <Card key={opening.id} className="flex h-full flex-col justify-between p-6">
               <div className="space-y-4">
                 {/* Header Row */}
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -198,7 +198,9 @@ export function JoinTeamClient() {
 
                 {/* Title & Summary */}
                 <div>
-                  <h3 className="text-foreground text-lg font-bold">{opening.title}</h3>
+                  <h3 title={opening.title} className="text-foreground text-lg font-bold">
+                    {opening.title}
+                  </h3>
                   <p className="text-muted-foreground mt-2 text-xs leading-relaxed">
                     {opening.summary}
                   </p>

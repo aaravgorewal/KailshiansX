@@ -115,7 +115,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
   return (
     <div className="animate-in fade-in space-y-8 duration-300">
       {/* ─── TOP HERO COCKPIT ──────────────────────────────────────────────── */}
-      <div className="border-border bg-card relative overflow-hidden rounded-3xl border p-6 backdrop-blur-xl sm:p-8">
+      <div className="border-border bg-card relative overflow-hidden rounded-xl border p-6 sm:p-8">
         <div className="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="space-y-2">
             <div className="border-primary/30 bg-muted text-accent-text inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
@@ -149,21 +149,21 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
         <div className="border-border mt-8 flex flex-wrap gap-2 border-t pt-6">
           <button
             onClick={() => setActiveTab("EXECUTIVE")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
+            className={`focus-visible:ring-ring flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-90 ${
               activeTab === "EXECUTIVE"
-                ? "bg-primary text-primary-foreground shadow-md"
+                ? "bg-primary text-primary-foreground"
                 : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
             <BarChart3 className="h-4 w-4" />
-            <span>12 Core Success Metrics ()</span>
+            <span>12 Core Success Metrics</span>
           </button>
 
           <button
             onClick={() => setActiveTab("AUDIENCE")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
+            className={`focus-visible:ring-ring flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-90 ${
               activeTab === "AUDIENCE"
-                ? "bg-primary text-primary-foreground shadow-md"
+                ? "bg-primary text-primary-foreground"
                 : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -173,9 +173,9 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
           <button
             onClick={() => setActiveTab("LEADERSHIP")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
+            className={`focus-visible:ring-ring flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-90 ${
               activeTab === "LEADERSHIP"
-                ? "bg-primary text-primary-foreground shadow-md"
+                ? "bg-primary text-primary-foreground"
                 : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -185,9 +185,9 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
           <button
             onClick={() => setActiveTab("COMMERCIAL")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors ${
+            className={`focus-visible:ring-ring flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-90 ${
               activeTab === "COMMERCIAL"
-                ? "bg-primary text-primary-foreground shadow-md"
+                ? "bg-primary text-primary-foreground"
                 : "bg-background text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -202,7 +202,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
         <div className="space-y-6">
           {/* North Star Health Gauge */}
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
-            <div className="border-border bg-card relative overflow-hidden rounded-3xl border p-6">
+            <div className="border-border bg-card relative overflow-hidden rounded-xl border p-6">
               <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
                 Community Health Index
               </span>
@@ -218,7 +218,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </p>
             </div>
 
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
                 1. Monthly Active Builders (MAU)
               </span>
@@ -238,7 +238,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </p>
             </div>
 
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
                 4. Repeat Attendee Rate
               </span>
@@ -255,9 +255,9 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </p>
             </div>
 
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <span className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">
-                12. Role Progression Rate ()
+                12. Role Progression Rate
               </span>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-foreground text-3xl font-black">
@@ -276,7 +276,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
           {/* 12 Metric Cards Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Metric 2: Registrations */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">2. Event Registrations</span>
                 <Calendar className="text-primary h-4 w-4" />
@@ -299,7 +299,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 3: Paid Conversion */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">3. Paid Ticket Conversion</span>
                 <Percent className="text-success h-4 w-4" />
@@ -322,7 +322,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 5: Workshop & Talk Participation */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">5. Workshop & Talk Attendance</span>
                 <Activity className="text-primary h-4 w-4" />
@@ -343,7 +343,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 6: Campus Lead Activation */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">6. Campus Lead Activation</span>
                 <Building2 className="text-primary h-4 w-4" />
@@ -366,7 +366,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 7: State Lead Coverage */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">7. State Lead Coverage</span>
                 <MapPin className="text-destructive h-4 w-4" />
@@ -390,7 +390,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 8: Collaboration Leads */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">8. Inbound Collaboration Leads</span>
                 <Users className="text-primary h-4 w-4" />
@@ -413,7 +413,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 9: Sponsor Deal Conversion */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">9. Sponsor Conversion</span>
                 <DollarSign className="text-success h-4 w-4" />
@@ -436,7 +436,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 10: Event Profitability */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="text-muted-foreground flex items-center justify-between text-xs">
                 <span className="font-bold">10. Event P&L Profit Margin</span>
                 <TrendingUp className="text-success h-4 w-4" />
@@ -463,7 +463,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Metric 11: Certificate Delivery Rate */}
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-foreground font-bold">11. Certificate Delivery Rate</span>
                 <Award className="text-primary h-4 w-4" />
@@ -493,7 +493,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Format Breakdown */}
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <Calendar className="text-primary h-5 w-5" />
                 Registrations by Event Format
@@ -529,7 +529,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Repeat Attendee Cohorts */}
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <Users className="text-primary h-5 w-5" />
                 Builder Loyalty Cohorts
@@ -539,7 +539,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </p>
 
               <div className="mt-6 grid grid-cols-3 gap-3">
-                <div className="border-border bg-background rounded-2xl border p-4 text-center">
+                <div className="border-border bg-background rounded-xl border p-4 text-center">
                   <span className="text-muted-foreground text-xs">1 Event</span>
                   <p className="text-foreground mt-1 text-2xl font-bold">
                     {metrics.repeatAttendees.loyaltyTiers.singleEvent}
@@ -547,7 +547,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                   <span className="text-muted-foreground text-xs">First-Time Attendees</span>
                 </div>
 
-                <div className="border-primary/30 bg-primary/5 rounded-2xl border p-4 text-center">
+                <div className="border-primary/30 bg-primary/5 rounded-xl border p-4 text-center">
                   <span className="text-primary text-xs">2-3 Events</span>
                   <p className="text-primary mt-1 text-2xl font-bold">
                     {metrics.repeatAttendees.loyaltyTiers.twoToThree}
@@ -555,7 +555,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                   <span className="text-primary/80 text-xs">Active Builders</span>
                 </div>
 
-                <div className="border-primary/30 bg-primary/5 rounded-2xl border p-4 text-center">
+                <div className="border-primary/30 bg-primary/5 rounded-xl border p-4 text-center">
                   <span className="text-primary text-xs">4+ Events</span>
                   <p className="text-primary mt-1 text-2xl font-bold">
                     {metrics.repeatAttendees.loyaltyTiers.fourPlus}
@@ -564,7 +564,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                 </div>
               </div>
 
-              <div className="border-border bg-background text-muted-foreground mt-6 space-y-1 rounded-2xl border p-4 text-xs">
+              <div className="border-border bg-background text-muted-foreground mt-6 space-y-1 rounded-xl border p-4 text-xs">
                 <div className="flex justify-between">
                   <span>Total Unique Attendees:</span>
                   <strong className="text-foreground">
@@ -586,7 +586,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
       {/* ─── TAB 3: STATE & CAMPUS EXPANSION ───────────────────────────────── */}
       {activeTab === "LEADERSHIP" && (
         <div className="space-y-6">
-          <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+          <div className="border-border bg-card rounded-xl border p-6">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
@@ -594,7 +594,8 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                   State Lead Territorial Coverage ({metrics.stateCoverage.coveredCount}/36)
                 </h2>
                 <p className="text-muted-foreground mt-1 text-xs">
-                  Active expansion across all 28 Indian States & 8 Union Territories per .
+                  Active expansion across all 28 Indian States & 8 Union Territories per operational
+                  blueprint.
                 </p>
               </div>
               <div className="text-right">
@@ -643,7 +644,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
           {/* Campus Lead Stats */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <span className="text-muted-foreground text-xs font-bold uppercase">
                 Campus Applications
               </span>
@@ -655,7 +656,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </span>
             </div>
 
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <span className="text-muted-foreground text-xs font-bold uppercase">
                 Active Campus Leads
               </span>
@@ -667,7 +668,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </span>
             </div>
 
-            <div className="border-border bg-card rounded-2xl border p-5">
+            <div className="border-border bg-card rounded-xl border p-5">
               <span className="text-muted-foreground text-xs font-bold uppercase">
                 Collegiate Presence
               </span>
@@ -687,10 +688,10 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* P&L Statement Rollup */}
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <DollarSign className="text-success h-5 w-5" />
-                Event P&L Financial Rollup ()
+                Event P&L Financial Rollup
               </h2>
               <p className="text-muted-foreground mt-1 text-xs">
                 Combined ticket gate + corporate sponsor revenue.
@@ -730,7 +731,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
             </div>
 
             {/* Sponsor Pipeline */}
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <h2 className="text-foreground flex items-center gap-2 text-lg font-bold">
                 <TrendingUp className="text-primary h-5 w-5" />
                 Sponsor Pipeline & Conversions
@@ -740,7 +741,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
               </p>
 
               <div className="mt-6 grid grid-cols-2 gap-4">
-                <div className="border-border bg-background rounded-2xl border p-4">
+                <div className="border-border bg-background rounded-xl border p-4">
                   <span className="text-muted-foreground text-xs">Total Pipeline Value</span>
                   <p className="text-foreground mt-1 text-xl font-bold">
                     ₹{metrics.sponsorConversion.totalPipelineValue.toLocaleString("en-IN")}
@@ -750,7 +751,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
                   </span>
                 </div>
 
-                <div className="border-success/30 bg-success/5 rounded-2xl border p-4">
+                <div className="border-success/30 bg-success/5 rounded-xl border p-4">
                   <span className="text-success text-xs">Closed Won Revenue</span>
                   <p className="text-success mt-1 text-xl font-bold">
                     ₹{metrics.sponsorConversion.closedWonValue.toLocaleString("en-IN")}

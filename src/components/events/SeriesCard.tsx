@@ -36,7 +36,9 @@ export function SeriesCard({
   const isHackathon = kind === "HACKATHON";
 
   return (
-    <Card className={cn("group relative flex flex-col justify-between p-6 sm:p-7", className)}>
+    <Card
+      className={cn("group relative flex h-full flex-col justify-between p-6 sm:p-7", className)}
+    >
       <div>
         {/* Top badges */}
         <div className="mb-4 flex items-center justify-between gap-2">
@@ -56,7 +58,10 @@ export function SeriesCard({
         </div>
 
         {/* Series Name & Tagline */}
-        <h3 className="text-foreground hover:text-accent-text text-xl font-bold tracking-tight transition-colors sm:text-2xl">
+        <h3
+          className="text-foreground hover:text-accent-text text-xl font-bold tracking-tight transition-colors sm:text-2xl"
+          title={name}
+        >
           <Link href={href} className="focus-visible:underline focus-visible:outline-none">
             {name}
           </Link>

@@ -33,7 +33,15 @@ interface CoreTeamClientProps {
   members: SerializedCoreTeamMember[];
 }
 
-function MemberAvatar({ name, photo }: { name: string; photo?: string | null }) {
+function MemberAvatar({
+  name,
+  photo,
+  priority = false,
+}: {
+  name: string;
+  photo?: string | null;
+  priority?: boolean;
+}) {
   const [hasError, setHasError] = React.useState(false);
 
   const initials = name
@@ -56,6 +64,7 @@ function MemberAvatar({ name, photo }: { name: string; photo?: string | null }) 
       src={photo}
       alt={name}
       fill
+      priority={priority}
       sizes="56px"
       className="object-cover"
       onError={() => setHasError(true)}
@@ -79,7 +88,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
           type="button"
           onClick={() => setSelectedCategory("ALL")}
           className={cn(
-            "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
+            "focus-visible:ring-ring shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
             selectedCategory === "ALL"
               ? "border-primary bg-primary text-primary-foreground font-semibold"
               : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -99,7 +108,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
               type="button"
               onClick={() => setSelectedCategory(cat.key)}
               className={cn(
-                "shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
+                "focus-visible:ring-ring shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                 isSelected
                   ? "border-primary bg-primary text-primary-foreground font-semibold"
                   : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -132,7 +141,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredMembers.map((member) => {
+          {filteredMembers.map((member, idx) => {
             const categoryInfo = CORE_TEAM_CATEGORIES.find(
               (c) => c.key === member.category.toLowerCase()
             );
@@ -140,13 +149,13 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
             return (
               <article
                 key={member.id}
-                className="group border-border bg-card hover:border-primary/50 relative flex flex-col justify-between rounded-lg border p-5 transition-colors duration-150"
+                className="group border-border bg-card hover:border-muted-foreground relative flex h-full flex-col justify-between rounded-lg border p-5 transition-colors duration-150"
               >
                 <div className="space-y-4">
                   {/* Top: Avatar + Category Badge */}
                   <div className="flex items-start justify-between gap-4">
                     <div className="border-border bg-muted relative size-14 shrink-0 overflow-hidden rounded-md border">
-                      <MemberAvatar name={member.name} photo={member.photo} />
+                      <MemberAvatar name={member.name} photo={member.photo} priority={idx < 4} />
                     </div>
 
                     <Badge variant="outline" size="sm">
@@ -156,13 +165,18 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
 
                   {/* Name & Role */}
                   <div>
-                    <h3 className="text-foreground text-base font-semibold">{member.name}</h3>
+                    <h3 title={member.name} className="text-foreground text-base font-semibold">
+                      {member.name}
+                    </h3>
                     <p className="text-muted-foreground mt-0.5 text-xs">{member.role}</p>
                   </div>
 
                   {/* Bio */}
                   {member.bio && (
-                    <p className="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
+                    <p
+                      title={member.bio}
+                      className="text-muted-foreground line-clamp-3 text-xs leading-relaxed"
+                    >
                       {member.bio}
                     </p>
                   )}
@@ -186,7 +200,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                         href={member.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded p-1.5 transition-colors focus-visible:ring-1 focus-visible:outline-none active:opacity-80"
                         title="LinkedIn Profile"
                         aria-label={`LinkedIn profile of ${member.name}`}
                       >
@@ -198,7 +212,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                         href={member.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded p-1.5 transition-colors focus-visible:ring-1 focus-visible:outline-none active:opacity-80"
                         title="Twitter / X Profile"
                         aria-label={`Twitter profile of ${member.name}`}
                       >
@@ -210,7 +224,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                         href={member.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded p-1.5 transition-colors focus-visible:ring-1 focus-visible:outline-none active:opacity-80"
                         title="GitHub Profile"
                         aria-label={`GitHub profile of ${member.name}`}
                       >
@@ -222,7 +236,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                         href={member.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded p-1.5 transition-colors focus-visible:ring-1 focus-visible:outline-none active:opacity-80"
                         title="Personal Website"
                         aria-label={`Personal website of ${member.name}`}
                       >
@@ -232,7 +246,7 @@ export function CoreTeamClient({ members }: CoreTeamClientProps) {
                     {member.email && (
                       <a
                         href={`mailto:${member.email}`}
-                        className="text-muted-foreground hover:text-foreground rounded p-1.5 transition-colors"
+                        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded p-1.5 transition-colors focus-visible:ring-1 focus-visible:outline-none active:opacity-80"
                         title="Email"
                         aria-label={`Send email to ${member.name}`}
                       >

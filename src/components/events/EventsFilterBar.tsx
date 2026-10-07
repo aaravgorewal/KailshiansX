@@ -121,7 +121,7 @@ export function EventsFilterBar({
               type="button"
               onClick={handleClearSearch}
               aria-label="Clear search"
-              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 transition-colors"
+              className="text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
             >
               <X className="size-4" aria-hidden="true" />
             </button>
@@ -134,9 +134,9 @@ export function EventsFilterBar({
             type="button"
             onClick={() => updateFilters({ timeline: "upcoming" })}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+              "focus-visible:ring-ring flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
               initialTimeline === "upcoming"
-                ? "bg-background text-foreground font-semibold"
+                ? "bg-background text-foreground font-semibold shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -153,9 +153,9 @@ export function EventsFilterBar({
             type="button"
             onClick={() => updateFilters({ timeline: "past" })}
             className={cn(
-              "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+              "focus-visible:ring-ring flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
               initialTimeline === "past"
-                ? "bg-background text-foreground font-semibold"
+                ? "bg-background text-foreground font-semibold shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -171,9 +171,9 @@ export function EventsFilterBar({
             type="button"
             onClick={() => updateFilters({ timeline: "all" })}
             className={cn(
-              "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
+              "focus-visible:ring-ring rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
               initialTimeline === "all"
-                ? "bg-background text-foreground font-semibold"
+                ? "bg-background text-foreground font-semibold shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -195,10 +195,10 @@ export function EventsFilterBar({
                 type="button"
                 onClick={() => updateFilters({ type: opt.id })}
                 className={cn(
-                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
+                  "focus-visible:ring-ring rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                   active
-                    ? "border-primary bg-primary/10 text-foreground font-semibold"
-                    : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
+                    ? "border-primary bg-muted text-accent-text font-semibold"
+                    : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
                 )}
               >
                 {opt.label}
@@ -215,10 +215,10 @@ export function EventsFilterBar({
               type="button"
               onClick={() => updateFilters({ city: "ALL" })}
               className={cn(
-                "rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
+                "focus-visible:ring-ring rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                 initialCity === "ALL"
-                  ? "border-primary bg-primary/10 text-foreground font-semibold"
-                  : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
+                  ? "border-primary bg-muted text-accent-text font-semibold"
+                  : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
               )}
             >
               All cities
@@ -231,10 +231,10 @@ export function EventsFilterBar({
                   type="button"
                   onClick={() => updateFilters({ city: city.name })}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
+                    "focus-visible:ring-ring flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                     active
-                      ? "border-primary bg-primary/10 text-foreground font-semibold"
-                      : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
+                      ? "border-primary bg-muted text-accent-text font-semibold"
+                      : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
                   )}
                 >
                   <span>{city.name}</span>

@@ -55,7 +55,7 @@ export function AlbumCard({
   return (
     <article
       className={cn(
-        "group border-border bg-card hover:border-primary/50 relative flex flex-col justify-between overflow-hidden rounded-lg border transition-colors duration-150",
+        "group border-border bg-card hover:border-primary/50 relative flex h-full flex-col justify-between overflow-hidden rounded-lg border transition-colors duration-150",
         className
       )}
     >
@@ -112,7 +112,10 @@ export function AlbumCard({
           </div>
 
           {/* Title */}
-          <h3 className="text-foreground group-hover:text-primary line-clamp-2 text-base font-semibold transition-colors">
+          <h3
+            className="text-foreground group-hover:text-primary line-clamp-2 text-base font-semibold transition-colors"
+            title={title}
+          >
             <Link
               href={`/gallery/${id}`}
               className="after:absolute after:inset-0 focus-visible:underline focus-visible:outline-none"

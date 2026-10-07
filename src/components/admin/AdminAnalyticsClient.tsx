@@ -104,12 +104,12 @@ export function AdminAnalyticsClient({
     <div className="space-y-8">
       {/* View Mode Switcher */}
       {communityMetrics && (
-        <div className="border-border bg-card flex flex-wrap items-center gap-2 rounded-2xl border p-1.5 backdrop-blur-md">
+        <div className="border-border bg-card flex flex-wrap items-center gap-2 rounded-xl border p-1.5">
           <button
             onClick={() => setViewMode("COMMUNITY")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+            className={`focus-visible:ring-ring flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all focus-visible:ring-2 focus-visible:outline-none active:opacity-90 ${
               viewMode === "COMMUNITY"
-                ? "bg-primary text-primary-foreground shadow-md"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -119,9 +119,9 @@ export function AdminAnalyticsClient({
 
           <button
             onClick={() => setViewMode("OPERATIONAL")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
+            className={`focus-visible:ring-ring flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all focus-visible:ring-2 focus-visible:outline-none active:opacity-90 ${
               viewMode === "OPERATIONAL"
-                ? "bg-primary text-primary-foreground shadow-md"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -155,7 +155,7 @@ export function AdminAnalyticsClient({
 
           {/* KPI Stats */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-card border-border rounded-2xl border p-5">
+            <div className="bg-card border-border rounded-xl border p-5">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-muted-foreground text-xs font-bold uppercase">
                   Total Revenue
@@ -168,7 +168,7 @@ export function AdminAnalyticsClient({
               <p className="text-muted-foreground mt-1 text-xs">Paid ticket transactions</p>
             </div>
 
-            <div className="bg-card border-border rounded-2xl border p-5">
+            <div className="bg-card border-border rounded-xl border p-5">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-muted-foreground text-xs font-bold uppercase">
                   Registrations
@@ -183,7 +183,7 @@ export function AdminAnalyticsClient({
               </p>
             </div>
 
-            <div className="bg-card border-border rounded-2xl border p-5">
+            <div className="bg-card border-border rounded-xl border p-5">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-muted-foreground text-xs font-bold uppercase">
                   Gate Check-in Rate
@@ -196,7 +196,7 @@ export function AdminAnalyticsClient({
               </p>
             </div>
 
-            <div className="bg-card border-border rounded-2xl border p-5">
+            <div className="bg-card border-border rounded-xl border p-5">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-muted-foreground text-xs font-bold uppercase">
                   Regional Footprint
@@ -217,7 +217,7 @@ export function AdminAnalyticsClient({
               <span>Top Event Performances</span>
             </h2>
 
-            <div className="border-border bg-card overflow-x-auto rounded-2xl border">
+            <div className="border-border bg-card overflow-x-auto rounded-xl border">
               <table className="w-full text-left text-xs">
                 <thead className="border-border bg-card text-muted-foreground border-b font-semibold uppercase">
                   <tr>
@@ -233,7 +233,10 @@ export function AdminAnalyticsClient({
                 <tbody className="divide-border divide-y">
                   {topEvents.map((evt) => (
                     <tr key={evt.id} className="hover:bg-muted transition-colors">
-                      <td className="text-foreground max-w-xs truncate px-4 py-3 font-semibold">
+                      <td
+                        className="text-foreground max-w-xs truncate px-4 py-3 font-semibold"
+                        title={evt.title}
+                      >
                         {evt.title}
                       </td>
                       <td className="px-4 py-3">
@@ -260,7 +263,7 @@ export function AdminAnalyticsClient({
           </div>
 
           {/* Leadership & Partnership Funnel Conversion */}
-          <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
+          <div className="bg-card border-border space-y-4 rounded-xl border p-6">
             <h2 className="text-foreground flex items-center gap-2 text-base font-bold">
               <Layers className="text-primary h-4 w-4" />
               <span>Pipeline Conversion Rates</span>

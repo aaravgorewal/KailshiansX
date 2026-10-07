@@ -137,7 +137,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                 href={partner.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border-border bg-card hover:bg-muted text-foreground inline-flex items-center gap-2 rounded-2xl border px-4 py-2 text-xs font-bold transition-colors"
+                className="border-border bg-card hover:bg-muted text-foreground focus-visible:ring-ring inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
               >
                 <span>Visit {partner.name}</span>
                 <ExternalLink className="text-muted-foreground h-4 w-4" />
@@ -147,8 +147,8 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
 
           {/* KPI Summary Cards */}
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-md">
-              <span className="text-muted-foreground text-xs font-bold uppercase">
+            <div className="border-border bg-card flex h-full flex-col justify-between rounded-xl border p-5">
+              <span className="text-muted-foreground text-xs font-semibold uppercase">
                 Deliverables Fulfillment
               </span>
               <div className="mt-3 flex items-baseline gap-2">
@@ -167,8 +167,8 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
               </div>
             </div>
 
-            <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-md">
-              <span className="text-muted-foreground text-xs font-bold uppercase">
+            <div className="border-border bg-card flex h-full flex-col justify-between rounded-xl border p-5">
+              <span className="text-muted-foreground text-xs font-semibold uppercase">
                 Audience Reach
               </span>
               <div className="mt-3 flex items-baseline gap-2">
@@ -182,8 +182,8 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
               </p>
             </div>
 
-            <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-md">
-              <span className="text-muted-foreground text-xs font-bold uppercase">
+            <div className="border-border bg-card flex h-full flex-col justify-between rounded-xl border p-5">
+              <span className="text-muted-foreground text-xs font-semibold uppercase">
                 Brand Impressions
               </span>
               <div className="mt-3 flex items-baseline gap-2">
@@ -196,8 +196,8 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
               </p>
             </div>
 
-            <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-md">
-              <span className="text-muted-foreground text-xs font-bold uppercase">
+            <div className="border-border bg-card flex h-full flex-col justify-between rounded-xl border p-5">
+              <span className="text-muted-foreground text-xs font-semibold uppercase">
                 Sponsorship Tier
               </span>
               <div className="mt-3 flex items-baseline gap-2">
@@ -228,7 +228,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                   key={tab.id}
                   id={`tab-partner-${tab.id}`}
                   onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                  className={`inline-flex items-center gap-2 border-b-2 px-4 py-3 text-xs font-bold transition-colors sm:text-sm ${
+                  className={`focus-visible:ring-ring inline-flex items-center gap-2 border-b-2 px-4 py-3 text-xs font-semibold transition-[color,border-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 sm:text-sm ${
                     isActive
                       ? "border-primary text-foreground"
                       : "text-muted-foreground hover:text-foreground border-transparent"
@@ -251,10 +251,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
         {activeTab === "deliverables" && (
           <div className="space-y-8">
             {deals.map((deal) => (
-              <div
-                key={deal.id}
-                className="border-border bg-card rounded-3xl border p-6 shadow-xl backdrop-blur-md"
-              >
+              <div key={deal.id} className="border-border bg-card rounded-xl border p-6">
                 <div className="border-border flex flex-col justify-between gap-4 border-b pb-5 sm:flex-row sm:items-center">
                   <div>
                     <div className="flex items-center gap-2">
@@ -289,7 +286,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                   {deal.deliverables.map((d) => (
                     <div
                       key={d.id}
-                      className="border-border bg-background hover:border-border flex flex-col justify-between gap-4 rounded-2xl border p-4 transition-all sm:flex-row sm:items-center"
+                      className="border-border bg-background hover:border-muted-foreground flex flex-col justify-between gap-4 rounded-xl border p-4 transition-colors sm:flex-row sm:items-center"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -320,7 +317,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                         {d.proofUrl ? (
                           <button
                             onClick={() => setSelectedProofUrl(d.proofUrl)}
-                            className="border-border bg-card hover:bg-muted text-primary hover:text-foreground inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-colors"
+                            className="border-border bg-card hover:bg-muted text-primary hover:text-foreground focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
                           >
                             <Eye className="h-3.5 w-3.5" />
                             View Proof
@@ -340,7 +337,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
         {/* TAB 2: AUDIENCE REACH & DEMOGRAPHICS */}
         {activeTab === "reach" && (
           <div className="space-y-8">
-            <div className="border-border bg-card rounded-3xl border p-8 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <h3 className="text-foreground text-xl font-bold">
                 Audience Reach &amp; Developer Demographics
               </h3>
@@ -350,7 +347,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
               </p>
 
               <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
-                <div className="border-border bg-background rounded-2xl border p-5">
+                <div className="border-border bg-background rounded-xl border p-5">
                   <span className="text-muted-foreground text-xs font-bold uppercase">
                     Audience Composition
                   </span>
@@ -387,7 +384,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                   </div>
                 </div>
 
-                <div className="border-border bg-background rounded-2xl border p-5">
+                <div className="border-border bg-background rounded-xl border p-5">
                   <span className="text-muted-foreground text-xs font-bold uppercase">
                     Top Tech Stack Affinity
                   </span>
@@ -413,7 +410,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                   </p>
                 </div>
 
-                <div className="border-border bg-background rounded-2xl border p-5">
+                <div className="border-border bg-background rounded-xl border p-5">
                   <span className="text-muted-foreground text-xs font-bold uppercase">
                     Sponsor Track Engagement
                   </span>
@@ -443,10 +440,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
             {deals
               .flatMap((d) => d.reports)
               .map((rep) => (
-                <div
-                  key={rep.id}
-                  className="border-border bg-card space-y-6 rounded-3xl border p-8 shadow-xl backdrop-blur-md"
-                >
+                <div key={rep.id} className="border-border bg-card space-y-6 rounded-xl border p-6">
                   <div className="border-border flex flex-col justify-between gap-4 border-b pb-5 md:flex-row md:items-center">
                     <div>
                       <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-3 py-0.5 text-xs font-bold">
@@ -463,7 +457,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                         href={rep.recapDeckUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-primary text-foreground hover:bg-primary inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-colors"
+                        className="bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:ring-ring inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
                       >
                         <Download className="h-4 w-4" />
                         Download Executive Deck (PDF)
@@ -472,7 +466,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                   </div>
 
                   {/* Executive Summary */}
-                  <div className="border-border bg-background rounded-2xl border p-5">
+                  <div className="border-border bg-background rounded-xl border p-5">
                     <h4 className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                       Executive Summary
                     </h4>
@@ -483,25 +477,25 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
 
                   {/* Report Key Stats */}
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                    <div className="border-border bg-background rounded-2xl border p-4">
+                    <div className="border-border bg-background rounded-xl border p-4">
                       <span className="text-muted-foreground text-xs">Total Impressions</span>
                       <div className="text-foreground mt-1 text-xl font-black">
                         {rep.totalImpressions.toLocaleString()}+
                       </div>
                     </div>
-                    <div className="border-border bg-background rounded-2xl border p-4">
+                    <div className="border-border bg-background rounded-xl border p-4">
                       <span className="text-muted-foreground text-xs">Verified Turnout</span>
                       <div className="text-foreground mt-1 text-xl font-black">
                         {rep.totalAttendees.toLocaleString()} builders
                       </div>
                     </div>
-                    <div className="border-border bg-background rounded-2xl border p-4">
+                    <div className="border-border bg-background rounded-xl border p-4">
                       <span className="text-muted-foreground text-xs">Booth Footfall</span>
                       <div className="text-success mt-1 text-xl font-black">
                         {rep.boothFootfall}+ visitors
                       </div>
                     </div>
-                    <div className="border-border bg-background rounded-2xl border p-4">
+                    <div className="border-border bg-background rounded-xl border p-4">
                       <span className="text-muted-foreground text-xs">Attendee NPS</span>
                       <div className="text-primary mt-1 text-xl font-black">
                         {rep.npsScore} / 10
@@ -520,7 +514,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                           <div
                             key={idx}
                             onClick={() => setSelectedProofUrl(url)}
-                            className="group border-border bg-background hover:border-primary relative aspect-video cursor-pointer overflow-hidden rounded-2xl border transition-colors"
+                            className="group border-border bg-background hover:border-primary relative aspect-video cursor-pointer overflow-hidden rounded-xl border transition-colors"
                           >
                             <img
                               src={url}
@@ -541,7 +535,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
               ))}
 
             {deals.flatMap((d) => d.reports).length === 0 && (
-              <div className="border-border text-muted-foreground rounded-3xl border border-dashed py-16 text-center text-sm">
+              <div className="border-border text-muted-foreground rounded-xl border border-dashed py-16 text-center text-sm">
                 Official post-event impact report is currently being compiled by the organizing
                 committee.
               </div>
@@ -552,7 +546,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
         {/* TAB 4: INVOICES & BILLING */}
         {activeTab === "invoices" && (
           <div className="space-y-6">
-            <div className="border-border bg-card rounded-3xl border p-6 backdrop-blur-md">
+            <div className="border-border bg-card rounded-xl border p-6">
               <h3 className="text-foreground text-xl font-bold">
                 Sponsorship Invoices &amp; Contract Receipts
               </h3>
@@ -560,7 +554,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
                 Official GST-compliant invoice documentation with transaction reference numbers.
               </p>
 
-              <div className="border-border mt-6 overflow-hidden rounded-2xl border">
+              <div className="border-border mt-6 overflow-hidden rounded-xl border">
                 <table className="w-full text-left text-xs sm:text-sm">
                   <thead className="border-border bg-background text-muted-foreground border-b text-xs tracking-wider uppercase">
                     <tr>
@@ -611,15 +605,15 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
 
       {/* PROOF LIGHTBOX MODAL */}
       {selectedProofUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-md">
-          <div className="border-border bg-background relative w-full max-w-4xl overflow-hidden rounded-2xl border">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
+          <div className="border-border bg-background relative w-full max-w-4xl overflow-hidden rounded-xl border">
             <div className="border-border flex items-center justify-between border-b p-4">
               <h4 className="text-foreground text-sm font-bold">
                 Proof of Deliverable Fulfillment
               </h4>
               <button
                 onClick={() => setSelectedProofUrl(null)}
-                className="text-muted-foreground hover:text-foreground text-xs font-bold"
+                className="text-muted-foreground hover:text-foreground focus-visible:ring-ring rounded text-xs font-bold focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
               >
                 Close (ESC)
               </button>
@@ -628,7 +622,7 @@ export function PartnerPortalClient({ data }: { data: PartnerPayload }) {
               <img
                 src={selectedProofUrl}
                 alt="Proof"
-                className="max-h-[70vh] w-auto rounded-xl object-contain"
+                className="max-h-[70vh] w-auto rounded-lg object-contain"
               />
             </div>
           </div>

@@ -84,7 +84,7 @@ export function AdminEventsClient({ initialEvents }: AdminEventsClientProps) {
           <div className="flex items-center gap-1.5">
             <span className="text-foreground font-bold">{item.title}</span>
             {item.isFeatured && (
-              <Badge variant="warning" size="sm" className="px-1 py-0 text-[9px]">
+              <Badge variant="warning" size="sm" className="px-1.5 py-0 text-xs">
                 Featured
               </Badge>
             )}

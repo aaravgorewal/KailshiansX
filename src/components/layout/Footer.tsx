@@ -69,7 +69,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors"
+                  className="focus-visible:ring-ring text-muted-foreground hover:text-foreground rounded text-xs font-medium transition-colors focus-visible:ring-1 focus-visible:outline-none"
                 >
                   {label.split(" ")[0]}
                 </a>
@@ -88,7 +88,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      className="focus-visible:ring-ring text-muted-foreground hover:text-foreground rounded text-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
                     >
                       {link.label}
                     </Link>
@@ -103,16 +103,28 @@ export function Footer() {
         <div className="border-border text-muted-foreground mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs sm:flex-row">
           <p>&copy; {year} Kailshians Web Services. All rights reserved.</p>
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="/privacy" className="hover:text-foreground transition-colors">
+            <Link
+              href="/privacy"
+              className="focus-visible:ring-ring hover:text-foreground rounded transition-colors focus-visible:ring-1 focus-visible:outline-none"
+            >
               Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">
+            <Link
+              href="/terms"
+              className="focus-visible:ring-ring hover:text-foreground rounded transition-colors focus-visible:ring-1 focus-visible:outline-none"
+            >
               Terms of Service
             </Link>
-            <Link href="/refunds" className="hover:text-foreground transition-colors">
+            <Link
+              href="/refunds"
+              className="focus-visible:ring-ring hover:text-foreground rounded transition-colors focus-visible:ring-1 focus-visible:outline-none"
+            >
               Refund &amp; Cancellation
             </Link>
-            <Link href="/contact" className="hover:text-foreground transition-colors">
+            <Link
+              href="/contact"
+              className="focus-visible:ring-ring hover:text-foreground rounded transition-colors focus-visible:ring-1 focus-visible:outline-none"
+            >
               Contact
             </Link>
           </div>

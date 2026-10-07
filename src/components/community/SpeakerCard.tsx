@@ -26,6 +26,7 @@ export interface SpeakerCardProps {
   speakerRole?: SpeakerRole;
   socials?: SpeakerSocials;
   sessionsCount?: number;
+  priority?: boolean;
   href?: string;
   className?: string;
 }
@@ -68,6 +69,7 @@ export function SpeakerCard({
   speakerRole = "SPEAKER",
   socials,
   sessionsCount,
+  priority = false,
   href,
   className,
 }: SpeakerCardProps) {
@@ -78,64 +80,75 @@ export function SpeakerCard({
   }[speakerRole];
 
   return (
-    <Card className={cn("group relative flex flex-col items-center p-6 text-center", className)}>
-      {/* Role badge top right */}
-      <div className="absolute top-4 right-4">
-        <Badge variant="neutral" size="sm" icon={roleBadge.icon}>
-          {roleBadge.label}
-        </Badge>
-      </div>
+    <Card
+      className={cn(
+        "group relative flex h-full flex-col items-center justify-between p-6 text-center",
+        className
+      )}
+    >
+      <div className="flex w-full flex-col items-center">
+        {/* Role badge top right */}
+        <div className="absolute top-4 right-4">
+          <Badge variant="neutral" size="sm" icon={roleBadge.icon}>
+            {roleBadge.label}
+          </Badge>
+        </div>
 
-      {/* Avatar */}
-      <div className="relative mt-2 mb-4">
-        <div className="border-border bg-muted relative size-24 overflow-hidden rounded-full border sm:size-28">
-          {avatarUrl ? (
-            <Image
-              src={avatarUrl}
-              alt={name}
-              fill
-              sizes="112px"
-              className="size-full rounded-full object-cover"
-              loading="lazy"
-              unoptimized={avatarUrl.startsWith("data:")}
-            />
-          ) : (
-            <div className="text-foreground flex size-full items-center justify-center text-xl font-bold">
-              {name.charAt(0)}
-            </div>
+        {/* Avatar */}
+        <div className="relative mt-2 mb-4">
+          <div className="border-border bg-muted relative size-24 overflow-hidden rounded-full border sm:size-28">
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl}
+                alt={name}
+                fill
+                priority={priority}
+                sizes="112px"
+                className="size-full rounded-full object-cover"
+                loading={priority ? undefined : "lazy"}
+                unoptimized={avatarUrl.startsWith("data:")}
+              />
+            ) : (
+              <div className="text-foreground flex size-full items-center justify-center text-xl font-bold">
+                {name.charAt(0)}
+              </div>
+            )}
+          </div>
+
+          {Boolean(sessionsCount && sessionsCount > 0) && (
+            <span
+              className="border-border bg-card text-muted-foreground absolute -right-1 -bottom-1 rounded-full border px-2 py-0.5 font-mono text-xs shadow-sm"
+              title={`${sessionsCount} community sessions`}
+            >
+              {sessionsCount} talks
+            </span>
           )}
         </div>
 
-        {Boolean(sessionsCount && sessionsCount > 0) && (
-          <span
-            className="border-border bg-card text-muted-foreground absolute -right-1 -bottom-1 rounded-full border px-2 py-0.5 font-mono text-xs shadow-sm"
-            title={`${sessionsCount} community sessions`}
+        {/* Name and headline */}
+        <h3 className="text-foreground hover:text-accent-text text-base font-bold transition-colors sm:text-lg">
+          {href ? (
+            <Link href={href} className="focus-visible:underline focus-visible:outline-none">
+              {name}
+            </Link>
+          ) : (
+            name
+          )}
+        </h3>
+
+        <div className="text-muted-foreground mt-1 text-xs font-medium sm:text-sm">{role}</div>
+        <div className="text-foreground mt-0.5 font-mono text-xs">@{company}</div>
+
+        {/* Bio snippet */}
+        {bio && (
+          <p
+            className="text-muted-foreground mt-3 line-clamp-3 max-w-[260px] text-xs leading-relaxed"
+            title={bio}
           >
-            {sessionsCount} talks
-          </span>
+            {bio}
+          </p>
         )}
       </div>
-
-      {/* Name and headline */}
-      <h3 className="text-foreground hover:text-accent-text text-base font-bold transition-colors sm:text-lg">
-        {href ? (
-          <Link href={href} className="focus-visible:underline focus-visible:outline-none">
-            {name}
-          </Link>
-        ) : (
-          name
-        )}
-      </h3>
-
-      <div className="text-muted-foreground mt-1 text-xs font-medium sm:text-sm">{role}</div>
-      <div className="text-foreground mt-0.5 font-mono text-xs">@{company}</div>
-
-      {/* Bio snippet */}
-      {bio && (
-        <p className="text-muted-foreground mt-3 line-clamp-3 max-w-[260px] text-xs leading-relaxed">
-          {bio}
-        </p>
-      )}
 
       {/* Topic chips */}
       {topics.length > 0 && (

@@ -154,7 +154,7 @@ export function SpeakerNetworkClient({
         <div className="flex flex-wrap items-center gap-2 pb-4">
           <button
             onClick={() => setSelectedTopic("ALL")}
-            className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
+            className={`focus-visible:ring-ring rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
               selectedTopic === "ALL"
                 ? "bg-primary text-primary-foreground"
                 : "bg-card border-border text-muted-foreground hover:text-foreground border"
@@ -166,7 +166,7 @@ export function SpeakerNetworkClient({
             <button
               key={t}
               onClick={() => setSelectedTopic(t)}
-              className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
+              className={`focus-visible:ring-ring rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                 selectedTopic === t
                   ? "bg-primary text-primary-foreground"
                   : "bg-card border-border text-muted-foreground hover:text-foreground border"
@@ -178,9 +178,11 @@ export function SpeakerNetworkClient({
         </div>
 
         {/* Search & Session Type controls */}
-        <div className="border-border bg-card mt-4 flex flex-col justify-between gap-4 rounded-3xl border p-5 backdrop-blur-md sm:flex-row sm:items-center">
+        <div className="border-border bg-card mt-4 flex flex-col justify-between gap-4 rounded-xl border p-4 sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-muted-foreground mr-2 text-xs font-bold uppercase">Format:</span>
+            <span className="text-muted-foreground mr-2 text-xs font-semibold uppercase">
+              Format:
+            </span>
             {[
               "ALL",
               "1:1 Mentorship",
@@ -191,9 +193,9 @@ export function SpeakerNetworkClient({
               <button
                 key={fmt}
                 onClick={() => setSelectedType(fmt)}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                className={`focus-visible:ring-ring rounded-lg px-2.5 py-1 text-xs font-medium transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                   selectedType === fmt
-                    ? "bg-muted border-primary/30 text-primary border font-bold"
+                    ? "bg-muted border-primary text-foreground border font-semibold"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -209,7 +211,7 @@ export function SpeakerNetworkClient({
               placeholder="Search by name, role, or company..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-border bg-background placeholder:text-muted-foreground text-foreground focus:border-primary w-full rounded-xl border py-2 pr-3 pl-9 text-xs focus:outline-none"
+              className="border-border bg-background placeholder:text-muted-foreground text-foreground focus:border-primary w-full rounded-lg border py-2 pr-3 pl-9 text-xs focus:outline-none"
             />
           </div>
         </div>
@@ -219,16 +221,19 @@ export function SpeakerNetworkClient({
           {filtered.map((s) => (
             <div
               key={s.id}
-              className="group border-border bg-card hover:border-border flex flex-col justify-between rounded-3xl border p-6 backdrop-blur-md transition-all hover:shadow-md"
+              className="group border-border bg-card hover:border-muted-foreground flex h-full flex-col justify-between rounded-xl border p-6 transition-colors"
             >
               <div>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="border-primary/20 bg-primary/10 text-primary flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border text-lg font-bold">
+                    <div className="border-primary/20 bg-primary/10 text-primary flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border text-lg font-bold">
                       {s.name.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="text-foreground group-hover:text-primary text-lg font-bold transition-colors">
+                      <h3
+                        title={s.name}
+                        className="text-foreground group-hover:text-primary text-lg font-bold transition-colors"
+                      >
                         {s.name}
                       </h3>
                       <p className="text-muted-foreground text-xs">{s.designation}</p>
@@ -248,7 +253,10 @@ export function SpeakerNetworkClient({
                 </div>
 
                 {s.bio && (
-                  <p className="text-muted-foreground mt-4 line-clamp-3 text-xs leading-relaxed">
+                  <p
+                    title={s.bio}
+                    className="text-muted-foreground mt-4 line-clamp-3 text-xs leading-relaxed"
+                  >
                     {s.bio}
                   </p>
                 )}
@@ -309,7 +317,7 @@ export function SpeakerNetworkClient({
         </div>
 
         {filtered.length === 0 && (
-          <div className="border-border text-muted-foreground rounded-3xl border border-dashed py-16 text-center text-sm">
+          <div className="border-border text-muted-foreground rounded-xl border border-dashed py-16 text-center text-sm">
             No mentors found matching your filters.
           </div>
         )}

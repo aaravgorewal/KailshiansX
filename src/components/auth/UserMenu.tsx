@@ -65,7 +65,7 @@ export function UserMenu({ user }: Props) {
       <button
         id="user-menu-trigger"
         onClick={() => setOpen((o) => !o)}
-        className="text-foreground hover:bg-muted flex items-center gap-2 rounded-lg px-2 py-1.5 transition-[background-color] duration-150"
+        className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg px-2 py-1.5 transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
         aria-expanded={open}
         aria-haspopup="true"
       >
@@ -83,7 +83,10 @@ export function UserMenu({ user }: Props) {
             <span className="text-foreground text-xs font-semibold">{getInitials(user.name)}</span>
           )}
         </div>
-        <span className="text-foreground hidden max-w-[120px] truncate text-sm font-medium sm:block">
+        <span
+          title={user.name ?? user.email ?? "Account"}
+          className="text-foreground hidden max-w-[120px] truncate text-sm font-medium sm:block"
+        >
           {user.name ?? user.email ?? "Account"}
         </span>
         <ChevronDown
@@ -94,11 +97,18 @@ export function UserMenu({ user }: Props) {
 
       {/* Dropdown */}
       {open && (
-        <div className="border-border bg-card text-card-foreground animate-in fade-in-0 absolute top-full right-0 z-50 mt-2 w-64 rounded-lg border p-1 duration-150">
+        <div className="border-border bg-card text-card-foreground animate-in fade-in-0 absolute top-full right-0 z-50 mt-2 w-64 rounded-lg border p-1 shadow-sm duration-150">
           {/* User info */}
           <div className="border-border border-b px-3 py-2.5">
-            <p className="text-foreground truncate text-sm font-semibold">{user.name ?? "User"}</p>
-            <p className="text-muted-foreground mt-0.5 truncate text-xs">{user.email}</p>
+            <p
+              title={user.name ?? "User"}
+              className="text-foreground truncate text-sm font-semibold"
+            >
+              {user.name ?? "User"}
+            </p>
+            <p title={user.email ?? ""} className="text-muted-foreground mt-0.5 truncate text-xs">
+              {user.email}
+            </p>
             <p className="text-muted-foreground mt-1 text-xs">{roleLabel}</p>
           </div>
 
@@ -108,7 +118,7 @@ export function UserMenu({ user }: Props) {
               href="/me"
               id="link-user-me"
               onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
+              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
             >
               <User size={15} className="text-muted-foreground" />
               <span>Developer Passport (/me)</span>
@@ -117,7 +127,7 @@ export function UserMenu({ user }: Props) {
             <Link
               href="/me?tab=tickets"
               onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
+              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
             >
               <Ticket size={15} className="text-muted-foreground" />
               <span>My Tickets & Events</span>
@@ -127,7 +137,7 @@ export function UserMenu({ user }: Props) {
               href="/me/bookings"
               id="link-user-bookings"
               onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
+              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
             >
               <Ticket size={15} className="text-muted-foreground" />
               <span>Mentor Bookings</span>
@@ -137,7 +147,7 @@ export function UserMenu({ user }: Props) {
               href="/me/mentor"
               id="link-user-mentor"
               onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
+              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
             >
               <Compass size={15} className="text-muted-foreground" />
               <span>Mentor Cockpit</span>
@@ -147,7 +157,7 @@ export function UserMenu({ user }: Props) {
               <Link
                 href="/admin"
                 onClick={() => setOpen(false)}
-                className="text-foreground hover:bg-muted flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
+                className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
               >
                 <Settings size={15} className="text-muted-foreground" />
                 <span>Admin Dashboard</span>
@@ -163,7 +173,7 @@ export function UserMenu({ user }: Props) {
                 setOpen(false);
                 signOut({ callbackUrl: "/" });
               }}
-              className="text-destructive hover:bg-muted flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color] duration-150"
+              className="text-destructive hover:bg-muted focus-visible:ring-ring flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
             >
               <LogOut size={15} />
               <span>Sign Out</span>
