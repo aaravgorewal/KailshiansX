@@ -94,7 +94,7 @@ export function FilterChips({
             aria-pressed={active}
             onClick={() => handleSelect(option.id)}
             className={cn(
-              "focus-visible:ring-ring focus-visible:ring-offset-background inline-flex shrink-0 items-center gap-1.5 rounded-full border font-medium whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-offset-2",
+              "focus-visible:ring-ring focus-visible:ring-offset-background inline-flex shrink-0 items-center gap-1.5 rounded-full border font-medium whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-offset-2 active:opacity-80",
               size === "sm" ? "h-7 px-3 text-xs" : "h-8.5 px-3.5 text-xs sm:text-sm",
               active
                 ? "border-primary bg-muted text-accent-text font-semibold"

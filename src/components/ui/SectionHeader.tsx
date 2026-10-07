@@ -74,7 +74,8 @@ export function SectionHeader({
 
       <Component
         className={cn(
-          "text-foreground text-left font-sans leading-[1.15] font-semibold",
+          "text-foreground font-sans leading-[1.15] font-semibold text-balance",
+          align === "center" ? "text-center" : "text-left",
           sizeHeadingClass
         )}
       >
