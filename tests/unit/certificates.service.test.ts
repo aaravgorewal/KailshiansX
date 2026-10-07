@@ -1,5 +1,5 @@
 // tests/unit/certificates.service.test.ts
-// Unit tests for PRD §21: Certificate PDF generation, bulk issuance, delivery tracking, and verification.
+// Unit tests for : Certificate PDF generation, bulk issuance, delivery tracking, and verification.
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { generateCertificatePdf } from "@/server/certificates/pdf";
@@ -52,7 +52,7 @@ vi.mock("@/server/email/queue", () => ({
   }),
 }));
 
-describe("PRD §21: Certificate Generation & Verification Engine", () => {
+describe(": Certificate Generation & Verification Engine", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

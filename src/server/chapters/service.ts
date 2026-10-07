@@ -1,5 +1,5 @@
 // src/server/chapters/service.ts
-// Chapter management service per PRD §10 & §28:
+// Chapter management service per :
 // Manages campus & regional city chapters, member rosters, event hosting, and composite health metrics.
 
 import { db } from "@/lib/db";

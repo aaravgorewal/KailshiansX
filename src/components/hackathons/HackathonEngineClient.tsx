@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/hackathons/HackathonEngineClient.tsx
-// Comprehensive Hackathon Experience Component per PRD §9 & §24:
+// Comprehensive Hackathon Experience Component per :
 // 1. Team Formation, Member Roster, Join Code Copying.
 // 2. Problem Statement Selection with Track Filtering.
 // 3. Project Submission (GitHub repo, live demo, deck, video, tech stack).
@@ -345,15 +345,15 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
         <div
           className={`flex items-center justify-between rounded-2xl p-4 text-xs font-semibold transition-all sm:text-sm ${
             formMessage.type === "success"
-              ? "border border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
-              : "border border-rose-500/30 bg-rose-500/10 text-rose-300"
+              ? "border-success/30 bg-success/10 text-success border"
+              : "border-destructive/30 bg-destructive/10 text-destructive border"
           }`}
         >
           <div className="flex items-center gap-2.5">
             {formMessage.type === "success" ? (
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              <CheckCircle2 className="text-success h-4 w-4" />
             ) : (
-              <AlertCircle className="h-4 w-4 text-rose-400" />
+              <AlertCircle className="text-destructive h-4 w-4" />
             )}
             <span>{formMessage.text}</span>
           </div>
@@ -367,21 +367,19 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
       )}
 
       {/* ─── HACKATHON NAVIGATION TABS ───────────────────────────────────────── */}
-      <div className="bg-surface-900/80 border-surface-800 flex flex-wrap items-center gap-1.5 rounded-2xl border p-1.5 backdrop-blur-md">
+      <div className="bg-card border-border flex flex-wrap items-center gap-1.5 rounded-2xl border p-1.5 backdrop-blur-md">
         <button
           id="tab-hackathon-teams"
           onClick={() => setActiveTab("TEAMS")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all sm:text-sm ${
             activeTab === "TEAMS"
-              ? "bg-purple-600 text-white shadow-md shadow-purple-500/25"
-              : "text-surface-400 hover:text-white"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           <Users className="h-4 w-4" />
           <span>Team & Problem Statement</span>
-          {data.userTeam && (
-            <span className="ml-1 inline-block h-2 w-2 rounded-full bg-emerald-400" />
-          )}
+          {data.userTeam && <span className="bg-success ml-1 inline-block h-2 w-2 rounded-full" />}
         </button>
 
         <button
@@ -389,14 +387,14 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
           onClick={() => setActiveTab("SUBMISSION")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all sm:text-sm ${
             activeTab === "SUBMISSION"
-              ? "bg-purple-600 text-white shadow-md shadow-purple-500/25"
-              : "text-surface-400 hover:text-white"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           <Code2 className="h-4 w-4" />
           <span>Project Submission</span>
           {data.userTeam?.submission && (
-            <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 font-mono text-[10px] text-emerald-400">
+            <span className="bg-success/20 text-success rounded px-1.5 py-0.5 font-mono text-xs">
               Submitted
             </span>
           )}
@@ -407,18 +405,18 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
           onClick={() => setActiveTab("LEADERBOARD")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all sm:text-sm ${
             activeTab === "LEADERBOARD"
-              ? "bg-purple-600 text-white shadow-md shadow-purple-500/25"
-              : "text-surface-400 hover:text-white"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <Trophy className="h-4 w-4 text-amber-400" />
+          <Trophy className="text-primary h-4 w-4" />
           <span>Leaderboard & Results</span>
           {data.detail.isResultsPublished ? (
-            <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">
+            <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-xs font-bold">
               Official
             </span>
           ) : (
-            <span className="bg-surface-800 text-surface-400 rounded px-1.5 py-0.5 text-[10px]">
+            <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs">
               Live
             </span>
           )}
@@ -429,11 +427,11 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
           onClick={() => setActiveTab("PRIZES")}
           className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all sm:text-sm ${
             activeTab === "PRIZES"
-              ? "bg-purple-600 text-white shadow-md shadow-purple-500/25"
-              : "text-surface-400 hover:text-white"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          <Award className="h-4 w-4 text-rose-400" />
+          <Award className="text-destructive h-4 w-4" />
           <span>Prizes & Certificates</span>
         </button>
       </div>
@@ -445,16 +443,16 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
         <div className="space-y-8">
           {/* User's Team Status */}
           {!data.userTeam ? (
-            <div className="bg-surface-900/80 border-surface-800 flex flex-col justify-between gap-6 rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8 md:flex-row md:items-center">
+            <div className="bg-card border-border flex flex-col justify-between gap-6 rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8 md:flex-row md:items-center">
               <div>
-                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1 text-xs font-bold text-purple-400">
+                <div className="border-primary/20 bg-primary/10 text-primary mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
                   <Users className="h-3.5 w-3.5" />
                   <span>Team Formation Open</span>
                 </div>
-                <h3 className="text-xl font-black text-white sm:text-2xl">
+                <h3 className="text-foreground text-xl font-black sm:text-2xl">
                   Form or Join a Hackathon Squad
                 </h3>
-                <p className="text-surface-400 mt-1 max-w-xl text-xs sm:text-sm">
+                <p className="text-muted-foreground mt-1 max-w-xl text-xs sm:text-sm">
                   {data.detail.minTeamSize} to {data.detail.maxTeamSize} builders per squad. Form a
                   team to claim your project slot, select a challenge statement, and push code.
                 </p>
@@ -465,7 +463,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   id="btn-create-team"
                   variant="primary"
                   onClick={() => setCreateTeamModalOpen(true)}
-                  className="bg-purple-600 text-white shadow-lg shadow-purple-500/20 hover:bg-purple-500"
+                  className="shadow-sm"
                 >
                   <Plus className="mr-1.5 h-4 w-4" />
                   <span>Create Squad</span>
@@ -481,50 +479,52 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
             </div>
           ) : (
             /* Active Team Card */
-            <div className="bg-surface-900/90 space-y-6 rounded-3xl border border-purple-500/30 p-6 shadow-xl sm:p-8">
-              <div className="border-surface-800 flex flex-col justify-between gap-4 border-b pb-5 md:flex-row md:items-center">
+            <div className="bg-card border-primary/30 space-y-6 rounded-3xl border p-6 shadow-xl sm:p-8">
+              <div className="border-border flex flex-col justify-between gap-4 border-b pb-5 md:flex-row md:items-center">
                 <div>
                   <div className="mb-1.5 flex items-center gap-2.5">
-                    <span className="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 text-xs font-bold tracking-wider text-purple-400 uppercase">
+                    <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                       Your Team
                     </span>
-                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-400">
+                    <span className="bg-success/10 text-success rounded-full px-2 py-0.5 text-xs font-semibold">
                       ● Status: {data.userTeam.status}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+                  <h3 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
                     {data.userTeam.name}
                   </h3>
-                  <div className="text-surface-400 mt-1 text-xs">
+                  <div className="text-muted-foreground mt-1 text-xs">
                     Track:{" "}
-                    <strong className="text-white">{data.userTeam.track || "General Track"}</strong>
+                    <strong className="text-foreground">
+                      {data.userTeam.track || "General Track"}
+                    </strong>
                   </div>
                 </div>
 
                 {/* Invite Code Box */}
-                <div className="bg-surface-950 border-surface-800 flex min-w-[280px] flex-col gap-2 rounded-2xl border p-4">
-                  <div className="text-surface-400 flex items-center justify-between text-xs font-semibold">
+                <div className="bg-background border-border flex min-w-[280px] flex-col gap-2 rounded-2xl border p-4">
+                  <div className="text-muted-foreground flex items-center justify-between text-xs font-semibold">
                     <span>Squad Invite Code</span>
                     <button
                       id="btn-copy-team-code"
                       onClick={() => handleCopyCode(data.userTeam!.inviteCode)}
-                      className="flex items-center gap-1 text-[11px] text-purple-400 hover:text-purple-300"
+                      className="text-primary hover:text-primary flex items-center gap-1 text-xs"
                     >
                       {copiedCode ? (
-                        <Check className="h-3 w-3 text-emerald-400" />
+                        <Check className="text-success h-3 w-3" />
                       ) : (
                         <Copy className="h-3 w-3" />
                       )}
                       <span>{copiedCode ? "Copied" : "Copy Code"}</span>
                     </button>
                   </div>
-                  <div className="bg-surface-900 border-surface-800 rounded-xl border px-3 py-1.5 font-mono text-base font-bold tracking-wider text-white">
+                  <div className="bg-card border-border text-foreground rounded-xl border px-3 py-1.5 font-mono text-base font-bold tracking-wider">
                     {data.userTeam.inviteCode}
                   </div>
                   <button
                     id="btn-copy-team-invite-link"
                     onClick={() => handleCopyInviteLink(data.userTeam!.inviteCode)}
-                    className="text-surface-400 mt-1 flex items-center gap-1.5 text-[11px] hover:text-white"
+                    className="text-muted-foreground hover:text-foreground mt-1 flex items-center gap-1.5 text-xs"
                   >
                     <ExternalLink className="h-3 w-3" />
                     <span>
@@ -537,7 +537,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
               {/* Team Members Roster */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-surface-400 text-xs font-bold tracking-wider uppercase">
+                  <h4 className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                     Roster ({data.userTeam.members.length} / {data.detail.maxTeamSize} Builders)
                   </h4>
                 </div>
@@ -546,21 +546,21 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   {data.userTeam.members.map((m) => (
                     <div
                       key={m.id}
-                      className="bg-surface-950 border-surface-800 flex items-center gap-3 rounded-2xl border p-3.5"
+                      className="bg-background border-border flex items-center gap-3 rounded-2xl border p-3.5"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-purple-500/30 bg-purple-500/20 text-sm font-bold text-purple-300">
+                      <div className="border-primary/30 bg-primary/20 text-primary flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold">
                         {m.user.name ? m.user.name.charAt(0) : "B"}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-xs font-bold text-white">
+                        <div className="text-foreground truncate text-xs font-bold">
                           {m.user.name || "Builder"}
                         </div>
                         <div className="mt-0.5 flex items-center gap-1.5">
-                          <span className="py-0.2 rounded bg-purple-500/10 px-1.5 text-[10px] font-semibold text-purple-400 uppercase">
+                          <span className="py-0.2 bg-primary/10 text-primary rounded px-1.5 text-xs font-semibold uppercase">
                             {m.role}
                           </span>
                           {m.userId === data.userTeam?.leaderId && (
-                            <span className="text-[9px] font-bold text-amber-400">★ Lead</span>
+                            <span className="text-primary text-[9px] font-bold">★ Lead</span>
                           )}
                         </div>
                       </div>
@@ -575,10 +575,10 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
           <div className="space-y-4">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div>
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-foreground text-lg font-bold">
                   Problem Statements & Challenge Bounties
                 </h3>
-                <p className="text-surface-400 mt-0.5 text-xs">
+                <p className="text-muted-foreground mt-0.5 text-xs">
                   Choose a challenge statement for your project submission
                 </p>
               </div>
@@ -589,8 +589,8 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   onClick={() => setSelectedTrackFilter("ALL")}
                   className={`rounded-xl px-3 py-1 text-xs font-bold transition-all ${
                     selectedTrackFilter === "ALL"
-                      ? "bg-purple-600 text-white"
-                      : "bg-surface-900 border-surface-800 text-surface-400 border hover:text-white"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card border-border text-muted-foreground hover:text-foreground border"
                   }`}
                 >
                   All Challenges ({data.detail.problemStatementsList.length})
@@ -601,8 +601,8 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                     onClick={() => setSelectedTrackFilter(t)}
                     className={`rounded-xl px-3 py-1 text-xs font-bold transition-all ${
                       selectedTrackFilter === t
-                        ? "bg-purple-600 text-white"
-                        : "bg-surface-900 border-surface-800 text-surface-400 border hover:text-white"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-card border-border text-muted-foreground hover:text-foreground border"
                     }`}
                   >
                     {t}
@@ -620,43 +620,45 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   return (
                     <div
                       key={ps.id}
-                      className={`bg-surface-900/80 flex flex-col justify-between space-y-4 rounded-3xl border p-6 shadow-sm transition-all ${
+                      className={`bg-card flex flex-col justify-between space-y-4 rounded-3xl border p-6 shadow-sm transition-all ${
                         isSelectedByTeam
-                          ? "border-emerald-500/50 bg-emerald-950/10 shadow-emerald-500/5"
-                          : "border-surface-800 hover:border-surface-700"
+                          ? "border-success/50 bg-success/10 shadow-sm"
+                          : "border-border hover:border-border"
                       }`}
                     >
                       <div className="space-y-3">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="rounded-lg border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-purple-400 uppercase">
+                          <span className="border-primary/20 bg-primary/10 text-primary rounded-lg border px-2.5 py-1 text-xs font-bold tracking-wider uppercase">
                             {ps.track}
                           </span>
                           {isSelectedByTeam && (
-                            <span className="flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold text-emerald-400">
+                            <span className="border-success/20 bg-success/10 text-success flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-bold">
                               <Check className="h-3 w-3" />
                               <span>Your Selection</span>
                             </span>
                           )}
                         </div>
 
-                        <h4 className="text-base leading-snug font-bold text-white sm:text-lg">
+                        <h4 className="text-foreground text-base leading-snug font-bold sm:text-lg">
                           {ps.title}
                         </h4>
 
-                        <p className="text-surface-300 text-xs leading-relaxed">{ps.description}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">
+                          {ps.description}
+                        </p>
 
                         {ps.criteria.length > 0 && (
                           <div className="pt-2">
-                            <div className="text-surface-400 mb-1 text-[11px] font-bold uppercase">
+                            <div className="text-muted-foreground mb-1 text-xs font-bold uppercase">
                               Key Evaluation Focus:
                             </div>
                             <ul className="space-y-1">
                               {ps.criteria.map((c, i) => (
                                 <li
                                   key={i}
-                                  className="text-surface-300 flex items-start gap-1.5 text-xs"
+                                  className="text-muted-foreground flex items-start gap-1.5 text-xs"
                                 >
-                                  <span className="font-bold text-purple-400">•</span>
+                                  <span className="text-primary font-bold">•</span>
                                   <span>{c}</span>
                                 </li>
                               ))}
@@ -666,7 +668,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                       </div>
 
                       {data.userTeam && isLeader && (
-                        <div className="border-surface-800/80 flex items-center justify-end border-t pt-3">
+                        <div className="border-border flex items-center justify-end border-t pt-3">
                           <Button
                             variant={isSelectedByTeam ? "secondary" : "outline"}
                             size="sm"
@@ -693,10 +695,10 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
       {activeTab === "SUBMISSION" && (
         <div className="space-y-8">
           {!data.userTeam ? (
-            <div className="bg-surface-900 border-surface-800 rounded-3xl border p-12 text-center">
-              <Users className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">No Squad Formed Yet</h3>
-              <p className="text-surface-400 mx-auto mb-4 max-w-sm text-xs">
+            <div className="bg-card border-border rounded-3xl border p-12 text-center">
+              <Users className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">No Squad Formed Yet</h3>
+              <p className="text-muted-foreground mx-auto mb-4 max-w-sm text-xs">
                 You must create or join a hackathon squad before submitting a project repository and
                 demo.
               </p>
@@ -707,14 +709,16 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
           ) : (
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Submission Form */}
-              <div className="bg-surface-900/90 border-surface-800 space-y-6 rounded-3xl border p-6 shadow-xl sm:p-8 lg:col-span-2">
+              <div className="bg-card border-border space-y-6 rounded-3xl border p-6 shadow-xl sm:p-8 lg:col-span-2">
                 <div>
-                  <div className="bg-brand-500/10 border-brand-500/20 text-brand-400 mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
+                  <div className="bg-primary/10 border-primary/20 text-primary mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
                     <Code2 className="h-3.5 w-3.5" />
                     <span>Engineering Deliverables</span>
                   </div>
-                  <h3 className="text-2xl font-black text-white">Project Submission Cockpit</h3>
-                  <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+                  <h3 className="text-foreground text-2xl font-black">
+                    Project Submission Cockpit
+                  </h3>
+                  <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
                     Submit code repository, live interactive demo, pitch deck, and architecture
                     overview.
                   </p>
@@ -722,7 +726,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
 
                 <form onSubmit={handleSubmitProject} className="space-y-5">
                   <div className="space-y-1.5">
-                    <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                    <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                       Project Title *
                     </label>
                     <input
@@ -731,12 +735,12 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                       placeholder="e.g. ZK-Passport: Sovereign Identity Verification"
                       value={projectForm.title}
                       onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
-                      className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 text-sm text-white transition-colors focus:border-purple-500 focus:outline-none"
+                      className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 text-sm transition-colors focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                    <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                       One-line Tagline
                     </label>
                     <input
@@ -744,12 +748,12 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                       placeholder="e.g. Zero-knowledge proof verification for developer credentials"
                       value={projectForm.tagline}
                       onChange={(e) => setProjectForm({ ...projectForm, tagline: e.target.value })}
-                      className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 text-sm text-white transition-colors focus:border-purple-500 focus:outline-none"
+                      className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 text-sm transition-colors focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                    <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                       Project Overview & Architecture *
                     </label>
                     <textarea
@@ -760,13 +764,13 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                       onChange={(e) =>
                         setProjectForm({ ...projectForm, description: e.target.value })
                       }
-                      className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 text-sm leading-relaxed text-white transition-colors focus:border-purple-500 focus:outline-none"
+                      className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 text-sm leading-relaxed transition-colors focus:outline-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
-                      <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                      <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                         GitHub Repository URL *
                       </label>
                       <input
@@ -777,12 +781,12 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                         onChange={(e) =>
                           setProjectForm({ ...projectForm, repoUrl: e.target.value })
                         }
-                        className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs text-white transition-colors focus:border-purple-500 focus:outline-none"
+                        className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs transition-colors focus:outline-none"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                      <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                         Live Demo URL
                       </label>
                       <input
@@ -792,14 +796,14 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                         onChange={(e) =>
                           setProjectForm({ ...projectForm, demoUrl: e.target.value })
                         }
-                        className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs text-white transition-colors focus:border-purple-500 focus:outline-none"
+                        className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs transition-colors focus:outline-none"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
-                      <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                      <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                         Pitch Deck / Slides URL
                       </label>
                       <input
@@ -809,12 +813,12 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                         onChange={(e) =>
                           setProjectForm({ ...projectForm, deckUrl: e.target.value })
                         }
-                        className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs text-white transition-colors focus:border-purple-500 focus:outline-none"
+                        className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs transition-colors focus:outline-none"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                      <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                         Demo Video URL (Loom / YouTube)
                       </label>
                       <input
@@ -824,13 +828,13 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                         onChange={(e) =>
                           setProjectForm({ ...projectForm, videoUrl: e.target.value })
                         }
-                        className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs text-white transition-colors focus:border-purple-500 focus:outline-none"
+                        className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs transition-colors focus:outline-none"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                    <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                       Tech Stack (Comma-separated)
                     </label>
                     <input
@@ -840,20 +844,20 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                       onChange={(e) =>
                         setProjectForm({ ...projectForm, techStack: e.target.value })
                       }
-                      className="bg-surface-950 border-surface-800 w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs text-white transition-colors focus:border-purple-500 focus:outline-none"
+                      className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-4 py-2.5 font-mono text-sm text-xs transition-colors focus:outline-none"
                     />
                   </div>
 
-                  <div className="border-surface-800 flex items-center justify-between border-t pt-3">
-                    <div className="text-surface-400 text-xs">
-                      Squad: <strong className="text-white">{data.userTeam.name}</strong>
+                  <div className="border-border flex items-center justify-between border-t pt-3">
+                    <div className="text-muted-foreground text-xs">
+                      Squad: <strong className="text-foreground">{data.userTeam.name}</strong>
                     </div>
                     <Button
                       id="btn-submit-hackathon-project"
                       type="submit"
                       variant="primary"
                       disabled={submittingProject}
-                      className="bg-purple-600 text-white hover:bg-purple-500"
+                      className="shadow-sm"
                     >
                       {submittingProject ? (
                         <span>Pushed Deliverables...</span>
@@ -868,12 +872,12 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
               {/* Sidebar with Rubrics & Deadlines */}
               <div className="space-y-5">
                 {/* Deadline Card */}
-                <div className="bg-surface-900/80 border-surface-800 space-y-3 rounded-3xl border p-6">
-                  <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-amber-400 uppercase">
+                <div className="bg-card border-border space-y-3 rounded-3xl border p-6">
+                  <div className="text-primary flex items-center gap-2 text-xs font-bold tracking-wider uppercase">
                     <Clock className="h-4 w-4" />
                     <span>Submission Deadline</span>
                   </div>
-                  <div className="text-sm font-semibold text-white">
+                  <div className="text-foreground text-sm font-semibold">
                     {data.detail.submissionDeadline
                       ? new Date(data.detail.submissionDeadline).toLocaleString("en-IN", {
                           weekday: "short",
@@ -884,27 +888,27 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                         })
                       : "Open until Hackathon closing bell"}
                   </div>
-                  <p className="text-surface-400 text-xs leading-relaxed">
+                  <p className="text-muted-foreground text-xs leading-relaxed">
                     Mentors and judges will begin scoring repositories immediately following the
                     deadline.
                   </p>
                 </div>
 
                 {/* Rubric Criteria Overview */}
-                <div className="bg-surface-900/80 border-surface-800 space-y-4 rounded-3xl border p-6">
-                  <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-purple-400 uppercase">
+                <div className="bg-card border-border space-y-4 rounded-3xl border p-6">
+                  <div className="text-primary flex items-center gap-2 text-xs font-bold tracking-wider uppercase">
                     <ShieldCheck className="h-4 w-4" />
                     <span>Official Scoring Rubric</span>
                   </div>
                   <div className="space-y-3">
                     {data.detail.rubricCriteria.map((c) => (
-                      <div key={c.id} className="border-surface-800/80 border-b pb-2.5 text-xs">
-                        <div className="mb-0.5 flex items-center justify-between font-bold text-white">
+                      <div key={c.id} className="border-border border-b pb-2.5 text-xs">
+                        <div className="text-foreground mb-0.5 flex items-center justify-between font-bold">
                           <span>{c.name}</span>
-                          <span className="font-mono text-purple-400">Max {c.maxScore} pts</span>
+                          <span className="text-primary font-mono">Max {c.maxScore} pts</span>
                         </div>
                         {c.description && (
-                          <p className="text-surface-400 text-[11px] leading-snug">
+                          <p className="text-muted-foreground text-xs leading-snug">
                             {c.description}
                           </p>
                         )}
@@ -924,9 +928,9 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
       {activeTab === "LEADERBOARD" && (
         <div className="space-y-8">
           {/* Header Banner */}
-          <div className="bg-surface-900/80 border-surface-800 flex flex-col justify-between gap-6 rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8 md:flex-row md:items-center">
+          <div className="bg-card border-border flex flex-col justify-between gap-6 rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8 md:flex-row md:items-center">
             <div>
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-400">
+              <div className="border-border bg-primary/10 text-primary mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
                 <Trophy className="h-3.5 w-3.5" />
                 <span>
                   {data.detail.isResultsPublished
@@ -934,59 +938,61 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                     : "Judging Round Active"}
                 </span>
               </div>
-              <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+              <h3 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
                 Hackathon Leaderboard
               </h3>
-              <p className="text-surface-400 mt-1 max-w-2xl text-xs sm:text-sm">
+              <p className="text-muted-foreground mt-1 max-w-2xl text-xs sm:text-sm">
                 Composite scores computed across rubric criteria and normalized across panel judges.
               </p>
             </div>
 
             {isPrivileged && !data.detail.isResultsPublished && (
-              <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-300">
+              <div className="border-border bg-primary/10 text-warning rounded-xl border px-3 py-1.5 text-xs font-medium">
                 Admin Mode: Viewing pre-published scores
               </div>
             )}
           </div>
 
           {/* Results Board / Submissions Table */}
-          <div className="bg-surface-900/80 border-surface-800 overflow-hidden rounded-3xl border shadow-xl">
-            <div className="border-surface-800 flex items-center justify-between border-b p-5">
-              <h4 className="text-surface-400 text-xs font-bold tracking-wider uppercase">
+          <div className="bg-card border-border overflow-hidden rounded-3xl border shadow-xl">
+            <div className="border-border flex items-center justify-between border-b p-5">
+              <h4 className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                 Ranked Submissions (
                 {data.detail.isResultsPublished ? "Published" : "Live Standings"})
               </h4>
             </div>
 
-            <div className="divide-surface-800/80 divide-y">
+            <div className="divide-border divide-y">
               {/* Default Mock or Seeded submissions view */}
-              <div className="hover:bg-surface-850/50 flex flex-col justify-between gap-4 p-6 transition-colors sm:flex-row sm:items-center">
+              <div className="hover:bg-muted flex flex-col justify-between gap-4 p-6 transition-colors sm:flex-row sm:items-center">
                 <div className="flex items-start gap-4 sm:items-center">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-amber-500/30 bg-amber-500/20 font-mono text-lg font-black text-amber-300">
+                  <div className="border-border bg-primary/10 text-warning flex h-10 w-10 items-center justify-center rounded-2xl border font-mono text-lg font-black">
                     #1
                   </div>
                   <div>
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="rounded border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-400 uppercase">
+                      <span className="border-border bg-primary/10 text-primary rounded border px-2 py-0.5 text-xs font-bold uppercase">
                         1st Place Champion
                       </span>
-                      <span className="text-surface-400 text-xs">Track: Distributed Systems</span>
+                      <span className="text-muted-foreground text-xs">
+                        Track: Distributed Systems
+                      </span>
                     </div>
-                    <h5 className="text-base font-bold text-white">ConsensusStream Engine</h5>
-                    <div className="text-surface-400 mt-0.5 text-xs">
-                      Squad: <strong className="text-white">Apex Builders</strong> (4 builders)
+                    <h5 className="text-foreground text-base font-bold">ConsensusStream Engine</h5>
+                    <div className="text-muted-foreground mt-0.5 text-xs">
+                      Squad: <strong className="text-foreground">Apex Builders</strong> (4 builders)
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <div className="font-mono text-lg font-black text-emerald-400">
-                      94.5 <span className="text-surface-400 text-xs font-normal">/ 100</span>
+                    <div className="text-success font-mono text-lg font-black">
+                      94.5 <span className="text-muted-foreground text-xs font-normal">/ 100</span>
                     </div>
-                    <div className="text-surface-400 text-[11px]">4 Judges Evaluated</div>
+                    <div className="text-muted-foreground text-xs">4 Judges Evaluated</div>
                   </div>
-                  <div className="border-surface-800 flex items-center gap-1.5 border-l pl-3">
+                  <div className="border-border flex items-center gap-1.5 border-l pl-3">
                     <Button variant="outline" size="sm" asChild>
                       <a
                         href="https://github.com/kailshiansx"
@@ -1006,33 +1012,33 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
               </div>
 
               {/* Second Place */}
-              <div className="hover:bg-surface-850/50 flex flex-col justify-between gap-4 p-6 transition-colors sm:flex-row sm:items-center">
+              <div className="hover:bg-muted flex flex-col justify-between gap-4 p-6 transition-colors sm:flex-row sm:items-center">
                 <div className="flex items-start gap-4 sm:items-center">
-                  <div className="bg-surface-800 border-surface-700 text-surface-300 flex h-10 w-10 items-center justify-center rounded-2xl border font-mono text-lg font-black">
+                  <div className="bg-muted border-border text-muted-foreground flex h-10 w-10 items-center justify-center rounded-2xl border font-mono text-lg font-black">
                     #2
                   </div>
                   <div>
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="bg-surface-800 border-surface-700 rounded border px-2 py-0.5 text-[10px] font-bold text-slate-300 uppercase">
+                      <span className="bg-muted border-border text-foreground rounded border px-2 py-0.5 text-xs font-bold uppercase">
                         1st Runner Up
                       </span>
-                      <span className="text-surface-400 text-xs">Track: Autonomous AI</span>
+                      <span className="text-muted-foreground text-xs">Track: Autonomous AI</span>
                     </div>
-                    <h5 className="text-base font-bold text-white">Sovereign-SRE Agent</h5>
-                    <div className="text-surface-400 mt-0.5 text-xs">
-                      Squad: <strong className="text-white">NeuralOps</strong> (3 builders)
+                    <h5 className="text-foreground text-base font-bold">Sovereign-SRE Agent</h5>
+                    <div className="text-muted-foreground mt-0.5 text-xs">
+                      Squad: <strong className="text-foreground">NeuralOps</strong> (3 builders)
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <div className="font-mono text-lg font-black text-emerald-400">
-                      91.0 <span className="text-surface-400 text-xs font-normal">/ 100</span>
+                    <div className="text-success font-mono text-lg font-black">
+                      91.0 <span className="text-muted-foreground text-xs font-normal">/ 100</span>
                     </div>
-                    <div className="text-surface-400 text-[11px]">4 Judges Evaluated</div>
+                    <div className="text-muted-foreground text-xs">4 Judges Evaluated</div>
                   </div>
-                  <div className="border-surface-800 flex items-center gap-1.5 border-l pl-3">
+                  <div className="border-border flex items-center gap-1.5 border-l pl-3">
                     <Button variant="outline" size="sm" asChild>
                       <a
                         href="https://github.com/kailshiansx"
@@ -1047,33 +1053,35 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
               </div>
 
               {/* Third Place */}
-              <div className="hover:bg-surface-850/50 flex flex-col justify-between gap-4 p-6 transition-colors sm:flex-row sm:items-center">
+              <div className="hover:bg-muted flex flex-col justify-between gap-4 p-6 transition-colors sm:flex-row sm:items-center">
                 <div className="flex items-start gap-4 sm:items-center">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-amber-900/30 bg-amber-900/20 font-mono text-lg font-black text-amber-500">
+                  <div className="border-warning/30 bg-warning/10 text-warning flex h-10 w-10 items-center justify-center rounded-2xl border font-mono text-lg font-black">
                     #3
                   </div>
                   <div>
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="rounded border border-amber-600/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-600 uppercase">
+                      <span className="border-warning/30 bg-warning/10 text-warning rounded border px-2 py-0.5 text-xs font-bold uppercase">
                         2nd Runner Up
                       </span>
-                      <span className="text-surface-400 text-xs">Track: Web Infrastructure</span>
+                      <span className="text-muted-foreground text-xs">
+                        Track: Web Infrastructure
+                      </span>
                     </div>
-                    <h5 className="text-base font-bold text-white">EdgeCRDT Cache Mesh</h5>
-                    <div className="text-surface-400 mt-0.5 text-xs">
-                      Squad: <strong className="text-white">MeshFlow</strong> (4 builders)
+                    <h5 className="text-foreground text-base font-bold">EdgeCRDT Cache Mesh</h5>
+                    <div className="text-muted-foreground mt-0.5 text-xs">
+                      Squad: <strong className="text-foreground">MeshFlow</strong> (4 builders)
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <div className="font-mono text-lg font-black text-emerald-400">
-                      87.8 <span className="text-surface-400 text-xs font-normal">/ 100</span>
+                    <div className="text-success font-mono text-lg font-black">
+                      87.8 <span className="text-muted-foreground text-xs font-normal">/ 100</span>
                     </div>
-                    <div className="text-surface-400 text-[11px]">4 Judges Evaluated</div>
+                    <div className="text-muted-foreground text-xs">4 Judges Evaluated</div>
                   </div>
-                  <div className="border-surface-800 flex items-center gap-1.5 border-l pl-3">
+                  <div className="border-border flex items-center gap-1.5 border-l pl-3">
                     <Button variant="outline" size="sm" asChild>
                       <a
                         href="https://github.com/kailshiansx"
@@ -1099,8 +1107,8 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
           {/* Cash Bounties & Prize Pool */}
           <div className="space-y-4">
             <div>
-              <h3 className="text-xl font-bold text-white">Hackathon Bounty & Prize Pool</h3>
-              <p className="text-surface-400 mt-0.5 text-xs">
+              <h3 className="text-foreground text-xl font-bold">Hackathon Bounty & Prize Pool</h3>
+              <p className="text-muted-foreground mt-0.5 text-xs">
                 Cash rewards, cloud compute grants, and direct VC office hours
               </p>
             </div>
@@ -1112,42 +1120,42 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                 return (
                   <div
                     key={p.id}
-                    className="bg-surface-900/80 border-surface-800 hover:border-surface-700 flex flex-col justify-between space-y-4 rounded-3xl border p-6 shadow-sm transition-all"
+                    className="bg-card border-border hover:border-border flex flex-col justify-between space-y-4 rounded-3xl border p-6 shadow-sm transition-all"
                   >
                     <div>
                       <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="flex items-center gap-1 text-xs font-bold text-amber-400">
+                        <span className="text-primary flex items-center gap-1 text-xs font-bold">
                           <Trophy className="h-3.5 w-3.5" />
                           <span>Rank #{p.rank || 1}</span>
                         </span>
                         <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
+                          className={`rounded-full px-2 py-0.5 text-xs font-bold tracking-wider uppercase ${
                             isDisbursed
-                              ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
-                              : "bg-surface-800 text-surface-400"
+                              ? "border-success/20 bg-success/10 text-success border"
+                              : "bg-muted text-muted-foreground"
                           }`}
                         >
                           {p.disbursementStatus}
                         </span>
                       </div>
 
-                      <h4 className="text-lg font-bold text-white">{p.title}</h4>
-                      <div className="mt-1 font-mono text-2xl font-black text-emerald-400">
+                      <h4 className="text-foreground text-lg font-bold">{p.title}</h4>
+                      <div className="text-success mt-1 font-mono text-2xl font-black">
                         {p.currency === "INR" ? "₹" : "$"}
                         {Number(p.cashAmount).toLocaleString("en-IN")}
                       </div>
 
                       {p.perks.length > 0 && (
-                        <div className="border-surface-800/80 mt-3 space-y-1 border-t pt-3">
-                          <div className="text-surface-400 text-[10px] font-bold uppercase">
+                        <div className="border-border mt-3 space-y-1 border-t pt-3">
+                          <div className="text-muted-foreground text-xs font-bold uppercase">
                             Included Perks:
                           </div>
                           {p.perks.map((perk, i) => (
                             <div
                               key={i}
-                              className="text-surface-300 flex items-start gap-1 text-xs"
+                              className="text-muted-foreground flex items-start gap-1 text-xs"
                             >
-                              <span className="text-amber-400">✓</span>
+                              <span className="text-primary">✓</span>
                               <span>{perk}</span>
                             </div>
                           ))}
@@ -1156,8 +1164,9 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                     </div>
 
                     {p.winningTeam && (
-                      <div className="border-surface-800 text-surface-400 border-t pt-3 text-xs">
-                        Awarded to: <strong className="text-white">{p.winningTeam.name}</strong>
+                      <div className="border-border text-muted-foreground border-t pt-3 text-xs">
+                        Awarded to:{" "}
+                        <strong className="text-foreground">{p.winningTeam.name}</strong>
                       </div>
                     )}
                   </div>
@@ -1167,14 +1176,14 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
           </div>
 
           {/* Certificate Studio Section */}
-          <div className="bg-surface-900/80 border-surface-800 flex flex-col justify-between gap-6 rounded-3xl border p-6 shadow-xl sm:flex-row sm:items-center sm:p-8">
+          <div className="bg-card border-border flex flex-col justify-between gap-6 rounded-3xl border p-6 shadow-xl sm:flex-row sm:items-center sm:p-8">
             <div className="space-y-1">
-              <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-400">
+              <div className="border-primary/20 bg-primary/10 text-primary mb-1 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 <span>Verifiable Cryptographic Proof</span>
               </div>
-              <h4 className="text-xl font-bold text-white">Official Hackathon Credentials</h4>
-              <p className="text-surface-400 max-w-xl text-xs sm:text-sm">
+              <h4 className="text-foreground text-xl font-bold">Official Hackathon Credentials</h4>
+              <p className="text-muted-foreground max-w-xl text-xs sm:text-sm">
                 Every team member who submits a verified project receives a digitally signed
                 Certificate of Achievement with QR verification code.
               </p>
@@ -1195,15 +1204,15 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       {createTeamModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-              <h3 className="flex items-center gap-2 text-base font-bold text-white">
-                <Users className="h-4 w-4 text-purple-400" />
+          <div className="bg-card border-border w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
+              <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                <Users className="text-primary h-4 w-4" />
                 <span>Create Hackathon Squad</span>
               </h3>
               <button
                 onClick={() => setCreateTeamModalOpen(false)}
-                className="text-surface-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -1211,7 +1220,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
 
             <form onSubmit={handleCreateTeam} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                   Squad Name *
                 </label>
                 <input
@@ -1220,18 +1229,18 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   placeholder="e.g. Distributed Devas"
                   value={teamForm.name}
                   onChange={(e) => setTeamForm({ ...teamForm, name: e.target.value })}
-                  className="bg-surface-950 border-surface-800 w-full rounded-xl border px-3.5 py-2 text-sm text-white focus:border-purple-500 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-3.5 py-2 text-sm focus:outline-none"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                   Primary Track
                 </label>
                 <select
                   value={teamForm.track}
                   onChange={(e) => setTeamForm({ ...teamForm, track: e.target.value })}
-                  className="bg-surface-950 border-surface-800 w-full rounded-xl border px-3.5 py-2 text-sm text-white focus:border-purple-500 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-3.5 py-2 text-sm focus:outline-none"
                 >
                   {tracks.map((t) => (
                     <option key={t} value={t}>
@@ -1241,7 +1250,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                 </select>
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-2 border-t pt-3">
+              <div className="border-border flex items-center justify-end gap-2 border-t pt-3">
                 <Button
                   type="button"
                   variant="outline"
@@ -1256,7 +1265,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   variant="primary"
                   size="sm"
                   disabled={submittingTeam}
-                  className="bg-purple-600 text-white hover:bg-purple-500"
+                  className="shadow-sm"
                 >
                   {submittingTeam ? "Creating..." : "Confirm & Launch Squad"}
                 </Button>
@@ -1268,15 +1277,15 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
 
       {joinTeamModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-              <h3 className="flex items-center gap-2 text-base font-bold text-white">
-                <Key className="h-4 w-4 text-purple-400" />
+          <div className="bg-card border-border w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
+              <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                <Key className="text-primary h-4 w-4" />
                 <span>Join Squad with Invite Code</span>
               </h3>
               <button
                 onClick={() => setJoinTeamModalOpen(false)}
-                className="text-surface-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -1284,7 +1293,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
 
             <form onSubmit={handleJoinTeam} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-surface-300 text-xs font-bold tracking-wider uppercase">
+                <label className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
                   Invite Code *
                 </label>
                 <input
@@ -1293,11 +1302,11 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   placeholder="KX-TEAM-ABC123"
                   value={joinCodeInput}
                   onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
-                  className="bg-surface-950 border-surface-800 w-full rounded-xl border px-3.5 py-2.5 font-mono text-base font-bold tracking-wider text-white uppercase focus:border-purple-500 focus:outline-none"
+                  className="bg-background border-border text-foreground focus:border-primary w-full rounded-xl border px-3.5 py-2.5 font-mono text-base font-bold tracking-wider uppercase focus:outline-none"
                 />
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-2 border-t pt-3">
+              <div className="border-border flex items-center justify-end gap-2 border-t pt-3">
                 <Button
                   type="button"
                   variant="outline"
@@ -1312,7 +1321,7 @@ export function HackathonEngineClient({ initialData }: { initialData: HackathonE
                   variant="primary"
                   size="sm"
                   disabled={submittingTeam}
-                  className="bg-purple-600 text-white hover:bg-purple-500"
+                  className="shadow-sm"
                 >
                   {submittingTeam ? "Joining..." : "Join Squad"}
                 </Button>

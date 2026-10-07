@@ -56,7 +56,7 @@ async function main() {
     collegesMap.set(col.name, college);
   }
 
-  // 3. State Leads (PRD §12)
+  // 3. State Leads ()
   const stateLeadsSeed = [
     {
       name: "Rahul Rawat",
@@ -168,7 +168,7 @@ async function main() {
     });
   }
 
-  // 4. Campus Leads (PRD §11)
+  // 4. Campus Leads ()
   const campusLeadsSeed = [
     {
       name: "Aayush Negi",

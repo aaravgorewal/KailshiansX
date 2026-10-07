@@ -24,7 +24,7 @@ export interface CommunityActionResult {
 }
 
 /**
- * Submit Campus Lead Application (PRD §11)
+ * Submit Campus Lead Application ()
  * Workflow: APPLIED -> SCREENING -> INTERVIEW -> SELECTED -> ACTIVE -> ALUMNI/INACTIVE
  */
 export async function applyCampusLead(
@@ -119,7 +119,7 @@ export async function applyCampusLead(
 }
 
 /**
- * Submit State Lead Application (PRD §12)
+ * Submit State Lead Application ()
  * Workflow: APPLIED -> SCREENING -> INTERVIEW -> SELECTED -> ACTIVE -> ALUMNI/INACTIVE
  */
 export async function applyStateLead(
@@ -197,7 +197,7 @@ export async function applyStateLead(
 }
 
 /**
- * Submit Start a Chapter Inquiry (PRD §10)
+ * Submit Start a Chapter Inquiry ()
  * Feeds CollaborationLead pipeline as COLLEGE partner
  */
 export async function submitStartChapterInquiry(
@@ -262,7 +262,7 @@ export async function submitStartChapterInquiry(
 }
 
 /**
- * Submit Mentor or Speaker Inquiry (PRD §10)
+ * Submit Mentor or Speaker Inquiry ()
  * Feeds CollaborationLead pipeline as COMMUNITY partner
  */
 export async function submitMentorSpeakerInquiry(

@@ -1,5 +1,5 @@
 // src/server/gallery/queries.ts
-// Server-side database queries for KailshiansX Gallery (PRD §18)
+// Server-side database queries for KailshiansX Gallery ()
 
 import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";

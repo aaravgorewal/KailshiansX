@@ -17,18 +17,18 @@ async function main() {
   const [jaipur, chandigarh, delhi] = await Promise.all([
     prisma.city.upsert({
       where: { name: "Jaipur" },
-      update: {},
-      create: { name: "Jaipur", state: "Rajasthan" },
+      update: { isSeed: true },
+      create: { name: "Jaipur", state: "Rajasthan", isSeed: true },
     }),
     prisma.city.upsert({
       where: { name: "Chandigarh" },
-      update: {},
-      create: { name: "Chandigarh", state: "Punjab" },
+      update: { isSeed: true },
+      create: { name: "Chandigarh", state: "Punjab", isSeed: true },
     }),
     prisma.city.upsert({
       where: { name: "Delhi" },
-      update: {},
-      create: { name: "Delhi", state: "Delhi" },
+      update: { isSeed: true },
+      create: { name: "Delhi", state: "Delhi", isSeed: true },
     }),
   ]);
   console.log("✅ Cities:", jaipur.name, chandigarh.name, delhi.name);
@@ -37,8 +37,9 @@ async function main() {
   const [mnit, pec, iitd] = await Promise.all([
     prisma.college.upsert({
       where: { name_cityId: { name: "MNIT Jaipur", cityId: jaipur.id } },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "MNIT Jaipur",
         cityId: jaipur.id,
         state: "Rajasthan",
@@ -47,8 +48,9 @@ async function main() {
     }),
     prisma.college.upsert({
       where: { name_cityId: { name: "PEC Chandigarh", cityId: chandigarh.id } },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "PEC Chandigarh",
         cityId: chandigarh.id,
         state: "Punjab",
@@ -57,8 +59,9 @@ async function main() {
     }),
     prisma.college.upsert({
       where: { name_cityId: { name: "IIT Delhi", cityId: delhi.id } },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "IIT Delhi",
         cityId: delhi.id,
         state: "Delhi",
@@ -72,8 +75,9 @@ async function main() {
   const [rahul, priya, arjun, deepa] = await Promise.all([
     prisma.speaker.upsert({
       where: { slug: "rahul-sharma" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Rahul Sharma",
         slug: "rahul-sharma",
         designation: "Senior SDE",
@@ -85,8 +89,9 @@ async function main() {
     }),
     prisma.speaker.upsert({
       where: { slug: "priya-mehta" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Priya Mehta",
         slug: "priya-mehta",
         designation: "ML Engineer",
@@ -97,8 +102,9 @@ async function main() {
     }),
     prisma.speaker.upsert({
       where: { slug: "arjun-kapoor" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Arjun Kapoor",
         slug: "arjun-kapoor",
         designation: "Founder & CTO",
@@ -110,8 +116,9 @@ async function main() {
     }),
     prisma.speaker.upsert({
       where: { slug: "deepa-nair" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Deepa Nair",
         slug: "deepa-nair",
         designation: "DevOps Lead",
@@ -124,21 +131,23 @@ async function main() {
   console.log("✅ Speakers:", rahul.name, priya.name, arjun.name, deepa.name);
 
   // ─── Partners ─────────────────────────────────────────────────────────────────
-  const [techCorpPartner, startupIndia, gitHub] = await Promise.all([
+  const [razorpayPartner, startupIndia, gitHub] = await Promise.all([
     prisma.partner.upsert({
-      where: { slug: "techcorp" },
-      update: {},
+      where: { slug: "razorpay" },
+      update: { isSeed: true },
       create: {
-        name: "TechCorp Solutions",
-        slug: "techcorp",
-        website: "https://techcorp.in",
+        isSeed: true,
+        name: "Razorpay",
+        slug: "razorpay",
+        website: "https://razorpay.com",
         category: "brand",
       },
     }),
     prisma.partner.upsert({
       where: { slug: "startup-india" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Startup India",
         slug: "startup-india",
         website: "https://startupindia.gov.in",
@@ -147,8 +156,9 @@ async function main() {
     }),
     prisma.partner.upsert({
       where: { slug: "github" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "GitHub",
         slug: "github",
         website: "https://github.com",
@@ -156,14 +166,15 @@ async function main() {
       },
     }),
   ]);
-  console.log("✅ Partners:", techCorpPartner.name, startupIndia.name, gitHub.name);
+  console.log("✅ Partners:", razorpayPartner.name, startupIndia.name, gitHub.name);
 
   // ─── Series ────────────────────────────────────────────────────────────────
   const [raibarX, tricityX, padharoX, nirmanX, aarambhX] = await Promise.all([
     prisma.series.upsert({
       where: { slug: "raibarx" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "raibarx",
         name: "RaibarX",
         kind: "MEETUP",
@@ -176,8 +187,9 @@ async function main() {
     }),
     prisma.series.upsert({
       where: { slug: "tricityx" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "tricityx",
         name: "TricityX",
         kind: "MEETUP",
@@ -190,8 +202,9 @@ async function main() {
     }),
     prisma.series.upsert({
       where: { slug: "padharox" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "padharox",
         name: "PadharoX",
         kind: "MEETUP",
@@ -204,8 +217,9 @@ async function main() {
     }),
     prisma.series.upsert({
       where: { slug: "nirmanx" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "nirmanx",
         name: "NirmanX",
         kind: "HACKATHON",
@@ -217,8 +231,9 @@ async function main() {
     }),
     prisma.series.upsert({
       where: { slug: "aarambhx" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "aarambhx",
         name: "AarambhX",
         kind: "HACKATHON",
@@ -241,8 +256,9 @@ async function main() {
   // ─── Certificate Template ────────────────────────────────────────────────────
   const defaultTemplate = await prisma.certificateTemplate.upsert({
     where: { id: "seed-cert-template-01" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       id: "seed-cert-template-01",
       name: "KailshiansX Standard Certificate",
       description: "Default certificate template for all events",
@@ -277,8 +293,9 @@ async function main() {
   // 1. RaibarX Edition 01 — Meetup
   const raibarX01 = await prisma.event.upsert({
     where: { slug: "raibarx-01" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       slug: "raibarx-01",
       title: "RaibarX Edition 01",
       type: "MEETUP",
@@ -302,8 +319,9 @@ async function main() {
   // 2. RaibarX Edition 02 — Meetup
   const raibarX02 = await prisma.event.upsert({
     where: { slug: "raibarx-02" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       slug: "raibarx-02",
       title: "RaibarX Edition 02",
       type: "MEETUP",
@@ -327,8 +345,9 @@ async function main() {
   // 3. TricityX Edition 01 — Meetup
   const tricityX01 = await prisma.event.upsert({
     where: { slug: "tricityx-01" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       slug: "tricityx-01",
       title: "TricityX Edition 01",
       type: "MEETUP",
@@ -350,8 +369,9 @@ async function main() {
   // 4. NirmanX Season 01 — Hackathon
   const nirmanX01 = await prisma.event.upsert({
     where: { slug: "nirmanx-s01" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       slug: "nirmanx-s01",
       title: "NirmanX Season 01 — Hack for Bharat",
       type: "HACKATHON",
@@ -376,8 +396,9 @@ async function main() {
   // 5. AarambhX Edition 01 — Hackathon (Delhi)
   const aarambhX01 = await prisma.event.upsert({
     where: { slug: "aarambhx-01" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       slug: "aarambhx-01",
       title: "AarambhX Edition 01 — Beginner Hackathon",
       type: "HACKATHON",
@@ -400,8 +421,9 @@ async function main() {
   // 6. Cloud & DevOps Workshop — Chandigarh
   const cloudWorkshop = await prisma.event.upsert({
     where: { slug: "workshop-cloud-devops-chd-01" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       slug: "workshop-cloud-devops-chd-01",
       title: "Cloud & DevOps Bootcamp",
       type: "WORKSHOP",
@@ -435,13 +457,20 @@ async function main() {
   await Promise.all([
     prisma.seriesEdition.upsert({
       where: { eventId: raibarX01.id },
-      update: {},
-      create: { seriesId: raibarX.id, eventId: raibarX01.id, editionNo: 1, theme: "Kickoff" },
+      update: { isSeed: true },
+      create: {
+        seriesId: raibarX.id,
+        eventId: raibarX01.id,
+        editionNo: 1,
+        theme: "Kickoff",
+        isSeed: true,
+      },
     }),
     prisma.seriesEdition.upsert({
       where: { eventId: raibarX02.id },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         seriesId: raibarX.id,
         eventId: raibarX02.id,
         editionNo: 2,
@@ -450,8 +479,9 @@ async function main() {
     }),
     prisma.seriesEdition.upsert({
       where: { eventId: tricityX01.id },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         seriesId: tricityX.id,
         eventId: tricityX01.id,
         editionNo: 1,
@@ -460,8 +490,9 @@ async function main() {
     }),
     prisma.seriesEdition.upsert({
       where: { eventId: nirmanX01.id },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         seriesId: nirmanX.id,
         eventId: nirmanX01.id,
         editionNo: 1,
@@ -470,8 +501,14 @@ async function main() {
     }),
     prisma.seriesEdition.upsert({
       where: { eventId: aarambhX01.id },
-      update: {},
-      create: { seriesId: aarambhX.id, eventId: aarambhX01.id, editionNo: 1, theme: "First Steps" },
+      update: { isSeed: true },
+      create: {
+        seriesId: aarambhX.id,
+        eventId: aarambhX01.id,
+        editionNo: 1,
+        theme: "First Steps",
+        isSeed: true,
+      },
     }),
   ]);
   console.log("✅ Series editions linked");
@@ -483,46 +520,82 @@ async function main() {
       where: {
         eventId_speakerId_role: { eventId: raibarX01.id, speakerId: rahul.id, role: "SPEAKER" },
       },
-      update: {},
-      create: { eventId: raibarX01.id, speakerId: rahul.id, role: "SPEAKER", sortOrder: 1 },
+      update: { isSeed: true },
+      create: {
+        eventId: raibarX01.id,
+        speakerId: rahul.id,
+        role: "SPEAKER",
+        sortOrder: 1,
+        isSeed: true,
+      },
     }),
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: raibarX01.id, speakerId: priya.id, role: "SPEAKER" },
       },
-      update: {},
-      create: { eventId: raibarX01.id, speakerId: priya.id, role: "SPEAKER", sortOrder: 2 },
+      update: { isSeed: true },
+      create: {
+        eventId: raibarX01.id,
+        speakerId: priya.id,
+        role: "SPEAKER",
+        sortOrder: 2,
+        isSeed: true,
+      },
     }),
     // RaibarX 02
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: raibarX02.id, speakerId: arjun.id, role: "SPEAKER" },
       },
-      update: {},
-      create: { eventId: raibarX02.id, speakerId: arjun.id, role: "SPEAKER", sortOrder: 1 },
+      update: { isSeed: true },
+      create: {
+        eventId: raibarX02.id,
+        speakerId: arjun.id,
+        role: "SPEAKER",
+        sortOrder: 1,
+        isSeed: true,
+      },
     }),
     // NirmanX 01 — judge + mentor
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: nirmanX01.id, speakerId: rahul.id, role: "JUDGE" },
       },
-      update: {},
-      create: { eventId: nirmanX01.id, speakerId: rahul.id, role: "JUDGE", sortOrder: 1 },
+      update: { isSeed: true },
+      create: {
+        eventId: nirmanX01.id,
+        speakerId: rahul.id,
+        role: "JUDGE",
+        sortOrder: 1,
+        isSeed: true,
+      },
     }),
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: nirmanX01.id, speakerId: arjun.id, role: "MENTOR" },
       },
-      update: {},
-      create: { eventId: nirmanX01.id, speakerId: arjun.id, role: "MENTOR", sortOrder: 2 },
+      update: { isSeed: true },
+      create: {
+        eventId: nirmanX01.id,
+        speakerId: arjun.id,
+        role: "MENTOR",
+        sortOrder: 2,
+        isSeed: true,
+      },
     }),
     // Cloud Workshop
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: cloudWorkshop.id, speakerId: deepa.id, role: "SPEAKER" },
       },
-      update: {},
-      create: { eventId: cloudWorkshop.id, speakerId: deepa.id, role: "SPEAKER", sortOrder: 1 },
+      update: { isSeed: true },
+      create: {
+        eventId: cloudWorkshop.id,
+        speakerId: deepa.id,
+        role: "SPEAKER",
+        sortOrder: 1,
+        isSeed: true,
+      },
     }),
   ]);
   console.log("✅ Event speakers linked");
@@ -530,24 +603,29 @@ async function main() {
   // ─── Event Partners ───────────────────────────────────────────────────────
   await Promise.all([
     prisma.eventPartner.upsert({
-      where: { eventId_partnerId: { eventId: raibarX01.id, partnerId: techCorpPartner.id } },
-      update: {},
-      create: { eventId: raibarX01.id, partnerId: techCorpPartner.id, tier: "GOLD" },
+      where: { eventId_partnerId: { eventId: raibarX01.id, partnerId: razorpayPartner.id } },
+      update: { isSeed: true },
+      create: { eventId: raibarX01.id, partnerId: razorpayPartner.id, tier: "GOLD", isSeed: true },
     }),
     prisma.eventPartner.upsert({
-      where: { eventId_partnerId: { eventId: nirmanX01.id, partnerId: techCorpPartner.id } },
-      update: {},
-      create: { eventId: nirmanX01.id, partnerId: techCorpPartner.id, tier: "TITLE" },
+      where: { eventId_partnerId: { eventId: nirmanX01.id, partnerId: razorpayPartner.id } },
+      update: { isSeed: true },
+      create: { eventId: nirmanX01.id, partnerId: razorpayPartner.id, tier: "TITLE", isSeed: true },
     }),
     prisma.eventPartner.upsert({
       where: { eventId_partnerId: { eventId: nirmanX01.id, partnerId: gitHub.id } },
-      update: {},
-      create: { eventId: nirmanX01.id, partnerId: gitHub.id, tier: "COMMUNITY" },
+      update: { isSeed: true },
+      create: { eventId: nirmanX01.id, partnerId: gitHub.id, tier: "COMMUNITY", isSeed: true },
     }),
     prisma.eventPartner.upsert({
       where: { eventId_partnerId: { eventId: nirmanX01.id, partnerId: startupIndia.id } },
-      update: {},
-      create: { eventId: nirmanX01.id, partnerId: startupIndia.id, tier: "COMMUNITY" },
+      update: { isSeed: true },
+      create: {
+        eventId: nirmanX01.id,
+        partnerId: startupIndia.id,
+        tier: "COMMUNITY",
+        isSeed: true,
+      },
     }),
   ]);
   console.log("✅ Event partners linked");
@@ -557,6 +635,7 @@ async function main() {
     // RaibarX 01 — free
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: raibarX01.id,
         name: "General Admission",
         description: "Free entry for all developers",
@@ -570,6 +649,7 @@ async function main() {
     // RaibarX 02 — free
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: raibarX02.id,
         name: "General Admission",
         price: 0,
@@ -581,6 +661,7 @@ async function main() {
     }),
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: raibarX02.id,
         name: "VIP Pass",
         description: "Priority seating, swag bag, and lunch included",
@@ -595,6 +676,7 @@ async function main() {
     // NirmanX 01 — paid tiers
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         name: "Student Team (2-4)",
         description: "Per person price for student teams",
@@ -606,6 +688,7 @@ async function main() {
     }),
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         name: "Professional Team (2-4)",
         description: "For working professionals",
@@ -619,6 +702,7 @@ async function main() {
     // Cloud Workshop — paid
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: cloudWorkshop.id,
         name: "Workshop Seat",
         description: "Full-day bootcamp with hands-on labs",
@@ -631,6 +715,7 @@ async function main() {
     // AarambhX 01 — free
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: aarambhX01.id,
         name: "Participant",
         price: 0,
@@ -643,6 +728,7 @@ async function main() {
     // TricityX 01 — free
     prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: tricityX01.id,
         name: "General Admission",
         price: 0,
@@ -659,6 +745,7 @@ async function main() {
   await prisma.eventScheduleItem.createMany({
     data: [
       {
+        isSeed: true,
         eventId: raibarX01.id,
         startTime: new Date("2025-03-15T10:00:00Z"),
         endTime: new Date("2025-03-15T10:30:00Z"),
@@ -666,6 +753,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: raibarX01.id,
         startTime: new Date("2025-03-15T10:30:00Z"),
         endTime: new Date("2025-03-15T11:00:00Z"),
@@ -674,6 +762,7 @@ async function main() {
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: raibarX01.id,
         startTime: new Date("2025-03-15T11:00:00Z"),
         endTime: new Date("2025-03-15T11:45:00Z"),
@@ -682,6 +771,7 @@ async function main() {
         sortOrder: 3,
       },
       {
+        isSeed: true,
         eventId: raibarX01.id,
         startTime: new Date("2025-03-15T13:00:00Z"),
         endTime: new Date("2025-03-15T14:00:00Z"),
@@ -689,6 +779,7 @@ async function main() {
         sortOrder: 4,
       },
       {
+        isSeed: true,
         eventId: raibarX01.id,
         startTime: new Date("2025-03-15T15:30:00Z"),
         endTime: new Date("2025-03-15T17:00:00Z"),
@@ -704,30 +795,35 @@ async function main() {
   await prisma.eventFaq.createMany({
     data: [
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         question: "What is the team size?",
         answer: "Teams of 2 to 4 members.",
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         question: "Can I participate alone?",
         answer: "No, teams of minimum 2 are required.",
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         question: "Is food provided?",
         answer: "Yes — dinner, midnight snacks, and breakfast are provided.",
         sortOrder: 3,
       },
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         question: "What should I bring?",
         answer: "Laptop, charger, student ID, and your best ideas.",
         sortOrder: 4,
       },
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         question: "What are the tracks?",
         answer: "Civic Tech, AgriTech, EdTech, and Open Innovation.",
@@ -742,6 +838,7 @@ async function main() {
   await prisma.eventTrack.createMany({
     data: [
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         name: "Civic Tech",
         description: "Solutions for government, civic participation and public services",
@@ -749,6 +846,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         name: "AgriTech",
         description: "Technology for farmers, supply chains and rural India",
@@ -756,6 +854,7 @@ async function main() {
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         name: "EdTech",
         description: "Making quality education accessible to all",
@@ -763,11 +862,20 @@ async function main() {
         sortOrder: 3,
       },
       {
+        isSeed: true,
         eventId: nirmanX01.id,
         name: "Open Innovation",
         description: "Build anything that creates positive impact",
         color: "#8b3dff",
         sortOrder: 4,
+      },
+      {
+        isSeed: true,
+        eventId: nirmanX01.id,
+        name: "Distributed Systems & Cloud",
+        description: "High-throughput message queues, edge consensus, and cloud-native backends",
+        color: "#0284c7",
+        sortOrder: 5,
       },
     ],
     skipDuplicates: true,
@@ -781,6 +889,7 @@ async function main() {
   if (!existingRaibarAlbum) {
     const raibarX01Album = await prisma.galleryAlbum.create({
       data: {
+        isSeed: true,
         eventId: raibarX01.id,
         title: "RaibarX Edition 01 — Official Gallery",
         category: "meetup",
@@ -790,6 +899,7 @@ async function main() {
     await prisma.galleryImage.createMany({
       data: [
         {
+          isSeed: true,
           albumId: raibarX01Album.id,
           url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
           caption: "Opening keynote by Rahul Sharma",
@@ -797,6 +907,7 @@ async function main() {
           sortOrder: 1,
         },
         {
+          isSeed: true,
           albumId: raibarX01Album.id,
           url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1200&auto=format&fit=crop&q=80",
           caption: "Networking at the event",
@@ -804,6 +915,7 @@ async function main() {
           sortOrder: 2,
         },
         {
+          isSeed: true,
           albumId: raibarX01Album.id,
           url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80",
           caption: "Community group photo",
@@ -813,12 +925,99 @@ async function main() {
       ],
     });
   }
+  const existingNirmanAlbum = await prisma.galleryAlbum.findFirst({
+    where: { eventId: nirmanX01.id },
+  });
+  if (!existingNirmanAlbum) {
+    const nirmanAlbum = await prisma.galleryAlbum.create({
+      data: {
+        isSeed: true,
+        eventId: nirmanX01.id,
+        title: "NirmanX 2025 — National Hackathon Showcase",
+        category: "hackathon",
+        isPublished: true,
+      },
+    });
+    await prisma.galleryImage.createMany({
+      data: [
+        {
+          isSeed: true,
+          albumId: nirmanAlbum.id,
+          url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&auto=format&fit=crop&q=80",
+          caption: "Hackers collaborating during midnight sprint",
+          altText: "Hackers collaborating",
+          sortOrder: 1,
+        },
+        {
+          isSeed: true,
+          albumId: nirmanAlbum.id,
+          url: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&auto=format&fit=crop&q=80",
+          caption: "Project demo presentation to judges",
+          altText: "Demo presentation",
+          sortOrder: 2,
+        },
+        {
+          isSeed: true,
+          albumId: nirmanAlbum.id,
+          url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&auto=format&fit=crop&q=80",
+          caption: "Winners receiving awards and trophies",
+          altText: "Award ceremony",
+          sortOrder: 3,
+        },
+      ],
+    });
+  }
+
+  const existingTricityAlbum = await prisma.galleryAlbum.findFirst({
+    where: { eventId: tricityX01.id },
+  });
+  if (!existingTricityAlbum) {
+    const tricityAlbum = await prisma.galleryAlbum.create({
+      data: {
+        isSeed: true,
+        eventId: tricityX01.id,
+        title: "TricityX Edition 01 — Chandigarh Tech Summit",
+        category: "meetup",
+        isPublished: true,
+      },
+    });
+    await prisma.galleryImage.createMany({
+      data: [
+        {
+          isSeed: true,
+          albumId: tricityAlbum.id,
+          url: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1200&auto=format&fit=crop&q=80",
+          caption: "Keynote presentation on stage",
+          altText: "Stage keynote",
+          sortOrder: 1,
+        },
+        {
+          isSeed: true,
+          albumId: tricityAlbum.id,
+          url: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&auto=format&fit=crop&q=80",
+          caption: "Panel discussion on tech careers",
+          altText: "Panel discussion",
+          sortOrder: 2,
+        },
+        {
+          isSeed: true,
+          albumId: tricityAlbum.id,
+          url: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&auto=format&fit=crop&q=80",
+          caption: "Developers mingling during lunch session",
+          altText: "Community gathering",
+          sortOrder: 3,
+        },
+      ],
+    });
+  }
+
   console.log("✅ Gallery albums & images created");
 
   // ─── Revenue & Expense Items (NirmanX 01) ─────────────────────────────────
   await Promise.all([
     prisma.eventRevenueItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "TICKET",
         description: "Student registrations (320 × ₹499)",
@@ -827,6 +1026,7 @@ async function main() {
     }),
     prisma.eventRevenueItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "TICKET",
         description: "Professional registrations (45 × ₹999)",
@@ -835,14 +1035,16 @@ async function main() {
     }),
     prisma.eventRevenueItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "SPONSORSHIP",
-        description: "TechCorp — Title Sponsor",
+        description: "Razorpay — Title Sponsor",
         amount: 300000,
       },
     }),
     prisma.eventRevenueItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "SPONSORSHIP",
         description: "GitHub — Community Partner",
@@ -851,6 +1053,7 @@ async function main() {
     }),
     prisma.eventExpenseItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "VENUE",
         description: "JECC venue booking",
@@ -859,6 +1062,7 @@ async function main() {
     }),
     prisma.eventExpenseItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "FOOD",
         description: "Dinner, snacks & breakfast for 500",
@@ -867,6 +1071,7 @@ async function main() {
     }),
     prisma.eventExpenseItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "SWAG",
         description: "T-shirts, stickers, lanyards",
@@ -875,6 +1080,7 @@ async function main() {
     }),
     prisma.eventExpenseItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "MARKETING",
         description: "Social media & print ads",
@@ -883,6 +1089,7 @@ async function main() {
     }),
     prisma.eventExpenseItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "PRINTING",
         description: "Banners, standees, certificates",
@@ -891,6 +1098,7 @@ async function main() {
     }),
     prisma.eventExpenseItem.create({
       data: {
+        isSeed: true,
         eventId: nirmanX01.id,
         category: "LOGISTICS",
         description: "Prize delivery & operations",
@@ -904,8 +1112,9 @@ async function main() {
   await Promise.all([
     prisma.coreTeamMember.upsert({
       where: { slug: "aarav-gorewal" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Aarav Gorewal",
         slug: "aarav-gorewal",
         role: "Founder & CEO",
@@ -918,8 +1127,9 @@ async function main() {
     }),
     prisma.coreTeamMember.upsert({
       where: { slug: "niharika-singh" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Niharika Singh",
         slug: "niharika-singh",
         role: "Head of Community",
@@ -932,8 +1142,9 @@ async function main() {
     }),
     prisma.coreTeamMember.upsert({
       where: { slug: "karan-verma" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Karan Verma",
         slug: "karan-verma",
         role: "Lead Engineer",
@@ -951,8 +1162,9 @@ async function main() {
   // ─── Founder Content ──────────────────────────────────────────────────────
   await prisma.founderContent.upsert({
     where: { founderSlug: "aarav-gorewal" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       founderName: "Aarav Gorewal",
       founderSlug: "aarav-gorewal",
       tagline: "Building communities, one event at a time.",
@@ -987,8 +1199,9 @@ async function main() {
   await Promise.all([
     prisma.contentPage.upsert({
       where: { slug: "who-we-are" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "who-we-are",
         title: "Who We Are",
         metaTitle: "Who We Are | KailshiansX",
@@ -999,8 +1212,9 @@ async function main() {
     }),
     prisma.contentPage.upsert({
       where: { slug: "founder" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "founder",
         title: "Founder",
         metaTitle: "Founder | KailshiansX",
@@ -1014,8 +1228,9 @@ async function main() {
   // ─── Tech Talk Resource (RaibarX 01 keynote) ──────────────────────────────
   await prisma.techTalkResource.upsert({
     where: { eventId: raibarX01.id },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       eventId: raibarX01.id,
       speakerId: rahul.id,
       slideUrl: "https://cdn.kailshiansx.com/talks/raibarx-01-keynote-slides.pdf",
@@ -1033,8 +1248,9 @@ async function main() {
   // ─── Home Page CMS & Testimonials ──────────────────────────────────────────
   const homePage = await prisma.contentPage.upsert({
     where: { slug: "home" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       slug: "home",
       title: "Home",
       metaTitle: "KailshiansX — Developer Events & Community",
@@ -1091,6 +1307,7 @@ async function main() {
     for (let i = 0; i < testimonialData.length; i++) {
       await prisma.contentBlock.create({
         data: {
+          isSeed: true,
           pageId: homePage.id,
           type: "TESTIMONIAL",
           sortOrder: i,
@@ -1103,21 +1320,23 @@ async function main() {
   }
 
   // ─── Additional Partners ───────────────────────────────────────────────────
-  const [razorpay, resend, awsCommunity, springboard] = await Promise.all([
+  const [, resend, awsCommunity, springboard] = await Promise.all([
     prisma.partner.upsert({
-      where: { slug: "razorpay" },
-      update: {},
+      where: { slug: "cloudflare" },
+      update: { isSeed: true },
       create: {
-        name: "Razorpay",
-        slug: "razorpay",
-        website: "https://razorpay.com",
+        isSeed: true,
+        name: "Cloudflare",
+        slug: "cloudflare",
+        website: "https://cloudflare.com",
         category: "brand",
       },
     }),
     prisma.partner.upsert({
       where: { slug: "resend" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Resend",
         slug: "resend",
         website: "https://resend.com",
@@ -1126,8 +1345,9 @@ async function main() {
     }),
     prisma.partner.upsert({
       where: { slug: "aws-community" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "AWS Community India",
         slug: "aws-community",
         website: "https://aws.amazon.com",
@@ -1136,8 +1356,9 @@ async function main() {
     }),
     prisma.partner.upsert({
       where: { slug: "91springboard" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "91springboard",
         slug: "91springboard",
         website: "https://91springboard.com",
@@ -1151,8 +1372,9 @@ async function main() {
   const [padharoX01, nirmanX2026, techTalkScale, techTalkAgents, workshopRust] = await Promise.all([
     prisma.event.upsert({
       where: { slug: "padharox-01" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "padharox-01",
         title: "PadharoX Edition 01 — Jaipur AI & Cloud Summit",
         type: "MEETUP",
@@ -1178,11 +1400,13 @@ async function main() {
     prisma.event.upsert({
       where: { slug: "nirmanx-2026" },
       update: {
+        isSeed: true,
         venueMapUrl: "https://maps.google.com/?q=IIT+Delhi+Research+Park",
         eligibility:
           "Open to teams of 2 to 4 developers. All members must be registered college students or early-stage builders (graduated within last 2 years). Valid ID proof required.",
       },
       create: {
+        isSeed: true,
         slug: "nirmanx-2026",
         title: "NirmanX 2026 — National Hackathon Season 02",
         type: "HACKATHON",
@@ -1207,8 +1431,9 @@ async function main() {
     }),
     prisma.event.upsert({
       where: { slug: "techtalk-scaling-10m" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "techtalk-scaling-10m",
         title: "Scaling to 10M Requests: Microservices Architecture Deep Dive",
         type: "TECH_TALK",
@@ -1230,8 +1455,9 @@ async function main() {
     }),
     prisma.event.upsert({
       where: { slug: "techtalk-agentic-ai" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "techtalk-agentic-ai",
         title: "Building Agentic AI Systems in Production",
         type: "TECH_TALK",
@@ -1253,8 +1479,9 @@ async function main() {
     }),
     prisma.event.upsert({
       where: { slug: "workshop-rust-systems" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         slug: "workshop-rust-systems",
         title: "Hands-on Rust & Distributed Systems Masterclass",
         type: "WORKSHOP",
@@ -1282,8 +1509,9 @@ async function main() {
   if (padharoXSeries) {
     await prisma.seriesEdition.upsert({
       where: { seriesId_editionNo: { seriesId: padharoXSeries.id, editionNo: 1 } },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         seriesId: padharoXSeries.id,
         eventId: padharoX01.id,
         editionNo: 1,
@@ -1292,35 +1520,170 @@ async function main() {
     });
   }
 
+  // Link NirmanX Season 02 series edition
+  await prisma.seriesEdition.upsert({
+    where: { seriesId_editionNo: { seriesId: nirmanX.id, editionNo: 2 } },
+    update: { isSeed: true },
+    create: {
+      isSeed: true,
+      seriesId: nirmanX.id,
+      eventId: nirmanX2026.id,
+      editionNo: 2,
+      theme: "National Hackathon Season 02",
+    },
+  });
+
+  // Hackathon Details for NirmanX 01, NirmanX 2026, and AarambhX 01
+  await prisma.hackathonDetail.upsert({
+    where: { eventId: nirmanX01.id },
+    update: { isSeed: true },
+    create: {
+      isSeed: true,
+      eventId: nirmanX01.id,
+      minTeamSize: 2,
+      maxTeamSize: 4,
+      rules: "36-hour non-stop building sprint. All code must be committed to GitHub.",
+      submissionUrl: "https://github.com/kailshiansx/nirmanx-submissions",
+      problemStatements: [
+        {
+          id: "ps-1",
+          title: "Distributed Transaction Coordination on Edge",
+          track: "Distributed Systems & Cloud",
+          description: "Build a fault-tolerant edge consensus state machine.",
+        },
+        {
+          id: "ps-2",
+          title: "Autonomous Developer Assistant for CLI",
+          track: "Civic Tech",
+          description: "Agentic terminal tools for automated code refactoring.",
+        },
+        {
+          id: "ps-3",
+          title: "Decentralized Agri-Logistics Marketplace",
+          track: "AgriTech",
+          description: "Real-time transparent pricing for regional farmers.",
+        },
+      ],
+      prizes: [
+        {
+          title: "Grand Champion",
+          amount: "₹2,50,000",
+          perks: ["Direct Incubation Access", "Cloud Credits", "Investor Demo Day"],
+        },
+        {
+          title: "First Runner-up",
+          amount: "₹1,50,000",
+          perks: ["Cloud Credits", "Mentorship Fast-track"],
+        },
+        {
+          title: "Track Winners",
+          amount: "₹50,000",
+          perks: ["Swag Box", "Mentorship"],
+        },
+      ],
+      results: [
+        {
+          rank: 1,
+          title: "Grand Champion",
+          teamName: "VectorNodes",
+          projectName: "KailashEdge Consensus Engine",
+          repoUrl: "https://github.com/vectornodes/kailash-edge",
+          demoUrl: "https://vectornodes.dev",
+        },
+      ],
+      isResultsPublished: true,
+    },
+  });
+
+  await prisma.hackathonDetail.upsert({
+    where: { eventId: nirmanX2026.id },
+    update: { isSeed: true },
+    create: {
+      isSeed: true,
+      eventId: nirmanX2026.id,
+      minTeamSize: 2,
+      maxTeamSize: 4,
+      rules: "36-hour national hackathon sprint. Dedicated jury deliberation.",
+      submissionUrl: "https://github.com/kailshiansx/nirmanx-2026-submissions",
+      problemStatements: [
+        {
+          id: "ps-2026-1",
+          title: "Multi-Modal Autonomous AI Agents",
+          track: "Autonomous AI Agents",
+          description: "Autonomous workflow solvers with verifiable tool-calling.",
+        },
+        {
+          id: "ps-2026-2",
+          title: "Digital Public Goods at Scale",
+          track: "Digital Public Goods & FinTech",
+          description: "Open banking, UPI telemetry, and decentralized verification.",
+        },
+      ],
+      prizes: [
+        {
+          title: "Grand Champion Grant",
+          amount: "₹5,00,000",
+          perks: ["Seed Grant", "Cloud Credits"],
+        },
+      ],
+    },
+  });
+
+  await prisma.hackathonDetail.upsert({
+    where: { eventId: aarambhX01.id },
+    update: { isSeed: true },
+    create: {
+      isSeed: true,
+      eventId: aarambhX01.id,
+      minTeamSize: 1,
+      maxTeamSize: 4,
+      rules: "Beginner-friendly 24-hour sprint. First-time hackers welcome.",
+      problemStatements: [
+        {
+          id: "ps-aarambh-1",
+          title: "Campus Open Source Starter",
+          track: "Beginner Web",
+          description: "Interactive tools to simplify club management on campus.",
+        },
+        {
+          id: "ps-aarambh-2",
+          title: "Student Portfolio Builder",
+          track: "Frontend & Design",
+          description: "Showcase proof-of-work with dynamic GitHub stats.",
+        },
+      ],
+    },
+  });
+
   // Link speakers to upcoming events
   await Promise.all([
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: padharoX01.id, speakerId: rahul.id, role: "SPEAKER" },
       },
-      update: {},
-      create: { eventId: padharoX01.id, speakerId: rahul.id, role: "SPEAKER" },
+      update: { isSeed: true },
+      create: { eventId: padharoX01.id, speakerId: rahul.id, role: "SPEAKER", isSeed: true },
     }),
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: padharoX01.id, speakerId: priya.id, role: "SPEAKER" },
       },
-      update: {},
-      create: { eventId: padharoX01.id, speakerId: priya.id, role: "SPEAKER" },
+      update: { isSeed: true },
+      create: { eventId: padharoX01.id, speakerId: priya.id, role: "SPEAKER", isSeed: true },
     }),
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: nirmanX2026.id, speakerId: arjun.id, role: "JUDGE" },
       },
-      update: {},
-      create: { eventId: nirmanX2026.id, speakerId: arjun.id, role: "JUDGE" },
+      update: { isSeed: true },
+      create: { eventId: nirmanX2026.id, speakerId: arjun.id, role: "JUDGE", isSeed: true },
     }),
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: techTalkScale.id, speakerId: deepa.id, role: "SPEAKER" },
       },
-      update: {},
-      create: { eventId: techTalkScale.id, speakerId: deepa.id, role: "SPEAKER" },
+      update: { isSeed: true },
+      create: { eventId: techTalkScale.id, speakerId: deepa.id, role: "SPEAKER", isSeed: true },
     }),
     prisma.eventSpeaker.upsert({
       where: {
@@ -1330,44 +1693,59 @@ async function main() {
           role: "SPEAKER",
         },
       },
-      update: {},
-      create: { eventId: techTalkAgents.id, speakerId: priya.id, role: "SPEAKER" },
+      update: { isSeed: true },
+      create: { eventId: techTalkAgents.id, speakerId: priya.id, role: "SPEAKER", isSeed: true },
     }),
     prisma.eventSpeaker.upsert({
       where: {
         eventId_speakerId_role: { eventId: workshopRust.id, speakerId: rahul.id, role: "MENTOR" },
       },
-      update: {},
-      create: { eventId: workshopRust.id, speakerId: rahul.id, role: "MENTOR" },
+      update: { isSeed: true },
+      create: { eventId: workshopRust.id, speakerId: rahul.id, role: "MENTOR", isSeed: true },
     }),
   ]);
 
   // Link partners to upcoming events
   await Promise.all([
     prisma.eventPartner.upsert({
-      where: { eventId_partnerId: { eventId: padharoX01.id, partnerId: razorpay.id } },
-      update: {},
-      create: { eventId: padharoX01.id, partnerId: razorpay.id, tier: "TITLE" },
+      where: { eventId_partnerId: { eventId: padharoX01.id, partnerId: razorpayPartner.id } },
+      update: { isSeed: true },
+      create: {
+        eventId: padharoX01.id,
+        partnerId: razorpayPartner.id,
+        tier: "TITLE",
+        isSeed: true,
+      },
     }),
     prisma.eventPartner.upsert({
       where: { eventId_partnerId: { eventId: padharoX01.id, partnerId: gitHub.id } },
-      update: {},
-      create: { eventId: padharoX01.id, partnerId: gitHub.id, tier: "GOLD" },
+      update: { isSeed: true },
+      create: { eventId: padharoX01.id, partnerId: gitHub.id, tier: "GOLD", isSeed: true },
     }),
     prisma.eventPartner.upsert({
       where: { eventId_partnerId: { eventId: nirmanX2026.id, partnerId: resend.id } },
-      update: {},
-      create: { eventId: nirmanX2026.id, partnerId: resend.id, tier: "GOLD" },
+      update: { isSeed: true },
+      create: { eventId: nirmanX2026.id, partnerId: resend.id, tier: "GOLD", isSeed: true },
     }),
     prisma.eventPartner.upsert({
       where: { eventId_partnerId: { eventId: workshopRust.id, partnerId: awsCommunity.id } },
-      update: {},
-      create: { eventId: workshopRust.id, partnerId: awsCommunity.id, tier: "COMMUNITY" },
+      update: { isSeed: true },
+      create: {
+        eventId: workshopRust.id,
+        partnerId: awsCommunity.id,
+        tier: "COMMUNITY",
+        isSeed: true,
+      },
     }),
     prisma.eventPartner.upsert({
       where: { eventId_partnerId: { eventId: techTalkScale.id, partnerId: springboard.id } },
-      update: {},
-      create: { eventId: techTalkScale.id, partnerId: springboard.id, tier: "COMMUNITY" },
+      update: { isSeed: true },
+      create: {
+        eventId: techTalkScale.id,
+        partnerId: springboard.id,
+        tier: "COMMUNITY",
+        isSeed: true,
+      },
     }),
   ]);
 
@@ -1375,8 +1753,9 @@ async function main() {
   const sampleUsers = await Promise.all([
     prisma.user.upsert({
       where: { email: "ananya.deshmukh@mnit.ac.in" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Ananya Deshmukh",
         email: "ananya.deshmukh@mnit.ac.in",
         role: "CAMPUS_LEAD",
@@ -1384,8 +1763,9 @@ async function main() {
     }),
     prisma.user.upsert({
       where: { email: "rohan.pec@pec.edu.in" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Rohan Varma",
         email: "rohan.pec@pec.edu.in",
         role: "CAMPUS_LEAD",
@@ -1393,8 +1773,9 @@ async function main() {
     }),
     prisma.user.upsert({
       where: { email: "karan.statelead@kailshiansx.com" },
-      update: {},
+      update: { isSeed: true },
       create: {
+        isSeed: true,
         name: "Karan Singh",
         email: "karan.statelead@kailshiansx.com",
         role: "STATE_LEAD",
@@ -1409,6 +1790,7 @@ async function main() {
   if (!campusApp1) {
     campusApp1 = await prisma.campusLeadApplication.create({
       data: {
+        isSeed: true,
         userId: sampleUsers[0].id,
         name: "Ananya Deshmukh",
         email: "ananya.deshmukh@mnit.ac.in",
@@ -1422,8 +1804,9 @@ async function main() {
 
   await prisma.campusLead.upsert({
     where: { userId: sampleUsers[0].id },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       applicationId: campusApp1.id,
       userId: sampleUsers[0].id,
       collegeId: mnit.id,
@@ -1440,6 +1823,7 @@ async function main() {
   if (!stateApp1) {
     stateApp1 = await prisma.stateLeadApplication.create({
       data: {
+        isSeed: true,
         userId: sampleUsers[2].id,
         name: "Karan Singh",
         email: "karan.statelead@kailshiansx.com",
@@ -1452,8 +1836,9 @@ async function main() {
 
   await prisma.stateLead.upsert({
     where: { userId: sampleUsers[2].id },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       applicationId: stateApp1.id,
       userId: sampleUsers[2].id,
       state: "Rajasthan",
@@ -1469,6 +1854,7 @@ async function main() {
   if (!ticketPadharo) {
     ticketPadharo = await prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: padharoX01.id,
         name: "General Attendee",
         price: 0,
@@ -1487,6 +1873,7 @@ async function main() {
   if (!existingVip) {
     await prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: padharoX01.id,
         name: "Community VIP Pass",
         price: 299,
@@ -1505,6 +1892,7 @@ async function main() {
   if (!existingNirmanTicket) {
     await prisma.ticketType.create({
       data: {
+        isSeed: true,
         eventId: nirmanX2026.id,
         name: "Hacker Team Pass (2-4 pax)",
         price: 0,
@@ -1521,6 +1909,7 @@ async function main() {
   await prisma.eventScheduleItem.createMany({
     data: [
       {
+        isSeed: true,
         eventId: padharoX01.id,
         startTime: new Date("2026-11-14T10:00:00Z"),
         endTime: new Date("2026-11-14T10:45:00Z"),
@@ -1529,6 +1918,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         startTime: new Date("2026-11-14T10:45:00Z"),
         endTime: new Date("2026-11-14T11:45:00Z"),
@@ -1539,6 +1929,7 @@ async function main() {
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         startTime: new Date("2026-11-14T11:45:00Z"),
         endTime: new Date("2026-11-14T12:45:00Z"),
@@ -1549,6 +1940,7 @@ async function main() {
         sortOrder: 3,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         startTime: new Date("2026-11-14T12:45:00Z"),
         endTime: new Date("2026-11-14T14:15:00Z"),
@@ -1557,6 +1949,7 @@ async function main() {
         sortOrder: 4,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         startTime: new Date("2026-11-14T14:15:00Z"),
         endTime: new Date("2026-11-14T16:00:00Z"),
@@ -1565,6 +1958,7 @@ async function main() {
         sortOrder: 5,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         startTime: new Date("2026-11-14T16:00:00Z"),
         endTime: new Date("2026-11-14T17:30:00Z"),
@@ -1580,6 +1974,7 @@ async function main() {
   await prisma.eventFaq.createMany({
     data: [
       {
+        isSeed: true,
         eventId: padharoX01.id,
         question: "Is PadharoX free to attend?",
         answer:
@@ -1587,6 +1982,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         question: "Will verifiable certificates be provided?",
         answer:
@@ -1594,6 +1990,7 @@ async function main() {
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         question: "What should I bring with me?",
         answer:
@@ -1601,6 +1998,7 @@ async function main() {
         sortOrder: 3,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         question: "Where is the venue and is parking available?",
         answer:
@@ -1615,6 +2013,7 @@ async function main() {
   await prisma.eventTrack.createMany({
     data: [
       {
+        isSeed: true,
         eventId: padharoX01.id,
         name: "Agentic AI & LLM Systems",
         description:
@@ -1623,6 +2022,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: padharoX01.id,
         name: "High-Scale Cloud Infrastructure",
         description: "Distributed databases, event queues, edge deployments, and Kubernetes.",
@@ -1640,6 +2040,7 @@ async function main() {
   if (!existingPadharoAlbum) {
     const padharoAlbum = await prisma.galleryAlbum.create({
       data: {
+        isSeed: true,
         eventId: padharoX01.id,
         title: "PadharoX 01 — Community Preview & Teaser",
         category: "meetup",
@@ -1649,6 +2050,7 @@ async function main() {
     await prisma.galleryImage.createMany({
       data: [
         {
+          isSeed: true,
           albumId: padharoAlbum.id,
           url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
           caption: "Auditorium Main Stage at JECC Jaipur",
@@ -1656,6 +2058,7 @@ async function main() {
           sortOrder: 1,
         },
         {
+          isSeed: true,
           albumId: padharoAlbum.id,
           url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1200&q=80",
           caption: "Developer Networking and Discussions",
@@ -1663,6 +2066,7 @@ async function main() {
           sortOrder: 2,
         },
         {
+          isSeed: true,
           albumId: padharoAlbum.id,
           url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&q=80",
           caption: "Collaborative Workshop & Coding Labs",
@@ -1678,6 +2082,7 @@ async function main() {
   await prisma.eventScheduleItem.createMany({
     data: [
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         startTime: new Date("2026-12-05T09:00:00Z"),
         endTime: new Date("2026-12-05T10:30:00Z"),
@@ -1686,6 +2091,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         startTime: new Date("2026-12-05T10:30:00Z"),
         endTime: new Date("2026-12-05T11:30:00Z"),
@@ -1694,6 +2100,7 @@ async function main() {
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         startTime: new Date("2026-12-05T11:30:00Z"),
         endTime: new Date("2026-12-06T17:00:00Z"),
@@ -1703,6 +2110,7 @@ async function main() {
         sortOrder: 3,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         startTime: new Date("2026-12-06T17:00:00Z"),
         endTime: new Date("2026-12-06T19:00:00Z"),
@@ -1711,6 +2119,7 @@ async function main() {
         sortOrder: 4,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         startTime: new Date("2026-12-06T19:00:00Z"),
         endTime: new Date("2026-12-06T20:00:00Z"),
@@ -1725,6 +2134,7 @@ async function main() {
   await prisma.eventFaq.createMany({
     data: [
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         question: "What is the team size limit?",
         answer:
@@ -1732,6 +2142,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         question: "Are food, snacks, and accommodation provided?",
         answer:
@@ -1739,6 +2150,7 @@ async function main() {
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         question: "Who owns the intellectual property (IP) created?",
         answer:
@@ -1752,6 +2164,7 @@ async function main() {
   await prisma.eventTrack.createMany({
     data: [
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         name: "Autonomous AI Agents",
         description:
@@ -1760,6 +2173,7 @@ async function main() {
         sortOrder: 1,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         name: "Digital Public Goods & FinTech",
         description: "UPI ecosystem innovations, decentralized identity, and financial access.",
@@ -1767,6 +2181,7 @@ async function main() {
         sortOrder: 2,
       },
       {
+        isSeed: true,
         eventId: nirmanX2026.id,
         name: "Open Bharat Tech",
         description: "Local language interfaces, smart agriculture, and healthcare systems.",
@@ -1779,8 +2194,9 @@ async function main() {
 
   await prisma.registration.upsert({
     where: { registrationCode: "KX-2026-PX001" },
-    update: {},
+    update: { isSeed: true },
     create: {
+      isSeed: true,
       registrationCode: "KX-2026-PX001",
       eventId: padharoX01.id,
       userId: sampleUsers[0].id,

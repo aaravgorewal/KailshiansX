@@ -118,7 +118,7 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
       <div className="border-border bg-card relative overflow-hidden rounded-3xl border p-6 backdrop-blur-xl sm:p-8">
         <div className="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="space-y-2">
-            <div className="border-primary/30 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
+            <div className="border-primary/30 bg-muted text-accent-text inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
               <Zap className="h-3.5 w-3.5" />
               <span>Executive Intelligence</span>
             </div>
@@ -464,21 +464,21 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
 
             {/* Metric 11: Certificate Delivery Rate */}
             <div className="border-border bg-card rounded-2xl border p-5">
-              <div className="text-muted-foreground flex items-center justify-between text-xs">
-                <span className="font-bold">11. Certificate Delivery Rate</span>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-foreground font-bold">11. Certificate Delivery Rate</span>
                 <Award className="text-primary h-4 w-4" />
               </div>
               <p className="text-foreground mt-2 text-2xl font-bold">
                 {metrics.certificates.deliveryRatePct}%
               </p>
               <div className="text-muted-foreground mt-2 flex justify-between text-xs">
-                <span>Certificates Generated:</span>
+                <span className="text-foreground">Certificates Generated:</span>
                 <span className="text-foreground font-medium">
                   {metrics.certificates.totalIssued}
                 </span>
               </div>
               <div className="text-muted-foreground mt-1 flex justify-between text-xs">
-                <span>Claimed / Verified:</span>
+                <span className="text-foreground">Claimed / Verified:</span>
                 <strong className="text-success font-bold">
                   {metrics.certificates.totalClaimedOrVerified} verified
                 </strong>

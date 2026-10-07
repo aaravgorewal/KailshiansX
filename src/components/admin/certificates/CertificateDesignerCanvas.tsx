@@ -5,17 +5,7 @@
 // for Recipient Name, Event Title, Issue Date, Credential ID, and Verification QR code.
 
 import React, { useState, useRef, useCallback } from "react";
-import {
-  Upload,
-  Move,
-  Type,
-  Calendar,
-  QrCode,
-  Hash,
-  RotateCcw,
-  Sparkles,
-  Sliders,
-} from "lucide-react";
+import { Upload, Move, Type, Calendar, QrCode, Hash, RotateCcw, Zap, Sliders } from "lucide-react";
 import type { CertificateTemplateConfig, CertificateFieldConfig } from "@/server/certificates/pdf";
 import { cn } from "@/lib/utils";
 
@@ -167,11 +157,11 @@ export function CertificateDesignerCanvas({
   return (
     <div className="space-y-6">
       {/* Top action toolbar */}
-      <div className="bg-surface-900/60 border-surface-800 flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-4">
+      <div className="bg-card border-border flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-4">
         <div className="flex items-center gap-2">
           <label
             htmlFor="cert-design-upload"
-            className="bg-brand-500 hover:bg-brand-600 flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-colors"
+            className="bg-primary hover:bg-primary-hover text-primary-foreground flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold shadow-sm transition-colors"
           >
             <Upload className="h-4 w-4" />
             <span>Upload Custom Design (PNG/JPG)</span>
@@ -191,7 +181,7 @@ export function CertificateDesignerCanvas({
                 setBackgroundUrl(null);
                 onChange({ templateUrl: null, fields });
               }}
-              className="text-surface-400 bg-surface-800 border-surface-700 rounded-xl border px-3 py-2 text-xs font-medium hover:text-white"
+              className="text-muted-foreground bg-muted border-border hover:text-foreground rounded-xl border px-3 py-2 text-xs font-medium"
             >
               Clear Custom Artwork
             </button>
@@ -200,16 +190,16 @@ export function CertificateDesignerCanvas({
           <button
             type="button"
             onClick={handleResetDefaults}
-            className="text-surface-400 bg-surface-800 hover:bg-surface-700 border-surface-700 flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-colors hover:text-white"
+            className="text-muted-foreground bg-muted hover:bg-muted border-border hover:text-foreground flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-medium transition-colors"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             <span>Reset Coordinates</span>
           </button>
         </div>
 
-        <div className="text-surface-400 flex items-center gap-2 text-xs">
-          <span className="bg-surface-800/80 border-surface-700/60 flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-medium">
-            <Move className="text-brand-400 h-3.5 w-3.5" />
+        <div className="text-muted-foreground flex items-center gap-2 text-xs">
+          <span className="bg-muted border-border flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-medium">
+            <Move className="text-primary h-3.5 w-3.5" />
             Click &amp; drag elements on canvas to position
           </span>
         </div>
@@ -224,8 +214,9 @@ export function CertificateDesignerCanvas({
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            className="border-surface-700 bg-surface-950 relative aspect-[842/595] w-full overflow-hidden rounded-2xl border-2 shadow-2xl select-none"
+            className="dark border-border bg-background relative aspect-[842/595] w-full overflow-hidden rounded-2xl border-2 shadow-2xl select-none"
             style={{
+              backgroundColor: "#0b0b0c",
               backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : undefined,
               backgroundSize: "cover",
               backgroundPosition: "center",
@@ -235,35 +226,35 @@ export function CertificateDesignerCanvas({
             {!backgroundUrl && (
               <div className="pointer-events-none absolute inset-0 flex flex-col justify-between p-6">
                 {/* Border frames */}
-                <div className="border-brand-500/40 pointer-events-none absolute inset-4 rounded-xl border" />
-                <div className="pointer-events-none absolute inset-6 rounded-lg border border-amber-500/30" />
+                <div className="border-primary/40 pointer-events-none absolute inset-4 rounded-xl border" />
+                <div className="border-border pointer-events-none absolute inset-6 rounded-lg border" />
 
                 {/* Header text */}
                 <div className="pt-2 text-center">
-                  <div className="text-brand-400 text-[10px] font-bold tracking-widest uppercase">
+                  <div className="text-primary text-xs font-bold tracking-widest uppercase">
                     KailshiansX · Developer Platform &amp; Builder Ecosystem
                   </div>
-                  <div className="mt-1 text-xl font-black tracking-wide text-white sm:text-2xl">
+                  <div className="text-foreground mt-1 text-xl font-black tracking-wide sm:text-2xl">
                     CERTIFICATE OF EXCELLENCE
                   </div>
-                  <div className="text-surface-400 mt-1 text-[11px] font-medium tracking-wider uppercase">
+                  <div className="text-muted-foreground mt-1 text-xs font-medium tracking-wider uppercase">
                     This is proudly presented to
                   </div>
                 </div>
 
                 {/* Middle subtitle */}
-                <div className="text-surface-400 px-12 text-center text-xs">
+                <div className="text-muted-foreground px-12 text-center text-xs">
                   for distinguished participation and verified engineering excellence in
                 </div>
 
                 {/* Signatures */}
-                <div className="text-surface-400 flex items-end justify-between px-6 pb-2 text-[11px]">
-                  <div className="border-surface-700 w-36 border-t pt-1 text-left">
-                    <div className="text-xs font-bold text-white">Aarav Gorewal</div>
+                <div className="text-muted-foreground flex items-end justify-between px-6 pb-2 text-xs">
+                  <div className="border-border w-36 border-t pt-1 text-left">
+                    <div className="text-foreground text-xs font-bold">Aarav Gorewal</div>
                     <div className="text-[9px]">Founder, KailshiansX</div>
                   </div>
-                  <div className="border-surface-700 w-36 border-t pt-1 text-right">
-                    <div className="text-xs font-bold text-white">KWS Engineering</div>
+                  <div className="border-border w-36 border-t pt-1 text-right">
+                    <div className="text-foreground text-xs font-bold">KWS Engineering</div>
                     <div className="text-[9px]">Verified Issuing Chapter</div>
                   </div>
                 </div>
@@ -277,8 +268,8 @@ export function CertificateDesignerCanvas({
                 className={cn(
                   "absolute cursor-move rounded-lg border px-2 py-0.5 transition-shadow",
                   activeKey === "recipientName"
-                    ? "border-brand-400 bg-brand-500/10 ring-brand-500/40 shadow-lg ring-2"
-                    : "hover:border-surface-500/50 hover:bg-surface-800/30 border-transparent"
+                    ? "border-primary bg-primary/10 ring-primary/40 shadow-lg ring-2"
+                    : "hover:border-border hover:bg-muted border-transparent"
                 )}
                 style={{
                   left: `${fields.recipientName.x}%`,
@@ -306,8 +297,8 @@ export function CertificateDesignerCanvas({
                 className={cn(
                   "absolute cursor-move rounded-lg border px-2 py-0.5 transition-shadow",
                   activeKey === "eventTitle"
-                    ? "border-brand-400 bg-brand-500/10 ring-brand-500/40 shadow-lg ring-2"
-                    : "hover:border-surface-500/50 hover:bg-surface-800/30 border-transparent"
+                    ? "border-primary bg-primary/10 ring-primary/40 shadow-lg ring-2"
+                    : "hover:border-border hover:bg-muted border-transparent"
                 )}
                 style={{
                   left: `${fields.eventTitle.x}%`,
@@ -334,8 +325,8 @@ export function CertificateDesignerCanvas({
                 className={cn(
                   "absolute cursor-move rounded-lg border px-2 py-0.5 transition-shadow",
                   activeKey === "issueDate"
-                    ? "border-brand-400 bg-brand-500/10 ring-brand-500/40 shadow-lg ring-2"
-                    : "hover:border-surface-500/50 hover:bg-surface-800/30 border-transparent"
+                    ? "border-primary bg-primary/10 ring-primary/40 shadow-lg ring-2"
+                    : "hover:border-border hover:bg-muted border-transparent"
                 )}
                 style={{
                   left: `${fields.issueDate.x}%`,
@@ -362,8 +353,8 @@ export function CertificateDesignerCanvas({
                 className={cn(
                   "absolute flex cursor-move items-center justify-center rounded-xl border bg-white p-1 shadow-md transition-shadow",
                   activeKey === "qrCode"
-                    ? "border-brand-400 ring-brand-500/40 shadow-xl ring-2"
-                    : "border-surface-300"
+                    ? "border-primary ring-primary/40 shadow-xl ring-2"
+                    : "border-border"
                 )}
                 style={{
                   left: `${fields.qrCode.x}%`,
@@ -378,7 +369,7 @@ export function CertificateDesignerCanvas({
                         : "translate(0, -50%)",
                 }}
               >
-                <QrCode className="h-full w-full text-slate-900" />
+                <QrCode className="text-foreground h-full w-full" />
               </div>
             )}
 
@@ -389,8 +380,8 @@ export function CertificateDesignerCanvas({
                 className={cn(
                   "absolute cursor-move rounded-lg border px-2 py-0.5 font-mono transition-shadow",
                   activeKey === "uniqueId"
-                    ? "border-brand-400 bg-brand-500/10 ring-brand-500/40 shadow-lg ring-2"
-                    : "hover:border-surface-500/50 hover:bg-surface-800/30 border-transparent"
+                    ? "border-primary bg-primary/10 ring-primary/40 shadow-lg ring-2"
+                    : "hover:border-border hover:bg-muted border-transparent"
                 )}
                 style={{
                   left: `${fields.uniqueId.x}%`,
@@ -411,20 +402,20 @@ export function CertificateDesignerCanvas({
             )}
           </div>
 
-          <p className="text-surface-500 mt-3 text-center text-xs">
+          <p className="text-muted-foreground mt-3 text-center text-xs">
             Standard ISO 216 A4 Landscape proportions (842 × 595 pt). Exact pixel-perfect mapping in
             final PDF.
           </p>
         </div>
 
         {/* Properties & Fine-Tuning Sidebar */}
-        <div className="bg-surface-900/80 border-surface-800 space-y-5 rounded-2xl border p-5 backdrop-blur-xl lg:col-span-4">
-          <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-            <h4 className="flex items-center gap-2 text-sm font-bold text-white">
-              <Sliders className="text-brand-400 h-4 w-4" />
+        <div className="bg-card border-border space-y-5 rounded-2xl border p-5 backdrop-blur-xl lg:col-span-4">
+          <div className="border-border flex items-center justify-between border-b pb-3">
+            <h4 className="text-foreground flex items-center gap-2 text-sm font-bold">
+              <Sliders className="text-primary h-4 w-4" />
               <span>Element Properties</span>
             </h4>
-            <span className="text-brand-400 bg-brand-500/10 border-brand-500/20 rounded-md border px-2 py-0.5 font-mono text-[11px]">
+            <span className="text-primary bg-primary/10 border-primary/20 rounded-md border px-2 py-0.5 font-mono text-xs">
               {activeKey}
             </span>
           </div>
@@ -433,7 +424,7 @@ export function CertificateDesignerCanvas({
           <div className="grid grid-cols-2 gap-2">
             {[
               { key: "recipientName" as const, label: "Recipient Name", icon: Type },
-              { key: "eventTitle" as const, label: "Event Title", icon: Sparkles },
+              { key: "eventTitle" as const, label: "Event Title", icon: Zap },
               { key: "issueDate" as const, label: "Issue Date", icon: Calendar },
               { key: "qrCode" as const, label: "QR Code Box", icon: QrCode },
               { key: "uniqueId" as const, label: "Credential ID", icon: Hash },
@@ -448,8 +439,8 @@ export function CertificateDesignerCanvas({
                   className={cn(
                     "flex items-center gap-2 rounded-xl p-2.5 text-left text-xs font-semibold transition-all",
                     isActive
-                      ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                      : "bg-surface-800/80 text-surface-300 hover:bg-surface-700/80 hover:text-white"
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "bg-muted text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -463,33 +454,35 @@ export function CertificateDesignerCanvas({
           <div className="space-y-4 pt-2">
             <div>
               <div className="mb-1.5 flex justify-between text-xs font-semibold">
-                <span className="text-surface-400">Horizontal Position (X%)</span>
-                <span className="text-brand-400 font-mono">{activeField.x ?? 50}%</span>
+                <span className="text-muted-foreground">Horizontal Position (X%)</span>
+                <span className="text-primary font-mono">{activeField.x ?? 50}%</span>
               </div>
               <input
                 type="range"
                 min="5"
                 max="95"
                 step="0.5"
+                aria-label="Horizontal Position"
                 value={activeField.x ?? 50}
                 onChange={(e) => updateField(activeKey, { x: parseFloat(e.target.value) })}
-                className="accent-brand-500 w-full cursor-pointer"
+                className="accent-primary w-full cursor-pointer"
               />
             </div>
 
             <div>
               <div className="mb-1.5 flex justify-between text-xs font-semibold">
-                <span className="text-surface-400">Vertical Position (Y%)</span>
-                <span className="text-brand-400 font-mono">{activeField.y ?? 50}%</span>
+                <span className="text-muted-foreground">Vertical Position (Y%)</span>
+                <span className="text-primary font-mono">{activeField.y ?? 50}%</span>
               </div>
               <input
                 type="range"
                 min="5"
                 max="95"
                 step="0.5"
+                aria-label="Vertical Position"
                 value={activeField.y ?? 50}
                 onChange={(e) => updateField(activeKey, { y: parseFloat(e.target.value) })}
-                className="accent-brand-500 w-full cursor-pointer"
+                className="accent-primary w-full cursor-pointer"
               />
             </div>
 
@@ -497,33 +490,35 @@ export function CertificateDesignerCanvas({
             {activeKey === "qrCode" ? (
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-semibold">
-                  <span className="text-surface-400">QR Code Size</span>
-                  <span className="text-brand-400 font-mono">{activeField.size ?? 68}px</span>
+                  <span className="text-muted-foreground">QR Code Size</span>
+                  <span className="text-primary font-mono">{activeField.size ?? 68}px</span>
                 </div>
                 <input
                   type="range"
                   min="40"
                   max="120"
                   step="2"
+                  aria-label="QR Code Size"
                   value={activeField.size ?? 68}
                   onChange={(e) => updateField(activeKey, { size: parseInt(e.target.value) })}
-                  className="accent-brand-500 w-full cursor-pointer"
+                  className="accent-primary w-full cursor-pointer"
                 />
               </div>
             ) : (
               <div>
                 <div className="mb-1.5 flex justify-between text-xs font-semibold">
-                  <span className="text-surface-400">Font Size</span>
-                  <span className="text-brand-400 font-mono">{activeField.fontSize ?? 16}pt</span>
+                  <span className="text-muted-foreground">Font Size</span>
+                  <span className="text-primary font-mono">{activeField.fontSize ?? 16}pt</span>
                 </div>
                 <input
                   type="range"
                   min="8"
                   max="48"
                   step="1"
+                  aria-label="Font Size"
                   value={activeField.fontSize ?? 16}
                   onChange={(e) => updateField(activeKey, { fontSize: parseInt(e.target.value) })}
-                  className="accent-brand-500 w-full cursor-pointer"
+                  className="accent-primary w-full cursor-pointer"
                 />
               </div>
             )}
@@ -531,12 +526,13 @@ export function CertificateDesignerCanvas({
             {/* Color picker for text elements */}
             {activeKey !== "qrCode" && (
               <div>
-                <span className="text-surface-400 mb-2 block text-xs font-semibold">
+                <span className="text-muted-foreground mb-2 block text-xs font-semibold">
                   Text Color
                 </span>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
+                    aria-label="Text Color"
                     value={activeField.color || "#ffffff"}
                     onChange={(e) => updateField(activeKey, { color: e.target.value })}
                     className="h-8 w-8 cursor-pointer rounded-lg border-0 bg-transparent"
@@ -548,7 +544,7 @@ export function CertificateDesignerCanvas({
                           key={color}
                           type="button"
                           onClick={() => updateField(activeKey, { color })}
-                          className="border-surface-700 h-6 w-6 rounded-md border shadow-sm"
+                          className="border-border h-6 w-6 rounded-md border shadow-sm"
                           style={{ backgroundColor: color }}
                           aria-label={`Color ${color}`}
                         />
@@ -561,7 +557,9 @@ export function CertificateDesignerCanvas({
 
             {/* Alignment */}
             <div>
-              <span className="text-surface-400 mb-2 block text-xs font-semibold">Alignment</span>
+              <span className="text-muted-foreground mb-2 block text-xs font-semibold">
+                Alignment
+              </span>
               <div className="grid grid-cols-3 gap-2">
                 {(["left", "center", "right"] as const).map((align) => (
                   <button
@@ -571,8 +569,8 @@ export function CertificateDesignerCanvas({
                     className={cn(
                       "rounded-lg px-3 py-1.5 text-xs font-semibold capitalize transition-colors",
                       (activeField.align || "center") === align
-                        ? "bg-surface-700 border-surface-600 border text-white"
-                        : "bg-surface-800/60 text-surface-400 hover:text-surface-200"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:text-foreground"
                     )}
                   >
                     {align}

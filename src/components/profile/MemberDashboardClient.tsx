@@ -13,7 +13,7 @@ import {
   FileText,
   UserCheck,
   Settings,
-  Sparkles,
+  Zap,
   RefreshCw,
   Shield,
   Layers,
@@ -97,7 +97,7 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
   };
 
   const tabs: { key: TabKey; label: string; count?: number; icon: React.ElementType }[] = [
-    { key: "OVERVIEW", label: "Passport & Overview", icon: Sparkles },
+    { key: "OVERVIEW", label: "Passport & Overview", icon: Zap },
     ...(recommendations
       ? [
           {
@@ -131,29 +131,29 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
   return (
     <div className="space-y-8">
       {/* Auto-link Past Registrations Notification Strip */}
-      <div className="from-brand-950/40 via-surface-900/60 border-brand-500/20 flex flex-col justify-between gap-3 rounded-2xl border bg-gradient-to-r to-purple-950/40 p-4 shadow-lg backdrop-blur-md sm:flex-row sm:items-center">
+      <div className="bg-card border-border flex flex-col justify-between gap-3 rounded-2xl border p-4 shadow-sm sm:flex-row sm:items-center">
         <div className="flex items-center gap-3">
-          <div className="bg-brand-500/20 border-brand-500/30 text-brand-400 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border">
+          <div className="bg-primary/10 border-primary/20 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border">
             <RefreshCw className={cn("h-4 w-4", autoLinking && "animate-spin")} />
           </div>
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-white">
+            <div className="text-foreground flex items-center gap-2 text-xs font-bold">
               <span>Automatic Email Record Sync</span>
-              <span className="text-brand-400 bg-brand-500/10 border-brand-500/20 rounded-full border px-2 py-0.5 text-[10px]">
+              <span className="text-primary bg-primary/10 border-primary/20 rounded-full border px-2 py-0.5 text-xs">
                 Active
               </span>
             </div>
-            <p className="text-surface-400 mt-0.5 text-xs">
+            <p className="text-muted-foreground mt-0.5 text-xs">
               Tickets and certificates registered with{" "}
-              <span className="text-surface-200 font-mono">{data.user.email}</span> are
-              automatically linked.
+              <span className="text-foreground font-mono">{data.user.email}</span> are automatically
+              linked.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3 self-end sm:self-auto">
           {autoLinkMessage && (
-            <span className="animate-in fade-in text-xs font-semibold text-emerald-400">
+            <span className="animate-in fade-in text-success text-xs font-semibold">
               {autoLinkMessage}
             </span>
           )}
@@ -162,7 +162,7 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
             id="btn-sync-records"
             onClick={handleAutoLink}
             disabled={autoLinking}
-            className="text-surface-200 bg-surface-800 hover:bg-surface-700 border-surface-700 flex shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-sm transition-colors hover:text-white"
+            className="text-foreground bg-muted hover:bg-muted border-border hover:text-foreground flex shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-sm transition-colors"
           >
             <RefreshCw className={cn("h-3.5 w-3.5", autoLinking && "animate-spin")} />
             <span>{autoLinking ? "Syncing..." : "Re-sync Past Records"}</span>
@@ -178,7 +178,7 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
       />
 
       {/* Navigation Tabs Bar */}
-      <div className="border-surface-800 no-scrollbar overflow-x-auto border-b pb-px">
+      <div className="border-border no-scrollbar overflow-x-auto border-b pb-px">
         <div className="flex min-w-max items-center gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -193,26 +193,26 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
                 className={cn(
                   "relative flex items-center gap-2 rounded-t-xl px-4 py-3 text-sm font-semibold transition-all",
                   isActive
-                    ? "text-brand-400 bg-surface-900 border-surface-700/80 border-x border-t shadow-md"
-                    : "text-surface-400 hover:text-surface-200 hover:bg-surface-900/40"
+                    ? "text-primary bg-card border-border border-x border-t shadow-md"
+                    : "text-muted-foreground hover:text-foreground hover:bg-card"
                 )}
               >
-                <Icon className={cn("h-4 w-4", isActive ? "text-brand-400" : "text-surface-500")} />
+                <Icon
+                  className={cn("h-4 w-4", isActive ? "text-primary" : "text-muted-foreground")}
+                />
                 <span>{tab.label}</span>
                 {tab.count !== undefined && tab.count > 0 && (
                   <span
                     className={cn(
-                      "py-0.2 rounded-full px-1.5 text-[11px] font-bold",
-                      isActive
-                        ? "bg-brand-500/20 text-brand-300"
-                        : "bg-surface-800 text-surface-400"
+                      "py-0.2 rounded-full px-1.5 text-xs font-bold",
+                      isActive ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
                     )}
                   >
                     {tab.count}
                   </span>
                 )}
 
-                {isActive && <span className="bg-brand-500 absolute inset-x-0 bottom-0 h-0.5" />}
+                {isActive && <span className="bg-primary absolute inset-x-0 bottom-0 h-0.5" />}
               </button>
             );
           })}
@@ -224,17 +224,17 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
         {activeTab === "OVERVIEW" && (
           <div className="space-y-8">
             {recommendations && (
-              <div className="border-brand-500/30 from-brand-950/40 via-surface-900/60 flex flex-col justify-between gap-4 rounded-3xl border bg-gradient-to-r to-purple-950/40 p-5 backdrop-blur-md sm:flex-row sm:items-center">
+              <div className="bg-card border-border flex flex-col justify-between gap-4 rounded-3xl border p-5 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-3">
-                  <div className="bg-brand-500/20 border-brand-500/30 text-brand-400 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border">
-                    <Sparkles className="h-5 w-5" />
+                  <div className="bg-primary/10 border-primary/20 text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border">
+                    <Zap className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white">
+                    <h4 className="text-foreground text-sm font-bold">
                       {recommendations.recommendedEvents.length} Events &{" "}
                       {recommendations.recommendedRoles.length} Leadership Roles Recommended For You
                     </h4>
-                    <p className="text-surface-400 mt-0.5 text-xs">
+                    <p className="text-muted-foreground mt-0.5 text-xs">
                       Tailored to your attendance history, skills, and city (
                       {recommendations.userContext.city || "your region"}).
                     </p>
@@ -244,7 +244,7 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
                   type="button"
                   id="btn-view-recommendations"
                   onClick={() => setActiveTab("RECOMMENDED")}
-                  className="bg-brand-500 hover:bg-brand-400 inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white transition-colors"
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-colors"
                 >
                   <span>Explore Matches</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -264,11 +264,11 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
         {activeTab === "TICKETS" && (
           <div className="space-y-4">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                <Ticket className="text-brand-400 h-5 w-5" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-bold">
+                <Ticket className="text-primary h-5 w-5" />
                 My Event Tickets & Access Passes
               </h3>
-              <p className="text-surface-400 mt-1 text-sm">
+              <p className="text-muted-foreground mt-1 text-sm">
                 Show your unique QR pass at entry desks or download printable confirmations.
               </p>
             </div>
@@ -279,11 +279,11 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
         {activeTab === "CERTIFICATES" && (
           <div className="space-y-4">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                <Award className="h-5 w-5 text-amber-400" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-bold">
+                <Award className="text-primary h-5 w-5" />
                 Verifiable Certificates
               </h3>
-              <p className="text-surface-400 mt-1 text-sm">
+              <p className="text-muted-foreground mt-1 text-sm">
                 Authentic certificates issued by KailshiansX with public verification identifiers.
               </p>
             </div>
@@ -294,11 +294,11 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
         {activeTab === "WORKSHOPS" && (
           <div className="space-y-4">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                <Code2 className="h-5 w-5 text-teal-400" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-bold">
+                <Code2 className="text-success h-5 w-5" />
                 Technical Workshops
               </h3>
-              <p className="text-surface-400 mt-1 text-sm">
+              <p className="text-muted-foreground mt-1 text-sm">
                 Hands-on coding bootcamps, architectural deep dives, and slide repositories.
               </p>
             </div>
@@ -309,11 +309,11 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
         {activeTab === "HACKATHONS" && (
           <div className="space-y-4">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                <Flame className="h-5 w-5 text-amber-400" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-bold">
+                <Flame className="text-primary h-5 w-5" />
                 Hackathon Series (NirmanX & AarambhX)
               </h3>
-              <p className="text-surface-400 mt-1 text-sm">
+              <p className="text-muted-foreground mt-1 text-sm">
                 Tracks, problem statements, and team registrations for regional hackathon editions.
               </p>
             </div>
@@ -324,11 +324,11 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
         {activeTab === "APPLICATIONS" && (
           <div className="space-y-4">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                <FileText className="text-brand-400 h-5 w-5" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-bold">
+                <FileText className="text-primary h-5 w-5" />
                 Applications Status Tracker
               </h3>
-              <p className="text-surface-400 mt-1 text-sm">
+              <p className="text-muted-foreground mt-1 text-sm">
                 Real-time status updates on your core team, campus lead, and state lead submissions.
               </p>
             </div>
@@ -337,28 +337,28 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
         )}
 
         {activeTab === "ROLE" && (
-          <div className="border-surface-800 bg-surface-900/60 space-y-6 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
+          <div className="border-border bg-card space-y-6 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-                <Shield className="text-brand-400 h-5 w-5" />
+              <h3 className="text-foreground flex items-center gap-2 text-lg font-bold">
+                <Shield className="text-primary h-5 w-5" />
                 Community Leadership & Permissions
               </h3>
-              <p className="text-surface-400 mt-1 text-sm">
+              <p className="text-muted-foreground mt-1 text-sm">
                 Your role, institutional affiliations, and governance privileges in the KailshiansX
                 network.
               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="bg-surface-950/70 border-surface-800 rounded-xl border p-5">
-                <div className="text-surface-400 mb-1 text-xs font-semibold tracking-wider uppercase">
+              <div className="bg-background border-border rounded-xl border p-5">
+                <div className="text-muted-foreground mb-1 text-xs font-semibold tracking-wider uppercase">
                   Platform Role
                 </div>
-                <div className="flex items-center gap-2 text-lg font-extrabold text-white">
-                  <UserCheck className="text-brand-400 h-5 w-5" />
+                <div className="text-foreground flex items-center gap-2 text-lg font-extrabold">
+                  <UserCheck className="text-primary h-5 w-5" />
                   {data.communityRole.role.replace("_", " ")}
                 </div>
-                <p className="text-surface-400 mt-2 text-xs">
+                <p className="text-muted-foreground mt-2 text-xs">
                   {data.communityRole.role === "SUPER_ADMIN"
                     ? "Full ecosystem administrative rights across all databases, audit logs, and finances."
                     : data.communityRole.role === "ADMIN"
@@ -371,15 +371,15 @@ export function MemberDashboardClient({ initialData, recommendations }: Props) {
                 </p>
               </div>
 
-              <div className="bg-surface-950/70 border-surface-800 rounded-xl border p-5">
-                <div className="text-surface-400 mb-1 text-xs font-semibold tracking-wider uppercase">
+              <div className="bg-background border-border rounded-xl border p-5">
+                <div className="text-muted-foreground mb-1 text-xs font-semibold tracking-wider uppercase">
                   Leadership Chapter
                 </div>
-                <div className="flex items-center gap-2 text-lg font-extrabold text-white">
-                  <Layers className="h-5 w-5 text-teal-400" />
+                <div className="text-foreground flex items-center gap-2 text-lg font-extrabold">
+                  <Layers className="text-success h-5 w-5" />
                   {data.communityRole.isLead ? data.communityRole.leadTitle : "General Member"}
                 </div>
-                <p className="text-surface-400 mt-2 text-xs">
+                <p className="text-muted-foreground mt-2 text-xs">
                   {data.communityRole.campusName
                     ? `Campus Lead for ${data.communityRole.campusName}`
                     : data.communityRole.stateName

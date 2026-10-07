@@ -1,5 +1,5 @@
 // src/lib/validations/team-application.ts
-// Zod schemas for team recruitment applications and admin status updates (PRD §14)
+// Zod schemas for team recruitment applications and admin status updates ()
 
 import { z } from "zod";
 import { TEAM_AREAS, TEAM_APPLICATION_STATUSES } from "@/lib/team-constants";

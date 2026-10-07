@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
-  Sparkles,
+  Zap,
   ArrowRight,
   Code,
   CheckCircle2,
@@ -140,9 +140,9 @@ export default function ComponentsPreviewPage() {
   ];
 
   return (
-    <div className="bg-surface-950 min-h-screen pb-24">
+    <div className="bg-background min-h-screen pb-24">
       {/* Hero Header */}
-      <div className="border-surface-800 bg-surface-900/60 relative border-b pt-10 pb-8 backdrop-blur-md">
+      <div className="border-border bg-card relative border-b pt-10 pb-8 backdrop-blur-md">
         <div className="container-page">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
@@ -157,10 +157,10 @@ export default function ComponentsPreviewPage() {
                   Accessible • WCAG 2.1 AA
                 </Badge>
               </div>
-              <h1 className="text-surface-50 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
-                UI Kit <span className="gradient-text">Component Lab</span>
+              <h1 className="text-foreground text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
+                UI Kit <span className="text-foreground font-semibold">Component Lab</span>
               </h1>
-              <p className="text-surface-400 mt-2 max-w-2xl text-sm leading-relaxed sm:text-base">
+              <p className="text-muted-foreground mt-2 max-w-2xl text-sm leading-relaxed sm:text-base">
                 Developer-community-first component collection designed for KailshiansX. Engineered
                 with strict TypeScript, keyboard navigation, full ARIA roles, and responsive mobile
                 patterns.
@@ -184,7 +184,7 @@ export default function ComponentsPreviewPage() {
               <Button
                 variant="accent"
                 size="sm"
-                rightIcon={<Sparkles className="size-4" />}
+                rightIcon={<Zap className="size-4" />}
                 onClick={() => {
                   setBtnLoading(true);
                   setTimeout(() => setBtnLoading(false), 2000);
@@ -209,8 +209,8 @@ export default function ComponentsPreviewPage() {
                 onClick={() => setActiveTab(sec.id)}
                 className={`rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
                   activeTab === sec.id
-                    ? "bg-brand-600 font-semibold text-white shadow-sm"
-                    : "bg-surface-800/80 text-surface-300 hover:bg-surface-700 hover:text-white"
+                    ? "bg-primary-hover font-semibold text-white shadow-sm"
+                    : "bg-muted text-muted-foreground hover:bg-muted hover:text-white"
                 }`}
               >
                 {sec.label}
@@ -242,13 +242,13 @@ export default function ComponentsPreviewPage() {
             <CardContent className="space-y-6">
               {/* Variants */}
               <div>
-                <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+                <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                   Variants
                 </h4>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button variant="default">Primary Default</Button>
                   <Button variant="secondary">Secondary</Button>
-                  <Button variant="accent" leftIcon={<Sparkles className="size-4" />}>
+                  <Button variant="accent" leftIcon={<Zap className="size-4" />}>
                     Accent Gradient
                   </Button>
                   <Button variant="outline">Outline</Button>
@@ -260,7 +260,7 @@ export default function ComponentsPreviewPage() {
 
               {/* Sizes */}
               <div>
-                <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+                <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                   Sizes
                 </h4>
                 <div className="flex flex-wrap items-center gap-3">
@@ -278,7 +278,7 @@ export default function ComponentsPreviewPage() {
 
               {/* Loading & Interactive state */}
               <div>
-                <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+                <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                   Loading & Interactive States
                 </h4>
                 <div className="flex flex-wrap items-center gap-3">
@@ -319,7 +319,7 @@ export default function ComponentsPreviewPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+                <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                   Color Variants
                 </h4>
                 <div className="flex flex-wrap items-center gap-2.5">
@@ -336,7 +336,7 @@ export default function ComponentsPreviewPage() {
               </div>
 
               <div>
-                <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+                <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                   Live Dots & Sizes
                 </h4>
                 <div className="flex flex-wrap items-center gap-3">
@@ -387,11 +387,11 @@ export default function ComponentsPreviewPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-surface-400 text-xs">
+                <p className="text-muted-foreground text-xs">
                   Ideal for standard listings, secondary information, and content blocks.
                 </p>
               </CardContent>
-              <CardFooter className="text-surface-400 justify-between text-xs">
+              <CardFooter className="text-muted-foreground justify-between text-xs">
                 <span>Updated today</span>
                 <Button size="xs" variant="ghost">
                   Learn More
@@ -410,12 +410,12 @@ export default function ComponentsPreviewPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-surface-400 text-xs">
+                <p className="text-muted-foreground text-xs">
                   Perfect for featured workshops, flagship events, and call-to-action blocks.
                 </p>
               </CardContent>
               <CardFooter className="justify-between">
-                <span className="text-brand-400 font-mono text-xs">interactive=true</span>
+                <span className="text-primary font-mono text-xs">interactive=true</span>
                 <Button size="xs">Explore</Button>
               </CardFooter>
             </Card>
@@ -431,12 +431,12 @@ export default function ComponentsPreviewPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-surface-400 text-xs">
+                <p className="text-muted-foreground text-xs">
                   Accented with violet diffuse highlights and glassmorphic depth.
                 </p>
               </CardContent>
               <CardFooter className="justify-between">
-                <span className="text-accent-400 font-mono text-xs">accentGlow</span>
+                <span className="text-primary font-mono text-xs">accentGlow</span>
                 <Button size="xs" variant="accent">
                   Register
                 </Button>
@@ -458,7 +458,7 @@ export default function ComponentsPreviewPage() {
           {/* Event Cards Grid */}
           <div>
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-surface-100 text-xl font-bold">EventCard Examples</h3>
+              <h3 className="text-foreground text-xl font-bold">EventCard Examples</h3>
               <Badge variant="brand" size="sm">
                 4 Event Types Shown
               </Badge>
@@ -528,7 +528,7 @@ export default function ComponentsPreviewPage() {
 
           {/* Series Cards */}
           <div className="pt-4">
-            <h3 className="text-surface-100 mb-4 text-xl font-bold">SeriesCard Examples</h3>
+            <h3 className="text-foreground mb-4 text-xl font-bold">SeriesCard Examples</h3>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <SeriesCard
                 name="PadharoX"
@@ -570,7 +570,7 @@ export default function ComponentsPreviewPage() {
 
           {/* Speaker Cards */}
           <div className="pt-4">
-            <h3 className="text-surface-100 mb-4 text-xl font-bold">SpeakerCard Examples</h3>
+            <h3 className="text-foreground mb-4 text-xl font-bold">SpeakerCard Examples</h3>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
               <SpeakerCard
                 name="Aarav Sharma"
@@ -1056,7 +1056,7 @@ export default function ComponentsPreviewPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <Button
                   variant="outline"
-                  leftIcon={<CheckCircle2 className="size-4 text-emerald-400" />}
+                  leftIcon={<CheckCircle2 className="text-success size-4" />}
                   onClick={() =>
                     toast({
                       variant: "success",
@@ -1070,7 +1070,7 @@ export default function ComponentsPreviewPage() {
 
                 <Button
                   variant="outline"
-                  leftIcon={<AlertCircle className="size-4 text-rose-400" />}
+                  leftIcon={<AlertCircle className="text-destructive size-4" />}
                   onClick={() =>
                     toast({
                       variant: "destructive",
@@ -1084,7 +1084,7 @@ export default function ComponentsPreviewPage() {
 
                 <Button
                   variant="outline"
-                  leftIcon={<AlertTriangle className="size-4 text-amber-400" />}
+                  leftIcon={<AlertTriangle className="text-primary size-4" />}
                   onClick={() =>
                     toast({
                       variant: "warning",
@@ -1098,7 +1098,7 @@ export default function ComponentsPreviewPage() {
 
                 <Button
                   variant="outline"
-                  leftIcon={<Info className="text-brand-400 size-4" />}
+                  leftIcon={<Info className="text-primary size-4" />}
                   onClick={() =>
                     toast({
                       variant: "info",
@@ -1144,7 +1144,7 @@ export default function ComponentsPreviewPage() {
             />
 
             <EmptyState
-              icon={<Calendar className="text-accent-400 size-7" />}
+              icon={<Calendar className="text-primary size-7" />}
               title="No Registrations Yet"
               description="You have not registered for any upcoming sessions. Explore our schedule to grab your pass."
               action={{
@@ -1178,21 +1178,21 @@ export default function ComponentsPreviewPage() {
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div>
-              <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+              <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                 EventCard Skeleton
               </h4>
               <EventCardSkeleton />
             </div>
 
             <div>
-              <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+              <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                 SpeakerCard Skeleton
               </h4>
               <SpeakerCardSkeleton />
             </div>
 
             <div>
-              <h4 className="text-surface-400 mb-3 font-mono text-xs tracking-wider uppercase">
+              <h4 className="text-muted-foreground mb-3 font-mono text-xs tracking-wider uppercase">
                 SeriesCard Skeleton
               </h4>
               <SeriesCardSkeleton />
@@ -1232,10 +1232,10 @@ export default function ComponentsPreviewPage() {
               {/* Single Select */}
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <h4 className="text-surface-400 font-mono text-xs tracking-wider uppercase">
+                  <h4 className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
                     Single Select (Event Types)
                   </h4>
-                  <span className="text-brand-400 font-mono text-xs">Selected: {singleFilter}</span>
+                  <span className="text-primary font-mono text-xs">Selected: {singleFilter}</span>
                 </div>
                 <FilterChips
                   selected={singleFilter}
@@ -1252,10 +1252,10 @@ export default function ComponentsPreviewPage() {
               {/* Multi Select */}
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <h4 className="text-surface-400 font-mono text-xs tracking-wider uppercase">
+                  <h4 className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
                     Multi Select (Topics / Tech Stacks)
                   </h4>
-                  <span className="text-accent-400 font-mono text-xs">
+                  <span className="text-primary font-mono text-xs">
                     Active: {multiFilter.length} tags
                   </span>
                 </div>
@@ -1285,11 +1285,10 @@ export default function ComponentsPreviewPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="border-surface-800 bg-surface-900/40 mb-4 rounded-xl border p-4 text-center">
-                <span className="text-surface-300 text-sm">
+              <div className="border-border bg-card mb-4 rounded-xl border p-4 text-center">
+                <span className="text-muted-foreground text-sm">
                   Showing results for page:{" "}
-                  <strong className="text-brand-400 font-mono text-base">{currentPage}</strong> of
-                  10
+                  <strong className="text-primary font-mono text-base">{currentPage}</strong> of 10
                 </span>
               </div>
 

@@ -1,5 +1,6 @@
 // src/server/email/templates/BaseLayout.tsx
 // Centralized React Email Base Layout for all KailshiansX transactional emails.
+// Light, simple, table-safe layout using Light palette literal hex colors.
 
 import * as React from "react";
 import {
@@ -28,13 +29,15 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://kailshiansx.com";
 export function BaseLayout({
   previewText,
   badgeText = "Developer Ecosystem",
-  badgeColor = "#3b82f6",
+  badgeColor = "#2563eb",
   children,
 }: BaseLayoutProps) {
   return (
     <Html lang="en">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="supported-color-schemes" content="light dark" />
       </Head>
       {previewText && <Preview>{previewText}</Preview>}
       <Body style={mainBody}>
@@ -48,16 +51,18 @@ export function BaseLayout({
                     Kailshians<span style={logoAccent}>X</span>
                   </Link>
                 </div>
-                <div
-                  style={{
-                    ...badgeStyle,
-                    borderColor: `${badgeColor}40`,
-                    color: badgeColor,
-                    backgroundColor: `${badgeColor}15`,
-                  }}
-                >
-                  {badgeText}
-                </div>
+                {badgeText && (
+                  <div
+                    style={{
+                      ...badgeStyle,
+                      borderColor: "#e5e5e5",
+                      color: badgeColor === "#3b82f6" ? "#2563eb" : badgeColor,
+                      backgroundColor: "#f4f4f5",
+                    }}
+                  >
+                    {badgeText}
+                  </div>
+                )}
               </Column>
             </Row>
           </Section>
@@ -100,32 +105,32 @@ export function BaseLayout({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// STYLES
+// STYLES (Light palette, table-safe)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const mainBody: React.CSSProperties = {
-  backgroundColor: "#07090e",
+  backgroundColor: "#f4f4f5",
   fontFamily:
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
   margin: 0,
   padding: "32px 12px",
-  color: "#f1f5f9",
+  color: "#0a0a0a",
 };
 
 const container: React.CSSProperties = {
   maxWidth: "600px",
   margin: "0 auto",
-  backgroundColor: "#0f172a",
-  borderRadius: "16px",
-  border: "1px solid #1e293b",
+  backgroundColor: "#ffffff",
+  borderRadius: "8px",
+  border: "1px solid #e5e5e5",
   overflow: "hidden",
 };
 
 const headerSection: React.CSSProperties = {
-  background: "linear-gradient(180deg, #131d36 0%, #0f172a 100%)",
-  padding: "28px 24px 20px 24px",
+  backgroundColor: "#fafafa",
+  padding: "24px 20px 18px 20px",
   textAlign: "center",
-  borderBottom: "1px solid #1e293b",
+  borderBottom: "1px solid #e5e5e5",
 };
 
 const logoWrapper: React.CSSProperties = {
@@ -133,62 +138,64 @@ const logoWrapper: React.CSSProperties = {
 };
 
 const logoLink: React.CSSProperties = {
-  fontSize: "26px",
-  fontWeight: 900,
-  color: "#ffffff",
+  fontSize: "24px",
+  fontWeight: 700,
+  color: "#0a0a0a",
   letterSpacing: "-0.5px",
   textDecoration: "none",
   display: "inline-block",
 };
 
 const logoAccent: React.CSSProperties = {
-  color: "#60a5fa",
+  color: "#2563eb",
 };
 
 const badgeStyle: React.CSSProperties = {
   display: "inline-block",
-  fontSize: "11px",
-  fontWeight: 700,
-  letterSpacing: "1px",
+  fontSize: "12px",
+  fontWeight: 600,
+  letterSpacing: "0.5px",
   textTransform: "uppercase",
   padding: "3px 10px",
   borderRadius: "9999px",
-  border: "1px solid",
+  border: "1px solid #e5e5e5",
 };
 
 const contentSection: React.CSSProperties = {
-  padding: "32px 28px",
+  padding: "28px 24px",
+  color: "#0a0a0a",
 };
 
 const footerDivider: React.CSSProperties = {
-  borderColor: "#1e293b",
+  borderColor: "#e5e5e5",
   margin: "0 24px",
 };
 
 const footerSection: React.CSSProperties = {
-  padding: "24px 24px 32px 24px",
+  padding: "20px 24px 28px 24px",
   textAlign: "center",
+  backgroundColor: "#fafafa",
 };
 
 const footerText: React.CSSProperties = {
   fontSize: "12px",
-  color: "#94a3b8",
+  color: "#6b6b6b",
   margin: "0 0 6px 0",
 };
 
 const footerSubtext: React.CSSProperties = {
-  fontSize: "11px",
-  color: "#64748b",
+  fontSize: "12px",
+  color: "#6b6b6b",
   margin: "0 0 12px 0",
 };
 
 const footerLinks: React.CSSProperties = {
-  fontSize: "11px",
-  color: "#64748b",
+  fontSize: "12px",
+  color: "#6b6b6b",
   margin: 0,
 };
 
 const footerLink: React.CSSProperties = {
-  color: "#60a5fa",
+  color: "#2563eb",
   textDecoration: "none",
 };

@@ -1,5 +1,5 @@
 // src/server/partners/service.ts
-// Partner Portal Service per PRD §22, §23 & §28:
+// Partner Portal Service per , :
 // Gives brand partners & sponsors real-time visibility into contracted deliverables,
 // proof of fulfillment, reach/impression analytics, and official post-event ROI reports.
 
@@ -248,8 +248,8 @@ export async function getPartnerPortalData(accessCodeOrId: string) {
       allDeliverablesCount,
       fulfilledDeliverablesCount,
       deliverableFulfillmentRate,
-      totalImpressions: Math.max(totalImpressions, 48500),
-      totalAttendeesReached: Math.max(totalAttendeesReached, 520),
+      totalImpressions,
+      totalAttendeesReached,
     },
     deals: partner.deals.map((deal) => {
       const dealDeliverablesCount = deal.deliverables.length;

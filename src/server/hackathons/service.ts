@@ -1,5 +1,5 @@
 // src/server/hackathons/service.ts
-// Comprehensive Hackathon Engine per PRD §9 & §24:
+// Comprehensive Hackathon Engine per :
 // 1. Team formation, invites, join codes, member roles.
 // 2. Problem-statement selection with tracks and sponsor criteria.
 // 3. Project submissions (GitHub repo, demo, deck, video, tech stack).

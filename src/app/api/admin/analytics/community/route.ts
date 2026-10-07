@@ -1,6 +1,4 @@
 // src/app/api/admin/analytics/community/route.ts
-// API route serving the 12 Success Metrics for PRD §29
-
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getCommunityAnalyticsOverview } from "@/server/analytics/community-service";

@@ -1,5 +1,5 @@
 // src/server/analytics/community-service.ts
-// Domain service computing the 12 Success Metrics for PRD §29:
+// Domain service computing the 12 Success Metrics for :
 // 1. Monthly Active Community Members (MAU)
 // 2. Event Registrations & Format Distribution
 // 3. Paid Ticket Conversion Rate
@@ -11,7 +11,7 @@
 // 9. Sponsor Deal Pipeline & Revenue Conversion
 // 10. Event Profitability & Net P&L Margin
 // 11. Certificate Delivery & Verification Rate
-// 12. Percentage of Attendees Who Take a Community Role (PRD §30 Progression)
+// 12. Percentage of Attendees Who Take a Community Role (Progression)
 
 import { db } from "@/lib/db";
 import { EventType, EmailJobStatus } from "@prisma/client";
@@ -174,7 +174,7 @@ export interface CommunityAnalyticsMetrics {
     deliveryRatePct: number;
   };
 
-  // 12. Percentage of Attendees Who Take a Community Role (PRD §30)
+  // 12. Percentage of Attendees Who Take a Community Role ()
   roleProgression: {
     totalUniqueAttendees: number;
     attendeesWithCommunityRole: number;
@@ -190,7 +190,7 @@ export interface CommunityAnalyticsMetrics {
 }
 
 /**
- * Computes all 12 Success Metrics for PRD §29.
+ * Computes all 12 Success Metrics for .
  */
 export async function getCommunityAnalyticsOverview(): Promise<CommunityAnalyticsMetrics> {
   const now = new Date();
@@ -550,7 +550,7 @@ export async function getCommunityAnalyticsOverview(): Promise<CommunityAnalytic
       ? Math.round((totalClaimedOrVerified / totalCertificatesIssued) * 100)
       : 100;
 
-  // ─── 12. % ATTENDEES WHO TAKE A COMMUNITY ROLE (PRD §30) ──────────────────
+  // ─── 12. % ATTENDEES WHO TAKE A COMMUNITY ROLE () ──────────────────
   // Collect set of userIds / emails who are attendees
   const attendeeUserIds = new Set<string>();
   attendancesAll.forEach((a) => {

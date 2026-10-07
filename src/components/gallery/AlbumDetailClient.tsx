@@ -25,7 +25,6 @@ import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/useToast";
 import { formatDate } from "@/lib/format-date";
 import { GALLERY_CATEGORIES } from "@/lib/gallery";
-import { cn } from "@/lib/utils";
 
 interface SerializedImage {
   id: string;

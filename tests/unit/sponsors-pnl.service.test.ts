@@ -1,5 +1,5 @@
 // tests/unit/sponsors-pnl.service.test.ts
-// Unit tests for Sponsor CRM and Event P&L per PRD §23:
+// Unit tests for Sponsor CRM and Event P&L per :
 // 1. Sponsor CRM: Deals, Deliverables, Invoices, Auto-syncing paid invoices to event revenue.
 // 2. Event P&L: Ticket auto-sync, Revenue vs 9 Expense categories, Net Profit/Loss, Margin %, Series rollup, CSV & PDF export.
 
@@ -88,7 +88,7 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
-describe("PRD §22 & §23: Sponsor CRM & Event P&L Engine", () => {
+describe(": Sponsor CRM & Event P&L Engine", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

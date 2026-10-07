@@ -1,5 +1,5 @@
 // tests/unit/hackathons.service.test.ts
-// Comprehensive unit tests for Hackathon Engine per PRD §9 & §24:
+// Comprehensive unit tests for Hackathon Engine per :
 // 1. Team formation, invite code generation & duplicate membership prevention.
 // 2. Joining team via invite code with max team size enforcement.
 // 3. Problem statement selection with leader-only authorization.
@@ -93,7 +93,7 @@ vi.mock("@/server/email/queue", () => ({
   enqueueEmail: vi.fn().mockResolvedValue({ id: "mock-email-job" }),
 }));
 
-describe("Hackathon Engine Service (PRD §9 & §24)", () => {
+describe("Hackathon Engine Service ()", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

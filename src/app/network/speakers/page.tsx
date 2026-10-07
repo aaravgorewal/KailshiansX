@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: "Mentor & Speaker Network | KailshiansX",
   description:
     "Connect with industry leaders, tech founders, and architects for 1:1 mentorship and chapter speaking engagements.",
+  openGraph: {
+    title: "Mentor & Speaker Network | KailshiansX",
+    description:
+      "Connect with industry leaders, tech founders, and architects for 1:1 mentorship and chapter speaking engagements.",
+  },
 };
 
 export default async function SpeakersNetworkPage() {

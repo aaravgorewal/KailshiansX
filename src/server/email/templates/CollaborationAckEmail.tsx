@@ -75,7 +75,7 @@ export function CollaborationAckEmail({
 
       {/* Pipeline Stages */}
       <Section style={pipelineBox}>
-        <Text style={pipelineHeading}>Partnership Evaluation Roadmap (PRD §13):</Text>
+        <Text style={pipelineHeading}>Partnership Evaluation Roadmap ():</Text>
         <div style={pipelineList}>
           <div style={pipeStep}>
             <strong style={{ color: "#38bdf8" }}>1. New Lead (Current)</strong> — Proposal indexed

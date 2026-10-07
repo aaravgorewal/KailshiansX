@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/leads/StateLeadDashboardClient.tsx
-// Comprehensive State Lead Dashboard implementing PRD §12:
+// Comprehensive State Lead Dashboard implementing :
 // State scope, Cities covered, Campus leads under purview, Statewide referrals, Regional events, Activities log, Performance score, and Monthly reports.
 
 import * as React from "react";
@@ -234,16 +234,16 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       {/* ─── ADMIN SCOPE BANNER ───────────────────────────────────────────── */}
       {isAdminViewing && (
-        <div className="flex items-center justify-between rounded-2xl border border-purple-500/20 bg-purple-500/10 p-4">
+        <div className="border-primary/20 bg-primary/10 flex items-center justify-between rounded-2xl border p-4">
           <div className="flex items-center gap-3">
-            <span className="rounded-xl bg-purple-500/20 p-2 text-purple-400">
+            <span className="bg-primary/20 text-primary rounded-xl p-2">
               <MapPin className="h-5 w-5" />
             </span>
             <div>
-              <div className="text-xs font-bold tracking-wider text-purple-400 uppercase">
+              <div className="text-primary text-xs font-bold tracking-wider uppercase">
                 Admin Impersonation Mode
               </div>
-              <div className="text-sm font-semibold text-white">
+              <div className="text-foreground text-sm font-semibold">
                 Viewing role-gated state scope for {data.name} ({data.state})
               </div>
             </div>
@@ -257,12 +257,10 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       )}
 
       {/* ─── STATE LEAD HEADER & JURISDICTION CARD ───────────────────────── */}
-      <div className="bg-surface-900/80 border-surface-800 relative overflow-hidden rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8">
-        <div className="pointer-events-none absolute top-0 right-0 -z-10 h-96 w-96 rounded-full bg-purple-500/5 blur-3xl" />
-
+      <div className="bg-card border-border relative overflow-hidden rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="flex items-start gap-4">
-            <div className="bg-surface-800 border-surface-700 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border">
+            <div className="bg-muted border-border flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border">
               {data.image ? (
                 <Image
                   src={data.image}
@@ -272,35 +270,35 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <MapPin className="h-8 w-8 text-purple-400" />
+                <MapPin className="text-primary h-8 w-8" />
               )}
             </div>
 
             <div>
               <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1 text-xs font-bold text-purple-400">
+                <span className="border-primary/20 bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold">
                   <MapPin className="h-3.5 w-3.5" />
                   <span>State Lead</span>
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400">
+                <span className="border-success/20 bg-success/10 text-success inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
                   ● {data.status}
                 </span>
-                <span className="text-surface-500 text-xs">
+                <span className="text-muted-foreground text-xs">
                   Chartered {new Date(data.startDate).toLocaleDateString()}
                 </span>
               </div>
 
-              <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+              <h1 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
                 {data.name}
               </h1>
 
-              <div className="text-surface-400 mt-1.5 flex flex-wrap items-center gap-4 text-xs font-medium">
-                <span className="text-surface-200 flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5 text-rose-400" />
+              <div className="text-muted-foreground mt-1.5 flex flex-wrap items-center gap-4 text-xs font-medium">
+                <span className="text-foreground flex items-center gap-1">
+                  <MapPin className="text-destructive h-3.5 w-3.5" />
                   <strong>State of {data.state}</strong>
                 </span>
-                <span className="text-surface-300 flex items-center gap-1">
-                  <Building2 className="text-brand-400 h-3.5 w-3.5" />
+                <span className="text-muted-foreground flex items-center gap-1">
+                  <Building2 className="text-primary h-3.5 w-3.5" />
                   {data.stateAggregates.totalCitiesCount} Cities ·{" "}
                   {data.stateAggregates.totalCollegesCount} Colleges
                 </span>
@@ -310,19 +308,19 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
           </div>
 
           {/* Statewide Referral Code Box */}
-          <div className="bg-surface-950/80 border-surface-700/80 w-full rounded-2xl border p-4 shadow-inner sm:p-5 lg:w-96">
-            <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-bold">
-              <span className="flex items-center gap-1.5 text-amber-400">
+          <div className="bg-background border-border w-full rounded-2xl border p-4 shadow-inner sm:p-5 lg:w-96">
+            <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-bold">
+              <span className="text-primary flex items-center gap-1.5">
                 <Share2 className="h-3.5 w-3.5" />
                 <span>Statewide Referral Code</span>
               </span>
               <button
                 id="btn-copy-code"
                 onClick={handleCopyCode}
-                className="text-surface-400 flex items-center gap-1 text-[11px] hover:text-white"
+                className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs"
               >
                 {copiedCode ? (
-                  <Check className="h-3 w-3 text-emerald-400" />
+                  <Check className="text-success h-3 w-3" />
                 ) : (
                   <Copy className="h-3 w-3" />
                 )}
@@ -330,9 +328,9 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
               </button>
             </div>
 
-            <div className="bg-surface-900 border-surface-800 mb-3 flex items-center justify-between rounded-xl border px-3.5 py-2 font-mono text-sm font-bold text-white">
+            <div className="bg-card border-border text-foreground mb-3 flex items-center justify-between rounded-xl border px-3.5 py-2 font-mono text-sm font-bold">
               <span>{data.referralCode}</span>
-              <span className="rounded-md bg-purple-500/10 px-2 py-0.5 text-[10px] font-semibold text-purple-400 uppercase">
+              <span className="bg-primary/10 text-primary rounded-md px-2 py-0.5 text-xs font-semibold uppercase">
                 State Chapter
               </span>
             </div>
@@ -340,7 +338,7 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
             <button
               id="btn-copy-referral-link"
               onClick={handleCopyLink}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-purple-600 py-2 text-xs font-bold text-white shadow-sm shadow-purple-500/20 transition-all hover:bg-purple-500"
+              className="bg-primary text-primary-foreground hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-bold shadow-sm transition-all"
             >
               {copiedLink ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
               <span>{copiedLink ? "State Link Copied!" : "Copy Official State Invite Link"}</span>
@@ -352,52 +350,52 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       {/* ─── 4 PRIMARY KPI METRIC CARDS ─────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {/* Card 1: Statewide Referrals */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Statewide Referrals</span>
-            <Users className="h-4 w-4 text-purple-400" />
+            <Users className="text-primary h-4 w-4" />
           </div>
-          <div className="font-mono text-3xl font-black text-white">
+          <div className="text-foreground font-mono text-3xl font-black">
             {data.stateAggregates.totalStatewideReferrals.toLocaleString("en-IN")}
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-muted-foreground mt-1 text-xs">
             Aggregated across all campus chapters in {data.state}
           </div>
         </div>
 
         {/* Card 2: Regional Events Supported */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Regional Events</span>
-            <Calendar className="h-4 w-4 text-emerald-400" />
+            <Calendar className="text-success h-4 w-4" />
           </div>
-          <div className="font-mono text-3xl font-black text-emerald-400">
+          <div className="text-success font-mono text-3xl font-black">
             {data.stateAggregates.totalStatewideEvents}
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-muted-foreground mt-1 text-xs">
             State meetups, hackathons, & university workshops
           </div>
         </div>
 
         {/* Card 3: Campus Leads in State */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Active Campus Leads</span>
-            <GraduationCap className="h-4 w-4 text-blue-400" />
+            <GraduationCap className="text-primary h-4 w-4" />
           </div>
-          <div className="font-mono text-3xl font-black text-blue-400">
+          <div className="text-primary font-mono text-3xl font-black">
             {data.stateAggregates.totalCampusLeadsCount}
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-muted-foreground mt-1 text-xs">
             Student chapter leaders under your purview
           </div>
         </div>
 
         {/* Card 4: State Performance Score */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Performance Score</span>
-            <Award className="h-4 w-4 text-amber-400" />
+            <Award className="text-primary h-4 w-4" />
           </div>
           <div className="flex items-baseline gap-2">
             <span
@@ -406,11 +404,11 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
             >
               {data.performance.score}
             </span>
-            <span className="text-surface-400 font-mono text-xs">/100</span>
+            <span className="text-muted-foreground font-mono text-xs">/100</span>
           </div>
           <div className="mt-1.5 flex items-center gap-1.5">
             <span
-              className="rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase"
+              className="rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase"
               style={{
                 backgroundColor: `${data.performance.tierColor}20`,
                 color: data.performance.tierColor,
@@ -424,15 +422,15 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       </div>
 
       {/* ─── NAVIGATION TABS & ACTIONS ────────────────────────────────────── */}
-      <div className="border-surface-800 flex flex-col items-center justify-between gap-4 border-b pb-4 sm:flex-row">
+      <div className="border-border flex flex-col items-center justify-between gap-4 border-b pb-4 sm:flex-row">
         <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 sm:w-auto sm:pb-0">
           <button
             id="tab-campus-leads"
             onClick={() => setActiveTab("CAMPUS_LEADS")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               activeTab === "CAMPUS_LEADS"
-                ? "bg-purple-600 text-white shadow-sm"
-                : "text-surface-400 hover:bg-surface-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <GraduationCap className="h-3.5 w-3.5" />
@@ -444,8 +442,8 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
             onClick={() => setActiveTab("ACTIVITIES")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               activeTab === "ACTIVITIES"
-                ? "bg-purple-600 text-white shadow-sm"
-                : "text-surface-400 hover:bg-surface-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <CheckCircle2 className="h-3.5 w-3.5" />
@@ -457,8 +455,8 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
             onClick={() => setActiveTab("REPORTS")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               activeTab === "REPORTS"
-                ? "bg-purple-600 text-white shadow-sm"
-                : "text-surface-400 hover:bg-surface-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <FileText className="h-3.5 w-3.5" />
@@ -470,8 +468,8 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
             onClick={() => setActiveTab("EVENTS")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               activeTab === "EVENTS"
-                ? "bg-purple-600 text-white shadow-sm"
-                : "text-surface-400 hover:bg-surface-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <Calendar className="h-3.5 w-3.5" />
@@ -510,21 +508,21 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       {activeTab === "CAMPUS_LEADS" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-surface-400 text-sm font-bold tracking-wider uppercase">
+            <h3 className="text-muted-foreground text-sm font-bold tracking-wider uppercase">
               Campus Chapter Leaders Across {data.state}
             </h3>
-            <span className="text-surface-400 text-xs">
+            <span className="text-muted-foreground text-xs">
               {data.campusLeadsInState.length} Chartered Chapters
             </span>
           </div>
 
           {data.campusLeadsInState.length === 0 ? (
-            <div className="bg-surface-900/60 border-surface-800 rounded-2xl border p-12 text-center">
-              <GraduationCap className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">
+            <div className="bg-card border-border rounded-2xl border p-12 text-center">
+              <GraduationCap className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">
                 No campus leads chartered in {data.state} yet
               </h3>
-              <p className="text-surface-400 mx-auto mb-5 max-w-sm text-xs">
+              <p className="text-muted-foreground mx-auto mb-5 max-w-sm text-xs">
                 Identify proactive students across engineering colleges in {data.state} and nominate
                 them for Campus Lead roles.
               </p>
@@ -535,10 +533,10 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
               </Link>
             </div>
           ) : (
-            <div className="bg-surface-900/80 border-surface-800 overflow-hidden rounded-2xl border shadow-sm">
+            <div className="bg-card border-border overflow-hidden rounded-2xl border shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-surface-950 text-surface-400 border-surface-800 border-b font-semibold tracking-wider uppercase">
+                  <thead className="bg-background text-muted-foreground border-border border-b font-semibold tracking-wider uppercase">
                     <tr>
                       <th className="px-4 py-3">Lead Name</th>
                       <th className="px-4 py-3">College</th>
@@ -549,26 +547,26 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                       <th className="px-4 py-3 text-right">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-surface-800 divide-y">
+                  <tbody className="divide-border divide-y">
                     {data.campusLeadsInState.map((cl) => (
-                      <tr key={cl.id} className="hover:bg-surface-800/40 transition-colors">
+                      <tr key={cl.id} className="hover:bg-muted transition-colors">
                         <td className="px-4 py-3">
-                          <div className="font-bold text-white">{cl.name}</div>
-                          <div className="text-surface-400 text-[11px]">{cl.email}</div>
+                          <div className="text-foreground font-bold">{cl.name}</div>
+                          <div className="text-muted-foreground text-xs">{cl.email}</div>
                         </td>
-                        <td className="text-surface-200 px-4 py-3 font-medium">{cl.collegeName}</td>
-                        <td className="text-surface-300 px-4 py-3">{cl.cityName}</td>
-                        <td className="text-brand-400 px-4 py-3 font-mono font-bold">
+                        <td className="text-foreground px-4 py-3 font-medium">{cl.collegeName}</td>
+                        <td className="text-muted-foreground px-4 py-3">{cl.cityName}</td>
+                        <td className="text-primary px-4 py-3 font-mono font-bold">
                           {cl.referrals}
                         </td>
-                        <td className="px-4 py-3 font-mono font-bold text-emerald-400">
+                        <td className="text-success px-4 py-3 font-mono font-bold">
                           {cl.eventsSupported}
                         </td>
-                        <td className="px-4 py-3 font-mono font-bold text-amber-400">
+                        <td className="text-primary px-4 py-3 font-mono font-bold">
                           {cl.performanceScore}/100
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-400">
+                          <span className="bg-success/10 text-success rounded-md px-2 py-0.5 text-xs font-semibold">
                             ● {cl.status}
                           </span>
                         </td>
@@ -599,8 +597,8 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                 onClick={() => setActivityFilter(cat.id)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                   activityFilter === cat.id
-                    ? "bg-surface-700 text-white"
-                    : "bg-surface-900 text-surface-400 hover:bg-surface-800 hover:text-white"
+                    ? "bg-muted text-foreground"
+                    : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
                 {cat.label}
@@ -609,12 +607,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
           </div>
 
           {filteredActivities.length === 0 ? (
-            <div className="bg-surface-900/60 border-surface-800 rounded-2xl border p-12 text-center">
-              <CheckCircle2 className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">
+            <div className="bg-card border-border rounded-2xl border p-12 text-center">
+              <CheckCircle2 className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">
                 No state activities logged yet
               </h3>
-              <p className="text-surface-400 mx-auto mb-5 max-w-sm text-xs">
+              <p className="text-muted-foreground mx-auto mb-5 max-w-sm text-xs">
                 Record your regional university partnerships, city meetup preparations, and
                 state-level hackathon alliances.
               </p>
@@ -628,31 +626,33 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
               {filteredActivities.map((act) => (
                 <div
                   key={act.id}
-                  className="bg-surface-900/80 border-surface-800 hover:border-surface-700 flex flex-col justify-between space-y-4 rounded-2xl border p-5 transition-all"
+                  className="bg-card border-border hover:border-border flex flex-col justify-between space-y-4 rounded-2xl border p-5 transition-all"
                 >
                   <div>
                     <div className="mb-2 flex items-start justify-between gap-3">
-                      <span className="bg-surface-800 rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider text-purple-400 uppercase">
+                      <span className="bg-muted text-primary rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase">
                         {act.type.replace(/_/g, " ")}
                       </span>
                       {act.verifiedByAdmin ? (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-bold text-emerald-400">
+                        <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-bold">
                           <CheckCircle2 className="h-3 w-3" />
                           Verified
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-400">
+                        <span className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium">
                           <Clock className="h-3 w-3" />
                           Pending Review
                         </span>
                       )}
                     </div>
 
-                    <h4 className="mb-1.5 text-sm font-bold text-white">{act.title}</h4>
-                    <p className="text-surface-300 text-xs leading-relaxed">{act.description}</p>
+                    <h4 className="text-foreground mb-1.5 text-sm font-bold">{act.title}</h4>
+                    <p className="text-muted-foreground text-xs leading-relaxed">
+                      {act.description}
+                    </p>
                   </div>
 
-                  <div className="border-surface-800/80 text-surface-400 flex items-center justify-between border-t pt-3 text-xs font-medium">
+                  <div className="border-border text-muted-foreground flex items-center justify-between border-t pt-3 text-xs font-medium">
                     <div className="flex items-center gap-3">
                       <span>📅 {new Date(act.date).toLocaleDateString()}</span>
                       <span>⏱️ {act.hoursSpent} hrs</span>
@@ -664,7 +664,7 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                         href={act.proofUrls[0]}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-purple-400 hover:text-purple-300"
+                        className="text-primary hover:text-primary inline-flex items-center gap-1 text-xs font-semibold"
                       >
                         <span>Proof Link</span>
                         <ExternalLink className="h-3 w-3" />
@@ -681,12 +681,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       {/* ─── TAB 3: MONTHLY REPORTS ───────────────────────────────────────── */}
       {activeTab === "REPORTS" && (
         <div className="space-y-6">
-          <div className="bg-surface-900/60 border-surface-800 flex flex-col items-center justify-between gap-4 rounded-2xl border p-5 sm:flex-row">
+          <div className="bg-card border-border flex flex-col items-center justify-between gap-4 rounded-2xl border p-5 sm:flex-row">
             <div>
-              <h3 className="mb-0.5 text-sm font-bold text-white">
+              <h3 className="text-foreground mb-0.5 text-sm font-bold">
                 State Chapter Retrospectives & Ecosystem Reports
               </h3>
-              <p className="text-surface-400 text-xs">
+              <p className="text-muted-foreground text-xs">
                 Submit state progress reviews detailing city activations, cross-college delegations,
                 and regional community expansion.
               </p>
@@ -698,10 +698,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
           </div>
 
           {data.monthlyReports.length === 0 ? (
-            <div className="bg-surface-900/60 border-surface-800 rounded-2xl border p-12 text-center">
-              <FileText className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">No state reports filed yet</h3>
-              <p className="text-surface-400 mx-auto mb-5 max-w-sm text-xs">
+            <div className="bg-card border-border rounded-2xl border p-12 text-center">
+              <FileText className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">
+                No state reports filed yet
+              </h3>
+              <p className="text-muted-foreground mx-auto mb-5 max-w-sm text-xs">
                 Submit your monthly strategic recap covering regional meetups, campus lead health,
                 and state growth metrics.
               </p>
@@ -720,11 +722,11 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                 return (
                   <div
                     key={rep.id}
-                    className="bg-surface-900/80 border-surface-800 hover:border-surface-700 space-y-4 rounded-2xl border p-6 transition-all"
+                    className="bg-card border-border hover:border-border space-y-4 rounded-2xl border p-6 transition-all"
                   >
-                    <div className="border-surface-800 flex flex-col justify-between gap-2 border-b pb-3 sm:flex-row sm:items-center">
+                    <div className="border-border flex flex-col justify-between gap-2 border-b pb-3 sm:flex-row sm:items-center">
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-black text-white">
+                        <span className="text-foreground text-sm font-black">
                           State of {data.state} — {monthName} {rep.year} Review
                         </span>
                         <Badge
@@ -735,9 +737,9 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                         </Badge>
                       </div>
 
-                      <div className="text-surface-400 flex items-center gap-4 text-xs">
+                      <div className="text-muted-foreground flex items-center gap-4 text-xs">
                         {rep.performanceScore !== null && (
-                          <span className="rounded-md bg-amber-500/10 px-2.5 py-0.5 font-mono font-bold text-amber-400">
+                          <span className="bg-primary/10 text-primary rounded-md px-2.5 py-0.5 font-mono font-bold">
                             Score: {rep.performanceScore} / 100
                           </span>
                         )}
@@ -745,75 +747,79 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                       </div>
                     </div>
 
-                    <div className="bg-surface-950/60 grid grid-cols-3 gap-3 rounded-xl p-3 text-center text-xs">
+                    <div className="bg-background grid grid-cols-3 gap-3 rounded-xl p-3 text-center text-xs">
                       <div>
-                        <div className="text-surface-400 text-[10px] font-semibold uppercase">
+                        <div className="text-muted-foreground text-xs font-semibold uppercase">
                           State Signups
                         </div>
-                        <div className="mt-0.5 font-mono text-base font-bold text-white">
+                        <div className="text-foreground mt-0.5 font-mono text-base font-bold">
                           {rep.newSignupsCount}
                         </div>
                       </div>
                       <div>
-                        <div className="text-surface-400 text-[10px] font-semibold uppercase">
+                        <div className="text-muted-foreground text-xs font-semibold uppercase">
                           Events Held
                         </div>
-                        <div className="mt-0.5 font-mono text-base font-bold text-white">
+                        <div className="text-foreground mt-0.5 font-mono text-base font-bold">
                           {rep.eventsOrganizedCount}
                         </div>
                       </div>
                       <div>
-                        <div className="text-surface-400 text-[10px] font-semibold uppercase">
+                        <div className="text-muted-foreground text-xs font-semibold uppercase">
                           Swag Distributed
                         </div>
-                        <div className="mt-0.5 font-mono text-base font-bold text-white">
+                        <div className="text-foreground mt-0.5 font-mono text-base font-bold">
                           {rep.swagDistributedCount}
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <div className="text-surface-300 mb-1 text-xs font-bold tracking-wider uppercase">
+                      <div className="text-muted-foreground mb-1 text-xs font-bold tracking-wider uppercase">
                         Executive Summary
                       </div>
-                      <p className="text-surface-300 text-xs leading-relaxed">{rep.summary}</p>
+                      <p className="text-muted-foreground text-xs leading-relaxed">{rep.summary}</p>
                     </div>
 
                     {rep.highlights && (
                       <div>
-                        <div className="mb-1 text-xs font-bold tracking-wider text-emerald-400 uppercase">
+                        <div className="text-success mb-1 text-xs font-bold tracking-wider uppercase">
                           Key Regional Wins
                         </div>
-                        <p className="text-surface-300 text-xs leading-relaxed">{rep.highlights}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">
+                          {rep.highlights}
+                        </p>
                       </div>
                     )}
 
                     {rep.challenges && (
                       <div>
-                        <div className="mb-1 text-xs font-bold tracking-wider text-rose-400 uppercase">
+                        <div className="text-destructive mb-1 text-xs font-bold tracking-wider uppercase">
                           State Challenges & Core Team Asks
                         </div>
-                        <p className="text-surface-300 text-xs leading-relaxed">{rep.challenges}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">
+                          {rep.challenges}
+                        </p>
                       </div>
                     )}
 
                     {rep.nextMonthPlans && (
                       <div>
-                        <div className="mb-1 text-xs font-bold tracking-wider text-purple-400 uppercase">
+                        <div className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
                           State Roadmap for Next Month
                         </div>
-                        <p className="text-surface-300 text-xs leading-relaxed">
+                        <p className="text-muted-foreground text-xs leading-relaxed">
                           {rep.nextMonthPlans}
                         </p>
                       </div>
                     )}
 
                     {rep.adminFeedback && (
-                      <div className="rounded-xl border border-purple-500/20 bg-purple-500/10 p-3.5">
-                        <div className="mb-1 text-xs font-bold text-purple-400">
+                      <div className="border-primary/20 bg-primary/10 rounded-xl border p-3.5">
+                        <div className="text-primary mb-1 text-xs font-bold">
                           Core Leadership Feedback:
                         </div>
-                        <p className="text-surface-200 text-xs">{rep.adminFeedback}</p>
+                        <p className="text-foreground text-xs">{rep.adminFeedback}</p>
                       </div>
                     )}
                   </div>
@@ -828,10 +834,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       {activeTab === "EVENTS" && (
         <div className="space-y-4">
           {data.supportedEvents.length === 0 ? (
-            <div className="bg-surface-900/60 border-surface-800 rounded-2xl border p-12 text-center">
-              <Calendar className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">No regional events linked yet</h3>
-              <p className="text-surface-400 mx-auto max-w-sm text-xs">
+            <div className="bg-card border-border rounded-2xl border p-12 text-center">
+              <Calendar className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">
+                No regional events linked yet
+              </h3>
+              <p className="text-muted-foreground mx-auto max-w-sm text-xs">
                 Coordinate with KailshiansX Event Managers to link regional tech summits and city
                 meetup editions across {data.state}.
               </p>
@@ -841,14 +849,14 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
               {data.supportedEvents.map((ev) => (
                 <div
                   key={ev.id}
-                  className="bg-surface-900/80 border-surface-800 hover:border-surface-700 flex items-center justify-between rounded-2xl border p-5 transition-all"
+                  className="bg-card border-border hover:border-border flex items-center justify-between rounded-2xl border p-5 transition-all"
                 >
                   <div>
-                    <span className="rounded-md bg-purple-500/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-purple-400 uppercase">
+                    <span className="bg-primary/10 text-primary rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase">
                       Role: {ev.role}
                     </span>
-                    <h4 className="mt-1.5 text-sm font-bold text-white">{ev.title}</h4>
-                    <div className="text-surface-400 mt-0.5 text-xs">
+                    <h4 className="text-foreground mt-1.5 text-sm font-bold">{ev.title}</h4>
+                    <div className="text-muted-foreground mt-0.5 text-xs">
                       📅 {new Date(ev.startDate).toLocaleDateString()}
                     </div>
                   </div>
@@ -869,15 +877,15 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       {/* ─── MODAL: LOG STATE ACTIVITY ────────────────────────────────────── */}
       {activityModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-              <h3 className="flex items-center gap-2 text-base font-bold text-white">
-                <CheckCircle2 className="h-4 w-4 text-purple-400" />
+          <div className="bg-card border-border w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
+              <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                <CheckCircle2 className="text-primary h-4 w-4" />
                 <span>Log State Activity</span>
               </h3>
               <button
                 onClick={() => setActivityModalOpen(false)}
-                className="text-surface-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -885,7 +893,7 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
 
             <form onSubmit={handleSubmitActivity} className="space-y-4">
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Activity Title
                 </label>
                 <input
@@ -894,13 +902,13 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   placeholder="e.g. Secured university lab partnership in Jaipur"
                   value={activityForm.title}
                   onChange={(e) => setActivityForm({ ...activityForm, title: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3.5 py-2 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border px-3.5 py-2 text-xs"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Activity Type
                   </label>
                   <select
@@ -911,7 +919,7 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                         type: e.target.value as LeadActivityType,
                       })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 text-xs"
                   >
                     <option value="PARTNERSHIP_MEETING">University Partnership</option>
                     <option value="MEETUP_ORGANIZING">City Meetup Organizing</option>
@@ -923,20 +931,22 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">Date</label>
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                    Date
+                  </label>
                   <input
                     type="date"
                     required
                     value={activityForm.date}
                     onChange={(e) => setActivityForm({ ...activityForm, date: e.target.value })}
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 text-xs"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Hours Spent
                   </label>
                   <input
@@ -947,12 +957,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                     onChange={(e) =>
                       setActivityForm({ ...activityForm, hoursSpent: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Builders Reached
                   </label>
                   <input
@@ -962,13 +972,13 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                     onChange={(e) =>
                       setActivityForm({ ...activityForm, attendeesCount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Description & Regional Impact
                 </label>
                 <textarea
@@ -979,12 +989,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   onChange={(e) =>
                     setActivityForm({ ...activityForm, description: e.target.value })
                   }
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Photo / Proof URL (Optional)
                 </label>
                 <input
@@ -992,7 +1002,7 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   placeholder="https://photos.app.goo.gl/... or post link"
                   value={activityForm.proofUrl}
                   onChange={(e) => setActivityForm({ ...activityForm, proofUrl: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3.5 py-2 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border px-3.5 py-2 text-xs"
                 />
               </div>
 
@@ -1017,15 +1027,15 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
       {/* ─── MODAL: SUBMIT STATE REPORT ───────────────────────────────────── */}
       {reportModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 max-h-[90vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-3xl border p-6 shadow-2xl">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-              <h3 className="flex items-center gap-2 text-base font-bold text-white">
-                <FileText className="h-4 w-4 text-purple-400" />
+          <div className="bg-card border-border max-h-[90vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-3xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
+              <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                <FileText className="text-primary h-4 w-4" />
                 <span>Submit State Retrospective</span>
               </h3>
               <button
                 onClick={() => setReportModalOpen(false)}
-                className="text-surface-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -1034,13 +1044,15 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
             <form onSubmit={handleSubmitReport} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">Month</label>
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                    Month
+                  </label>
                   <select
                     value={reportForm.month}
                     onChange={(e) =>
                       setReportForm({ ...reportForm, month: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 text-xs"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((m) => (
                       <option key={m} value={m}>
@@ -1051,19 +1063,21 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">Year</label>
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                    Year
+                  </label>
                   <input
                     type="number"
                     value={reportForm.year}
                     onChange={(e) => setReportForm({ ...reportForm, year: Number(e.target.value) })}
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     State Signups
                   </label>
                   <input
@@ -1072,11 +1086,11 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                     onChange={(e) =>
                       setReportForm({ ...reportForm, newSignupsCount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Events Held
                   </label>
                   <input
@@ -1088,11 +1102,11 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                         eventsOrganizedCount: Number(e.target.value),
                       })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Swag Given
                   </label>
                   <input
@@ -1104,13 +1118,13 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                         swagDistributedCount: Number(e.target.value),
                       })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Executive Summary of State Chapter
                 </label>
                 <textarea
@@ -1119,12 +1133,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   placeholder="Summarize state-level growth, campus activations, regional partnerships..."
                   value={reportForm.summary}
                   onChange={(e) => setReportForm({ ...reportForm, summary: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Key Regional Wins & Milestones
                 </label>
                 <textarea
@@ -1132,12 +1146,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   placeholder="New college chapters launched, prominent speakers locked..."
                   value={reportForm.highlights}
                   onChange={(e) => setReportForm({ ...reportForm, highlights: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   State Challenges & Core Team Asks
                 </label>
                 <textarea
@@ -1145,12 +1159,12 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   placeholder="Regional venue hurdles, city lead hiring needs..."
                   value={reportForm.challenges}
                   onChange={(e) => setReportForm({ ...reportForm, challenges: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Roadmap for Next Month
                 </label>
                 <textarea
@@ -1158,7 +1172,7 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                   placeholder="Upcoming city meetups, state hackathon delegations..."
                   value={reportForm.nextMonthPlans}
                   onChange={(e) => setReportForm({ ...reportForm, nextMonthPlans: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 

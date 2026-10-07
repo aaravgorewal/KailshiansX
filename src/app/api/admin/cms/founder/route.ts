@@ -1,5 +1,5 @@
 // src/app/api/admin/cms/founder/route.ts
-// Admin endpoint for editing Founder CMS content (PRD §16)
+// Admin endpoint for editing Founder CMS content ()
 
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminForRoute } from "@/server/auth/require-role";

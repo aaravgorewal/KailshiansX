@@ -154,14 +154,22 @@ export function RegistrationFormClient({
           return;
         }
 
+        const primaryColor =
+          typeof window !== "undefined"
+            ? getComputedStyle(document.documentElement).getPropertyValue("--primary").trim()
+            : "";
+
         const options = {
           key: initRes.razorpayOrder.keyId,
           amount: initRes.razorpayOrder.amount,
           currency: initRes.razorpayOrder.currency,
-          name: initRes.razorpayOrder.name,
+          name: "KailshiansX",
           description: initRes.razorpayOrder.description,
           order_id: initRes.razorpayOrder.id,
           prefill: initRes.razorpayOrder.prefill,
+          theme: {
+            color: primaryColor,
+          },
           handler: async (response: RazorpayResponse) => {
             try {
               const verifyRes = await verifyPaymentAndComplete({

@@ -15,12 +15,14 @@
     "db:migrate": "dotenv run -f .env.local -- prisma migrate dev",
     "db:migrate:prod": "dotenv run -f .env.local -- prisma migrate deploy",
     "db:seed": "dotenv run -f .env.local -- tsx prisma/seed.ts",
+    "seed:clear": "dotenv run -f .env.local -- tsx scripts/clear-seed.ts",
     "db:studio": "dotenv run -f .env.local -- prisma studio",
     "db:reset": "dotenv run -f .env.local -- prisma migrate reset",
     "test": "npm run test:unit && npm run test:node",
     "test:unit": "dotenv run -f .env.local -- vitest run",
     "test:node": "dotenv run -f .env.local -- tsx --test tests/*.test.ts",
-    "test:e2e": "dotenv run -f .env.local -- playwright test",
+    "test:e2e": "dotenv run -f .env.local -- playwright test tests/e2e",
+    "test:ui": "playwright test tests/ui",
     "db:bootstrap": "dotenv run -f .env.local -- tsx scripts/bootstrap-prod.ts",
     "db:backup": "dotenv run -f .env.local -- tsx scripts/backup-db.ts",
     "prepare": "husky",
@@ -33,7 +35,7 @@
       "prettier --write"
     ],
     "src/**/*.{ts,tsx,css}": [
-      "node scripts/check-colors.mjs --staged"
+      "node scripts/check-colors.mjs"
     ],
     "*.{css,json,md,yaml,yml}": [
       "prettier --write"
@@ -87,6 +89,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/jszip": "^3.4.0",

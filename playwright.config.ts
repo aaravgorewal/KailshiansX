@@ -1,12 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
+import * as dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
 
 export default defineConfig({
-  testDir: "./tests/e2e",
+  testDir: "./tests",
+  globalSetup: "./tests/ui/global-setup.ts",
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: 0,
   workers: 1,
-  reporter: "list",
+  reporter: process.env.CI ? [["html", { open: "never" }], ["list"]] : "list",
   use: {
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3000",
     trace: "on-first-retry",
@@ -19,7 +23,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    command: "npm run start",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: true,
     timeout: 120 * 1000,

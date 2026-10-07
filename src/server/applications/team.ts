@@ -1,5 +1,5 @@
 // src/server/applications/team.ts
-// Server logic and database persistence for Team Recruitment Applications (PRD §14)
+// Server logic and database persistence for Team Recruitment Applications ()
 
 import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";

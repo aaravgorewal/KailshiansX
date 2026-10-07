@@ -1,5 +1,5 @@
 // src/server/pnl/service.ts
-// Comprehensive Event P&L engine implementing PRD §23:
+// Comprehensive Event P&L engine implementing :
 // 1. Revenue: Tickets (auto-synced from payments/registrations), Sponsorship (auto-synced from CRM invoices), Other.
 // 2. Expenses: Venue, Travel, Food, Swag, Marketing, Printing, Operations, Logistics, Other.
 // 3. Financial Outputs: Total Revenue, Total Expense, Net Profit/Loss, Profit Margin (per event & across series).
@@ -496,7 +496,7 @@ export async function generatePnLReportCsv(options: {
     if (!pnl) throw new Error("Event not found");
 
     const lines: string[] = [];
-    lines.push("KAILSHIANSX FINANCIAL STATEMENT & EVENT P&L (PRD §23)");
+    lines.push("KAILSHIANSX FINANCIAL STATEMENT & EVENT P&L ()");
     lines.push(`Event,${pnl.eventTitle}`);
     lines.push(`Date,${new Date(pnl.eventDate).toLocaleDateString()}`);
     lines.push(
@@ -560,7 +560,7 @@ export async function generatePnLReportCsv(options: {
     if (!series) throw new Error("Series not found");
 
     const lines: string[] = [];
-    lines.push("KAILSHIANSX SERIES P&L ROLLUP (PRD §23)");
+    lines.push("KAILSHIANSX SERIES P&L ROLLUP ()");
     lines.push(`Series,${series.seriesName} (${series.seriesKind})`);
     lines.push(`Total Editions,${series.totalEditions}`);
     lines.push(`Series Total Revenue (INR),${series.seriesTotalRevenue.toFixed(2)}`);
@@ -650,7 +650,7 @@ export async function generatePnLReportPdf(options: {
   });
 
   let titleText = "Event Financial Statement & P&L Report";
-  let subtitleText = `Generated on ${new Date().toLocaleDateString()} • PRD §23 Compliant`;
+  let subtitleText = `Generated on ${new Date().toLocaleDateString()} • Compliant`;
   let filename = "kailshiansx-pnl.pdf";
 
   let totalRev = 0;

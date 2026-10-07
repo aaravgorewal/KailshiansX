@@ -1,5 +1,5 @@
 // src/server/speakers/service.ts
-// Mentor & Speaker Network service per PRD §28 & §30:
+// Mentor & Speaker Network service per :
 // Manages mentor/speaker discovery, availability, and session booking lifecycle.
 
 import { db } from "@/lib/db";

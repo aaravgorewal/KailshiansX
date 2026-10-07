@@ -1,5 +1,5 @@
 // src/lib/team-constants.ts
-// Shared constants for team recruitment, core team categories, and openings (PRD §14, §15)
+// Shared constants for team recruitment, core team categories, and openings (, )
 
 export const TEAM_AREAS = [
   "Technology",

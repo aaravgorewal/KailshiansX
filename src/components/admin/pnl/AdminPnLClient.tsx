@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/admin/pnl/AdminPnLClient.tsx
-// Complete Event P&L Dashboard implementing PRD §23:
+// Complete Event P&L Dashboard implementing :
 // 1. Revenue: Tickets (auto-synced), Sponsorship (CRM-synced), Other.
 // 2. Expenses: Venue, Travel, Food, Swag, Marketing, Printing, Operations, Logistics, Other.
 // 3. Financial Outputs: Total Revenue, Total Expense, Net Profit/Loss, Profit Margin (per event & across series).
@@ -278,17 +278,17 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
   return (
     <div className="space-y-8">
       {/* ─── HEADER & CONTROLS ───────────────────────────────────────────── */}
-      <div className="border-surface-800 flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center">
+      <div className="border-border flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center">
         <div>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-400">
+          <div className="border-success/20 bg-success/10 text-success mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
             <DollarSign className="h-3.5 w-3.5" />
-            <span>PRD §23 · Event Profit & Loss Intelligence</span>
-            {loading && <RefreshCw className="h-3 w-3 animate-spin text-emerald-400" />}
+            <span>· Event Profit & Loss Intelligence</span>
+            {loading && <RefreshCw className="text-success h-3 w-3 animate-spin" />}
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+          <h1 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
             Revenue & Event P&L Control Room
           </h1>
-          <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+          <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
             Track auto-synced ticket sales, corporate sponsorships, and 9 categories of operations
             expenses. Analyze margins per event and across series.
           </p>
@@ -296,7 +296,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
 
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Mode Switcher */}
-          <div className="bg-surface-900 border-surface-800 flex items-center gap-1 rounded-xl border p-1">
+          <div className="bg-card border-border flex items-center gap-1 rounded-xl border p-1">
             <button
               id="mode-event-pnl"
               onClick={() => {
@@ -307,8 +307,8 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
               }}
               className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
                 viewMode === "EVENT"
-                  ? "bg-brand-500 text-white shadow-sm"
-                  : "text-surface-400 hover:text-white"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Event P&L
@@ -323,8 +323,8 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
               }}
               className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
                 viewMode === "SERIES"
-                  ? "bg-brand-500 text-white shadow-sm"
-                  : "text-surface-400 hover:text-white"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Series Rollup
@@ -337,9 +337,9 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
               id="btn-export-pnl-csv"
               href={`/api/admin/pnl/export/csv?${viewMode === "EVENT" ? `eventId=${selectedEventId}` : `seriesId=${selectedSeriesId}`}`}
               download
-              className="bg-surface-900 hover:bg-surface-800 border-surface-700/80 text-surface-200 flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold transition-colors hover:text-white"
+              className="bg-card hover:bg-muted border-border text-foreground hover:text-foreground flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold transition-colors"
             >
-              <FileSpreadsheet className="h-3.5 w-3.5 text-emerald-400" />
+              <FileSpreadsheet className="text-success h-3.5 w-3.5" />
               <span>CSV</span>
             </a>
 
@@ -347,7 +347,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
               id="btn-export-pnl-pdf"
               href={`/api/admin/pnl/export/pdf?${viewMode === "EVENT" ? `eventId=${selectedEventId}` : `seriesId=${selectedSeriesId}`}`}
               download
-              className="bg-brand-600 hover:bg-brand-500 flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-colors"
+              className="bg-primary-hover hover:bg-primary text-primary-foreground flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold shadow-sm transition-colors"
             >
               <Download className="h-3.5 w-3.5" />
               <span>PDF Statement</span>
@@ -357,10 +357,10 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
       </div>
 
       {/* ─── SELECTOR & SYNC BAR ─────────────────────────────────────────── */}
-      <div className="bg-surface-900/60 border-surface-800 flex flex-col items-center justify-between gap-4 rounded-2xl border p-4 sm:flex-row">
+      <div className="bg-card border-border flex flex-col items-center justify-between gap-4 rounded-2xl border p-4 sm:flex-row">
         {viewMode === "EVENT" ? (
           <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-            <label className="text-surface-300 text-xs font-semibold whitespace-nowrap">
+            <label className="text-muted-foreground text-xs font-semibold whitespace-nowrap">
               Select Event:
             </label>
             <select
@@ -370,7 +370,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                 setLoading(true);
                 setSelectedEventId(e.target.value);
               }}
-              className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2 text-xs font-medium text-white focus:outline-hidden sm:w-96"
+              className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2 text-xs font-medium focus:outline-hidden sm:w-96"
             >
               {events.map((e) => (
                 <option key={e.id} value={e.id}>
@@ -381,7 +381,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
           </div>
         ) : (
           <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-            <label className="text-surface-300 text-xs font-semibold whitespace-nowrap">
+            <label className="text-muted-foreground text-xs font-semibold whitespace-nowrap">
               Select Series:
             </label>
             <select
@@ -391,7 +391,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                 setLoading(true);
                 setSelectedSeriesId(e.target.value);
               }}
-              className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2 text-xs font-medium text-white focus:outline-hidden sm:w-96"
+              className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2 text-xs font-medium focus:outline-hidden sm:w-96"
             >
               {seriesList.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -405,7 +405,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
         {viewMode === "EVENT" && (
           <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
             {syncMessage && (
-              <span className="max-w-xs truncate text-[11px] font-medium text-emerald-400">
+              <span className="text-success max-w-xs truncate text-xs font-medium">
                 {syncMessage}
               </span>
             )}
@@ -415,7 +415,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
               size="sm"
               isLoading={syncingTickets}
               onClick={handleSyncTickets}
-              className="border-surface-700 text-surface-200 hover:text-white"
+              className="border-border text-foreground hover:text-foreground"
             >
               <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
               <span>Sync Ticket Sales</span>
@@ -430,15 +430,15 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
           {/* KPI CARDS */}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {/* Total Revenue */}
-            <div className="bg-surface-900 border-surface-800 rounded-2xl border p-5">
-              <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+            <div className="bg-card border-border rounded-2xl border p-5">
+              <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
                 <span>Total Revenue</span>
-                <TrendingUp className="h-4 w-4 text-emerald-400" />
+                <TrendingUp className="text-success h-4 w-4" />
               </div>
-              <div className="font-mono text-2xl font-black text-white sm:text-3xl">
+              <div className="text-foreground font-mono text-2xl font-black sm:text-3xl">
                 ₹{pnlData.revenue.totalRevenue.toLocaleString("en-IN")}
               </div>
-              <div className="text-surface-400 mt-2 space-y-0.5 text-[11px]">
+              <div className="text-muted-foreground mt-2 space-y-0.5 text-xs">
                 <div>🎟️ Tickets: ₹{pnlData.revenue.ticketRevenue.toLocaleString("en-IN")}</div>
                 <div>
                   🤝 Sponsorship: ₹{pnlData.revenue.sponsorshipRevenue.toLocaleString("en-IN")}
@@ -447,15 +447,15 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
             </div>
 
             {/* Total Expenses */}
-            <div className="bg-surface-900 border-surface-800 rounded-2xl border p-5">
-              <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+            <div className="bg-card border-border rounded-2xl border p-5">
+              <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
                 <span>Total Expenses</span>
-                <TrendingDown className="h-4 w-4 text-red-400" />
+                <TrendingDown className="text-destructive h-4 w-4" />
               </div>
-              <div className="font-mono text-2xl font-black text-white sm:text-3xl">
+              <div className="text-foreground font-mono text-2xl font-black sm:text-3xl">
                 ₹{pnlData.expenses.totalExpense.toLocaleString("en-IN")}
               </div>
-              <div className="text-surface-400 mt-2 text-[11px]">
+              <div className="text-muted-foreground mt-2 text-xs">
                 Across {pnlData.expenses.items.length} verified expense receipts
               </div>
             </div>
@@ -464,62 +464,62 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
             <div
               className={`rounded-2xl border p-5 ${
                 pnlData.metrics.isProfitable
-                  ? "border-emerald-500/30 bg-emerald-500/10"
-                  : "border-red-500/30 bg-red-500/10"
+                  ? "border-success/30 bg-success/10"
+                  : "border-destructive/30 bg-destructive/10"
               }`}
             >
               <div className="mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
                 <span
-                  className={pnlData.metrics.isProfitable ? "text-emerald-400" : "text-red-400"}
+                  className={pnlData.metrics.isProfitable ? "text-success" : "text-destructive"}
                 >
                   Net {pnlData.metrics.isProfitable ? "Profit" : "Loss"}
                 </span>
                 {pnlData.metrics.isProfitable ? (
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                  <CheckCircle2 className="text-success h-4 w-4" />
                 ) : (
-                  <AlertTriangle className="h-4 w-4 text-red-400" />
+                  <AlertTriangle className="text-destructive h-4 w-4" />
                 )}
               </div>
               <div
                 className={`font-mono text-2xl font-black sm:text-3xl ${
-                  pnlData.metrics.isProfitable ? "text-emerald-400" : "text-red-400"
+                  pnlData.metrics.isProfitable ? "text-success" : "text-destructive"
                 }`}
               >
                 {pnlData.metrics.netProfitLoss >= 0 ? "+" : ""}₹
                 {pnlData.metrics.netProfitLoss.toLocaleString("en-IN")}
               </div>
-              <div className="mt-2 text-[11px] font-medium">
+              <div className="mt-2 text-xs font-medium">
                 {pnlData.metrics.isProfitable ? (
-                  <span className="text-emerald-300">Positive operating margin</span>
+                  <span className="text-success">Positive operating margin</span>
                 ) : (
-                  <span className="text-red-300">Operating below break-even</span>
+                  <span className="text-destructive">Operating below break-even</span>
                 )}
               </div>
             </div>
 
             {/* Profit Margin */}
-            <div className="bg-surface-900 border-surface-800 rounded-2xl border p-5">
-              <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+            <div className="bg-card border-border rounded-2xl border p-5">
+              <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
                 <span>Profit Margin</span>
-                <span className="text-brand-400 font-mono font-bold">%</span>
+                <span className="text-primary font-mono font-bold">%</span>
               </div>
               <div
                 className={`font-mono text-2xl font-black sm:text-3xl ${
-                  pnlData.metrics.profitMargin >= 0 ? "text-brand-400" : "text-red-400"
+                  pnlData.metrics.profitMargin >= 0 ? "text-primary" : "text-destructive"
                 }`}
               >
                 {pnlData.metrics.profitMargin.toFixed(1)}%
               </div>
-              <div className="text-surface-400 mt-2 text-[11px]">
+              <div className="text-muted-foreground mt-2 text-xs">
                 Break-even ratio: {pnlData.metrics.breakEvenRatio}x
               </div>
             </div>
           </div>
 
           {/* ─── EXPENSE CATEGORIES BREAKDOWN BARS ──────────────────────────── */}
-          <div className="bg-surface-900 border-surface-800 space-y-4 rounded-2xl border p-6">
-            <h3 className="text-surface-400 text-xs font-bold tracking-wider uppercase">
-              PRD §23 Budget Distribution by Category
+          <div className="bg-card border-border space-y-4 rounded-2xl border p-6">
+            <h3 className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
+              Budget Distribution by Category
             </h3>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -545,18 +545,18 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                 return (
                   <div
                     key={cat}
-                    className="bg-surface-950 border-surface-800 space-y-1.5 rounded-xl border p-3"
+                    className="bg-background border-border space-y-1.5 rounded-xl border p-3"
                   >
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-surface-400 font-semibold">{cat}</span>
-                      <span className="text-surface-500 font-mono text-[10px]">{percentage}%</span>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground font-semibold">{cat}</span>
+                      <span className="text-muted-foreground font-mono text-xs">{percentage}%</span>
                     </div>
-                    <div className="font-mono text-sm font-bold text-white">
+                    <div className="text-foreground font-mono text-sm font-bold">
                       ₹{amount.toLocaleString("en-IN")}
                     </div>
-                    <div className="bg-surface-800 h-1 w-full overflow-hidden rounded-full">
+                    <div className="bg-muted h-1 w-full overflow-hidden rounded-full">
                       <div
-                        className="bg-brand-500 h-full rounded-full"
+                        className="bg-primary h-full rounded-full"
                         style={{ width: `${Math.min(percentage, 100)}%` }}
                       />
                     </div>
@@ -568,15 +568,15 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
 
           {/* ─── LEDGER TABLES: REVENUE VS EXPENSES ───────────────────────── */}
           <div className="space-y-4">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
+            <div className="border-border flex items-center justify-between border-b pb-3">
               <div className="flex items-center gap-2">
                 <button
                   id="tab-revenue-ledger"
                   onClick={() => setActiveLedger("REVENUE")}
                   className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
                     activeLedger === "REVENUE"
-                      ? "bg-brand-500 text-white shadow-sm"
-                      : "text-surface-400 hover:text-white"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   Revenue Ledger ({pnlData.revenue.items.length})
@@ -586,8 +586,8 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                   onClick={() => setActiveLedger("EXPENSES")}
                   className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
                     activeLedger === "EXPENSES"
-                      ? "bg-brand-500 text-white shadow-sm"
-                      : "text-surface-400 hover:text-white"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   Expense Ledger ({pnlData.expenses.items.length})
@@ -643,10 +643,10 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
 
             {/* REVENUE TABLE */}
             {activeLedger === "REVENUE" && (
-              <div className="bg-surface-900 border-surface-800 overflow-hidden rounded-2xl border shadow-sm">
+              <div className="bg-card border-border overflow-hidden rounded-2xl border shadow-sm">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-surface-950 text-surface-400 border-surface-800 border-b font-semibold tracking-wider uppercase">
+                    <thead className="bg-background text-muted-foreground border-border border-b font-semibold tracking-wider uppercase">
                       <tr>
                         <th className="px-4 py-3">Category</th>
                         <th className="px-4 py-3">Description</th>
@@ -656,53 +656,53 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                         <th className="px-4 py-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-surface-800 divide-y">
+                    <tbody className="divide-border divide-y">
                       {pnlData.revenue.items.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="text-surface-500 py-8 text-center italic">
+                          <td colSpan={6} className="text-muted-foreground py-8 text-center italic">
                             No revenue records found for this event.
                           </td>
                         </tr>
                       ) : (
                         pnlData.revenue.items.map((rev) => (
-                          <tr key={rev.id} className="hover:bg-surface-800/40 transition-colors">
+                          <tr key={rev.id} className="hover:bg-muted transition-colors">
                             <td className="px-4 py-3">
                               <span
-                                className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                                className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${
                                   rev.category === "TICKET"
-                                    ? "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400"
+                                    ? "border-success/30 bg-success/15 text-success border"
                                     : rev.category === "SPONSORSHIP"
-                                      ? "border border-purple-500/30 bg-purple-500/15 text-purple-400"
-                                      : "bg-surface-800 text-surface-300"
+                                      ? "border-primary/30 bg-primary/15 text-primary border"
+                                      : "bg-muted text-muted-foreground"
                                 }`}
                               >
                                 {rev.category}
                               </span>
                             </td>
-                            <td className="px-4 py-3 font-semibold text-white">
+                            <td className="text-foreground px-4 py-3 font-semibold">
                               {rev.description || "General Revenue"}
                               {rev.notes && (
-                                <p className="text-surface-400 text-[11px] font-normal">
+                                <p className="text-muted-foreground text-xs font-normal">
                                   {rev.notes}
                                 </p>
                               )}
                             </td>
-                            <td className="text-surface-300 px-4 py-3">
+                            <td className="text-muted-foreground px-4 py-3">
                               {rev.isAutoSynced ? (
-                                <span className="text-brand-400 inline-flex items-center gap-1 text-[11px] font-semibold">
+                                <span className="text-primary inline-flex items-center gap-1 text-xs font-semibold">
                                   <RefreshCw className="h-3 w-3" />
                                   <span>{rev.source}</span>
                                 </span>
                               ) : (
-                                <span className="text-surface-400 text-[11px]">
+                                <span className="text-muted-foreground text-xs">
                                   {rev.source || "Manual Entry"}
                                 </span>
                               )}
                             </td>
-                            <td className="text-surface-400 px-4 py-3">
+                            <td className="text-muted-foreground px-4 py-3">
                               {rev.receivedAt ? new Date(rev.receivedAt).toLocaleDateString() : "—"}
                             </td>
-                            <td className="px-4 py-3 font-mono font-bold text-emerald-400">
+                            <td className="text-success px-4 py-3 font-mono font-bold">
                               ₹{rev.amount.toLocaleString("en-IN")}
                             </td>
                             <td className="space-x-2 px-4 py-3 text-right">
@@ -723,13 +723,13 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                                       });
                                       setRevenueModalOpen(true);
                                     }}
-                                    className="text-brand-400 hover:text-brand-300 font-semibold"
+                                    className="text-primary hover:text-primary font-semibold"
                                   >
                                     Edit
                                   </button>
                                   <button
                                     onClick={() => handleDeleteRevenue(rev.id)}
-                                    className="font-semibold text-red-400 hover:text-red-300"
+                                    className="text-destructive font-semibold hover:opacity-80"
                                   >
                                     Delete
                                   </button>
@@ -747,10 +747,10 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
 
             {/* EXPENSES TABLE */}
             {activeLedger === "EXPENSES" && (
-              <div className="bg-surface-900 border-surface-800 overflow-hidden rounded-2xl border shadow-sm">
+              <div className="bg-card border-border overflow-hidden rounded-2xl border shadow-sm">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-surface-950 text-surface-400 border-surface-800 border-b font-semibold tracking-wider uppercase">
+                    <thead className="bg-background text-muted-foreground border-border border-b font-semibold tracking-wider uppercase">
                       <tr>
                         <th className="px-4 py-3">Category</th>
                         <th className="px-4 py-3">Description</th>
@@ -761,38 +761,38 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                         <th className="px-4 py-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-surface-800 divide-y">
+                    <tbody className="divide-border divide-y">
                       {pnlData.expenses.items.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="text-surface-500 py-8 text-center italic">
+                          <td colSpan={7} className="text-muted-foreground py-8 text-center italic">
                             No expenses logged yet.
                           </td>
                         </tr>
                       ) : (
                         pnlData.expenses.items.map((exp) => (
-                          <tr key={exp.id} className="hover:bg-surface-800/40 transition-colors">
+                          <tr key={exp.id} className="hover:bg-muted transition-colors">
                             <td className="px-4 py-3">
-                              <span className="bg-surface-800 text-surface-300 border-surface-700 inline-block rounded-full border px-2.5 py-0.5 text-[10px] font-bold">
+                              <span className="bg-muted text-muted-foreground border-border inline-block rounded-full border px-2.5 py-0.5 text-xs font-bold">
                                 {exp.category}
                               </span>
                             </td>
-                            <td className="px-4 py-3 font-semibold text-white">
+                            <td className="text-foreground px-4 py-3 font-semibold">
                               {exp.description || "General Expense"}
                               {exp.notes && (
-                                <p className="text-surface-400 text-[11px] font-normal">
+                                <p className="text-muted-foreground text-xs font-normal">
                                   {exp.notes}
                                 </p>
                               )}
                             </td>
-                            <td className="text-surface-300 px-4 py-3">{exp.payee || "—"}</td>
-                            <td className="text-surface-400 px-4 py-3 font-mono text-[11px]">
+                            <td className="text-muted-foreground px-4 py-3">{exp.payee || "—"}</td>
+                            <td className="text-muted-foreground px-4 py-3 font-mono text-xs">
                               {exp.referenceNo ? (
                                 exp.receiptUrl ? (
                                   <a
                                     href={exp.receiptUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="text-brand-400 inline-flex items-center gap-1 hover:underline"
+                                    className="text-primary inline-flex items-center gap-1 hover:underline"
                                   >
                                     <span>{exp.referenceNo}</span>
                                     <ExternalLink className="h-3 w-3" />
@@ -804,10 +804,10 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                                 "—"
                               )}
                             </td>
-                            <td className="text-surface-400 px-4 py-3">
+                            <td className="text-muted-foreground px-4 py-3">
                               {exp.paidAt ? new Date(exp.paidAt).toLocaleDateString() : "—"}
                             </td>
-                            <td className="px-4 py-3 font-mono font-bold text-red-400">
+                            <td className="text-destructive px-4 py-3 font-mono font-bold">
                               ₹{exp.amount.toLocaleString("en-IN")}
                             </td>
                             <td className="space-x-2 px-4 py-3 text-right">
@@ -826,13 +826,13 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                                   });
                                   setExpenseModalOpen(true);
                                 }}
-                                className="text-brand-400 hover:text-brand-300 font-semibold"
+                                className="text-primary hover:text-primary font-semibold"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => handleDeleteExpense(exp.id)}
-                                className="font-semibold text-red-400 hover:text-red-300"
+                                className="text-destructive font-semibold hover:opacity-80"
                               >
                                 Delete
                               </button>
@@ -854,76 +854,78 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
         <div className="space-y-8">
           {/* Series Cumulative KPI Cards */}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <div className="bg-surface-900 border-surface-800 rounded-2xl border p-5">
-              <div className="text-surface-400 mb-2 text-xs font-semibold tracking-wider uppercase">
+            <div className="bg-card border-border rounded-2xl border p-5">
+              <div className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
                 Series Total Revenue
               </div>
-              <div className="font-mono text-2xl font-black text-white sm:text-3xl">
+              <div className="text-foreground font-mono text-2xl font-black sm:text-3xl">
                 ₹{seriesData.seriesTotalRevenue.toLocaleString("en-IN")}
               </div>
-              <div className="text-surface-400 mt-2 text-[11px]">
+              <div className="text-muted-foreground mt-2 text-xs">
                 Across {seriesData.totalEditions} editions
               </div>
             </div>
 
-            <div className="bg-surface-900 border-surface-800 rounded-2xl border p-5">
-              <div className="text-surface-400 mb-2 text-xs font-semibold tracking-wider uppercase">
+            <div className="bg-card border-border rounded-2xl border p-5">
+              <div className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
                 Series Total Expenses
               </div>
-              <div className="font-mono text-2xl font-black text-white sm:text-3xl">
+              <div className="text-foreground font-mono text-2xl font-black sm:text-3xl">
                 ₹{seriesData.seriesTotalExpense.toLocaleString("en-IN")}
               </div>
-              <div className="text-surface-400 mt-2 text-[11px]">Cumulative operations spend</div>
+              <div className="text-muted-foreground mt-2 text-xs">Cumulative operations spend</div>
             </div>
 
             <div
               className={`rounded-2xl border p-5 ${
                 seriesData.isProfitable
-                  ? "border-emerald-500/30 bg-emerald-500/10"
-                  : "border-red-500/30 bg-red-500/10"
+                  ? "border-success/30 bg-success/10"
+                  : "border-destructive/30 bg-destructive/10"
               }`}
             >
               <div className="mb-2 text-xs font-semibold tracking-wider uppercase">
-                <span className={seriesData.isProfitable ? "text-emerald-400" : "text-red-400"}>
+                <span className={seriesData.isProfitable ? "text-success" : "text-destructive"}>
                   Cumulative Net {seriesData.isProfitable ? "Profit" : "Loss"}
                 </span>
               </div>
               <div
                 className={`font-mono text-2xl font-black sm:text-3xl ${
-                  seriesData.isProfitable ? "text-emerald-400" : "text-red-400"
+                  seriesData.isProfitable ? "text-success" : "text-destructive"
                 }`}
               >
                 {seriesData.seriesNetProfitLoss >= 0 ? "+" : ""}₹
                 {seriesData.seriesNetProfitLoss.toLocaleString("en-IN")}
               </div>
-              <div className="mt-2 text-[11px] font-medium">Overall series health</div>
+              <div className="mt-2 text-xs font-medium">Overall series health</div>
             </div>
 
-            <div className="bg-surface-900 border-surface-800 rounded-2xl border p-5">
-              <div className="text-surface-400 mb-2 text-xs font-semibold tracking-wider uppercase">
+            <div className="bg-card border-border rounded-2xl border p-5">
+              <div className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
                 Series Profit Margin
               </div>
               <div
                 className={`font-mono text-2xl font-black sm:text-3xl ${
-                  seriesData.seriesProfitMargin >= 0 ? "text-brand-400" : "text-red-400"
+                  seriesData.seriesProfitMargin >= 0 ? "text-primary" : "text-destructive"
                 }`}
               >
                 {seriesData.seriesProfitMargin.toFixed(1)}%
               </div>
-              <div className="text-surface-400 mt-2 text-[11px]">Weighted return on investment</div>
+              <div className="text-muted-foreground mt-2 text-xs">
+                Weighted return on investment
+              </div>
             </div>
           </div>
 
           {/* Editions Comparison Table */}
-          <div className="bg-surface-900 border-surface-800 overflow-hidden rounded-2xl border shadow-sm">
-            <div className="border-surface-800 border-b p-4">
-              <h3 className="text-sm font-bold text-white">
+          <div className="bg-card border-border overflow-hidden rounded-2xl border shadow-sm">
+            <div className="border-border border-b p-4">
+              <h3 className="text-foreground text-sm font-bold">
                 {seriesData.seriesName} ({seriesData.seriesKind}) — Editions Financial Comparison
               </h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-surface-950 text-surface-400 border-surface-800 border-b font-semibold tracking-wider uppercase">
+                <thead className="bg-background text-muted-foreground border-border border-b font-semibold tracking-wider uppercase">
                   <tr>
                     <th className="px-4 py-3">Edition #</th>
                     <th className="px-4 py-3">Event Title</th>
@@ -935,32 +937,32 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                     <th className="px-4 py-3 text-right">View Event P&L</th>
                   </tr>
                 </thead>
-                <tbody className="divide-surface-800 divide-y">
+                <tbody className="divide-border divide-y">
                   {seriesData.editions.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="text-surface-500 py-8 text-center italic">
+                      <td colSpan={8} className="text-muted-foreground py-8 text-center italic">
                         No editions recorded for this series.
                       </td>
                     </tr>
                   ) : (
                     seriesData.editions.map((ed) => (
-                      <tr key={ed.eventId} className="hover:bg-surface-800/40 transition-colors">
-                        <td className="text-brand-400 px-4 py-3 font-mono font-bold">
+                      <tr key={ed.eventId} className="hover:bg-muted transition-colors">
+                        <td className="text-primary px-4 py-3 font-mono font-bold">
                           Edition {ed.editionNo}
                         </td>
-                        <td className="px-4 py-3 font-semibold text-white">{ed.eventTitle}</td>
-                        <td className="text-surface-400 px-4 py-3">
+                        <td className="text-foreground px-4 py-3 font-semibold">{ed.eventTitle}</td>
+                        <td className="text-muted-foreground px-4 py-3">
                           {new Date(ed.eventDate).toLocaleDateString()}
                         </td>
-                        <td className="px-4 py-3 font-mono font-bold text-emerald-400">
+                        <td className="text-success px-4 py-3 font-mono font-bold">
                           ₹{ed.revenue.toLocaleString("en-IN")}
                         </td>
-                        <td className="px-4 py-3 font-mono font-bold text-red-400">
+                        <td className="text-destructive px-4 py-3 font-mono font-bold">
                           ₹{ed.expense.toLocaleString("en-IN")}
                         </td>
                         <td className="px-4 py-3 font-mono font-bold">
                           <span
-                            className={ed.netProfitLoss >= 0 ? "text-emerald-400" : "text-red-400"}
+                            className={ed.netProfitLoss >= 0 ? "text-success" : "text-destructive"}
                           >
                             {ed.netProfitLoss >= 0 ? "+" : ""}₹
                             {ed.netProfitLoss.toLocaleString("en-IN")}
@@ -968,7 +970,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                         </td>
                         <td className="px-4 py-3 font-mono font-semibold">
                           <span
-                            className={ed.profitMargin >= 0 ? "text-brand-400" : "text-red-400"}
+                            className={ed.profitMargin >= 0 ? "text-primary" : "text-destructive"}
                           >
                             {ed.profitMargin.toFixed(1)}%
                           </span>
@@ -980,7 +982,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                               setSelectedEventId(ed.eventId);
                               setViewMode("EVENT");
                             }}
-                            className="text-brand-400 hover:text-brand-300 font-semibold"
+                            className="text-primary hover:text-primary font-semibold"
                           >
                             Inspect P&L →
                           </button>
@@ -998,14 +1000,14 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
       {/* ─── MODAL: ADD / EDIT REVENUE ────────────────────────────────────── */}
       {revenueModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-              <h3 className="text-lg font-bold text-white">
+          <div className="bg-card border-border w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <h3 className="text-foreground text-lg font-bold">
                 {editingRevenueId ? "Edit Revenue Item" : "Add Revenue Item"}
               </h3>
               <button
                 onClick={() => setRevenueModalOpen(false)}
-                className="text-surface-500 text-lg font-bold hover:text-white"
+                className="text-muted-foreground hover:text-foreground text-lg font-bold"
               >
                 ✕
               </button>
@@ -1014,7 +1016,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
             <form onSubmit={handleSaveRevenue} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Category *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Category *</label>
                   <select
                     value={revenueForm.category}
                     onChange={(e) =>
@@ -1023,7 +1025,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                         category: e.target.value as RevenueCategory,
                       })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     <option value="SPONSORSHIP">Sponsorship</option>
                     <option value="TICKET">Ticket Sales (Manual)</option>
@@ -1033,7 +1035,9 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Amount (INR) *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Amount (INR) *
+                  </label>
                   <input
                     type="number"
                     required
@@ -1041,58 +1045,64 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                     onChange={(e) =>
                       setRevenueForm({ ...revenueForm, amount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 font-mono text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 font-mono focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Description *</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Description *
+                </label>
                 <input
                   type="text"
                   required
                   value={revenueForm.description}
                   onChange={(e) => setRevenueForm({ ...revenueForm, description: e.target.value })}
                   placeholder="e.g. AWS Cloud Credits Sponsorship, On-spot Ticket Registrations"
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Source / Payer</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Source / Payer
+                  </label>
                   <input
                     type="text"
                     value={revenueForm.source}
                     onChange={(e) => setRevenueForm({ ...revenueForm, source: e.target.value })}
                     placeholder="e.g. Direct Wire, Cash, Grant"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Date Received</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Date Received
+                  </label>
                   <input
                     type="date"
                     value={revenueForm.receivedAt}
                     onChange={(e) => setRevenueForm({ ...revenueForm, receivedAt: e.target.value })}
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Notes</label>
+                <label className="text-muted-foreground mb-1 block font-medium">Notes</label>
                 <textarea
                   rows={2}
                   value={revenueForm.notes}
                   onChange={(e) => setRevenueForm({ ...revenueForm, notes: e.target.value })}
                   placeholder="Payment reference # or notes..."
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-4">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-4">
                 <Button type="button" variant="outline" onClick={() => setRevenueModalOpen(false)}>
                   Cancel
                 </Button>
@@ -1108,14 +1118,14 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
       {/* ─── MODAL: ADD / EDIT EXPENSE ────────────────────────────────────── */}
       {expenseModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-              <h3 className="text-lg font-bold text-white">
+          <div className="bg-card border-border w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <h3 className="text-foreground text-lg font-bold">
                 {editingExpenseId ? "Edit Expense Item" : "Add Expense Item"}
               </h3>
               <button
                 onClick={() => setExpenseModalOpen(false)}
-                className="text-surface-500 text-lg font-bold hover:text-white"
+                className="text-muted-foreground hover:text-foreground text-lg font-bold"
               >
                 ✕
               </button>
@@ -1124,8 +1134,8 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
             <form onSubmit={handleSaveExpense} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">
-                    Category (PRD §23) *
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Category () *
                   </label>
                   <select
                     value={expenseForm.category}
@@ -1135,7 +1145,7 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                         category: e.target.value as ExpenseCategory,
                       })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     <option value="VENUE">Venue & Auditorium</option>
                     <option value="TRAVEL">Travel & Lodging</option>
@@ -1150,7 +1160,9 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Amount (INR) *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Amount (INR) *
+                  </label>
                   <input
                     type="number"
                     required
@@ -1158,37 +1170,41 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                     onChange={(e) =>
                       setExpenseForm({ ...expenseForm, amount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 font-mono text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 font-mono focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Description *</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Description *
+                </label>
                 <input
                   type="text"
                   required
                   value={expenseForm.description}
                   onChange={(e) => setExpenseForm({ ...expenseForm, description: e.target.value })}
                   placeholder="e.g. Auditorium Hall Rental 8 Hours, Delegate Badges & Lanyards"
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Payee / Vendor</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Payee / Vendor
+                  </label>
                   <input
                     type="text"
                     value={expenseForm.payee}
                     onChange={(e) => setExpenseForm({ ...expenseForm, payee: e.target.value })}
                     placeholder="e.g. Campus Facilities Office"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">
+                  <label className="text-muted-foreground mb-1 block font-medium">
                     Bill / Invoice Reference #
                   </label>
                   <input
@@ -1198,35 +1214,37 @@ export function AdminPnLClient({ initialEventPnL, events, seriesList }: Props) {
                       setExpenseForm({ ...expenseForm, referenceNo: e.target.value })
                     }
                     placeholder="e.g. INV-9872"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Date Paid</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Date Paid</label>
                   <input
                     type="date"
                     value={expenseForm.paidAt}
                     onChange={(e) => setExpenseForm({ ...expenseForm, paidAt: e.target.value })}
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Receipt URL</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Receipt URL
+                  </label>
                   <input
                     type="url"
                     value={expenseForm.receiptUrl}
                     onChange={(e) => setExpenseForm({ ...expenseForm, receiptUrl: e.target.value })}
                     placeholder="https://..."
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-4">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-4">
                 <Button type="button" variant="outline" onClick={() => setExpenseModalOpen(false)}>
                   Cancel
                 </Button>

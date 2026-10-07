@@ -275,7 +275,7 @@ export async function getDeveloperPassportData(
       title: "Mentor & Speaker",
       description:
         "Shared deep technical expertise on stage or evaluated next-gen builder projects.",
-      icon: "Sparkles",
+      icon: "Zap",
       unlocked: isMentorSpeaker,
       unlockedAt: mentorSpeakerDate,
       current: isMentorSpeaker,
@@ -287,26 +287,26 @@ export async function getDeveloperPassportData(
   let highestRank: DeveloperPassportData["highestRank"] = {
     tier: "ATTENDEE",
     label: "Community Attendee",
-    badgeColor: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    badgeColor: "bg-primary/20 text-primary border-primary/30",
   };
 
   if (isMentorSpeaker) {
     highestRank = {
       tier: "MENTOR_SPEAKER",
       label: "Mentor & Speaker",
-      badgeColor: "bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-purple-500/20",
+      badgeColor: "bg-primary/20 text-primary border-primary/40 shadow-sm",
     };
   } else if (isOrganiser) {
     highestRank = {
       tier: "ORGANISER",
       label: "Core Organiser",
-      badgeColor: "bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-amber-500/20",
+      badgeColor: "bg-warning/10 text-warning border-warning/40 shadow-sm",
     };
   } else if (isCampusLeadActive) {
     highestRank = {
       tier: "CAMPUS_LEAD",
       label: "Campus Lead",
-      badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-emerald-500/20",
+      badgeColor: "bg-success/20 text-success border-success/40 shadow-sm",
     };
   }
 
@@ -318,7 +318,7 @@ export async function getDeveloperPassportData(
       category: "PARTICIPATION",
       description: "Attended your first KailshiansX developer event.",
       icon: "Compass",
-      color: "from-blue-500 to-indigo-500",
+      color: "bg-primary text-primary-foreground",
       criteria: "Attend 1+ event",
       isUnlocked: eventsAttended >= 1,
       unlockedAt:
@@ -330,7 +330,7 @@ export async function getDeveloperPassportData(
       category: "PARTICIPATION",
       description: "Consistent community participant with 3+ events attended.",
       icon: "Zap",
-      color: "from-cyan-500 to-blue-600",
+      color: "bg-primary text-primary-foreground",
       criteria: "Attend 3+ events",
       isUnlocked: eventsAttended >= 3,
       unlockedAt: eventsAttended >= 3 ? user.registrations[2]?.createdAt.toISOString() : null,
@@ -341,7 +341,7 @@ export async function getDeveloperPassportData(
       category: "MASTERY",
       description: "Completed intensive technical workshop and built working software.",
       icon: "Code2",
-      color: "from-teal-500 to-emerald-600",
+      color: "bg-primary text-primary-foreground",
       criteria: "Complete 1+ Workshop",
       isUnlocked: workshopsCompleted >= 1,
       unlockedAt:
@@ -356,7 +356,7 @@ export async function getDeveloperPassportData(
       category: "CONTRIBUTION",
       description: "Built high-velocity prototypes at NirmanX or AarambhX.",
       icon: "Flame",
-      color: "from-orange-500 to-rose-600",
+      color: "bg-primary text-primary-foreground",
       criteria: "Participate in 1+ Hackathon",
       isUnlocked: hackathonsJoined >= 1,
       unlockedAt:
@@ -371,7 +371,7 @@ export async function getDeveloperPassportData(
       category: "MASTERY",
       description: "Earned cryptographic verified certificate of completion.",
       icon: "Award",
-      color: "from-amber-400 to-amber-600",
+      color: "bg-primary text-primary-foreground",
       criteria: "Receive 1+ Certificate",
       isUnlocked: certificatesEarned >= 1,
       unlockedAt: user.certificates[0]?.issuedAt.toISOString() || null,
@@ -382,7 +382,7 @@ export async function getDeveloperPassportData(
       category: "LEADERSHIP",
       description: "Appointed to lead campus developer outreach.",
       icon: "Flag",
-      color: "from-emerald-500 to-green-600",
+      color: "bg-primary text-primary-foreground",
       criteria: "Active Campus or State Lead",
       isUnlocked: isCampusLeadActive,
       unlockedAt: campusLeadDate,
@@ -393,7 +393,7 @@ export async function getDeveloperPassportData(
       category: "LEADERSHIP",
       description: "Part of the team shaping developer community infrastructure.",
       icon: "Cpu",
-      color: "from-violet-500 to-purple-600",
+      color: "bg-primary text-primary-foreground",
       criteria: "Core Team or Organiser",
       isUnlocked: isOrganiser,
       unlockedAt: organiserDate,
@@ -404,7 +404,7 @@ export async function getDeveloperPassportData(
       category: "MASTERY",
       description: "Mentored aspiring developers or presented keynotes/workshops.",
       icon: "Radio",
-      color: "from-pink-500 to-rose-600",
+      color: "bg-primary text-primary-foreground",
       criteria: "Tech Talk Speaker or Judge",
       isUnlocked: isMentorSpeaker,
       unlockedAt: mentorSpeakerDate,

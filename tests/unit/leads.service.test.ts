@@ -1,5 +1,5 @@
 // tests/unit/leads.service.test.ts
-// Unit tests for Campus Lead and State Lead Data Engine per PRD §11 & §12:
+// Unit tests for Campus Lead and State Lead Data Engine per :
 // 1. Performance Scoring: Bronze, Silver, Gold, Platinum tiers and max component score capping.
 // 2. Campus & State Lead Dashboards: Role-scoped metrics, aggregations, activities, reports.
 // 3. Activity Logging & Verification: Status transitions, score recalculations.

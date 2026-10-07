@@ -1,5 +1,5 @@
 // src/server/leads/service.ts
-// Comprehensive Campus Lead and State Lead Data Engine per PRD §11 & §12.
+// Comprehensive Campus Lead and State Lead Data Engine per .
 // Manages: Scope, Referrals, Events Supported, Activities Log, Performance Scoring, and Monthly Reports.
 
 import { db } from "@/lib/db";

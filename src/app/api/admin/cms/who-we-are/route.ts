@@ -1,5 +1,5 @@
 // src/app/api/admin/cms/who-we-are/route.ts
-// Admin endpoint for editing Who We Are CMS content (PRD §17)
+// Admin endpoint for editing Who We Are CMS content ()
 
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminForRoute } from "@/server/auth/require-role";

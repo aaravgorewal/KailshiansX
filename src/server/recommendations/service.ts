@@ -1,5 +1,5 @@
 // src/server/recommendations/service.ts
-// Personalized recommendation engine per PRD §28 & §30:
+// Personalized recommendation engine per :
 // Recommends upcoming events and community leadership progression roles
 // based on user history, attendance record, technical skills, and geographic location.
 //
@@ -250,7 +250,7 @@ export async function getPersonalizedRecommendations(
   // Sort events by match score descending
   scoredEvents.sort((a, b) => b.matchScore - a.matchScore);
 
-  // 3. Compute Recommended Roles (PRD §30 Progression Ladder)
+  // 3. Compute Recommended Roles (Progression Ladder)
   const recommendedRoles: RecommendedRole[] = [];
   const eventsCount = userRegistrations.length;
 

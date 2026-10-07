@@ -8,12 +8,16 @@ const subscribe = () => () => {};
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
+const THEMES = ["light", "dark", "system"] as const;
+
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const mounted = React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [open, setOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  const itemRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -23,11 +27,16 @@ export function ThemeToggle() {
     }
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
+      // Focus currently selected item or first item
+      const idx = theme === "light" ? 0 : theme === "dark" ? 1 : 2;
+      requestAnimationFrame(() => {
+        itemRefs.current[idx]?.focus();
+      });
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [open]);
+  }, [open, theme]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
@@ -36,6 +45,25 @@ export function ThemeToggle() {
     } else if (e.key === "ArrowDown" && !open) {
       e.preventDefault();
       setOpen(true);
+    }
+  };
+
+  const handleItemKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      selectTheme(THEMES[index]);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextIdx = (index + 1) % 3;
+      itemRefs.current[nextIdx]?.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevIdx = (index - 1 + 3) % 3;
+      itemRefs.current[prevIdx]?.focus();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      buttonRef.current?.focus();
     }
   };
 
@@ -80,9 +108,13 @@ export function ThemeToggle() {
           className="border-border bg-card absolute right-0 z-50 mt-1.5 w-32 origin-top-right rounded-lg border p-1 shadow-none focus:outline-none"
         >
           <button
+            ref={(el) => {
+              itemRefs.current[0] = el;
+            }}
             type="button"
             role="menuitem"
             onClick={() => selectTheme("light")}
+            onKeyDown={(e) => handleItemKeyDown(0, e)}
             className={`hover:bg-muted focus-visible:bg-muted flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none ${
               theme === "light" ? "text-primary font-semibold" : "text-foreground"
             }`}
@@ -91,9 +123,13 @@ export function ThemeToggle() {
             {theme === "light" && <span className="text-[12px]">✓</span>}
           </button>
           <button
+            ref={(el) => {
+              itemRefs.current[1] = el;
+            }}
             type="button"
             role="menuitem"
             onClick={() => selectTheme("dark")}
+            onKeyDown={(e) => handleItemKeyDown(1, e)}
             className={`hover:bg-muted focus-visible:bg-muted flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none ${
               theme === "dark" ? "text-primary font-semibold" : "text-foreground"
             }`}
@@ -102,9 +138,13 @@ export function ThemeToggle() {
             {theme === "dark" && <span className="text-[12px]">✓</span>}
           </button>
           <button
+            ref={(el) => {
+              itemRefs.current[2] = el;
+            }}
             type="button"
             role="menuitem"
             onClick={() => selectTheme("system")}
+            onKeyDown={(e) => handleItemKeyDown(2, e)}
             className={`hover:bg-muted focus-visible:bg-muted flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none ${
               theme === "system" ? "text-primary font-semibold" : "text-foreground"
             }`}

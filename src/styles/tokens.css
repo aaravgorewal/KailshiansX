@@ -10,15 +10,15 @@
   --card: #fafafa;
   --card-foreground: #0a0a0a;
   --muted: #f4f4f5;
-  --muted-foreground: #6b6b6b;
+  --muted-foreground: #525252;
   --border: #e5e5e5;
   --input: #e5e5e5;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  --primary: #1d4ed8;
+  --primary-hover: #1e40af;
   --primary-foreground: #ffffff;
   --accent-text: #1d4ed8;
-  --ring: #2563eb;
-  --success: #15803d;
+  --ring: #1d4ed8;
+  --success: #166534;
   --destructive: #b91c1c;
   --scrim: rgba(0, 0, 0, 0.55);
 

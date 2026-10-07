@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/leads/CampusLeadDashboardClient.tsx
-// Comprehensive Campus Lead Dashboard implementing PRD §11:
+// Comprehensive Campus Lead Dashboard implementing :
 // College scope, City, Referrals, Events supported, Activities log, Performance score, and Monthly reports.
 
 import * as React from "react";
@@ -234,16 +234,16 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       {/* ─── ADMIN SCOPE BANNER (If admin viewing) ────────────────────────── */}
       {isAdminViewing && (
-        <div className="bg-brand-500/10 border-brand-500/20 flex items-center justify-between rounded-2xl border p-4">
+        <div className="bg-primary/10 border-primary/20 flex items-center justify-between rounded-2xl border p-4">
           <div className="flex items-center gap-3">
-            <span className="bg-brand-500/20 text-brand-400 rounded-xl p-2">
+            <span className="bg-primary/20 text-primary rounded-xl p-2">
               <ShieldCheckIcon className="h-5 w-5" />
             </span>
             <div>
-              <div className="text-brand-400 text-xs font-bold tracking-wider uppercase">
+              <div className="text-primary text-xs font-bold tracking-wider uppercase">
                 Admin Impersonation Mode
               </div>
-              <div className="text-sm font-semibold text-white">
+              <div className="text-foreground text-sm font-semibold">
                 Viewing role-gated campus scope for {data.name} ({data.collegeName})
               </div>
             </div>
@@ -257,12 +257,10 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
       )}
 
       {/* ─── LEAD HEADER & JURISDICTION CARD ─────────────────────────────── */}
-      <div className="bg-surface-900/80 border-surface-800 relative overflow-hidden rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8">
-        <div className="bg-brand-500/5 pointer-events-none absolute top-0 right-0 -z-10 h-96 w-96 rounded-full blur-3xl" />
-
+      <div className="bg-card border-border relative overflow-hidden rounded-3xl border p-6 shadow-xl backdrop-blur-md sm:p-8">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="flex items-start gap-4">
-            <div className="bg-surface-800 border-surface-700 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border">
+            <div className="bg-muted border-border flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border">
               {data.image ? (
                 <Image
                   src={data.image}
@@ -272,35 +270,35 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <GraduationCap className="text-brand-400 h-8 w-8" />
+                <GraduationCap className="text-primary h-8 w-8" />
               )}
             </div>
 
             <div>
               <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-400">
+                <span className="border-primary/20 bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold">
                   <GraduationCap className="h-3.5 w-3.5" />
                   <span>Campus Lead</span>
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400">
+                <span className="border-success/20 bg-success/10 text-success inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
                   ● {data.status}
                 </span>
-                <span className="text-surface-500 text-xs">
+                <span className="text-muted-foreground text-xs">
                   Chartered {new Date(data.startDate).toLocaleDateString()}
                 </span>
               </div>
 
-              <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+              <h1 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
                 {data.name}
               </h1>
 
-              <div className="text-surface-400 mt-1.5 flex flex-wrap items-center gap-4 text-xs font-medium">
-                <span className="text-surface-200 flex items-center gap-1">
-                  <GraduationCap className="text-brand-400 h-3.5 w-3.5" />
+              <div className="text-muted-foreground mt-1.5 flex flex-wrap items-center gap-4 text-xs font-medium">
+                <span className="text-foreground flex items-center gap-1">
+                  <GraduationCap className="text-primary h-3.5 w-3.5" />
                   <strong>{data.collegeName}</strong>
                 </span>
-                <span className="text-surface-300 flex items-center gap-1">
-                  <MapPin className="h-3.5 w-3.5 text-rose-400" />
+                <span className="text-muted-foreground flex items-center gap-1">
+                  <MapPin className="text-destructive h-3.5 w-3.5" />
                   {data.cityName}, {data.state}
                 </span>
                 <span>{data.email}</span>
@@ -309,19 +307,19 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
           </div>
 
           {/* Referral Link & Code Box */}
-          <div className="bg-surface-950/80 border-surface-700/80 w-full rounded-2xl border p-4 shadow-inner sm:p-5 lg:w-96">
-            <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-bold">
-              <span className="flex items-center gap-1.5 text-amber-400">
+          <div className="bg-background border-border w-full rounded-2xl border p-4 shadow-inner sm:p-5 lg:w-96">
+            <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-bold">
+              <span className="text-primary flex items-center gap-1.5">
                 <Share2 className="h-3.5 w-3.5" />
                 <span>Your Referral Code</span>
               </span>
               <button
                 id="btn-copy-code"
                 onClick={handleCopyCode}
-                className="text-surface-400 flex items-center gap-1 text-[11px] hover:text-white"
+                className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs"
               >
                 {copiedCode ? (
-                  <Check className="h-3 w-3 text-emerald-400" />
+                  <Check className="text-success h-3 w-3" />
                 ) : (
                   <Copy className="h-3 w-3" />
                 )}
@@ -329,9 +327,9 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
               </button>
             </div>
 
-            <div className="bg-surface-900 border-surface-800 mb-3 flex items-center justify-between rounded-xl border px-3.5 py-2 font-mono text-sm font-bold text-white">
+            <div className="bg-card border-border text-foreground mb-3 flex items-center justify-between rounded-xl border px-3.5 py-2 font-mono text-sm font-bold">
               <span>{data.referralCode}</span>
-              <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 uppercase">
+              <span className="bg-success/10 text-success rounded-md px-2 py-0.5 text-xs font-semibold uppercase">
                 +1 pt / ref
               </span>
             </div>
@@ -339,7 +337,7 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
             <button
               id="btn-copy-referral-link"
               onClick={handleCopyLink}
-              className="bg-brand-500 hover:bg-brand-400 shadow-brand-500/20 flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-bold text-white shadow-sm transition-all"
+              className="bg-primary hover:bg-primary-hover text-primary-foreground flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-bold shadow-sm transition-all"
             >
               {copiedLink ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
               <span>{copiedLink ? "Referral Link Copied!" : "Copy Official Invite Link"}</span>
@@ -351,52 +349,48 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
       {/* ─── 4 PRIMARY KPI METRIC CARDS ─────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {/* Card 1: Referrals */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Attendee Referrals</span>
-            <Users className="text-brand-400 h-4 w-4" />
+            <Users className="text-primary h-4 w-4" />
           </div>
-          <div className="font-mono text-3xl font-black text-white">
+          <div className="text-foreground font-mono text-3xl font-black">
             {data.referrals.toLocaleString("en-IN")}
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-muted-foreground mt-1 text-xs">
             Registered builders via your invite code
           </div>
         </div>
 
         {/* Card 2: Events Supported */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Events Supported</span>
-            <Calendar className="h-4 w-4 text-emerald-400" />
+            <Calendar className="text-success h-4 w-4" />
           </div>
-          <div className="font-mono text-3xl font-black text-emerald-400">
-            {data.eventsSupported}
-          </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-success font-mono text-3xl font-black">{data.eventsSupported}</div>
+          <div className="text-muted-foreground mt-1 text-xs">
             Campus meetups, hackathons, & summits
           </div>
         </div>
 
         {/* Card 3: Activities Logged */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Activities Logged</span>
-            <CheckCircle2 className="h-4 w-4 text-blue-400" />
+            <CheckCircle2 className="text-primary h-4 w-4" />
           </div>
-          <div className="font-mono text-3xl font-black text-blue-400">
-            {data.activities.length}
-          </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-primary font-mono text-3xl font-black">{data.activities.length}</div>
+          <div className="text-muted-foreground mt-1 text-xs">
             {data.activities.filter((a) => a.verifiedByAdmin).length} verified by KailshiansX Core
           </div>
         </div>
 
         {/* Card 4: Performance Score */}
-        <div className="bg-surface-900/80 border-surface-800 hover:border-surface-700 rounded-2xl border p-5 shadow-sm transition-all">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border hover:border-border rounded-2xl border p-5 shadow-sm transition-all">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Performance Score</span>
-            <Award className="h-4 w-4 text-amber-400" />
+            <Award className="text-primary h-4 w-4" />
           </div>
           <div className="flex items-baseline gap-2">
             <span
@@ -405,11 +399,11 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
             >
               {data.performance.score}
             </span>
-            <span className="text-surface-400 font-mono text-xs">/100</span>
+            <span className="text-muted-foreground font-mono text-xs">/100</span>
           </div>
           <div className="mt-1.5 flex items-center gap-1.5">
             <span
-              className="rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase"
+              className="rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase"
               style={{
                 backgroundColor: `${data.performance.tierColor}20`,
                 color: data.performance.tierColor,
@@ -423,15 +417,15 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
       </div>
 
       {/* ─── NAVIGATION TABS & ACTIONS ────────────────────────────────────── */}
-      <div className="border-surface-800 flex flex-col items-center justify-between gap-4 border-b pb-4 sm:flex-row">
+      <div className="border-border flex flex-col items-center justify-between gap-4 border-b pb-4 sm:flex-row">
         <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 sm:w-auto sm:pb-0">
           <button
             id="tab-activities"
             onClick={() => setActiveTab("ACTIVITIES")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               activeTab === "ACTIVITIES"
-                ? "bg-brand-500 text-white shadow-sm"
-                : "text-surface-400 hover:bg-surface-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <CheckCircle2 className="h-3.5 w-3.5" />
@@ -443,8 +437,8 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
             onClick={() => setActiveTab("REPORTS")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               activeTab === "REPORTS"
-                ? "bg-brand-500 text-white shadow-sm"
-                : "text-surface-400 hover:bg-surface-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <FileText className="h-3.5 w-3.5" />
@@ -456,8 +450,8 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
             onClick={() => setActiveTab("EVENTS")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               activeTab === "EVENTS"
-                ? "bg-brand-500 text-white shadow-sm"
-                : "text-surface-400 hover:bg-surface-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <Calendar className="h-3.5 w-3.5" />
@@ -511,8 +505,8 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                 onClick={() => setActivityFilter(cat.id)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
                   activityFilter === cat.id
-                    ? "bg-surface-700 text-white"
-                    : "bg-surface-900 text-surface-400 hover:bg-surface-800 hover:text-white"
+                    ? "bg-muted text-foreground"
+                    : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
                 {cat.label}
@@ -522,10 +516,10 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
 
           {/* Activities List */}
           {filteredActivities.length === 0 ? (
-            <div className="bg-surface-900/60 border-surface-800 rounded-2xl border p-12 text-center">
-              <CheckCircle2 className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">No activities logged yet</h3>
-              <p className="text-surface-400 mx-auto mb-5 max-w-sm text-xs">
+            <div className="bg-card border-border rounded-2xl border p-12 text-center">
+              <CheckCircle2 className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">No activities logged yet</h3>
+              <p className="text-muted-foreground mx-auto mb-5 max-w-sm text-xs">
                 Record your workshops, club meetups, info sessions, or flyer distributions to build
                 your official leadership track record.
               </p>
@@ -539,31 +533,33 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
               {filteredActivities.map((act) => (
                 <div
                   key={act.id}
-                  className="bg-surface-900/80 border-surface-800 hover:border-surface-700 flex flex-col justify-between space-y-4 rounded-2xl border p-5 transition-all"
+                  className="bg-card border-border hover:border-border flex flex-col justify-between space-y-4 rounded-2xl border p-5 transition-all"
                 >
                   <div>
                     <div className="mb-2 flex items-start justify-between gap-3">
-                      <span className="bg-surface-800 text-surface-300 rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+                      <span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase">
                         {act.type.replace(/_/g, " ")}
                       </span>
                       {act.verifiedByAdmin ? (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-bold text-emerald-400">
+                        <span className="bg-success/10 text-success inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-bold">
                           <CheckCircle2 className="h-3 w-3" />
                           Verified
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-400">
+                        <span className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium">
                           <Clock className="h-3 w-3" />
                           Pending Review
                         </span>
                       )}
                     </div>
 
-                    <h4 className="mb-1.5 text-sm font-bold text-white">{act.title}</h4>
-                    <p className="text-surface-300 text-xs leading-relaxed">{act.description}</p>
+                    <h4 className="text-foreground mb-1.5 text-sm font-bold">{act.title}</h4>
+                    <p className="text-muted-foreground text-xs leading-relaxed">
+                      {act.description}
+                    </p>
                   </div>
 
-                  <div className="border-surface-800/80 text-surface-400 flex items-center justify-between border-t pt-3 text-xs font-medium">
+                  <div className="border-border text-muted-foreground flex items-center justify-between border-t pt-3 text-xs font-medium">
                     <div className="flex items-center gap-3">
                       <span>📅 {new Date(act.date).toLocaleDateString()}</span>
                       <span>⏱️ {act.hoursSpent} hrs</span>
@@ -575,7 +571,7 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                         href={act.proofUrls[0]}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-brand-400 hover:text-brand-300 inline-flex items-center gap-1 text-xs font-semibold"
+                        className="text-primary hover:text-primary inline-flex items-center gap-1 text-xs font-semibold"
                       >
                         <span>Proof Link</span>
                         <ExternalLink className="h-3 w-3" />
@@ -592,12 +588,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
       {/* ─── TAB 2: MONTHLY REPORTS ───────────────────────────────────────── */}
       {activeTab === "REPORTS" && (
         <div className="space-y-6">
-          <div className="bg-surface-900/60 border-surface-800 flex flex-col items-center justify-between gap-4 rounded-2xl border p-5 sm:flex-row">
+          <div className="bg-card border-border flex flex-col items-center justify-between gap-4 rounded-2xl border p-5 sm:flex-row">
             <div>
-              <h3 className="mb-0.5 text-sm font-bold text-white">
+              <h3 className="text-foreground mb-0.5 text-sm font-bold">
                 Monthly Retrospectives & Performance Evaluation
               </h3>
-              <p className="text-surface-400 text-xs">
+              <p className="text-muted-foreground text-xs">
                 Submit monthly reports at the close of every month. KailshiansX Core evaluates these
                 for leadership grants, community funding, and state lead promotions.
               </p>
@@ -609,10 +605,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
           </div>
 
           {data.monthlyReports.length === 0 ? (
-            <div className="bg-surface-900/60 border-surface-800 rounded-2xl border p-12 text-center">
-              <FileText className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">No monthly reports filed yet</h3>
-              <p className="text-surface-400 mx-auto mb-5 max-w-sm text-xs">
+            <div className="bg-card border-border rounded-2xl border p-12 text-center">
+              <FileText className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">
+                No monthly reports filed yet
+              </h3>
+              <p className="text-muted-foreground mx-auto mb-5 max-w-sm text-xs">
                 Submit your monthly progress recap covering community growth, student registrations,
                 challenges, and upcoming initiatives.
               </p>
@@ -631,11 +629,11 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                 return (
                   <div
                     key={rep.id}
-                    className="bg-surface-900/80 border-surface-800 hover:border-surface-700 space-y-4 rounded-2xl border p-6 transition-all"
+                    className="bg-card border-border hover:border-border space-y-4 rounded-2xl border p-6 transition-all"
                   >
-                    <div className="border-surface-800 flex flex-col justify-between gap-2 border-b pb-3 sm:flex-row sm:items-center">
+                    <div className="border-border flex flex-col justify-between gap-2 border-b pb-3 sm:flex-row sm:items-center">
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-black text-white">
+                        <span className="text-foreground text-sm font-black">
                           {monthName} {rep.year} Retrospective
                         </span>
                         <Badge
@@ -646,9 +644,9 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                         </Badge>
                       </div>
 
-                      <div className="text-surface-400 flex items-center gap-4 text-xs">
+                      <div className="text-muted-foreground flex items-center gap-4 text-xs">
                         {rep.performanceScore !== null && (
-                          <span className="rounded-md bg-amber-500/10 px-2.5 py-0.5 font-mono font-bold text-amber-400">
+                          <span className="bg-primary/10 text-primary rounded-md px-2.5 py-0.5 font-mono font-bold">
                             Score: {rep.performanceScore} / 100
                           </span>
                         )}
@@ -656,75 +654,79 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                       </div>
                     </div>
 
-                    <div className="bg-surface-950/60 grid grid-cols-3 gap-3 rounded-xl p-3 text-center text-xs">
+                    <div className="bg-background grid grid-cols-3 gap-3 rounded-xl p-3 text-center text-xs">
                       <div>
-                        <div className="text-surface-400 text-[10px] font-semibold uppercase">
+                        <div className="text-muted-foreground text-xs font-semibold uppercase">
                           New Signups
                         </div>
-                        <div className="mt-0.5 font-mono text-base font-bold text-white">
+                        <div className="text-foreground mt-0.5 font-mono text-base font-bold">
                           {rep.newSignupsCount}
                         </div>
                       </div>
                       <div>
-                        <div className="text-surface-400 text-[10px] font-semibold uppercase">
+                        <div className="text-muted-foreground text-xs font-semibold uppercase">
                           Events Held
                         </div>
-                        <div className="mt-0.5 font-mono text-base font-bold text-white">
+                        <div className="text-foreground mt-0.5 font-mono text-base font-bold">
                           {rep.eventsOrganizedCount}
                         </div>
                       </div>
                       <div>
-                        <div className="text-surface-400 text-[10px] font-semibold uppercase">
+                        <div className="text-muted-foreground text-xs font-semibold uppercase">
                           Swag Distributed
                         </div>
-                        <div className="mt-0.5 font-mono text-base font-bold text-white">
+                        <div className="text-foreground mt-0.5 font-mono text-base font-bold">
                           {rep.swagDistributedCount}
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <div className="text-surface-300 mb-1 text-xs font-bold tracking-wider uppercase">
+                      <div className="text-muted-foreground mb-1 text-xs font-bold tracking-wider uppercase">
                         Executive Summary
                       </div>
-                      <p className="text-surface-300 text-xs leading-relaxed">{rep.summary}</p>
+                      <p className="text-muted-foreground text-xs leading-relaxed">{rep.summary}</p>
                     </div>
 
                     {rep.highlights && (
                       <div>
-                        <div className="mb-1 text-xs font-bold tracking-wider text-emerald-400 uppercase">
+                        <div className="text-success mb-1 text-xs font-bold tracking-wider uppercase">
                           Key Highlights
                         </div>
-                        <p className="text-surface-300 text-xs leading-relaxed">{rep.highlights}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">
+                          {rep.highlights}
+                        </p>
                       </div>
                     )}
 
                     {rep.challenges && (
                       <div>
-                        <div className="mb-1 text-xs font-bold tracking-wider text-rose-400 uppercase">
+                        <div className="text-destructive mb-1 text-xs font-bold tracking-wider uppercase">
                           Challenges & Support Needed
                         </div>
-                        <p className="text-surface-300 text-xs leading-relaxed">{rep.challenges}</p>
+                        <p className="text-muted-foreground text-xs leading-relaxed">
+                          {rep.challenges}
+                        </p>
                       </div>
                     )}
 
                     {rep.nextMonthPlans && (
                       <div>
-                        <div className="text-brand-400 mb-1 text-xs font-bold tracking-wider uppercase">
+                        <div className="text-primary mb-1 text-xs font-bold tracking-wider uppercase">
                           Goals for Next Month
                         </div>
-                        <p className="text-surface-300 text-xs leading-relaxed">
+                        <p className="text-muted-foreground text-xs leading-relaxed">
                           {rep.nextMonthPlans}
                         </p>
                       </div>
                     )}
 
                     {rep.adminFeedback && (
-                      <div className="bg-brand-500/10 border-brand-500/20 rounded-xl border p-3.5">
-                        <div className="text-brand-400 mb-1 text-xs font-bold">
+                      <div className="bg-primary/10 border-primary/20 rounded-xl border p-3.5">
+                        <div className="text-primary mb-1 text-xs font-bold">
                           Core Leadership Feedback:
                         </div>
-                        <p className="text-surface-200 text-xs">{rep.adminFeedback}</p>
+                        <p className="text-foreground text-xs">{rep.adminFeedback}</p>
                       </div>
                     )}
                   </div>
@@ -739,12 +741,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
       {activeTab === "EVENTS" && (
         <div className="space-y-4">
           {data.supportedEvents.length === 0 ? (
-            <div className="bg-surface-900/60 border-surface-800 rounded-2xl border p-12 text-center">
-              <Calendar className="text-surface-600 mx-auto mb-3 h-12 w-12" />
-              <h3 className="mb-1 text-base font-bold text-white">
+            <div className="bg-card border-border rounded-2xl border p-12 text-center">
+              <Calendar className="text-muted-foreground mx-auto mb-3 h-12 w-12" />
+              <h3 className="text-foreground mb-1 text-base font-bold">
                 No supported events linked yet
               </h3>
-              <p className="text-surface-400 mx-auto max-w-sm text-xs">
+              <p className="text-muted-foreground mx-auto max-w-sm text-xs">
                 Coordinate with KailshiansX Event Managers to link hackathons, meetup series, and
                 workshops that your campus chapter is co-organizing.
               </p>
@@ -754,14 +756,14 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
               {data.supportedEvents.map((ev) => (
                 <div
                   key={ev.id}
-                  className="bg-surface-900/80 border-surface-800 hover:border-surface-700 flex items-center justify-between rounded-2xl border p-5 transition-all"
+                  className="bg-card border-border hover:border-border flex items-center justify-between rounded-2xl border p-5 transition-all"
                 >
                   <div>
-                    <span className="text-brand-400 bg-brand-500/10 rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+                    <span className="text-primary bg-primary/10 rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase">
                       Role: {ev.role}
                     </span>
-                    <h4 className="mt-1.5 text-sm font-bold text-white">{ev.title}</h4>
-                    <div className="text-surface-400 mt-0.5 text-xs">
+                    <h4 className="text-foreground mt-1.5 text-sm font-bold">{ev.title}</h4>
+                    <div className="text-muted-foreground mt-0.5 text-xs">
                       📅 {new Date(ev.startDate).toLocaleDateString()}
                     </div>
                   </div>
@@ -782,15 +784,15 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
       {/* ─── MODAL: LOG CAMPUS ACTIVITY ───────────────────────────────────── */}
       {activityModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-              <h3 className="flex items-center gap-2 text-base font-bold text-white">
-                <CheckCircle2 className="text-brand-400 h-4 w-4" />
+          <div className="bg-card border-border w-full max-w-md space-y-5 rounded-3xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
+              <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                <CheckCircle2 className="text-primary h-4 w-4" />
                 <span>Log Campus Activity</span>
               </h3>
               <button
                 onClick={() => setActivityModalOpen(false)}
-                className="text-surface-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -798,7 +800,7 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
 
             <form onSubmit={handleSubmitActivity} className="space-y-4">
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Activity Title
                 </label>
                 <input
@@ -807,13 +809,13 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   placeholder="e.g. Distributed 50 NirmanX flyers in CS Block"
                   value={activityForm.title}
                   onChange={(e) => setActivityForm({ ...activityForm, title: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3.5 py-2 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border px-3.5 py-2 text-xs"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Activity Type
                   </label>
                   <select
@@ -824,7 +826,7 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                         type: e.target.value as LeadActivityType,
                       })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 text-xs"
                   >
                     <option value="COLLEGE_OUTREACH">College Outreach</option>
                     <option value="WORKSHOP_HOSTING">Workshop Hosting</option>
@@ -839,20 +841,22 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">Date</label>
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                    Date
+                  </label>
                   <input
                     type="date"
                     required
                     value={activityForm.date}
                     onChange={(e) => setActivityForm({ ...activityForm, date: e.target.value })}
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 text-xs"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Hours Spent
                   </label>
                   <input
@@ -863,12 +867,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                     onChange={(e) =>
                       setActivityForm({ ...activityForm, hoursSpent: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Builders Reached
                   </label>
                   <input
@@ -878,13 +882,13 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                     onChange={(e) =>
                       setActivityForm({ ...activityForm, attendeesCount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Description & Impact
                 </label>
                 <textarea
@@ -895,12 +899,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   onChange={(e) =>
                     setActivityForm({ ...activityForm, description: e.target.value })
                   }
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Photo / Proof URL (Optional)
                 </label>
                 <input
@@ -908,7 +912,7 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   placeholder="https://photos.app.goo.gl/... or LinkedIn post link"
                   value={activityForm.proofUrl}
                   onChange={(e) => setActivityForm({ ...activityForm, proofUrl: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3.5 py-2 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border px-3.5 py-2 text-xs"
                 />
               </div>
 
@@ -933,15 +937,15 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
       {/* ─── MODAL: SUBMIT MONTHLY REPORT ─────────────────────────────────── */}
       {reportModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 max-h-[90vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-3xl border p-6 shadow-2xl">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-3">
-              <h3 className="flex items-center gap-2 text-base font-bold text-white">
-                <FileText className="text-brand-400 h-4 w-4" />
+          <div className="bg-card border-border max-h-[90vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-3xl border p-6 shadow-2xl">
+            <div className="border-border flex items-center justify-between border-b pb-3">
+              <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                <FileText className="text-primary h-4 w-4" />
                 <span>Submit Monthly Retrospective</span>
               </h3>
               <button
                 onClick={() => setReportModalOpen(false)}
-                className="text-surface-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -950,13 +954,15 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
             <form onSubmit={handleSubmitReport} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">Month</label>
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                    Month
+                  </label>
                   <select
                     value={reportForm.month}
                     onChange={(e) =>
                       setReportForm({ ...reportForm, month: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 text-xs"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((m) => (
                       <option key={m} value={m}>
@@ -967,19 +973,21 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">Year</label>
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
+                    Year
+                  </label>
                   <input
                     type="number"
                     value={reportForm.year}
                     onChange={(e) => setReportForm({ ...reportForm, year: Number(e.target.value) })}
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     New Signups
                   </label>
                   <input
@@ -988,11 +996,11 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                     onChange={(e) =>
                       setReportForm({ ...reportForm, newSignupsCount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Events Held
                   </label>
                   <input
@@ -1004,11 +1012,11 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                         eventsOrganizedCount: Number(e.target.value),
                       })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                  <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                     Swag Given
                   </label>
                   <input
@@ -1020,13 +1028,13 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                         swagDistributedCount: Number(e.target.value),
                       })
                     }
-                    className="bg-surface-950 border-surface-700 w-full rounded-xl border px-3 py-2 font-mono text-xs text-white"
+                    className="bg-background border-border text-foreground w-full rounded-xl border px-3 py-2 font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Executive Summary of Activities
                 </label>
                 <textarea
@@ -1035,12 +1043,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   placeholder="Summarize main achievements, campus community reception, and overall momentum..."
                   value={reportForm.summary}
                   onChange={(e) => setReportForm({ ...reportForm, summary: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Key Highlights & Wins (Optional)
                 </label>
                 <textarea
@@ -1048,12 +1056,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   placeholder="Standout student projects, club partnerships, or campus milestones..."
                   value={reportForm.highlights}
                   onChange={(e) => setReportForm({ ...reportForm, highlights: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Challenges & Blockers (Optional)
                 </label>
                 <textarea
@@ -1061,12 +1069,12 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   placeholder="Any college permission friction, budget questions, or support needed from Core..."
                   value={reportForm.challenges}
                   onChange={(e) => setReportForm({ ...reportForm, challenges: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-semibold">
+                <label className="text-muted-foreground mb-1 block text-xs font-semibold">
                   Plans & Goals for Next Month
                 </label>
                 <textarea
@@ -1074,7 +1082,7 @@ export function CampusLeadDashboardClient({ initialData, isAdminViewing = false 
                   placeholder="Upcoming workshops planned, hackathon delegations, study groups..."
                   value={reportForm.nextMonthPlans}
                   onChange={(e) => setReportForm({ ...reportForm, nextMonthPlans: e.target.value })}
-                  className="bg-surface-950 border-surface-700 w-full rounded-xl border p-3 text-xs text-white"
+                  className="bg-background border-border text-foreground w-full rounded-xl border p-3 text-xs"
                 />
               </div>
 

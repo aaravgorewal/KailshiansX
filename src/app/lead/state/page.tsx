@@ -1,5 +1,5 @@
 // src/app/lead/state/page.tsx
-// Dedicated State Lead Dashboard with state jurisdiction scope (PRD §12).
+// Dedicated State Lead Dashboard with state jurisdiction scope ().
 
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";

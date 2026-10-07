@@ -171,7 +171,7 @@ export function GalleryOverviewClient({
                   className={cn(
                     "rounded-full px-1.5 py-0.5 font-mono text-xs",
                     isSelected
-                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      ? "border-primary-foreground/30 text-primary-foreground border"
                       : "bg-muted text-muted-foreground"
                   )}
                 >

@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/admin/certificates/AdminCertificatesClient.tsx
-// Complete Admin Certificate Studio implementing PRD §21:
+// Complete Admin Certificate Studio implementing :
 // 1. Pick event
 // 2. Import participants (from event registrations or CSV)
 // 3. Choose template & drag-position fields
@@ -12,7 +12,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Award,
-  Sparkles,
+  Zap,
   Users,
   CheckCircle2,
   Clock,
@@ -336,68 +336,68 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
     <div className="space-y-8">
       {/* KPI Delivery Rate Stats Banner */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
+        <div className="bg-card border-border rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-surface-400 text-xs font-semibold tracking-wider uppercase">
+            <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
               Total Issued
             </span>
-            <Award className="text-brand-400 h-4 w-4" />
+            <Award className="text-primary h-4 w-4" />
           </div>
-          <div className="text-2xl font-black text-white">{stats.totalIssued}</div>
-          <div className="text-surface-400 mt-1 text-[11px]">Verifiable certificates</div>
+          <div className="text-foreground text-2xl font-black">{stats.totalIssued}</div>
+          <div className="text-muted-foreground mt-1 text-xs">Verifiable certificates</div>
         </div>
 
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
+        <div className="bg-card border-border rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-surface-400 text-xs font-semibold tracking-wider uppercase">
+            <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
               Delivered
             </span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            <CheckCircle2 className="text-success h-4 w-4" />
           </div>
-          <div className="text-2xl font-black text-emerald-400">{stats.sentCount}</div>
-          <div className="text-surface-400 mt-1 text-[11px]">Sent via Resend queue</div>
+          <div className="text-success text-2xl font-black">{stats.sentCount}</div>
+          <div className="text-muted-foreground mt-1 text-xs">Sent via Resend queue</div>
         </div>
 
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
+        <div className="bg-card border-border rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-surface-400 text-xs font-semibold tracking-wider uppercase">
+            <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
               Delivery Rate
             </span>
-            <Percent className="h-4 w-4 text-teal-400" />
+            <Percent className="text-success h-4 w-4" />
           </div>
-          <div className="text-2xl font-black text-teal-400">{stats.deliveryRate}%</div>
-          <div className="bg-surface-800 mt-2 h-1.5 w-full overflow-hidden rounded-full">
+          <div className="text-success text-2xl font-black">{stats.deliveryRate}%</div>
+          <div className="bg-muted mt-2 h-1.5 w-full overflow-hidden rounded-full">
             <div
-              className="h-1.5 rounded-full bg-teal-400 transition-all duration-500"
+              className="bg-success h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, Math.max(0, stats.deliveryRate))}%` }}
             />
           </div>
         </div>
 
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
+        <div className="bg-card border-border rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-surface-400 text-xs font-semibold tracking-wider uppercase">
+            <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
               In Queue
             </span>
-            <Clock className="h-4 w-4 text-amber-400" />
+            <Clock className="text-primary h-4 w-4" />
           </div>
-          <div className="text-2xl font-black text-amber-400">{stats.pendingCount}</div>
-          <div className="text-surface-400 mt-1 text-[11px]">Pending dispatch</div>
+          <div className="text-primary text-2xl font-black">{stats.pendingCount}</div>
+          <div className="text-muted-foreground mt-1 text-xs">Pending dispatch</div>
         </div>
 
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
+        <div className="bg-card border-border rounded-2xl border p-5 shadow-lg backdrop-blur-xl">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-surface-400 text-xs font-semibold tracking-wider uppercase">
+            <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
               Failed
             </span>
-            <AlertTriangle className="h-4 w-4 text-rose-400" />
+            <AlertTriangle className="text-destructive h-4 w-4" />
           </div>
-          <div className="text-2xl font-black text-rose-400">{stats.failedCount}</div>
+          <div className="text-destructive text-2xl font-black">{stats.failedCount}</div>
           <button
             type="button"
             onClick={handleRetryFailed}
             disabled={retrying || stats.failedCount === 0}
-            className="text-brand-400 hover:text-brand-300 mt-1 flex items-center gap-1 text-[11px] font-semibold disabled:pointer-events-none disabled:opacity-40"
+            className="text-primary hover:text-primary mt-1 flex items-center gap-1 text-xs font-semibold disabled:pointer-events-none disabled:opacity-40"
           >
             <RefreshCw className={cn("h-3 w-3", retrying && "animate-spin")} />
             <span>Retry Failed</span>
@@ -406,7 +406,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
       </div>
 
       {/* Main Navigation Tabs */}
-      <div className="border-surface-800 flex items-center gap-3 border-b pb-3">
+      <div className="border-border flex items-center gap-3 border-b pb-3">
         <button
           type="button"
           id="tab-certificate-studio"
@@ -414,11 +414,11 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           className={cn(
             "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all",
             activeTab === "STUDIO"
-              ? "bg-brand-500 shadow-brand-500/20 text-white shadow-lg"
-              : "text-surface-400 hover:text-surface-200 hover:bg-surface-900"
+              ? "bg-primary text-primary-foreground shadow-lg"
+              : "text-muted-foreground hover:text-foreground hover:bg-card"
           )}
         >
-          <Sparkles className="h-4 w-4" />
+          <Zap className="h-4 w-4" />
           <span>Certificate Studio &amp; Designer</span>
         </button>
 
@@ -429,13 +429,13 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           className={cn(
             "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all",
             activeTab === "TRACKER"
-              ? "bg-brand-500 shadow-brand-500/20 text-white shadow-lg"
-              : "text-surface-400 hover:text-surface-200 hover:bg-surface-900"
+              ? "bg-primary text-primary-foreground shadow-lg"
+              : "text-muted-foreground hover:text-foreground hover:bg-card"
           )}
         >
           <Layers className="h-4 w-4" />
           <span>Issued Registry &amp; Delivery Tracker</span>
-          <span className="bg-surface-800 text-surface-300 rounded-full px-2 py-0.5 text-xs">
+          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs">
             {certificates.length}
           </span>
         </button>
@@ -443,7 +443,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
         <Link
           href="/verify"
           target="_blank"
-          className="text-brand-400 hover:text-brand-300 bg-brand-500/10 hover:bg-brand-500/20 border-brand-500/30 ml-auto flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-sm transition-colors"
+          className="text-primary hover:text-primary bg-primary/10 hover:bg-primary/20 border-primary/30 ml-auto flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-sm transition-colors"
         >
           <ShieldCheck className="h-4 w-4" />
           <span>Public /verify Portal</span>
@@ -455,24 +455,24 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
       {activeTab === "STUDIO" && (
         <div className="animate-in fade-in space-y-8 duration-200">
           {/* STEP 1: PICK EVENT */}
-          <div className="bg-surface-900/80 border-surface-800 space-y-4 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
+          <div className="bg-card border-border space-y-4 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-brand-400 bg-brand-500/10 border-brand-500/20 rounded-full border px-2.5 py-0.5 text-[11px] font-bold tracking-wider uppercase">
+                <span className="text-primary bg-primary/10 border-primary/20 rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                   Step 1
                 </span>
-                <h3 className="mt-2 text-lg font-extrabold text-white">Select Event</h3>
-                <p className="text-surface-400 mt-0.5 text-xs">
+                <h3 className="text-foreground mt-2 text-lg font-extrabold">Select Event</h3>
+                <p className="text-muted-foreground mt-0.5 text-xs">
                   Pick the hackathon, workshop, or meetup to generate certificates for.
                 </p>
               </div>
 
               {selectedEvent && (
                 <div className="hidden text-right sm:block">
-                  <span className="text-surface-300 text-xs font-semibold">
+                  <span className="text-muted-foreground text-xs font-semibold">
                     {selectedEvent.confirmedRegistrationsCount} registered attendees
                   </span>
-                  <div className="text-surface-400 text-[11px]">
+                  <div className="text-muted-foreground text-xs">
                     {new Date(selectedEvent.startDate).toLocaleDateString("en-IN", {
                       month: "short",
                       day: "numeric",
@@ -490,7 +490,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                 setSelectedEventId(e.target.value);
                 setLoadingParticipants(true);
               }}
-              className="bg-surface-950 border-surface-700 focus:ring-brand-500 w-full rounded-xl border px-4 py-3 text-sm font-medium text-white focus:ring-2 focus:outline-hidden"
+              className="bg-background border-border focus:ring-ring text-foreground w-full rounded-xl border px-4 py-3 text-sm font-medium focus:ring-2 focus:outline-hidden"
             >
               {events.map((e) => (
                 <option key={e.id} value={e.id}>
@@ -502,29 +502,29 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           </div>
 
           {/* STEP 2: IMPORT PARTICIPANTS */}
-          <div className="bg-surface-900/80 border-surface-800 space-y-5 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
+          <div className="bg-card border-border space-y-5 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <span className="rounded-full border border-teal-500/20 bg-teal-500/10 px-2.5 py-0.5 text-[11px] font-bold tracking-wider text-teal-400 uppercase">
+                <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                   Step 2
                 </span>
-                <h3 className="mt-2 text-lg font-extrabold text-white">Import Participants</h3>
-                <p className="text-surface-400 mt-0.5 text-xs">
+                <h3 className="text-foreground mt-2 text-lg font-extrabold">Import Participants</h3>
+                <p className="text-muted-foreground mt-0.5 text-xs">
                   Load participants directly from confirmed event registrations or upload a custom
                   CSV list.
                 </p>
               </div>
 
               {/* Import Mode Switcher */}
-              <div className="bg-surface-950 border-surface-800 flex items-center gap-1.5 self-start rounded-xl border p-1.5 sm:self-auto">
+              <div className="bg-background border-border flex items-center gap-1.5 self-start rounded-xl border p-1.5 sm:self-auto">
                 <button
                   type="button"
                   onClick={() => setImportMode("REGISTRATIONS")}
                   className={cn(
                     "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors",
                     importMode === "REGISTRATIONS"
-                      ? "bg-brand-500 text-white"
-                      : "text-surface-400 hover:text-white"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   <Users className="h-3.5 w-3.5" />
@@ -537,8 +537,8 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                   className={cn(
                     "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors",
                     importMode === "CSV"
-                      ? "bg-brand-500 text-white"
-                      : "text-surface-400 hover:text-white"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   <FileSpreadsheet className="h-3.5 w-3.5" />
@@ -550,36 +550,37 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
             {/* Mode A: Event Registrations Table */}
             {importMode === "REGISTRATIONS" && (
               <div className="space-y-4">
-                <div className="text-surface-400 border-surface-800 flex items-center justify-between border-b pb-2 text-xs">
+                <div className="text-muted-foreground border-border flex items-center justify-between border-b pb-2 text-xs">
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
                       onClick={() =>
                         handleSelectAll(selectedParticipantIds.size !== eventParticipants.length)
                       }
-                      className="text-brand-400 hover:text-brand-300 text-xs font-semibold"
+                      className="text-primary hover:text-primary text-xs font-semibold"
                     >
                       {selectedParticipantIds.size === eventParticipants.length
                         ? "Deselect All"
                         : "Select All Attendees"}
                     </button>
                     <span>
-                      Selected <strong className="text-white">{selectedParticipantIds.size}</strong>{" "}
-                      of {eventParticipants.length} attendees
+                      Selected{" "}
+                      <strong className="text-foreground">{selectedParticipantIds.size}</strong> of{" "}
+                      {eventParticipants.length} attendees
                     </span>
                   </div>
 
                   {loadingParticipants && (
-                    <span className="text-surface-400 flex items-center gap-1">
+                    <span className="text-muted-foreground flex items-center gap-1">
                       <RefreshCw className="h-3.5 w-3.5 animate-spin" />
                       Loading...
                     </span>
                   )}
                 </div>
 
-                <div className="border-surface-800 divide-surface-800/60 bg-surface-950/60 max-h-72 divide-y overflow-y-auto rounded-xl border">
+                <div className="border-border divide-border bg-background max-h-72 divide-y overflow-y-auto rounded-xl border">
                   {eventParticipants.length === 0 ? (
-                    <div className="text-surface-500 py-8 text-center text-xs">
+                    <div className="text-muted-foreground py-8 text-center text-xs">
                       No confirmed registrations found for this event yet. Switch to CSV tab or
                       select another event.
                     </div>
@@ -595,8 +596,8 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                           className={cn(
                             "flex cursor-pointer items-center justify-between p-3 text-xs transition-colors",
                             isSelected
-                              ? "bg-brand-500/10 text-surface-100"
-                              : "hover:bg-surface-900/60 text-surface-400"
+                              ? "bg-primary/10 text-foreground"
+                              : "hover:bg-card text-muted-foreground"
                           )}
                         >
                           <div className="flex items-center gap-3">
@@ -604,27 +605,27 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => {}}
-                              className="border-surface-700 bg-surface-900 text-brand-500 focus:ring-brand-500 pointer-events-none rounded"
+                              className="border-border bg-card text-primary focus:ring-ring pointer-events-none rounded"
                             />
                             <div>
-                              <div className="flex items-center gap-2 font-bold text-white">
+                              <div className="text-foreground flex items-center gap-2 font-bold">
                                 <span>{p.name}</span>
                                 {p.checkedInAt && (
-                                  <span className="py-0.2 rounded-full border border-emerald-800/80 bg-emerald-950/80 px-2 text-[10px] text-emerald-400">
+                                  <span className="py-0.2 border-success/20 bg-success/10 text-success rounded-full border px-2 text-xs">
                                     Checked In
                                   </span>
                                 )}
                               </div>
-                              <div className="text-surface-400 text-[11px]">{p.email}</div>
+                              <div className="text-muted-foreground text-xs">{p.email}</div>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <span className="text-surface-400 font-mono text-[11px]">
+                            <span className="text-muted-foreground font-mono text-xs">
                               {p.registrationCode}
                             </span>
                             {hasCert && (
-                              <span className="rounded-full border border-teal-500/30 bg-teal-500/10 px-2 py-0.5 text-[10px] font-bold text-teal-400">
+                              <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-2 py-0.5 text-xs font-bold">
                                 Issued: {p.certificate?.uniqueId}
                               </span>
                             )}
@@ -640,7 +641,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
             {/* Mode B: CSV Paste & Upload */}
             {importMode === "CSV" && (
               <div className="space-y-3">
-                <label className="text-surface-300 block text-xs font-semibold">
+                <label className="text-muted-foreground block text-xs font-semibold">
                   Paste CSV Data (Format: Name, Email, [RegistrationCode])
                 </label>
                 <textarea
@@ -648,26 +649,26 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                   value={csvText}
                   onChange={(e) => setCsvText(e.target.value)}
                   placeholder="Aarav Sharma, aarav@example.com&#10;Priya Patel, priya@example.com"
-                  className="bg-surface-950 border-surface-700 text-surface-200 focus:ring-brand-500 w-full rounded-xl border p-3.5 font-mono text-xs leading-relaxed focus:ring-2 focus:outline-hidden"
+                  className="bg-background border-border text-foreground focus:ring-ring w-full rounded-xl border p-3.5 font-mono text-xs leading-relaxed focus:ring-2 focus:outline-hidden"
                 />
-                <div className="text-surface-400 flex items-center justify-between text-xs">
+                <div className="text-muted-foreground flex items-center justify-between text-xs">
                   <span>Detected {parseCsvParticipants().length} valid participant records</span>
-                  <span className="text-[11px]">Columns: Name, Email (comma or tab separated)</span>
+                  <span className="text-xs">Columns: Name, Email (comma or tab separated)</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* STEP 3: TEMPLATE & DRAG-POSITION DESIGNER */}
-          <div className="bg-surface-900/80 border-surface-800 space-y-4 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
+          <div className="bg-card border-border space-y-4 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
             <div>
-              <span className="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-0.5 text-[11px] font-bold tracking-wider text-purple-400 uppercase">
+              <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                 Step 3
               </span>
-              <h3 className="mt-2 text-lg font-extrabold text-white">
+              <h3 className="text-foreground mt-2 text-lg font-extrabold">
                 Template Designer &amp; Coordinate Mapping
               </h3>
-              <p className="text-surface-400 mt-0.5 text-xs">
+              <p className="text-muted-foreground mt-0.5 text-xs">
                 Drag and position Name, Event Title, Date, ID, and scannable QR verification box on
                 your chosen certificate design.
               </p>
@@ -691,28 +692,28 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           </div>
 
           {/* STEP 4: BULK GENERATE & EMAIL DISPATCH */}
-          <div className="from-brand-950/40 via-surface-900 border-brand-500/30 space-y-5 rounded-2xl border bg-gradient-to-r to-purple-950/40 p-6 shadow-xl">
+          <div className="bg-card border-border space-y-5 rounded-2xl border p-6 shadow-xl">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-bold tracking-wider text-amber-400 uppercase">
+                <span className="border-border bg-primary/10 text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                   Step 4
                 </span>
-                <h3 className="mt-2 text-lg font-extrabold text-white">
+                <h3 className="text-foreground mt-2 text-lg font-extrabold">
                   Bulk PDF Generation &amp; Dispatch
                 </h3>
-                <p className="text-surface-400 mt-0.5 text-xs">
+                <p className="text-muted-foreground mt-0.5 text-xs">
                   Generates tamper-proof vector PDFs with cryptographic IDs and dispatches them via
                   Resend queue.
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <label className="text-surface-200 flex cursor-pointer items-center gap-2 text-xs font-semibold">
+                <label className="text-foreground flex cursor-pointer items-center gap-2 text-xs font-semibold">
                   <input
                     type="checkbox"
                     checked={sendEmailNow}
                     onChange={(e) => setSendEmailNow(e.target.checked)}
-                    className="border-surface-700 bg-surface-900 text-brand-500 focus:ring-brand-500 rounded"
+                    className="border-border bg-card text-primary focus:ring-ring rounded"
                   />
                   <span>Queue Email Notification</span>
                 </label>
@@ -720,16 +721,16 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
             </div>
 
             {generationResult && (
-              <div className="animate-in fade-in flex items-center gap-3 rounded-xl border border-emerald-800/80 bg-emerald-950/60 p-4 text-xs text-emerald-300">
-                <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" />
+              <div className="animate-in fade-in text-success border-success/20 bg-success/10 flex items-center gap-3 rounded-xl border p-4 text-xs">
+                <CheckCircle2 className="text-success h-5 w-5 shrink-0" />
                 <span>{generationResult}</span>
               </div>
             )}
 
             <div className="flex flex-col items-center justify-between gap-4 pt-2 sm:flex-row">
-              <div className="text-surface-400 text-xs">
+              <div className="text-muted-foreground text-xs">
                 Ready to generate certificates for{" "}
-                <strong className="text-white">
+                <strong className="text-foreground">
                   {importMode === "REGISTRATIONS"
                     ? selectedParticipantIds.size
                     : parseCsvParticipants().length}
@@ -742,7 +743,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                 id="btn-bulk-generate-certificates"
                 onClick={handleBulkGenerate}
                 disabled={generating}
-                className="bg-brand-500 hover:bg-brand-600 shadow-brand-500/30 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-all disabled:opacity-50 sm:w-auto"
+                className="bg-primary hover:bg-primary-hover text-primary-foreground flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-bold shadow-lg transition-all disabled:opacity-50 sm:w-auto"
               >
                 {generating ? (
                   <>
@@ -765,15 +766,15 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
       {activeTab === "TRACKER" && (
         <div className="animate-in fade-in space-y-6 duration-200">
           {/* Filter Bar */}
-          <div className="bg-surface-900/80 border-surface-800 flex flex-col items-stretch justify-between gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center">
+          <div className="bg-card border-border flex flex-col items-stretch justify-between gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center">
             <div className="relative flex-1">
-              <Search className="text-surface-400 pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2" />
+              <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search by recipient name, email, or credential ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-surface-950 border-surface-700/80 placeholder-surface-500 focus:ring-brand-500 w-full rounded-xl border py-2 pr-4 pl-9 text-xs text-white focus:ring-2 focus:outline-hidden"
+                className="bg-background border-border placeholder:text-muted-foreground focus:ring-ring text-foreground w-full rounded-xl border py-2 pr-4 pl-9 text-xs focus:ring-2 focus:outline-hidden"
               />
             </div>
 
@@ -781,7 +782,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
               <select
                 value={filterEvent}
                 onChange={(e) => setFilterEvent(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-200 rounded-xl border px-3 py-2 text-xs"
+                className="bg-background border-border text-foreground rounded-xl border px-3 py-2 text-xs"
               >
                 <option value="ALL">All Events</option>
                 {events.map((e) => (
@@ -794,7 +795,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="bg-surface-950 border-surface-700 text-surface-200 rounded-xl border px-3 py-2 text-xs"
+                className="bg-background border-border text-foreground rounded-xl border px-3 py-2 text-xs"
               >
                 <option value="ALL">All Delivery Statuses</option>
                 <option value="SENT">Delivered (SENT)</option>
@@ -805,10 +806,10 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           </div>
 
           {/* Certificates Table */}
-          <div className="border-surface-800 bg-surface-900/70 overflow-hidden rounded-2xl border shadow-xl">
+          <div className="border-border bg-card overflow-hidden rounded-2xl border shadow-xl">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-surface-950/80 border-surface-800 text-surface-400 border-b text-[10px] tracking-wider uppercase">
+                <thead className="bg-background border-border text-muted-foreground border-b text-xs tracking-wider uppercase">
                   <tr>
                     <th className="px-5 py-3.5">Credential ID</th>
                     <th className="px-5 py-3.5">Recipient</th>
@@ -818,10 +819,10 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                     <th className="px-5 py-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-surface-800/60 divide-y">
+                <tbody className="divide-border divide-y">
                   {filteredCertificates.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="text-surface-500 py-12 text-center">
+                      <td colSpan={6} className="text-muted-foreground py-12 text-center">
                         No certificates found matching your filters.
                       </td>
                     </tr>
@@ -832,40 +833,40 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                         cert.deliveryStatus === "PENDING" || cert.deliveryStatus === "PROCESSING";
 
                       return (
-                        <tr key={cert.id} className="hover:bg-surface-800/40 transition-colors">
+                        <tr key={cert.id} className="hover:bg-muted transition-colors">
                           <td className="px-5 py-3.5">
-                            <span className="text-brand-400 bg-surface-950 border-surface-800 rounded-md border px-2 py-0.5 font-mono font-bold">
+                            <span className="text-primary bg-background border-border rounded-md border px-2 py-0.5 font-mono font-bold">
                               {cert.uniqueId}
                             </span>
                           </td>
                           <td className="px-5 py-3.5">
-                            <div className="font-bold text-white">{cert.participantName}</div>
-                            <div className="text-surface-400 text-[11px]">
+                            <div className="text-foreground font-bold">{cert.participantName}</div>
+                            <div className="text-muted-foreground text-xs">
                               {cert.participantEmail}
                             </div>
                           </td>
-                          <td className="text-surface-300 max-w-[200px] truncate px-5 py-3.5 font-medium">
+                          <td className="text-muted-foreground max-w-[200px] truncate px-5 py-3.5 font-medium">
                             {cert.eventTitle}
                           </td>
                           <td className="px-5 py-3.5">
                             {isDelivered ? (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-800/60 bg-emerald-950/60 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400">
+                              <span className="border-success/20 bg-success/10 text-success inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
                                 <CheckCircle2 className="h-3 w-3" />
                                 Delivered
                               </span>
                             ) : isPending ? (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-amber-800/60 bg-amber-950/60 px-2.5 py-0.5 text-[11px] font-semibold text-amber-400">
+                              <span className="border-border bg-muted text-primary inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
                                 <Clock className="h-3 w-3" />
                                 Queued
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-rose-800/60 bg-rose-950/60 px-2.5 py-0.5 text-[11px] font-semibold text-rose-400">
+                              <span className="border-destructive/30 bg-destructive/10 text-destructive inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold">
                                 <AlertTriangle className="h-3 w-3" />
                                 Failed
                               </span>
                             )}
                           </td>
-                          <td className="text-surface-400 px-5 py-3.5">
+                          <td className="text-muted-foreground px-5 py-3.5">
                             {new Date(cert.issuedAt).toLocaleDateString("en-IN", {
                               month: "short",
                               day: "numeric",
@@ -877,7 +878,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                               <a
                                 href={`/api/certificates/${cert.uniqueId}/download`}
                                 download
-                                className="text-surface-400 hover:bg-surface-800 rounded-lg p-1.5 transition-colors hover:text-white"
+                                className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg p-1.5 transition-colors"
                                 title="Download Signed PDF"
                               >
                                 <Download className="h-4 w-4" />
@@ -885,7 +886,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                               <Link
                                 href={`/verify?id=${encodeURIComponent(cert.uniqueId)}`}
                                 target="_blank"
-                                className="text-surface-400 hover:text-brand-300 hover:bg-surface-800 rounded-lg p-1.5 transition-colors"
+                                className="text-muted-foreground hover:text-primary hover:bg-muted rounded-lg p-1.5 transition-colors"
                                 title="Open Public Verification"
                               >
                                 <ExternalLink className="h-4 w-4" />

@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/admin/sponsors/AdminSponsorCRMClient.tsx
-// Comprehensive Sponsor CRM Client implementing PRD §22 & §23:
+// Comprehensive Sponsor CRM Client implementing :
 // 1. Sponsors Directory (company profiles, primary contacts, active deals)
 // 2. Deals & Pipeline (Kanban & List views, stages: PROSPECT -> WON / LOST, tier, confidence, close dates)
 // 3. Deliverables Tracking (checklist per deal/event, due dates, proof URLs, assignees)
@@ -147,35 +147,39 @@ const STAGES: { key: SponsorDealStage; label: string; color: string }[] = [
   {
     key: "PROSPECT",
     label: "Prospect",
-    color: "bg-surface-800 text-surface-300 border-surface-700",
+    color: "bg-muted text-muted-foreground border-border",
   },
   {
     key: "INITIAL_CONTACT",
     label: "Initial Contact",
-    color: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+    color: "bg-primary/10 text-primary border-primary/20",
   },
-  { key: "PITCHING", label: "Pitching", color: "bg-blue-500/10 text-blue-400 border-blue-500/20" },
+  { key: "PITCHING", label: "Pitching", color: "bg-primary/10 text-primary border-primary/20" },
   {
     key: "PROPOSAL_SENT",
     label: "Proposal Sent",
-    color: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    color: "bg-primary/10 text-primary border-primary/20",
   },
   {
     key: "NEGOTIATION",
     label: "Negotiation",
-    color: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    color: "bg-primary/10 text-primary border-border",
   },
   {
     key: "CONTRACT_SIGNED",
     label: "Contract Signed",
-    color: "bg-teal-500/10 text-teal-400 border-teal-500/20",
+    color: "bg-success/10 text-success border-success/20",
   },
   {
     key: "WON",
     label: "Closed Won",
-    color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 font-semibold",
+    color: "bg-success/15 text-success border-success/30 font-semibold",
   },
-  { key: "LOST", label: "Closed Lost", color: "bg-red-500/10 text-red-400 border-red-500/20" },
+  {
+    key: "LOST",
+    label: "Closed Lost",
+    color: "bg-destructive/10 text-destructive border-destructive/20",
+  },
 ];
 
 export function AdminSponsorCRMClient({
@@ -440,16 +444,16 @@ export function AdminSponsorCRMClient({
   return (
     <div className="space-y-8">
       {/* ─── HEADER & KPI SUMMARY ────────────────────────────────────────── */}
-      <div className="border-surface-800 flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center">
+      <div className="border-border flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center">
         <div>
-          <div className="bg-brand-500/10 border-brand-500/20 text-brand-400 mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
+          <div className="bg-primary/10 border-primary/20 text-primary mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
             <Building2 className="h-3.5 w-3.5" />
-            <span>PRD §22 & §23 · Enterprise Sponsor CRM</span>
+            <span>Enterprise Sponsor CRM</span>
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+          <h1 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
             Sponsor CRM & Partnerships Pipeline
           </h1>
-          <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+          <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
             Manage corporate partners, deal progression stages, deliverables fulfillment, and
             invoice settlement linked directly to events.
           </p>
@@ -460,7 +464,7 @@ export function AdminSponsorCRMClient({
             <Button
               variant="outline"
               size="sm"
-              className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+              className="border-success/30 text-success hover:bg-success/10"
             >
               <Receipt className="mr-1.5 h-4 w-4" />
               <span>Event P&L</span>
@@ -496,60 +500,60 @@ export function AdminSponsorCRMClient({
 
       {/* ─── KPI METRIC TILES ────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-4 sm:p-5">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border rounded-2xl border p-4 sm:p-5">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Total Pipeline</span>
-            <DollarSign className="text-brand-400 h-4 w-4" />
+            <DollarSign className="text-primary h-4 w-4" />
           </div>
-          <div className="font-mono text-xl font-black text-white sm:text-2xl">
+          <div className="text-foreground font-mono text-xl font-black sm:text-2xl">
             ₹{pipelineMetrics.totalPipeline.toLocaleString("en-IN")}
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-muted-foreground mt-1 text-xs">
             {pipelineMetrics.activeCount} active negotiation deals
           </div>
         </div>
 
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-4 sm:p-5">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border rounded-2xl border p-4 sm:p-5">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Closed Won Revenue</span>
-            <TrendingUp className="h-4 w-4 text-emerald-400" />
+            <TrendingUp className="text-success h-4 w-4" />
           </div>
-          <div className="font-mono text-xl font-black text-emerald-400 sm:text-2xl">
+          <div className="text-success font-mono text-xl font-black sm:text-2xl">
             ₹{pipelineMetrics.wonAmount.toLocaleString("en-IN")}
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-muted-foreground mt-1 text-xs">
             {pipelineMetrics.wonCount} deals signed & committed
           </div>
         </div>
 
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-4 sm:p-5">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border rounded-2xl border p-4 sm:p-5">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Deliverables Rate</span>
-            <CheckCircle className="h-4 w-4 text-teal-400" />
+            <CheckCircle className="text-success h-4 w-4" />
           </div>
-          <div className="font-mono text-xl font-black text-white sm:text-2xl">
+          <div className="text-foreground font-mono text-xl font-black sm:text-2xl">
             {pipelineMetrics.deliverablesFulfillmentRate}%
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">
+          <div className="text-muted-foreground mt-1 text-xs">
             {filteredDeliverables.filter((d) => d.status === "FULFILLED").length} of{" "}
             {filteredDeliverables.length} perks delivered
           </div>
         </div>
 
-        <div className="bg-surface-900/80 border-surface-800 rounded-2xl border p-4 sm:p-5">
-          <div className="text-surface-400 mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+        <div className="bg-card border-border rounded-2xl border p-4 sm:p-5">
+          <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
             <span>Settled Invoices</span>
-            <Receipt className="h-4 w-4 text-amber-400" />
+            <Receipt className="text-primary h-4 w-4" />
           </div>
-          <div className="font-mono text-xl font-black text-amber-400 sm:text-2xl">
+          <div className="text-primary font-mono text-xl font-black sm:text-2xl">
             ₹{pipelineMetrics.paidInvoicesTotal.toLocaleString("en-IN")}
           </div>
-          <div className="text-surface-400 mt-1 text-[11px]">Auto-synced into Event P&L</div>
+          <div className="text-muted-foreground mt-1 text-xs">Auto-synced into Event P&L</div>
         </div>
       </div>
 
       {/* ─── FILTERS & SUB-NAVIGATION ────────────────────────────────────── */}
-      <div className="bg-surface-900/60 border-surface-800 flex flex-col items-center justify-between gap-4 rounded-2xl border p-3 sm:flex-row sm:p-4">
+      <div className="bg-card border-border flex flex-col items-center justify-between gap-4 rounded-2xl border p-3 sm:flex-row sm:p-4">
         {/* Navigation Tabs */}
         <div className="flex w-full items-center gap-1.5 overflow-x-auto pb-1 sm:w-auto sm:pb-0">
           <button
@@ -557,8 +561,8 @@ export function AdminSponsorCRMClient({
             onClick={() => setActiveTab("PIPELINE")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold whitespace-nowrap transition-all ${
               activeTab === "PIPELINE"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "text-surface-400 hover:bg-surface-800/60 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <Kanban className="h-3.5 w-3.5" />
@@ -570,8 +574,8 @@ export function AdminSponsorCRMClient({
             onClick={() => setActiveTab("SPONSORS")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold whitespace-nowrap transition-all ${
               activeTab === "SPONSORS"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "text-surface-400 hover:bg-surface-800/60 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <Building2 className="h-3.5 w-3.5" />
@@ -583,8 +587,8 @@ export function AdminSponsorCRMClient({
             onClick={() => setActiveTab("DELIVERABLES")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold whitespace-nowrap transition-all ${
               activeTab === "DELIVERABLES"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "text-surface-400 hover:bg-surface-800/60 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <CheckCircle className="h-3.5 w-3.5" />
@@ -596,8 +600,8 @@ export function AdminSponsorCRMClient({
             onClick={() => setActiveTab("INVOICES")}
             className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold whitespace-nowrap transition-all ${
               activeTab === "INVOICES"
-                ? "bg-brand-500 shadow-brand-500/20 text-white shadow-md"
-                : "text-surface-400 hover:bg-surface-800/60 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             <Receipt className="h-3.5 w-3.5" />
@@ -608,13 +612,13 @@ export function AdminSponsorCRMClient({
         {/* Global Event Filter & Search */}
         <div className="flex w-full items-center gap-3 sm:w-auto">
           <div className="relative flex-1 sm:w-48">
-            <Search className="text-surface-500 pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-surface-950 border-surface-700/80 focus:border-brand-500 w-full rounded-xl border py-1.5 pr-3 pl-9 text-xs text-white focus:outline-hidden"
+              className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border py-1.5 pr-3 pl-9 text-xs focus:outline-hidden"
             />
           </div>
 
@@ -622,7 +626,7 @@ export function AdminSponsorCRMClient({
             id="select-filter-crm-event"
             value={selectedEventId}
             onChange={(e) => setSelectedEventId(e.target.value)}
-            className="bg-surface-950 border-surface-700/80 text-surface-200 focus:border-brand-500 rounded-xl border px-3 py-1.5 text-xs font-medium focus:outline-hidden"
+            className="bg-background border-border text-foreground focus:border-primary rounded-xl border px-3 py-1.5 text-xs font-medium focus:outline-hidden"
           >
             <option value="ALL">All Events</option>
             {events.map((e) => (
@@ -646,21 +650,21 @@ export function AdminSponsorCRMClient({
                 return (
                   <div
                     key={col.key}
-                    className="bg-surface-900/40 border-surface-800 flex max-h-[750px] min-w-[280px] flex-1 flex-col rounded-2xl border p-3"
+                    className="bg-card border-border flex max-h-[750px] min-w-[280px] flex-1 flex-col rounded-2xl border p-3"
                   >
                     {/* Column Header */}
-                    <div className="border-surface-800/80 mb-3 flex items-center justify-between border-b px-1 pb-3">
+                    <div className="border-border mb-3 flex items-center justify-between border-b px-1 pb-3">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`rounded-md border px-2 py-0.5 text-[11px] font-bold ${col.color}`}
+                          className={`rounded-md border px-2 py-0.5 text-xs font-bold ${col.color}`}
                         >
                           {col.label}
                         </span>
-                        <span className="text-surface-400 text-xs font-semibold">
+                        <span className="text-muted-foreground text-xs font-semibold">
                           {stageDeals.length}
                         </span>
                       </div>
-                      <span className="text-surface-400 font-mono text-[11px] font-medium">
+                      <span className="text-muted-foreground font-mono text-xs font-medium">
                         ₹{colTotal.toLocaleString("en-IN")}
                       </span>
                     </div>
@@ -668,48 +672,48 @@ export function AdminSponsorCRMClient({
                     {/* Column Cards */}
                     <div className="flex-1 space-y-3 overflow-y-auto pr-1">
                       {stageDeals.length === 0 ? (
-                        <div className="text-surface-600 py-8 text-center text-xs italic">
+                        <div className="text-muted-foreground py-8 text-center text-xs italic">
                           No deals in this stage
                         </div>
                       ) : (
                         stageDeals.map((deal) => (
                           <div
                             key={deal.id}
-                            className="bg-surface-900 border-surface-700/80 hover:border-brand-500/60 group space-y-3 rounded-xl border p-3.5 shadow-sm transition-all"
+                            className="bg-card border-border hover:border-primary/60 group space-y-3 rounded-xl border p-3.5 shadow-sm transition-all"
                           >
                             <div className="flex items-start justify-between gap-2">
                               <div>
-                                <span className="text-brand-400 bg-brand-500/10 mb-1 inline-block rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+                                <span className="text-primary bg-primary/10 mb-1 inline-block rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase">
                                   {deal.tier}
                                 </span>
-                                <h4 className="group-hover:text-brand-300 text-xs font-bold text-white transition-colors">
+                                <h4 className="group-hover:text-primary text-foreground text-xs font-bold transition-colors">
                                   {deal.title}
                                 </h4>
-                                <p className="text-surface-400 text-[11px] font-medium">
+                                <p className="text-muted-foreground text-xs font-medium">
                                   {deal.sponsor.name}
                                 </p>
                               </div>
 
                               <div className="text-right">
-                                <div className="font-mono text-xs font-bold text-white">
+                                <div className="text-foreground font-mono text-xs font-bold">
                                   ₹{deal.amount.toLocaleString("en-IN")}
                                 </div>
-                                <div className="text-surface-500 text-[10px]">
+                                <div className="text-muted-foreground text-xs">
                                   {deal.confidence}% conf.
                                 </div>
                               </div>
                             </div>
 
                             {/* Linked Event Tag */}
-                            <div className="text-surface-400 bg-surface-950 flex items-center gap-1.5 rounded-lg px-2 py-1 text-[11px]">
-                              <Calendar className="text-brand-400 h-3 w-3 shrink-0" />
+                            <div className="text-muted-foreground bg-background flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs">
+                              <Calendar className="text-primary h-3 w-3 shrink-0" />
                               <span className="truncate">
                                 {deal.event?.title || "Global Sponsor"}
                               </span>
                             </div>
 
                             {/* Deliverables & Invoices Mini-badges */}
-                            <div className="text-surface-400 border-surface-800/80 flex items-center justify-between border-t pt-2 text-[10px]">
+                            <div className="text-muted-foreground border-border flex items-center justify-between border-t pt-2 text-xs">
                               <span>
                                 Perks: {deal.deliverablesFulfilledCount}/{deal.deliverablesCount}
                               </span>
@@ -719,13 +723,13 @@ export function AdminSponsorCRMClient({
                             </div>
 
                             {/* Quick Stage Transitions */}
-                            <div className="border-surface-800/60 flex items-center justify-between gap-1 border-t pt-2">
+                            <div className="border-border flex items-center justify-between gap-1 border-t pt-2">
                               <select
                                 value={deal.stage}
                                 onChange={(e) =>
                                   handleStageChange(deal.id, e.target.value as SponsorDealStage)
                                 }
-                                className="bg-surface-950 border-surface-700 text-surface-300 rounded-md border px-2 py-1 text-[10px] focus:outline-hidden"
+                                className="bg-background border-border text-muted-foreground rounded-md border px-2 py-1 text-xs focus:outline-hidden"
                               >
                                 {STAGES.map((s) => (
                                   <option key={s.key} value={s.key}>
@@ -754,7 +758,7 @@ export function AdminSponsorCRMClient({
                                   });
                                   setDealModalOpen(true);
                                 }}
-                                className="text-brand-400 hover:text-brand-300 hover:bg-brand-500/10 rounded px-2 py-1 text-[10px] font-semibold"
+                                className="text-primary hover:text-primary hover:bg-primary/10 rounded px-2 py-1 text-xs font-semibold"
                               >
                                 Edit
                               </button>
@@ -775,7 +779,7 @@ export function AdminSponsorCRMClient({
       {activeTab === "SPONSORS" && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-surface-400 text-sm font-bold tracking-wider uppercase">
+            <h3 className="text-muted-foreground text-sm font-bold tracking-wider uppercase">
               Corporate & Ecosystem Partners Catalog
             </h3>
             <Button
@@ -807,12 +811,12 @@ export function AdminSponsorCRMClient({
             {sponsors.map((sponsor) => (
               <div
                 key={sponsor.id}
-                className="bg-surface-900 border-surface-800 hover:border-surface-700 flex flex-col justify-between space-y-4 rounded-2xl border p-5 shadow-sm transition-all"
+                className="bg-card border-border hover:border-border flex flex-col justify-between space-y-4 rounded-2xl border p-5 shadow-sm transition-all"
               >
                 <div>
                   <div className="mb-3 flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="bg-surface-800 border-surface-700 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border p-2">
+                      <div className="bg-muted border-border flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border p-2">
                         {sponsor.logo ? (
                           <Image
                             src={sponsor.logo}
@@ -823,12 +827,12 @@ export function AdminSponsorCRMClient({
                             className="max-h-full max-w-full object-contain"
                           />
                         ) : (
-                          <Building2 className="text-surface-500 h-6 w-6" />
+                          <Building2 className="text-muted-foreground h-6 w-6" />
                         )}
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-white">{sponsor.name}</h4>
-                        <span className="text-surface-400 bg-surface-800 mt-0.5 inline-block rounded-md px-2 py-0.5 text-[10px] font-semibold">
+                        <h4 className="text-foreground text-sm font-bold">{sponsor.name}</h4>
+                        <span className="text-muted-foreground bg-muted mt-0.5 inline-block rounded-md px-2 py-0.5 text-xs font-semibold">
                           {sponsor.category || "Technology Partner"}
                         </span>
                       </div>
@@ -839,7 +843,7 @@ export function AdminSponsorCRMClient({
                         href={sponsor.website}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-surface-500 hover:text-brand-400 p-1 transition-colors"
+                        className="text-muted-foreground hover:text-primary p-1 transition-colors"
                       >
                         <ExternalLink className="h-4 w-4" />
                       </a>
@@ -848,21 +852,19 @@ export function AdminSponsorCRMClient({
 
                   {/* Contact Person Details */}
                   {(sponsor.contactPerson || sponsor.contactEmail) && (
-                    <div className="bg-surface-950 border-surface-800/80 mb-3 space-y-1.5 rounded-xl border p-3 text-xs">
+                    <div className="bg-background border-border mb-3 space-y-1.5 rounded-xl border p-3 text-xs">
                       {sponsor.contactPerson && (
-                        <div className="text-surface-200 font-semibold">
-                          {sponsor.contactPerson}
-                        </div>
+                        <div className="text-foreground font-semibold">{sponsor.contactPerson}</div>
                       )}
                       {sponsor.contactEmail && (
-                        <div className="text-surface-400 flex items-center gap-1.5">
-                          <Mail className="text-surface-500 h-3 w-3" />
+                        <div className="text-muted-foreground flex items-center gap-1.5">
+                          <Mail className="text-muted-foreground h-3 w-3" />
                           <span className="truncate">{sponsor.contactEmail}</span>
                         </div>
                       )}
                       {sponsor.contactPhone && (
-                        <div className="text-surface-400 flex items-center gap-1.5">
-                          <Phone className="text-surface-500 h-3 w-3" />
+                        <div className="text-muted-foreground flex items-center gap-1.5">
+                          <Phone className="text-muted-foreground h-3 w-3" />
                           <span>{sponsor.contactPhone}</span>
                         </div>
                       )}
@@ -871,27 +873,27 @@ export function AdminSponsorCRMClient({
 
                   {/* Financial Stats */}
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-surface-950/60 border-surface-800/60 rounded-xl border p-2.5">
-                      <div className="text-surface-400 text-[10px] tracking-wider uppercase">
+                    <div className="bg-background border-border rounded-xl border p-2.5">
+                      <div className="text-muted-foreground text-xs tracking-wider uppercase">
                         Deals
                       </div>
-                      <div className="mt-0.5 font-bold text-white">
+                      <div className="text-foreground mt-0.5 font-bold">
                         {sponsor.activeDealsCount} Active / {sponsor.wonDealsCount} Won
                       </div>
                     </div>
-                    <div className="bg-surface-950/60 border-surface-800/60 rounded-xl border p-2.5">
-                      <div className="text-surface-400 text-[10px] tracking-wider uppercase">
+                    <div className="bg-background border-border rounded-xl border p-2.5">
+                      <div className="text-muted-foreground text-xs tracking-wider uppercase">
                         Won Value
                       </div>
-                      <div className="mt-0.5 font-mono font-bold text-emerald-400">
+                      <div className="text-success mt-0.5 font-mono font-bold">
                         ₹{sponsor.totalWonValue.toLocaleString("en-IN")}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="border-surface-800 flex items-center justify-between border-t pt-3 text-xs">
-                  <span className="text-surface-500 text-[11px]">
+                <div className="border-border flex items-center justify-between border-t pt-3 text-xs">
+                  <span className="text-muted-foreground text-xs">
                     Linked to {sponsor.eventsCount} event editions
                   </span>
                   <button
@@ -910,7 +912,7 @@ export function AdminSponsorCRMClient({
                       });
                       setSponsorModalOpen(true);
                     }}
-                    className="text-brand-400 hover:text-brand-300 font-semibold"
+                    className="text-primary hover:text-primary font-semibold"
                   >
                     Edit Partner
                   </button>
@@ -925,7 +927,7 @@ export function AdminSponsorCRMClient({
       {activeTab === "DELIVERABLES" && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-surface-400 text-sm font-bold tracking-wider uppercase">
+            <h3 className="text-muted-foreground text-sm font-bold tracking-wider uppercase">
               Sponsor Perks & Contract Deliverables Checklist
             </h3>
             <Button
@@ -952,10 +954,10 @@ export function AdminSponsorCRMClient({
             </Button>
           </div>
 
-          <div className="bg-surface-900 border-surface-800 overflow-hidden rounded-2xl border shadow-sm">
+          <div className="bg-card border-border overflow-hidden rounded-2xl border shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-surface-950 text-surface-400 border-surface-800 border-b font-semibold tracking-wider uppercase">
+                <thead className="bg-background text-muted-foreground border-border border-b font-semibold tracking-wider uppercase">
                   <tr>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Deliverable Item</th>
@@ -967,50 +969,50 @@ export function AdminSponsorCRMClient({
                     <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-surface-800 divide-y">
+                <tbody className="divide-border divide-y">
                   {filteredDeliverables.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="text-surface-500 py-8 text-center italic">
+                      <td colSpan={8} className="text-muted-foreground py-8 text-center italic">
                         No deliverables found matching filters.
                       </td>
                     </tr>
                   ) : (
                     filteredDeliverables.map((del) => (
-                      <tr key={del.id} className="hover:bg-surface-800/40 transition-colors">
+                      <tr key={del.id} className="hover:bg-muted transition-colors">
                         <td className="px-4 py-3">
                           <span
-                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold ${
+                            className={`inline-block rounded-md px-2 py-0.5 text-xs font-bold ${
                               del.status === "FULFILLED"
-                                ? "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400"
+                                ? "border-success/30 bg-success/15 text-success border"
                                 : del.status === "IN_PROGRESS"
-                                  ? "border border-sky-500/30 bg-sky-500/15 text-sky-400"
+                                  ? "border-primary/30 bg-primary/15 text-primary border"
                                   : del.status === "WAIVED"
-                                    ? "bg-surface-800 text-surface-400"
-                                    : "border border-amber-500/30 bg-amber-500/15 text-amber-400"
+                                    ? "bg-muted text-muted-foreground"
+                                    : "border-border bg-primary/10 text-primary border"
                             }`}
                           >
                             {del.status}
                           </span>
                         </td>
-                        <td className="max-w-xs truncate px-4 py-3 font-semibold text-white">
+                        <td className="text-foreground max-w-xs truncate px-4 py-3 font-semibold">
                           {del.title}
                           {del.description && (
-                            <p className="text-surface-400 truncate text-[11px] font-normal">
+                            <p className="text-muted-foreground truncate text-xs font-normal">
                               {del.description}
                             </p>
                           )}
                         </td>
                         <td className="px-4 py-3">
-                          <div className="text-surface-200 font-medium">{del.sponsorName}</div>
-                          <div className="text-surface-400 max-w-xs truncate text-[10px]">
+                          <div className="text-foreground font-medium">{del.sponsorName}</div>
+                          <div className="text-muted-foreground max-w-xs truncate text-xs">
                             {del.dealTitle} ({del.dealTier})
                           </div>
                         </td>
-                        <td className="text-surface-300 px-4 py-3">{del.eventTitle}</td>
-                        <td className="text-surface-400 px-4 py-3">
+                        <td className="text-muted-foreground px-4 py-3">{del.eventTitle}</td>
+                        <td className="text-muted-foreground px-4 py-3">
                           {del.dueDate ? new Date(del.dueDate).toLocaleDateString() : "—"}
                         </td>
-                        <td className="text-surface-300 px-4 py-3">
+                        <td className="text-muted-foreground px-4 py-3">
                           {del.assignee || "Unassigned"}
                         </td>
                         <td className="px-4 py-3">
@@ -1019,13 +1021,13 @@ export function AdminSponsorCRMClient({
                               href={del.proofUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-brand-400 inline-flex items-center gap-1 font-mono text-[11px] hover:underline"
+                              className="text-primary inline-flex items-center gap-1 font-mono text-xs hover:underline"
                             >
                               <span>View Proof</span>
                               <ExternalLink className="h-3 w-3" />
                             </a>
                           ) : (
-                            <span className="text-surface-600">—</span>
+                            <span className="text-muted-foreground">—</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-right">
@@ -1044,7 +1046,7 @@ export function AdminSponsorCRMClient({
                               });
                               setDeliverableModalOpen(true);
                             }}
-                            className="text-brand-400 hover:text-brand-300 font-semibold"
+                            className="text-primary hover:text-primary font-semibold"
                           >
                             Edit
                           </button>
@@ -1063,7 +1065,7 @@ export function AdminSponsorCRMClient({
       {activeTab === "INVOICES" && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-surface-400 text-sm font-bold tracking-wider uppercase">
+            <h3 className="text-muted-foreground text-sm font-bold tracking-wider uppercase">
               Sponsor Invoices & Financial Settlement
             </h3>
             <Button
@@ -1093,10 +1095,10 @@ export function AdminSponsorCRMClient({
             </Button>
           </div>
 
-          <div className="bg-surface-900 border-surface-800 overflow-hidden rounded-2xl border shadow-sm">
+          <div className="bg-card border-border overflow-hidden rounded-2xl border shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-surface-950 text-surface-400 border-surface-800 border-b font-semibold tracking-wider uppercase">
+                <thead className="bg-background text-muted-foreground border-border border-b font-semibold tracking-wider uppercase">
                   <tr>
                     <th className="px-4 py-3">Invoice #</th>
                     <th className="px-4 py-3">Sponsor & Deal</th>
@@ -1108,78 +1110,78 @@ export function AdminSponsorCRMClient({
                     <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-surface-800 divide-y">
+                <tbody className="divide-border divide-y">
                   {filteredInvoices.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="text-surface-500 py-8 text-center italic">
+                      <td colSpan={8} className="text-muted-foreground py-8 text-center italic">
                         No invoices generated yet.
                       </td>
                     </tr>
                   ) : (
                     filteredInvoices.map((inv) => (
-                      <tr key={inv.id} className="hover:bg-surface-800/40 transition-colors">
-                        <td className="text-brand-400 px-4 py-3 font-mono font-bold">
+                      <tr key={inv.id} className="hover:bg-muted transition-colors">
+                        <td className="text-primary px-4 py-3 font-mono font-bold">
                           {inv.invoiceNumber}
                         </td>
                         <td className="px-4 py-3">
-                          <div className="font-semibold text-white">{inv.sponsorName}</div>
-                          <div className="text-surface-400 text-[11px]">{inv.dealTitle}</div>
+                          <div className="text-foreground font-semibold">{inv.sponsorName}</div>
+                          <div className="text-muted-foreground text-xs">{inv.dealTitle}</div>
                         </td>
-                        <td className="text-surface-300 px-4 py-3">{inv.eventTitle}</td>
+                        <td className="text-muted-foreground px-4 py-3">{inv.eventTitle}</td>
                         <td className="px-4 py-3">
-                          <div className="font-mono font-bold text-white">
+                          <div className="text-foreground font-mono font-bold">
                             ₹{inv.totalAmount.toLocaleString("en-IN")}
                           </div>
                           {inv.taxAmount > 0 && (
-                            <div className="text-surface-500 font-mono text-[10px]">
+                            <div className="text-muted-foreground font-mono text-xs">
                               (Base: ₹{inv.amount.toLocaleString("en-IN")})
                             </div>
                           )}
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                            className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${
                               inv.status === "PAID"
-                                ? "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400"
+                                ? "border-success/30 bg-success/15 text-success border"
                                 : inv.status === "SENT"
-                                  ? "border border-sky-500/30 bg-sky-500/15 text-sky-400"
+                                  ? "border-primary/30 bg-primary/15 text-primary border"
                                   : inv.status === "OVERDUE"
-                                    ? "border border-red-500/30 bg-red-500/15 text-red-400"
-                                    : "bg-surface-800 text-surface-300"
+                                    ? "border-destructive/30 bg-destructive/15 text-destructive border"
+                                    : "bg-muted text-muted-foreground"
                             }`}
                           >
                             {inv.status}
                           </span>
                         </td>
-                        <td className="text-surface-400 px-4 py-3">
+                        <td className="text-muted-foreground px-4 py-3">
                           <div>Issued: {new Date(inv.issueDate).toLocaleDateString()}</div>
                           {inv.dueDate && (
-                            <div className="text-surface-500 text-[11px]">
+                            <div className="text-muted-foreground text-xs">
                               Due: {new Date(inv.dueDate).toLocaleDateString()}
                             </div>
                           )}
                         </td>
-                        <td className="text-surface-300 px-4 py-3">
+                        <td className="text-muted-foreground px-4 py-3">
                           {inv.paidAt ? (
                             <div>
-                              <div className="font-medium text-emerald-400">
+                              <div className="text-success font-medium">
                                 Paid on {new Date(inv.paidAt).toLocaleDateString()}
                               </div>
                               {inv.transactionRef && (
-                                <div className="text-surface-500 font-mono text-[10px]">
+                                <div className="text-muted-foreground font-mono text-xs">
                                   Ref: {inv.transactionRef}
                                 </div>
                               )}
                             </div>
                           ) : (
-                            <span className="text-surface-500">Awaiting payment</span>
+                            <span className="text-muted-foreground">Awaiting payment</span>
                           )}
                         </td>
                         <td className="space-x-2 px-4 py-3 text-right">
                           {inv.status !== "PAID" && (
                             <button
                               onClick={() => handleMarkInvoicePaid(inv)}
-                              className="text-xs font-semibold text-emerald-400 hover:text-emerald-300"
+                              className="text-success text-xs font-semibold hover:opacity-80"
                             >
                               Mark Paid
                             </button>
@@ -1202,7 +1204,7 @@ export function AdminSponsorCRMClient({
                               });
                               setInvoiceModalOpen(true);
                             }}
-                            className="text-brand-400 hover:text-brand-300 text-xs font-semibold"
+                            className="text-primary hover:text-primary text-xs font-semibold"
                           >
                             Edit
                           </button>
@@ -1220,14 +1222,14 @@ export function AdminSponsorCRMClient({
       {/* ─── MODAL: CREATE / EDIT DEAL ───────────────────────────────────── */}
       {dealModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 max-h-[90vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-3xl border p-6 shadow-2xl sm:p-8">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-              <h3 className="text-lg font-bold text-white">
+          <div className="bg-card border-border max-h-[90vh] w-full max-w-lg space-y-5 overflow-y-auto rounded-3xl border p-6 shadow-2xl sm:p-8">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <h3 className="text-foreground text-lg font-bold">
                 {editingDeal ? "Edit Sponsor Deal" : "Create New Sponsor Deal"}
               </h3>
               <button
                 onClick={() => setDealModalOpen(false)}
-                className="text-surface-500 text-lg font-bold hover:text-white"
+                className="text-muted-foreground hover:text-foreground text-lg font-bold"
               >
                 ✕
               </button>
@@ -1235,26 +1237,26 @@ export function AdminSponsorCRMClient({
 
             <form onSubmit={handleSaveDeal} className="space-y-4 text-xs">
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Deal Title *</label>
+                <label className="text-muted-foreground mb-1 block font-medium">Deal Title *</label>
                 <input
                   type="text"
                   required
                   value={dealForm.title}
                   onChange={(e) => setDealForm({ ...dealForm, title: e.target.value })}
                   placeholder="e.g. Cloudflare - Title Sponsor PadharoX 01"
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">
+                  <label className="text-muted-foreground mb-1 block font-medium">
                     Sponsor Company *
                   </label>
                   <select
                     value={dealForm.sponsorId}
                     onChange={(e) => setDealForm({ ...dealForm, sponsorId: e.target.value })}
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     {sponsors.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -1265,11 +1267,13 @@ export function AdminSponsorCRMClient({
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Linked Event</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Linked Event
+                  </label>
                   <select
                     value={dealForm.eventId}
                     onChange={(e) => setDealForm({ ...dealForm, eventId: e.target.value })}
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     <option value="">Global / Unassigned</option>
                     {events.map((ev) => (
@@ -1283,13 +1287,15 @@ export function AdminSponsorCRMClient({
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Sponsor Tier</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Sponsor Tier
+                  </label>
                   <select
                     value={dealForm.tier}
                     onChange={(e) =>
                       setDealForm({ ...dealForm, tier: e.target.value as PartnerTier })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     <option value="TITLE">Title</option>
                     <option value="PLATINUM">Platinum</option>
@@ -1301,13 +1307,15 @@ export function AdminSponsorCRMClient({
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Pipeline Stage</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Pipeline Stage
+                  </label>
                   <select
                     value={dealForm.stage}
                     onChange={(e) =>
                       setDealForm({ ...dealForm, stage: e.target.value as SponsorDealStage })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     {STAGES.map((s) => (
                       <option key={s.key} value={s.key}>
@@ -1318,20 +1326,24 @@ export function AdminSponsorCRMClient({
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Amount (INR) *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Amount (INR) *
+                  </label>
                   <input
                     type="number"
                     required
                     value={dealForm.amount}
                     onChange={(e) => setDealForm({ ...dealForm, amount: Number(e.target.value) })}
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 font-mono text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 font-mono focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Confidence %</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Confidence %
+                  </label>
                   <input
                     type="number"
                     min="0"
@@ -1340,24 +1352,24 @@ export function AdminSponsorCRMClient({
                     onChange={(e) =>
                       setDealForm({ ...dealForm, confidence: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Deal Owner</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Deal Owner</label>
                   <input
                     type="text"
                     value={dealForm.ownerName}
                     onChange={(e) => setDealForm({ ...dealForm, ownerName: e.target.value })}
                     placeholder="e.g. Aarav Gorewal"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">
+                <label className="text-muted-foreground mb-1 block font-medium">
                   Notes / Scope Summary
                 </label>
                 <textarea
@@ -1365,11 +1377,11 @@ export function AdminSponsorCRMClient({
                   value={dealForm.notes}
                   onChange={(e) => setDealForm({ ...dealForm, notes: e.target.value })}
                   placeholder="Key agreement clauses, deliverables promised..."
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-4">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-4">
                 <Button type="button" variant="outline" onClick={() => setDealModalOpen(false)}>
                   Cancel
                 </Button>
@@ -1385,14 +1397,14 @@ export function AdminSponsorCRMClient({
       {/* ─── MODAL: CREATE / EDIT SPONSOR ────────────────────────────────── */}
       {sponsorModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-              <h3 className="text-lg font-bold text-white">
+          <div className="bg-card border-border w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <h3 className="text-foreground text-lg font-bold">
                 {editingSponsor ? "Edit Sponsor Partner" : "Add Sponsor Partner"}
               </h3>
               <button
                 onClick={() => setSponsorModalOpen(false)}
-                className="text-surface-500 text-lg font-bold hover:text-white"
+                className="text-muted-foreground hover:text-foreground text-lg font-bold"
               >
                 ✕
               </button>
@@ -1466,55 +1478,63 @@ export function AdminSponsorCRMClient({
               className="space-y-4 text-xs"
             >
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Company Name *</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Company Name *
+                </label>
                 <input
                   type="text"
                   required
                   value={sponsorForm.name}
                   onChange={(e) => setSponsorForm({ ...sponsorForm, name: e.target.value })}
                   placeholder="e.g. Cloudflare, GitHub, JetBrains"
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Category</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Category</label>
                   <input
                     type="text"
                     value={sponsorForm.category}
                     onChange={(e) => setSponsorForm({ ...sponsorForm, category: e.target.value })}
                     placeholder="e.g. Cloud, DevTools, Web3"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Website URL</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Website URL
+                  </label>
                   <input
                     type="url"
                     value={sponsorForm.website}
                     onChange={(e) => setSponsorForm({ ...sponsorForm, website: e.target.value })}
                     placeholder="https://..."
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Logo Image URL</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Logo Image URL
+                </label>
                 <input
                   type="url"
                   value={sponsorForm.logo}
                   onChange={(e) => setSponsorForm({ ...sponsorForm, logo: e.target.value })}
                   placeholder="https://images.unsplash.com/..."
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Contact Person</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Contact Person
+                  </label>
                   <input
                     type="text"
                     value={sponsorForm.contactPerson}
@@ -1522,11 +1542,13 @@ export function AdminSponsorCRMClient({
                       setSponsorForm({ ...sponsorForm, contactPerson: e.target.value })
                     }
                     placeholder="Name & Title"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Contact Email</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Contact Email
+                  </label>
                   <input
                     type="email"
                     value={sponsorForm.contactEmail}
@@ -1534,11 +1556,11 @@ export function AdminSponsorCRMClient({
                       setSponsorForm({ ...sponsorForm, contactEmail: e.target.value })
                     }
                     placeholder="sponsor@brand.com"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Phone</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Phone</label>
                   <input
                     type="text"
                     value={sponsorForm.contactPhone}
@@ -1546,12 +1568,12 @@ export function AdminSponsorCRMClient({
                       setSponsorForm({ ...sponsorForm, contactPhone: e.target.value })
                     }
                     placeholder="+91 ..."
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-4">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-4">
                 <Button type="button" variant="outline" onClick={() => setSponsorModalOpen(false)}>
                   Cancel
                 </Button>
@@ -1567,14 +1589,14 @@ export function AdminSponsorCRMClient({
       {/* ─── MODAL: CREATE / EDIT DELIVERABLE ─────────────────────────────── */}
       {deliverableModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-              <h3 className="text-lg font-bold text-white">
+          <div className="bg-card border-border w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <h3 className="text-foreground text-lg font-bold">
                 {editingDeliverable ? "Edit Deliverable" : "Add Sponsor Deliverable"}
               </h3>
               <button
                 onClick={() => setDeliverableModalOpen(false)}
-                className="text-surface-500 text-lg font-bold hover:text-white"
+                className="text-muted-foreground hover:text-foreground text-lg font-bold"
               >
                 ✕
               </button>
@@ -1641,7 +1663,7 @@ export function AdminSponsorCRMClient({
               className="space-y-4 text-xs"
             >
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">
+                <label className="text-muted-foreground mb-1 block font-medium">
                   Deliverable Title *
                 </label>
                 <input
@@ -1652,19 +1674,21 @@ export function AdminSponsorCRMClient({
                     setDeliverableForm({ ...deliverableForm, title: e.target.value })
                   }
                   placeholder="e.g. 20-min Keynote Speaking Slot, Expo Booth A1"
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Sponsor Deal *</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Sponsor Deal *
+                  </label>
                   <select
                     value={deliverableForm.dealId}
                     onChange={(e) =>
                       setDeliverableForm({ ...deliverableForm, dealId: e.target.value })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     {deals.map((d) => (
                       <option key={d.id} value={d.id}>
@@ -1675,7 +1699,7 @@ export function AdminSponsorCRMClient({
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Status</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Status</label>
                   <select
                     value={deliverableForm.status}
                     onChange={(e) =>
@@ -1684,7 +1708,7 @@ export function AdminSponsorCRMClient({
                         status: e.target.value as DeliverableStatus,
                       })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     <option value="PENDING">Pending</option>
                     <option value="IN_PROGRESS">In Progress</option>
@@ -1696,19 +1720,19 @@ export function AdminSponsorCRMClient({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Due Date</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Due Date</label>
                   <input
                     type="date"
                     value={deliverableForm.dueDate}
                     onChange={(e) =>
                       setDeliverableForm({ ...deliverableForm, dueDate: e.target.value })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Assignee</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Assignee</label>
                   <input
                     type="text"
                     value={deliverableForm.assignee}
@@ -1716,13 +1740,13 @@ export function AdminSponsorCRMClient({
                       setDeliverableForm({ ...deliverableForm, assignee: e.target.value })
                     }
                     placeholder="Team member name"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">
+                <label className="text-muted-foreground mb-1 block font-medium">
                   Proof URL (Tweet, photo, recording)
                 </label>
                 <input
@@ -1732,11 +1756,11 @@ export function AdminSponsorCRMClient({
                     setDeliverableForm({ ...deliverableForm, proofUrl: e.target.value })
                   }
                   placeholder="https://..."
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 />
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-4">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-4">
                 <Button
                   type="button"
                   variant="outline"
@@ -1756,14 +1780,14 @@ export function AdminSponsorCRMClient({
       {/* ─── MODAL: CREATE / EDIT INVOICE ────────────────────────────────── */}
       {invoiceModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
-            <div className="border-surface-800 flex items-center justify-between border-b pb-4">
-              <h3 className="text-lg font-bold text-white">
+          <div className="bg-card border-border w-full max-w-lg space-y-5 rounded-3xl border p-6 shadow-2xl sm:p-8">
+            <div className="border-border flex items-center justify-between border-b pb-4">
+              <h3 className="text-foreground text-lg font-bold">
                 {editingInvoice ? "Edit Sponsor Invoice" : "Generate Sponsor Invoice"}
               </h3>
               <button
                 onClick={() => setInvoiceModalOpen(false)}
-                className="text-surface-500 text-lg font-bold hover:text-white"
+                className="text-muted-foreground hover:text-foreground text-lg font-bold"
               >
                 ✕
               </button>
@@ -1836,7 +1860,9 @@ export function AdminSponsorCRMClient({
               className="space-y-4 text-xs"
             >
               <div>
-                <label className="text-surface-300 mb-1 block font-medium">Sponsor Deal *</label>
+                <label className="text-muted-foreground mb-1 block font-medium">
+                  Sponsor Deal *
+                </label>
                 <select
                   value={invoiceForm.dealId}
                   onChange={(e) => {
@@ -1848,7 +1874,7 @@ export function AdminSponsorCRMClient({
                       amount: d ? d.amount : invoiceForm.amount,
                     });
                   }}
-                  className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                  className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                 >
                   {deals.map((d) => (
                     <option key={d.id} value={d.id}>
@@ -1860,7 +1886,7 @@ export function AdminSponsorCRMClient({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">
+                  <label className="text-muted-foreground mb-1 block font-medium">
                     Base Amount (INR) *
                   </label>
                   <input
@@ -1870,12 +1896,12 @@ export function AdminSponsorCRMClient({
                     onChange={(e) =>
                       setInvoiceForm({ ...invoiceForm, amount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 font-mono text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 font-mono focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">
+                  <label className="text-muted-foreground mb-1 block font-medium">
                     GST / Tax Amount (INR)
                   </label>
                   <input
@@ -1884,20 +1910,22 @@ export function AdminSponsorCRMClient({
                     onChange={(e) =>
                       setInvoiceForm({ ...invoiceForm, taxAmount: Number(e.target.value) })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 font-mono text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 font-mono focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Invoice Status</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Invoice Status
+                  </label>
                   <select
                     value={invoiceForm.status}
                     onChange={(e) =>
                       setInvoiceForm({ ...invoiceForm, status: e.target.value as InvoiceStatus })
                     }
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   >
                     <option value="DRAFT">Draft</option>
                     <option value="SENT">Sent to Sponsor</option>
@@ -1908,19 +1936,21 @@ export function AdminSponsorCRMClient({
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Due Date</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">Due Date</label>
                   <input
                     type="date"
                     value={invoiceForm.dueDate}
                     onChange={(e) => setInvoiceForm({ ...invoiceForm, dueDate: e.target.value })}
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">Payment Method</label>
+                  <label className="text-muted-foreground mb-1 block font-medium">
+                    Payment Method
+                  </label>
                   <input
                     type="text"
                     value={invoiceForm.paymentMethod}
@@ -1928,12 +1958,12 @@ export function AdminSponsorCRMClient({
                       setInvoiceForm({ ...invoiceForm, paymentMethod: e.target.value })
                     }
                     placeholder="NEFT / RTGS, UPI, Razorpay"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="text-surface-300 mb-1 block font-medium">
+                  <label className="text-muted-foreground mb-1 block font-medium">
                     Transaction Ref #
                   </label>
                   <input
@@ -1943,12 +1973,12 @@ export function AdminSponsorCRMClient({
                       setInvoiceForm({ ...invoiceForm, transactionRef: e.target.value })
                     }
                     placeholder="Bank UTR # or receipt ref"
-                    className="bg-surface-950 border-surface-700 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-white focus:outline-hidden"
+                    className="bg-background border-border focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 focus:outline-hidden"
                   />
                 </div>
               </div>
 
-              <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-4">
+              <div className="border-border flex items-center justify-end gap-3 border-t pt-4">
                 <Button type="button" variant="outline" onClick={() => setInvoiceModalOpen(false)}>
                   Cancel
                 </Button>

@@ -99,9 +99,7 @@ export function UserMenu({ user }: Props) {
           <div className="border-border border-b px-3 py-2.5">
             <p className="text-foreground truncate text-sm font-semibold">{user.name ?? "User"}</p>
             <p className="text-muted-foreground mt-0.5 truncate text-xs">{user.email}</p>
-            <span className="border-border bg-muted text-muted-foreground mt-2 inline-block rounded-full border px-2 py-0.5 text-xs font-medium">
-              {roleLabel}
-            </span>
+            <p className="text-muted-foreground mt-1 text-xs">{roleLabel}</p>
           </div>
 
           {/* Links */}

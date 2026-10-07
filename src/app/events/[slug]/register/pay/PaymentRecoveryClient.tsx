@@ -27,6 +27,9 @@ interface RazorpayOptions {
     email?: string;
     contact?: string;
   };
+  theme?: {
+    color?: string;
+  };
   handler: (response: RazorpayCheckoutHandlerArgs) => void;
   modal?: {
     ondismiss?: () => void;
@@ -112,6 +115,11 @@ export function PaymentRecoveryClient({
     setErrorMsg(null);
     setLoading(true);
 
+    const primaryColor =
+      typeof window !== "undefined"
+        ? getComputedStyle(document.documentElement).getPropertyValue("--primary").trim()
+        : "";
+
     const rzp = new window.Razorpay({
       key: razorpayKeyId,
       amount: Math.round(amount * 100),
@@ -123,6 +131,9 @@ export function PaymentRecoveryClient({
         name,
         email,
         contact: phone || "",
+      },
+      theme: {
+        color: primaryColor,
       },
       handler: async (response) => {
         try {

@@ -446,7 +446,6 @@ export function HackathonSeriesClient({
 
           <div className="space-y-2.5">
             {event.scheduleItems.map((slot) => {
-              const start = new Date(slot.startTime);
               const timeStr = formatTime(slot.startTime);
               const dateStr = formatDate(slot.startTime);
 

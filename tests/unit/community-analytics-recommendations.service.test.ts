@@ -1,5 +1,5 @@
 // tests/unit/community-analytics-recommendations.service.test.ts
-// Unit tests for PRD §29 Community Analytics and Personalized Recommendations Engine
+// Unit tests for Community Analytics and Personalized Recommendations Engine
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getCommunityAnalyticsOverview } from "@/server/analytics/community-service";
@@ -66,7 +66,7 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
-describe("PRD §29 Community Analytics Engine", () => {
+describe("Community Analytics Engine", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -248,7 +248,7 @@ describe("PRD §29 Community Analytics Engine", () => {
     expect(metrics.certificates.totalClaimedOrVerified).toBe(1);
     expect(metrics.certificates.deliveryRatePct).toBe(50);
 
-    // Verify % Attendees Who Take a Community Role (PRD §30)
+    // Verify % Attendees Who Take a Community Role ()
     // u-1 attended events and is a Campus Lead, State Lead, Chapter Lead & Mentor
     expect(metrics.roleProgression.attendeesWithCommunityRole).toBe(1);
     expect(metrics.roleProgression.progressionRatePct).toBe(50); // 1 out of 2 unique attendees = 50%

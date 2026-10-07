@@ -59,9 +59,9 @@ test.describe("Series, Workshops & Tech Talks Restyle Verification", () => {
           });
           expect(overflow, `Horizontal overflow detected on ${r.path} at ${vp.name}px`).toBeFalsy();
 
-          // 2. Confirm no "PRD §" badges or labels anywhere in text
+          // 2. Confirm no "" badges or labels anywhere in text
           const bodyText = await page.innerText("body");
-          expect(bodyText).not.toContain("PRD §");
+          expect(bodyText).not.toContain("");
           expect(bodyText).not.toContain("Postgres FTS");
           expect(bodyText).not.toContain("Verified Gathering Schedule");
 

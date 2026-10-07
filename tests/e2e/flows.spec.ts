@@ -390,7 +390,7 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await context.close();
   });
 
-  test("Flow 8: Sponsor CRM (Deals, Deliverables, Invoices) & Event P&L per PRD §23", async ({
+  test("Flow 8: Sponsor CRM (Deals, Deliverables, Invoices) & Event P&L per ", async ({
     browser,
   }) => {
     const adminToken = await createAdminSessionToken();
@@ -430,7 +430,7 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     // 2. Visit /admin/pnl
     await page.goto("/admin/pnl");
     await expect(page.locator("h1")).toContainText(/Revenue & Event P&L Control Room/i);
-    await expect(page.locator("text=PRD §23 · Event Profit & Loss Intelligence")).toBeVisible({
+    await expect(page.locator("text=Event Profit & Loss Intelligence")).toBeVisible({
       timeout: 10000,
     });
 
@@ -457,7 +457,7 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await context.close();
   });
 
-  test("Flow 9: Campus and State Lead Dashboards & Leadership Network Control Room per PRD §11 & §12", async ({
+  test("Flow 9: Campus and State Lead Dashboards & Leadership Network Control Room per ", async ({
     browser,
   }) => {
     // 1. Admin Scope: Access Leader Portal (/lead) as SUPER_ADMIN
@@ -473,7 +473,7 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     const adminPage = await adminContext.newPage();
     await adminPage.goto("/lead");
     await expect(adminPage.locator("h1")).toContainText(/Campus & State Lead Intelligence Hub/i);
-    await expect(adminPage.locator("text=PRD §11 & §12 · Leadership Control Room")).toBeVisible({
+    await expect(adminPage.locator("text= · Leadership Control Room")).toBeVisible({
       timeout: 10000,
     });
 

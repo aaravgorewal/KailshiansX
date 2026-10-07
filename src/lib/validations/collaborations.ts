@@ -3,7 +3,7 @@ import { z } from "zod";
 const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]{7,15}$/;
 
 /**
- * Path 1: College Collaboration Schema (PRD §13)
+ * Path 1: College Collaboration Schema ()
  * For universities, engineering colleges, polytechnics, and department faculties
  */
 export const collegeCollaborationSchema = z.object({
@@ -50,7 +50,7 @@ export const collegeCollaborationSchema = z.object({
 export type CollegeCollaborationInput = z.infer<typeof collegeCollaborationSchema>;
 
 /**
- * Path 2: Community Partner Schema (PRD §13)
+ * Path 2: Community Partner Schema ()
  * For developer meetups, user groups, tech clubs, and open source collectives
  */
 export const communityCollaborationSchema = z.object({
@@ -105,7 +105,7 @@ export const communityCollaborationSchema = z.object({
 export type CommunityCollaborationInput = z.infer<typeof communityCollaborationSchema>;
 
 /**
- * Path 3: Venue Partner Schema (PRD §13)
+ * Path 3: Venue Partner Schema ()
  * For coworking spaces, auditoriums, tech campuses, and incubator spaces
  */
 export const venueCollaborationSchema = z.object({
@@ -162,7 +162,7 @@ export const venueCollaborationSchema = z.object({
 export type VenueCollaborationInput = z.infer<typeof venueCollaborationSchema>;
 
 /**
- * Path 4: Sponsor / Brand Partner Schema (PRD §13)
+ * Path 4: Sponsor / Brand Partner Schema ()
  * For developer tooling companies, cloud providers, hiring sponsors, and consumer brands
  */
 export const sponsorCollaborationSchema = z.object({

@@ -5,7 +5,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Check, AlertCircle, Sparkles } from "lucide-react";
+import { Save, Check, AlertCircle, Zap } from "lucide-react";
 import type { DeveloperPassportData } from "@/server/users/passport";
 
 interface Props {
@@ -78,27 +78,27 @@ export function ProfileEditForm({ user, onSaved }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-surface-800 bg-surface-900/60 space-y-6 rounded-2xl border p-6 shadow-xl backdrop-blur-xl"
+      className="border-border bg-card space-y-6 rounded-2xl border p-6 shadow-xl backdrop-blur-xl"
     >
       <div>
-        <h3 className="flex items-center gap-2 text-lg font-bold text-white">
-          <Sparkles className="text-brand-400 h-5 w-5" />
+        <h3 className="text-foreground flex items-center gap-2 text-lg font-bold">
+          <Zap className="text-primary h-5 w-5" />
           Developer Passport & Profile Settings
         </h3>
-        <p className="text-surface-400 mt-1 text-sm">
+        <p className="text-muted-foreground mt-1 text-sm">
           Customize your public developer persona, social links, technical skills, and privacy.
         </p>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400">
+        <div className="border-destructive/20 bg-destructive/10 text-destructive flex items-center gap-2 rounded-xl border p-3 text-xs">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-400">
+        <div className="border-success/20 bg-success/10 text-success flex items-center gap-2 rounded-xl border p-3 text-xs">
           <Check className="h-4 w-4 shrink-0" />
           <span>Profile and passport settings updated successfully!</span>
         </div>
@@ -107,13 +107,15 @@ export function ProfileEditForm({ user, onSaved }: Props) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Name */}
         <div>
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">Full Name</label>
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
+            Full Name
+          </label>
           <input
             type="text"
             id="input-profile-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="Aarav Saini"
             required
           />
@@ -121,11 +123,11 @@ export function ProfileEditForm({ user, onSaved }: Props) {
 
         {/* Username */}
         <div>
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             Passport Handle (@username)
           </label>
           <div className="relative flex items-center">
-            <span className="text-surface-500 absolute left-3.5 font-mono text-sm">@</span>
+            <span className="text-muted-foreground absolute left-3.5 font-mono text-sm">@</span>
             <input
               type="text"
               id="input-profile-username"
@@ -133,7 +135,7 @@ export function ProfileEditForm({ user, onSaved }: Props) {
               onChange={(e) =>
                 setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))
               }
-              className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border py-2.5 pr-3.5 pl-8 font-mono text-sm text-white transition-colors focus:outline-hidden"
+              className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border py-2.5 pr-3.5 pl-8 font-mono text-sm transition-colors focus:outline-hidden"
               placeholder="aarav-saini"
               required
             />
@@ -142,7 +144,7 @@ export function ProfileEditForm({ user, onSaved }: Props) {
 
         {/* Headline */}
         <div className="sm:col-span-2">
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             Professional Headline
           </label>
           <input
@@ -150,14 +152,14 @@ export function ProfileEditForm({ user, onSaved }: Props) {
             id="input-profile-headline"
             value={headline}
             onChange={(e) => setHeadline(e.target.value)}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="Full Stack Engineer • Cloud Native Architect • Open Source Contributor"
           />
         </div>
 
         {/* Bio */}
         <div className="sm:col-span-2">
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             Developer Bio / Philosophy
           </label>
           <textarea
@@ -165,14 +167,14 @@ export function ProfileEditForm({ user, onSaved }: Props) {
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={3}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="Tell the community what you build, languages you love, and initiatives you are driving..."
           />
         </div>
 
         {/* GitHub */}
         <div>
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             GitHub Username or URL
           </label>
           <input
@@ -180,14 +182,14 @@ export function ProfileEditForm({ user, onSaved }: Props) {
             id="input-profile-github"
             value={github}
             onChange={(e) => setGithub(e.target.value)}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="aaravgorewal"
           />
         </div>
 
         {/* LinkedIn */}
         <div>
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             LinkedIn Profile URL
           </label>
           <input
@@ -195,14 +197,14 @@ export function ProfileEditForm({ user, onSaved }: Props) {
             id="input-profile-linkedin"
             value={linkedin}
             onChange={(e) => setLinkedin(e.target.value)}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="linkedin.com/in/aaravgorewal"
           />
         </div>
 
         {/* Twitter */}
         <div>
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             Twitter / X Handle
           </label>
           <input
@@ -210,14 +212,14 @@ export function ProfileEditForm({ user, onSaved }: Props) {
             id="input-profile-twitter"
             value={twitter}
             onChange={(e) => setTwitter(e.target.value)}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="@aaravgorewal"
           />
         </div>
 
         {/* Website */}
         <div>
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             Portfolio / Personal Site
           </label>
           <input
@@ -225,14 +227,14 @@ export function ProfileEditForm({ user, onSaved }: Props) {
             id="input-profile-website"
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="https://aarav.dev"
           />
         </div>
 
         {/* Skills */}
         <div className="sm:col-span-2">
-          <label className="text-surface-300 mb-1.5 block text-xs font-semibold">
+          <label className="text-muted-foreground mb-1.5 block text-xs font-semibold">
             Technical Skills (comma-separated)
           </label>
           <input
@@ -240,7 +242,7 @@ export function ProfileEditForm({ user, onSaved }: Props) {
             id="input-profile-skills"
             value={skillsStr}
             onChange={(e) => setSkillsStr(e.target.value)}
-            className="bg-surface-950/80 border-surface-800 placeholder-surface-500 focus:border-brand-500 w-full rounded-xl border px-3.5 py-2.5 text-sm text-white transition-colors focus:outline-hidden"
+            className="bg-background border-border placeholder:text-muted-foreground focus:border-primary text-foreground w-full rounded-xl border px-3.5 py-2.5 text-sm transition-colors focus:outline-hidden"
             placeholder="TypeScript, Next.js, Rust, Docker, PostgreSQL, GraphQL"
           />
         </div>
@@ -253,13 +255,13 @@ export function ProfileEditForm({ user, onSaved }: Props) {
               id="input-passport-public"
               checked={isPassportPublic}
               onChange={(e) => setIsPassportPublic(e.target.checked)}
-              className="border-surface-700 bg-surface-950 text-brand-500 focus:ring-brand-500/20 h-4 w-4 rounded-md"
+              className="border-border bg-background text-primary focus:ring-ring/20 h-4 w-4 rounded-md"
             />
             <div>
-              <span className="block text-sm font-semibold text-white">
+              <span className="text-foreground block text-sm font-semibold">
                 Make Developer Passport Public
               </span>
-              <span className="text-surface-400 block text-xs">
+              <span className="text-muted-foreground block text-xs">
                 Allows other builders and recruiters to view your verified achievements and timeline
                 via your custom link.
               </span>
@@ -268,12 +270,12 @@ export function ProfileEditForm({ user, onSaved }: Props) {
         </div>
       </div>
 
-      <div className="border-surface-800 flex justify-end border-t pt-4">
+      <div className="border-border flex justify-end border-t pt-4">
         <button
           type="submit"
           id="btn-save-profile"
           disabled={saving}
-          className="bg-brand-500 hover:bg-brand-600 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors disabled:opacity-50"
+          className="bg-primary hover:bg-primary-hover text-primary-foreground inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold shadow-md transition-colors disabled:opacity-50"
         >
           <Save className="h-4 w-4" />
           <span>{saving ? "Saving Changes..." : "Save Profile"}</span>

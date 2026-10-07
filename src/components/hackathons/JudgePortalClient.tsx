@@ -11,7 +11,7 @@ import {
   ChevronRight,
   Filter,
   ArrowLeft,
-  Sparkles,
+  Zap,
   Sliders,
   MessageSquare,
   Lock,
@@ -218,59 +218,57 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
   const progressPercent = totalCount > 0 ? Math.round((evaluatedCount / totalCount) * 100) : 0;
 
   return (
-    <div className="bg-surface-950 text-surface-100 min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+    <div className="bg-background text-foreground min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Navigation Breadcrumb */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
             href={`/events/${data.event.slug}`}
-            className="text-surface-400 hover:text-brand-400 inline-flex items-center gap-2 text-xs font-semibold transition-colors sm:text-sm"
+            className="text-muted-foreground hover:text-primary inline-flex items-center gap-2 text-xs font-semibold transition-colors sm:text-sm"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to {data.event.title}
           </Link>
-          <div className="flex items-center gap-2 rounded-full border border-purple-800/40 bg-purple-950/30 px-3 py-1 font-mono text-xs text-purple-400">
+          <div className="border-primary/30 bg-primary/10 text-primary flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-xs">
             <Gavel className="h-3.5 w-3.5" />
             <span>Judge Portal &bull; Track: {data.judge.track || "ALL"}</span>
           </div>
         </div>
 
         {/* Hero Header & Progress */}
-        <div className="border-surface-800 bg-surface-900/60 relative overflow-hidden rounded-3xl border p-6 backdrop-blur-xl sm:p-8">
-          <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-purple-600/10 blur-3xl" />
-
+        <div className="border-border bg-card relative overflow-hidden rounded-3xl border p-6 backdrop-blur-xl sm:p-8">
           <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
             <div>
-              <div className="mb-2 flex items-center gap-2 text-xs font-bold tracking-widest text-purple-400 uppercase">
+              <div className="text-primary mb-2 flex items-center gap-2 text-xs font-bold tracking-widest uppercase">
                 <ShieldCheck className="h-4 w-4" />
                 Grand Jury Evaluation Cockpit
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+              <h1 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
                 {data.event.title}
               </h1>
-              <p className="text-surface-400 mt-1 text-xs sm:text-sm">
+              <p className="text-muted-foreground mt-1 text-xs sm:text-sm">
                 Judge Profile:{" "}
-                <span className="text-surface-200 font-semibold">
+                <span className="text-foreground font-semibold">
                   {data.judge.title || "Official Judge"}
                 </span>
                 {data.judge.company && ` @ ${data.judge.company}`}
               </p>
             </div>
 
-            <div className="bg-surface-850 border-surface-800 min-w-[280px] rounded-2xl border p-4 sm:p-5">
+            <div className="bg-muted border-border min-w-[280px] rounded-2xl border p-4 sm:p-5">
               <div className="mb-2 flex items-center justify-between text-xs font-semibold">
-                <span className="text-surface-400">Evaluation Progress</span>
-                <span className="font-mono font-bold text-purple-400">
+                <span className="text-muted-foreground">Evaluation Progress</span>
+                <span className="text-primary font-mono font-bold">
                   {evaluatedCount} / {totalCount} ({progressPercent}%)
                 </span>
               </div>
-              <div className="bg-surface-700/50 mb-2 h-2 w-full overflow-hidden rounded-full">
+              <div className="bg-muted mb-2 h-2 w-full overflow-hidden rounded-full">
                 <div
-                  className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500"
+                  className="bg-primary h-2 rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
-              <p className="text-surface-400 text-[11px]">
+              <p className="text-muted-foreground text-xs">
                 {totalCount - evaluatedCount === 0
                   ? "All assigned submissions evaluated! Thank you."
                   : `${totalCount - evaluatedCount} projects awaiting your scoring review.`}
@@ -284,21 +282,21 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
           <div
             className={`flex items-center justify-between rounded-2xl p-4 text-xs font-semibold transition-all sm:text-sm ${
               toastMessage.type === "success"
-                ? "border border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
-                : "border border-rose-500/30 bg-rose-500/10 text-rose-300"
+                ? "border-success/30 bg-success/10 text-success border"
+                : "border-destructive/30 bg-destructive/10 text-destructive border"
             }`}
           >
             <div className="flex items-center gap-2.5">
               {toastMessage.type === "success" ? (
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+                <CheckCircle2 className="text-success h-4 w-4 shrink-0" />
               ) : (
-                <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+                <AlertCircle className="text-destructive h-4 w-4 shrink-0" />
               )}
               <span>{toastMessage.text}</span>
             </div>
             <button
               onClick={() => setToastMessage(null)}
-              className="text-surface-400 px-2 py-1 text-xs hover:text-white"
+              className="text-muted-foreground hover:text-foreground px-2 py-1 text-xs"
             >
               Dismiss
             </button>
@@ -310,20 +308,20 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
           {/* Left Column: Submissions Queue (5 cols) */}
           <div className="space-y-4 lg:col-span-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-surface-400 flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
-                <Filter className="h-3.5 w-3.5 text-purple-400" />
+              <h2 className="text-muted-foreground flex items-center gap-2 text-sm font-bold tracking-wider uppercase">
+                <Filter className="text-primary h-3.5 w-3.5" />
                 Submissions ({data.submissions.length})
               </h2>
 
-              <div className="bg-surface-900 border-surface-800 flex items-center gap-1 rounded-xl border p-1">
+              <div className="bg-card border-border flex items-center gap-1 rounded-xl border p-1">
                 {(["ALL", "PENDING", "EVALUATED"] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setFilter(tab)}
-                    className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-all ${
+                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
                       filter === tab
-                        ? "bg-purple-600 text-white shadow-sm"
-                        : "text-surface-400 hover:text-surface-200"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     {tab === "ALL" ? "All" : tab === "PENDING" ? "Needs Review" : "Evaluated"}
@@ -333,8 +331,8 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
             </div>
 
             {filteredSubmissions.length === 0 ? (
-              <div className="border-surface-800 bg-surface-900/40 rounded-2xl border p-8 text-center">
-                <p className="text-surface-400 text-xs">
+              <div className="border-border bg-card rounded-2xl border p-8 text-center">
+                <p className="text-muted-foreground text-xs">
                   No submissions found matching this filter.
                 </p>
               </div>
@@ -350,35 +348,37 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                       onClick={() => handleSelectSubmission(sub)}
                       className={`cursor-pointer rounded-2xl border p-4 transition-all ${
                         isSelected
-                          ? "border-purple-500/50 bg-purple-950/20 shadow-md ring-1 ring-purple-500/30"
-                          : "bg-surface-900/40 border-surface-800 hover:border-surface-700 hover:bg-surface-850/30"
+                          ? "border-primary/50 bg-primary/10 ring-primary/30 shadow-md ring-1"
+                          : "bg-card border-border hover:border-border hover:bg-muted"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <div className="mb-1 flex items-center gap-2">
-                            <span className="text-surface-400 bg-surface-800 rounded px-2 py-0.5 text-[10px] font-bold uppercase">
+                            <span className="text-muted-foreground bg-muted rounded px-2 py-0.5 text-xs font-bold uppercase">
                               {sub.track}
                             </span>
                             {isScored ? (
-                              <span className="flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                              <span className="border-success/20 bg-success/10 text-success flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold">
                                 <CheckCircle2 className="h-2.5 w-2.5" />
                                 {sub.myScore?.totalScore.toFixed(1)} / 100
                               </span>
                             ) : (
-                              <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
+                              <span className="border-border bg-primary/10 text-primary rounded-full border px-2 py-0.5 text-xs font-semibold">
                                 Pending Review
                               </span>
                             )}
                           </div>
-                          <h3 className="truncate text-sm font-bold text-white">{sub.title}</h3>
-                          <p className="text-surface-400 mt-0.5 line-clamp-1 text-xs">
-                            Squad: <strong className="text-surface-200">{sub.team.name}</strong>
+                          <h3 className="text-foreground truncate text-sm font-bold">
+                            {sub.title}
+                          </h3>
+                          <p className="text-muted-foreground mt-0.5 line-clamp-1 text-xs">
+                            Squad: <strong className="text-foreground">{sub.team.name}</strong>
                           </p>
                         </div>
                         <ChevronRight
                           className={`h-4 w-4 shrink-0 transition-transform ${
-                            isSelected ? "translate-x-0.5 text-purple-400" : "text-surface-600"
+                            isSelected ? "text-primary translate-x-0.5" : "text-muted-foreground"
                           }`}
                         />
                       </div>
@@ -394,47 +394,47 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
             {selectedSub ? (
               <div className="space-y-6">
                 {/* Submission Showcase Card */}
-                <div className="border-surface-800 bg-surface-900/60 space-y-6 rounded-3xl border p-6 backdrop-blur-xl sm:p-7">
+                <div className="border-border bg-card space-y-6 rounded-3xl border p-6 backdrop-blur-xl sm:p-7">
                   <div>
                     <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                      <span className="rounded-md border border-purple-800/40 bg-purple-950/40 px-2.5 py-0.5 font-mono text-xs font-bold text-purple-400 uppercase">
+                      <span className="border-primary/30 bg-primary/10 text-primary rounded-md border px-2.5 py-0.5 font-mono text-xs font-bold uppercase">
                         Track: {selectedSub.track}
                       </span>
                       {selectedSub.problemStatement && (
-                        <span className="text-surface-400 text-xs">
+                        <span className="text-muted-foreground text-xs">
                           Problem:{" "}
-                          <strong className="text-surface-200">
+                          <strong className="text-foreground">
                             {selectedSub.problemStatement.title}
                           </strong>
                         </span>
                       )}
                     </div>
 
-                    <h2 className="text-xl font-black tracking-tight text-white sm:text-2xl">
+                    <h2 className="text-foreground text-xl font-black tracking-tight sm:text-2xl">
                       {selectedSub.title}
                     </h2>
                     {selectedSub.tagline && (
-                      <p className="text-surface-300 mt-1 text-sm font-medium">
+                      <p className="text-muted-foreground mt-1 text-sm font-medium">
                         {selectedSub.tagline}
                       </p>
                     )}
                   </div>
 
-                  <div className="bg-surface-950/60 border-surface-800/60 text-surface-300 rounded-2xl border p-4 text-xs leading-relaxed whitespace-pre-wrap sm:text-sm">
+                  <div className="bg-background border-border text-muted-foreground rounded-2xl border p-4 text-xs leading-relaxed whitespace-pre-wrap sm:text-sm">
                     {selectedSub.description}
                   </div>
 
                   {/* Tech stack */}
                   {selectedSub.techStack.length > 0 && (
                     <div>
-                      <h4 className="text-surface-400 mb-2 text-[11px] font-bold tracking-wider uppercase">
+                      <h4 className="text-muted-foreground mb-2 text-xs font-bold tracking-wider uppercase">
                         Tech Stack
                       </h4>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedSub.techStack.map((tech) => (
                           <span
                             key={tech}
-                            className="bg-surface-800 border-surface-700 text-surface-200 rounded-lg border px-2.5 py-1 font-mono text-xs"
+                            className="bg-muted border-border text-foreground rounded-lg border px-2.5 py-1 font-mono text-xs"
                           >
                             {tech}
                           </span>
@@ -445,7 +445,7 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
 
                   {/* Submission Deliverables & External Links */}
                   <div>
-                    <h4 className="text-surface-400 mb-2.5 text-[11px] font-bold tracking-wider uppercase">
+                    <h4 className="text-muted-foreground mb-2.5 text-xs font-bold tracking-wider uppercase">
                       Deliverables &amp; Artifacts
                     </h4>
                     <div className="flex flex-wrap gap-2.5">
@@ -453,16 +453,16 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                         <a href={selectedSub.repoUrl} target="_blank" rel="noopener noreferrer">
                           <GithubIcon className="mr-1.5 h-4 w-4" />
                           GitHub Code Repo
-                          <ExternalLink className="text-surface-500 ml-1 h-3 w-3" />
+                          <ExternalLink className="text-muted-foreground ml-1 h-3 w-3" />
                         </a>
                       </Button>
 
                       {selectedSub.demoUrl && (
                         <Button variant="outline" size="sm" asChild>
                           <a href={selectedSub.demoUrl} target="_blank" rel="noopener noreferrer">
-                            <Sparkles className="mr-1.5 h-4 w-4 text-purple-400" />
+                            <Zap className="text-primary mr-1.5 h-4 w-4" />
                             Live Deployment
-                            <ExternalLink className="text-surface-500 ml-1 h-3 w-3" />
+                            <ExternalLink className="text-muted-foreground ml-1 h-3 w-3" />
                           </a>
                         </Button>
                       )}
@@ -471,7 +471,7 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                         <Button variant="outline" size="sm" asChild>
                           <a href={selectedSub.deckUrl} target="_blank" rel="noopener noreferrer">
                             Pitch Deck
-                            <ExternalLink className="text-surface-500 ml-1 h-3 w-3" />
+                            <ExternalLink className="text-muted-foreground ml-1 h-3 w-3" />
                           </a>
                         </Button>
                       )}
@@ -480,7 +480,7 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                         <Button variant="outline" size="sm" asChild>
                           <a href={selectedSub.videoUrl} target="_blank" rel="noopener noreferrer">
                             Demo Video
-                            <ExternalLink className="text-surface-500 ml-1 h-3 w-3" />
+                            <ExternalLink className="text-muted-foreground ml-1 h-3 w-3" />
                           </a>
                         </Button>
                       )}
@@ -488,12 +488,12 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                   </div>
 
                   {/* Team Members */}
-                  <div className="border-surface-800 text-surface-400 flex items-center justify-between border-t pt-4 text-xs">
+                  <div className="border-border text-muted-foreground flex items-center justify-between border-t pt-4 text-xs">
                     <div>
-                      Squad: <strong className="text-white">{selectedSub.team.name}</strong> (
+                      Squad: <strong className="text-foreground">{selectedSub.team.name}</strong> (
                       {selectedSub.team.members.length} builders)
                     </div>
-                    <div className="font-mono text-[11px]">
+                    <div className="font-mono text-xs">
                       Submitted{" "}
                       {new Date(selectedSub.submittedAt).toLocaleDateString("en-IN", {
                         month: "short",
@@ -508,25 +508,25 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                 {/* Multi-Criteria Rubric Scoring Form */}
                 <form
                   onSubmit={handleSaveEvaluation}
-                  className="border-surface-800 bg-surface-900/60 space-y-6 rounded-3xl border p-6 backdrop-blur-xl sm:p-7"
+                  className="border-border bg-card space-y-6 rounded-3xl border p-6 backdrop-blur-xl sm:p-7"
                 >
-                  <div className="border-surface-800 flex items-center justify-between border-b pb-4">
+                  <div className="border-border flex items-center justify-between border-b pb-4">
                     <div>
-                      <h3 className="flex items-center gap-2 text-base font-bold text-white">
-                        <Sliders className="h-4 w-4 text-purple-400" />
+                      <h3 className="text-foreground flex items-center gap-2 text-base font-bold">
+                        <Sliders className="text-primary h-4 w-4" />
                         Official Scoring Rubric
                       </h3>
-                      <p className="text-surface-400 mt-0.5 text-xs">
+                      <p className="text-muted-foreground mt-0.5 text-xs">
                         Adjust criteria scores based on prototype execution and pitch quality.
                       </p>
                     </div>
 
                     <div className="text-right">
-                      <div className="font-mono text-2xl font-black text-purple-400">
+                      <div className="text-primary font-mono text-2xl font-black">
                         {calculatedTotal.toFixed(1)}{" "}
-                        <span className="text-surface-400 text-xs font-normal">/ 100</span>
+                        <span className="text-muted-foreground text-xs font-normal">/ 100</span>
                       </div>
-                      <div className="text-surface-400 text-[10px] font-bold uppercase">
+                      <div className="text-muted-foreground text-xs font-bold uppercase">
                         Composite Score
                       </div>
                     </div>
@@ -542,14 +542,14 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                         <div key={criterion.id} className="space-y-2">
                           <div className="flex items-center justify-between text-xs font-semibold">
                             <div>
-                              <span className="text-white">{criterion.name}</span>
+                              <span className="text-foreground">{criterion.name}</span>
                               {criterion.description && (
-                                <span className="text-surface-400 ml-2 font-normal">
+                                <span className="text-muted-foreground ml-2 font-normal">
                                   &bull; {criterion.description}
                                 </span>
                               )}
                             </div>
-                            <span className="font-mono font-bold text-purple-400">
+                            <span className="text-primary font-mono font-bold">
                               {currentVal} / {criterion.maxScore}
                             </span>
                           </div>
@@ -567,7 +567,7 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                                   [criterion.id]: Number(e.target.value),
                                 }))
                               }
-                              className="bg-surface-800 h-2 w-full cursor-pointer rounded-lg accent-purple-500"
+                              className="bg-muted accent-primary h-2 w-full cursor-pointer rounded-lg"
                             />
                             <input
                               type="number"
@@ -583,7 +583,7 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                                   ),
                                 }))
                               }
-                              className="bg-surface-850 border-surface-700 w-16 rounded-xl border px-2.5 py-1 text-center font-mono text-xs text-white"
+                              className="bg-muted border-border text-foreground w-16 rounded-xl border px-2.5 py-1 text-center font-mono text-xs"
                             />
                           </div>
                         </div>
@@ -592,10 +592,10 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                   </div>
 
                   {/* Qualitative Feedback */}
-                  <div className="border-surface-800 space-y-4 border-t pt-4">
+                  <div className="border-border space-y-4 border-t pt-4">
                     <div>
-                      <label className="text-surface-300 mb-1.5 flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase">
-                        <MessageSquare className="h-3.5 w-3.5 text-purple-400" />
+                      <label className="text-muted-foreground mb-1.5 flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase">
+                        <MessageSquare className="text-primary h-3.5 w-3.5" />
                         Constructive Feedback (Shared with Builders)
                       </label>
                       <textarea
@@ -603,13 +603,13 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                         value={feedback}
                         onChange={(e) => setFeedback(e.target.value)}
                         placeholder="What was remarkable about this build? What could be improved for production readiness?"
-                        className="bg-surface-950/60 border-surface-800 text-surface-200 placeholder:text-surface-500 w-full rounded-2xl border p-3 text-xs focus:border-purple-500 focus:outline-none sm:text-sm"
+                        className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary w-full rounded-2xl border p-3 text-xs focus:outline-none sm:text-sm"
                       />
                     </div>
 
                     <div>
-                      <label className="text-surface-400 mb-1.5 flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase">
-                        <Lock className="text-surface-500 h-3.5 w-3.5" />
+                      <label className="text-muted-foreground mb-1.5 flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase">
+                        <Lock className="text-muted-foreground h-3.5 w-3.5" />
                         Private Grand Jury Notes (Organizers Only)
                       </label>
                       <textarea
@@ -617,13 +617,13 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                         value={privateNotes}
                         onChange={(e) => setPrivateNotes(e.target.value)}
                         placeholder="Confidential thoughts, disqualification flags, or podium deliberations..."
-                        className="bg-surface-950/60 border-surface-800 text-surface-300 placeholder:text-surface-600 focus:border-surface-600 w-full rounded-2xl border p-3 text-xs focus:outline-none sm:text-sm"
+                        className="bg-background border-border text-muted-foreground placeholder:text-muted-foreground focus:border-border w-full rounded-2xl border p-3 text-xs focus:outline-none sm:text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-2">
-                    <div className="text-surface-400 text-xs">
+                    <div className="text-muted-foreground text-xs">
                       {selectedSub.myScore
                         ? "Editing previously saved evaluation."
                         : "New evaluation."}
@@ -632,7 +632,7 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                     <Button
                       type="submit"
                       disabled={submitting}
-                      className="bg-purple-600 font-bold text-white hover:bg-purple-500"
+                      className="bg-primary hover:bg-primary-hover text-primary-foreground font-bold"
                     >
                       {submitting
                         ? "Saving..."
@@ -644,8 +644,8 @@ export function JudgePortalClient({ initialData }: { initialData: JudgeQueueData
                 </form>
               </div>
             ) : (
-              <div className="border-surface-800 bg-surface-900/40 rounded-3xl border p-12 text-center">
-                <p className="text-surface-400 text-sm">
+              <div className="border-border bg-card rounded-3xl border p-12 text-center">
+                <p className="text-muted-foreground text-sm">
                   Select a project submission on the left to grade.
                 </p>
               </div>

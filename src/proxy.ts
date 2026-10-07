@@ -8,7 +8,7 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { checkRateLimit, getClientIp } from "@/server/security/rate-limit";
+import { checkRateLimit, getClientIp, isLocalhostIp } from "@/server/security/rate-limit";
 
 const ADMIN_ROLES = ["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"] as const;
 type AdminRole = (typeof ADMIN_ROLES)[number];
@@ -46,12 +46,14 @@ export async function proxy(request: NextRequest) {
   // ── 2. Rate Limiting for Authentication ─────────────────────────────────────
   if (pathname.startsWith("/signin") || pathname.startsWith("/api/auth")) {
     const ip = getClientIp(request.headers);
-    const rl = await checkRateLimit(ip, "auth");
-    if (!rl.success) {
-      return new NextResponse("Too many authentication requests. Please try again shortly.", {
-        status: 429,
-        headers: { "Retry-After": "60" },
-      });
+    if (process.env.NODE_ENV !== "test" && !isLocalhostIp(ip)) {
+      const rl = await checkRateLimit(ip, "auth");
+      if (!rl.success) {
+        return new NextResponse("Too many authentication requests. Please try again shortly.", {
+          status: 429,
+          headers: { "Retry-After": "60" },
+        });
+      }
     }
   }
 

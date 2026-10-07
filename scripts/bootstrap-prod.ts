@@ -52,7 +52,7 @@ async function main() {
           "I built KailshiansX because I was frustrated by the transactional nature of tech events in India. Too many conferences are vendor trade shows where tickets cost weeks of an engineer's salary, and students are treated as lead-generation databases. KailshiansX is an intentional antidote: developer-owned, deeply technical, radically accessible, and committed to turning participants into community leaders.",
         philosophy:
           "True community cannot be bought through marketing budgets. It is grown with patient consistency, authentic technical respect, and genuine investment in individual potential. We measure success not by registrations or ticket revenues, but by how many attendees build production systems, launch open-source initiatives, or step up to become mentors and organizers.",
-        photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+        photo: null,
         linkedin: "https://linkedin.com/in/aaravgorewal",
         twitter: "https://twitter.com/aaravgorewal",
         milestones: DEFAULT_FOUNDER_MILESTONES,
@@ -94,7 +94,7 @@ async function main() {
     console.log(`ℹ️  Who We Are Content already exists (ID: ${existingWhoWeAre.id})`);
   }
 
-  // 5. Default Certificate Templates (PRD §21)
+  // 5. Default Certificate Templates ()
   const existingTemplates = await db.certificateTemplate.count();
   if (existingTemplates === 0) {
     await db.certificateTemplate.createMany({

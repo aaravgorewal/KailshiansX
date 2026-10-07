@@ -7,7 +7,6 @@ import { Clock, MapPin, Check, ArrowRight, AlertCircle } from "lucide-react";
 import {
   OPENINGS,
   TEAM_AREAS,
-  TeamArea,
   TeamOpening,
   STATUS_CONFIG,
   TEAM_APPLICATION_STATUSES,

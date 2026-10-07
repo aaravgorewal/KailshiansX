@@ -2,7 +2,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "../styles/tokens.css";
-@import "../styles/legacy-aliases.css";
 
 @custom-variant dark (&:is(.dark *));
 

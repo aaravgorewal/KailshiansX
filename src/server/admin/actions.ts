@@ -1,5 +1,5 @@
 // src/server/admin/actions.ts
-// Comprehensive server actions for Admin operations across all PRD §22 modules
+// Comprehensive server actions for Admin operations across all modules
 // Protected by requireAdmin() and logged with writeAudit()
 
 "use server";

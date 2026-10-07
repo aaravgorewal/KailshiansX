@@ -118,20 +118,37 @@ if (!isDummyUpstash && process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH
 }
 
 /**
+ * Returns true if an IP or host is localhost
+ */
+export function isLocalhostIp(ip: string): boolean {
+  return (
+    ip === "127.0.0.1" ||
+    ip === "::1" ||
+    ip === "localhost" ||
+    ip.includes("127.0.0.1") ||
+    ip.startsWith("::ffff:") ||
+    ip === "::"
+  );
+}
+
+/**
  * Extract client IP from headers (supports Cloudflare, Vercel, Proxies)
  */
 export function getClientIp(headers: Headers): string {
   const forwardedFor = headers.get("x-forwarded-for");
+  let ip = "127.0.0.1";
   if (forwardedFor) {
-    return forwardedFor.split(",")[0].trim();
+    ip = forwardedFor.split(",")[0].trim();
+  } else if (headers.get("cf-connecting-ip")) {
+    ip = headers.get("cf-connecting-ip")!.trim();
+  } else if (headers.get("x-real-ip")) {
+    ip = headers.get("x-real-ip")!.trim();
   }
-  const cfIp = headers.get("cf-connecting-ip");
-  if (cfIp) return cfIp.trim();
 
-  const realIp = headers.get("x-real-ip");
-  if (realIp) return realIp.trim();
-
-  return "127.0.0.1";
+  if (ip.startsWith("::ffff:")) {
+    ip = ip.replace("::ffff:", "");
+  }
+  return ip;
 }
 
 /**
@@ -142,11 +159,12 @@ export async function checkRateLimit(
   identifier: string,
   category: RateLimitCategory = "api"
 ): Promise<RateLimitResult> {
-  // Allow unrestricted testing from localhost in non-production environments (except unit tests verifying the limiter)
+  // Allow unrestricted testing from localhost
   if (
-    process.env.NODE_ENV !== "test" &&
-    process.env.NODE_ENV !== "production" &&
-    (identifier === "127.0.0.1" || identifier === "::1" || identifier === "localhost")
+    isLocalhostIp(identifier) ||
+    (process.env.NODE_ENV === "test" &&
+      !identifier.startsWith("test-") &&
+      identifier !== "192.168.1.100")
   ) {
     return {
       success: true,

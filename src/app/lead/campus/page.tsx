@@ -1,5 +1,5 @@
 // src/app/lead/campus/page.tsx
-// Dedicated Campus Lead Dashboard with college & city scope (PRD §11).
+// Dedicated Campus Lead Dashboard with college & city scope ().
 
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";

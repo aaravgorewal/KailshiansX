@@ -1,5 +1,5 @@
 // src/app/api/applications/team/route.ts
-// Public endpoint for submitting team recruitment applications (PRD §14)
+// Public endpoint for submitting team recruitment applications ()
 
 import { NextRequest, NextResponse } from "next/server";
 import { submitTeamApplication } from "@/server/applications/team";

@@ -46,7 +46,7 @@ async function resolveCity(cityName: string, stateName?: string | null) {
 }
 
 /**
- * Path 1: College Collaboration (PRD §13)
+ * Path 1: College Collaboration ()
  * For universities, engineering colleges, faculties, and student councils
  */
 export async function submitCollegeCollaboration(
@@ -148,7 +148,7 @@ export async function submitCollegeCollaboration(
 }
 
 /**
- * Path 2: Community Partner (PRD §13)
+ * Path 2: Community Partner ()
  * For developer meetup groups, tech user groups, and open-source collectives
  */
 export async function submitCommunityCollaboration(
@@ -249,7 +249,7 @@ export async function submitCommunityCollaboration(
 }
 
 /**
- * Path 3: Venue Partner (PRD §13)
+ * Path 3: Venue Partner ()
  * For coworking spaces, technology parks, auditoriums, and startup incubators
  */
 export async function submitVenueCollaboration(
@@ -350,7 +350,7 @@ export async function submitVenueCollaboration(
 }
 
 /**
- * Path 4: Sponsor / Brand Partner (PRD §13)
+ * Path 4: Sponsor / Brand Partner ()
  * For tech firms, cloud platforms, dev tooling brands, and hiring sponsors
  */
 export async function submitSponsorCollaboration(

@@ -1,5 +1,5 @@
 // src/app/api/admin/cms/core-team/route.ts
-// Admin endpoint for managing Core Team members (PRD §15)
+// Admin endpoint for managing Core Team members ()
 
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminForRoute } from "@/server/auth/require-role";

@@ -239,7 +239,7 @@ export function EventsFilterBar({
                 >
                   <span>{city.name}</span>
                   {Boolean(city.count && city.count > 0) && (
-                    <span className="font-mono text-xs opacity-70">({city.count})</span>
+                    <span className="text-muted-foreground font-mono text-xs">({city.count})</span>
                   )}
                 </button>
               );

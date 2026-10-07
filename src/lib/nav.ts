@@ -9,7 +9,7 @@ export type NavItem = {
 };
 
 /**
- * Full nav listing (used in mobile drawer — all 15 PRD §3 routes).
+ * Full nav listing (used in mobile drawer — all 15 routes).
  */
 export const ALL_NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },

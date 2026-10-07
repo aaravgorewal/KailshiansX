@@ -119,7 +119,7 @@ export function EventCountdown({
                 <div className="text-foreground font-mono text-lg leading-none font-semibold tabular-nums">
                   {padCountdownUnit(unit.value)}
                 </div>
-                <div className="text-muted-foreground mt-1 text-[10px] tracking-wider uppercase">
+                <div className="text-muted-foreground mt-1 text-xs tracking-wider uppercase">
                   {unit.label}
                 </div>
               </div>

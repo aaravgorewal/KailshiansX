@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Star, CheckCircle2, Search, Sparkles } from "lucide-react";
+import { Star, CheckCircle2, Search, Zap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 interface SpeakerSummary {
@@ -110,37 +110,35 @@ export function SpeakerNetworkClient({
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] pb-24 text-white">
+    <div className="bg-background text-foreground min-h-screen pb-24">
       {/* Hero Header */}
-      <section className="border-surface-800 via-surface-950 to-surface-950 relative overflow-hidden border-b bg-gradient-to-b from-purple-950/20 py-16 sm:py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(147,51,234,0.15),rgba(255,255,255,0))]" />
-
+      <section className="border-border bg-card relative overflow-hidden border-b py-16 sm:py-24">
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="rounded-full border border-purple-500/30 bg-purple-500/10 px-3.5 py-1 text-xs font-bold tracking-wider text-purple-400 uppercase">
-              Mentor &amp; Speaker Network (PRD §28 &amp; §30)
+            <span className="border-primary/30 bg-primary/10 text-primary rounded-full border px-3.5 py-1 text-xs font-bold tracking-wider uppercase">
+              Mentor &amp; Speaker Network ()
             </span>
 
-            <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="text-foreground mt-4 text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl">
               Connect with Industry Mentors &amp; Speakers
             </h1>
 
-            <p className="text-surface-300 mt-4 text-sm leading-relaxed sm:text-lg">
+            <p className="text-muted-foreground mt-4 text-sm leading-relaxed sm:text-lg">
               Book 1:1 mentorship, invite keynote speakers to your campus chapter, or request
               project code reviews from vetted engineering leaders and tech founders.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link href="/me/mentor">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 font-bold text-white shadow-xl shadow-purple-600/25 hover:from-purple-500 hover:to-pink-500">
-                  <Sparkles className="mr-2 h-4 w-4" />
+                <Button className="bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-sm">
+                  <Zap className="mr-2 h-4 w-4" />
                   Mentor Cockpit
                 </Button>
               </Link>
               <Link href="/me/bookings">
                 <Button
                   variant="outline"
-                  className="border-surface-700 hover:bg-surface-800 font-bold text-white"
+                  className="border-border hover:bg-muted text-foreground font-bold"
                 >
                   My Booked Sessions
                 </Button>
@@ -158,8 +156,8 @@ export function SpeakerNetworkClient({
             onClick={() => setSelectedTopic("ALL")}
             className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
               selectedTopic === "ALL"
-                ? "bg-purple-600 text-white"
-                : "bg-surface-900 border-surface-800 text-surface-400 border hover:text-white"
+                ? "bg-primary text-primary-foreground"
+                : "bg-card border-border text-muted-foreground hover:text-foreground border"
             }`}
           >
             All Topics
@@ -170,8 +168,8 @@ export function SpeakerNetworkClient({
               onClick={() => setSelectedTopic(t)}
               className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
                 selectedTopic === t
-                  ? "bg-purple-600 text-white"
-                  : "bg-surface-900 border-surface-800 text-surface-400 border hover:text-white"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card border-border text-muted-foreground hover:text-foreground border"
               }`}
             >
               {t}
@@ -180,9 +178,9 @@ export function SpeakerNetworkClient({
         </div>
 
         {/* Search & Session Type controls */}
-        <div className="border-surface-800 bg-surface-900/60 mt-4 flex flex-col justify-between gap-4 rounded-3xl border p-5 backdrop-blur-md sm:flex-row sm:items-center">
+        <div className="border-border bg-card mt-4 flex flex-col justify-between gap-4 rounded-3xl border p-5 backdrop-blur-md sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-surface-400 mr-2 text-xs font-bold uppercase">Format:</span>
+            <span className="text-muted-foreground mr-2 text-xs font-bold uppercase">Format:</span>
             {[
               "ALL",
               "1:1 Mentorship",
@@ -195,8 +193,8 @@ export function SpeakerNetworkClient({
                 onClick={() => setSelectedType(fmt)}
                 className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
                   selectedType === fmt
-                    ? "bg-surface-800 border border-purple-500/30 font-bold text-purple-300"
-                    : "text-surface-400 hover:text-surface-200"
+                    ? "bg-muted border-primary/30 text-primary border font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {fmt}
@@ -205,13 +203,13 @@ export function SpeakerNetworkClient({
           </div>
 
           <div className="relative w-full sm:w-72">
-            <Search className="text-surface-500 absolute top-2.5 left-3 h-4 w-4" />
+            <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
             <input
               type="text"
               placeholder="Search by name, role, or company..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-surface-700 bg-surface-950 placeholder-surface-500 w-full rounded-xl border py-2 pr-3 pl-9 text-xs text-white focus:border-purple-500 focus:outline-none"
+              className="border-border bg-background placeholder:text-muted-foreground text-foreground focus:border-primary w-full rounded-xl border py-2 pr-3 pl-9 text-xs focus:outline-none"
             />
           </div>
         </div>
@@ -221,28 +219,28 @@ export function SpeakerNetworkClient({
           {filtered.map((s) => (
             <div
               key={s.id}
-              className="group border-surface-800 bg-surface-900/60 hover:border-surface-700 flex flex-col justify-between rounded-3xl border p-6 backdrop-blur-md transition-all hover:shadow-2xl hover:shadow-purple-950/20"
+              className="group border-border bg-card hover:border-border flex flex-col justify-between rounded-3xl border p-6 backdrop-blur-md transition-all hover:shadow-md"
             >
               <div>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-purple-500/20 bg-purple-500/10 text-lg font-bold text-purple-300">
+                    <div className="border-primary/20 bg-primary/10 text-primary flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border text-lg font-bold">
                       {s.name.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white transition-colors group-hover:text-purple-300">
+                      <h3 className="text-foreground group-hover:text-primary text-lg font-bold transition-colors">
                         {s.name}
                       </h3>
-                      <p className="text-surface-400 text-xs">{s.designation}</p>
-                      <p className="text-surface-500 text-xs">{s.organisation}</p>
+                      <p className="text-muted-foreground text-xs">{s.designation}</p>
+                      <p className="text-muted-foreground text-xs">{s.organisation}</p>
                     </div>
                   </div>
 
                   <span
-                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
                       s.availabilityStatus === "AVAILABLE"
-                        ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
-                        : "border border-amber-500/20 bg-amber-500/10 text-amber-400"
+                        ? "border-success/20 bg-success/10 text-success border"
+                        : "border-border bg-primary/10 text-primary border"
                     }`}
                   >
                     {s.availabilityStatus}
@@ -250,7 +248,7 @@ export function SpeakerNetworkClient({
                 </div>
 
                 {s.bio && (
-                  <p className="text-surface-400 mt-4 line-clamp-3 text-xs leading-relaxed">
+                  <p className="text-muted-foreground mt-4 line-clamp-3 text-xs leading-relaxed">
                     {s.bio}
                   </p>
                 )}
@@ -260,29 +258,29 @@ export function SpeakerNetworkClient({
                   {s.topics.slice(0, 3).map((topic) => (
                     <span
                       key={topic}
-                      className="border-surface-800 bg-surface-950 text-surface-300 rounded-lg border px-2 py-0.5 text-[10px] font-medium"
+                      className="border-border bg-background text-muted-foreground rounded-lg border px-2 py-0.5 text-xs font-medium"
                     >
                       {topic}
                     </span>
                   ))}
                   {s.topics.length > 3 && (
-                    <span className="bg-surface-800 text-surface-500 rounded-lg px-1.5 py-0.5 text-[10px]">
+                    <span className="bg-muted text-muted-foreground rounded-lg px-1.5 py-0.5 text-xs">
                       +{s.topics.length - 3}
                     </span>
                   )}
                 </div>
 
                 {/* Metrics */}
-                <div className="border-surface-800/80 text-surface-400 mt-6 flex items-center justify-between border-t pt-4 text-xs">
-                  <div className="flex items-center gap-1 font-bold text-amber-400">
-                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                <div className="border-border text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 text-xs">
+                  <div className="text-primary flex items-center gap-1 font-bold">
+                    <Star className="fill-warning text-warning h-3.5 w-3.5" />
                     <span>{s.rating.toFixed(1)}</span>
-                    <span className="text-surface-500 font-normal">
+                    <span className="text-muted-foreground font-normal">
                       ({s.totalSessionsConducted} sessions)
                     </span>
                   </div>
 
-                  <span className="text-surface-400 text-[11px]">
+                  <span className="text-muted-foreground text-xs">
                     {s.weeklyAvailabilityHours}h / week
                   </span>
                 </div>
@@ -293,7 +291,7 @@ export function SpeakerNetworkClient({
                 <Link href={`/network/speakers/${s.slug}`} className="flex-1">
                   <Button
                     variant="outline"
-                    className="border-surface-700 hover:bg-surface-800 w-full text-xs font-bold text-white"
+                    className="border-border hover:bg-muted text-foreground w-full text-xs font-bold"
                   >
                     Profile
                   </Button>
@@ -301,7 +299,7 @@ export function SpeakerNetworkClient({
                 <Button
                   id={`btn-book-${s.slug}`}
                   onClick={() => handleOpenBooking(s)}
-                  className="flex-1 bg-purple-600 text-xs font-bold text-white hover:bg-purple-500"
+                  className="bg-primary text-primary-foreground hover:bg-primary-hover flex-1 text-xs font-bold"
                 >
                   Book Session
                 </Button>
@@ -311,7 +309,7 @@ export function SpeakerNetworkClient({
         </div>
 
         {filtered.length === 0 && (
-          <div className="border-surface-800 text-surface-400 rounded-3xl border border-dashed py-16 text-center text-sm">
+          <div className="border-border text-muted-foreground rounded-3xl border border-dashed py-16 text-center text-sm">
             No mentors found matching your filters.
           </div>
         )}
@@ -320,27 +318,27 @@ export function SpeakerNetworkClient({
       {/* BOOKING MODAL */}
       {selectedSpeaker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-          <div className="border-surface-800 bg-surface-950 w-full max-w-lg rounded-3xl border p-6 shadow-2xl">
+          <div className="border-border bg-background w-full max-w-lg rounded-3xl border p-6 shadow-2xl">
             {bookingSuccess ? (
               <div className="space-y-4 py-8 text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                <div className="border-success/30 bg-success/10 text-success mx-auto flex h-14 w-14 items-center justify-center rounded-full border">
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Booking Request Enqueued!</h3>
-                <p className="text-surface-400 mx-auto max-w-sm text-xs">
+                <h3 className="text-foreground text-xl font-bold">Booking Request Enqueued!</h3>
+                <p className="text-muted-foreground mx-auto max-w-sm text-xs">
                   Your request has been routed to <strong>{selectedSpeaker.name}</strong>. You will
                   receive a calendar invite and Google Meet link once confirmed.
                 </p>
                 <div className="flex items-center justify-center gap-3 pt-4">
                   <Link href="/me/bookings">
-                    <Button className="bg-purple-600 text-xs font-bold text-white hover:bg-purple-500">
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary-hover text-xs font-bold">
                       View My Bookings
                     </Button>
                   </Link>
                   <Button
                     variant="outline"
                     onClick={() => setSelectedSpeaker(null)}
-                    className="border-surface-700 text-xs text-white"
+                    className="border-border text-foreground text-xs"
                   >
                     Close
                   </Button>
@@ -348,25 +346,25 @@ export function SpeakerNetworkClient({
               </div>
             ) : (
               <>
-                <div className="border-surface-800 flex items-center gap-3 border-b pb-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 font-bold text-purple-300">
+                <div className="border-border flex items-center gap-3 border-b pb-4">
+                  <div className="border-primary/20 bg-primary/10 text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border font-bold">
                     {selectedSpeaker.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">
+                    <h3 className="text-foreground text-base font-bold">
                       Book Session with {selectedSpeaker.name}
                     </h3>
-                    <p className="text-surface-400 text-xs">{selectedSpeaker.designation}</p>
+                    <p className="text-muted-foreground text-xs">{selectedSpeaker.designation}</p>
                   </div>
                 </div>
 
                 <form onSubmit={handleBookingSubmit} className="mt-4 space-y-4 text-left">
                   <div>
-                    <label className="text-surface-300 text-xs font-bold">Session Type</label>
+                    <label className="text-muted-foreground text-xs font-bold">Session Type</label>
                     <select
                       value={bookingSessionType}
                       onChange={(e) => setBookingSessionType(e.target.value)}
-                      className="border-surface-700 bg-surface-900 mt-1 w-full rounded-xl border px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
+                      className="border-border bg-background text-foreground focus:border-primary mt-1 w-full rounded-xl border px-3 py-2 text-xs focus:outline-none"
                     >
                       {selectedSpeaker.sessionTypes.map((st) => (
                         <option key={st} value={st}>
@@ -381,7 +379,7 @@ export function SpeakerNetworkClient({
                   </div>
 
                   <div>
-                    <label className="text-surface-300 text-xs font-bold">
+                    <label className="text-muted-foreground text-xs font-bold">
                       Topic of Discussion
                     </label>
                     <input
@@ -390,12 +388,12 @@ export function SpeakerNetworkClient({
                       placeholder="e.g. Distributed consensus or architecture critique"
                       value={bookingTopic}
                       onChange={(e) => setBookingTopic(e.target.value)}
-                      className="border-surface-700 bg-surface-900 mt-1 w-full rounded-xl border px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
+                      className="border-border bg-background text-foreground focus:border-primary mt-1 w-full rounded-xl border px-3 py-2 text-xs focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="text-surface-300 text-xs font-bold">
+                    <label className="text-muted-foreground text-xs font-bold">
                       Preferred Date &amp; Time (IST)
                     </label>
                     <input
@@ -403,16 +401,16 @@ export function SpeakerNetworkClient({
                       required
                       value={bookingDate}
                       onChange={(e) => setBookingDate(e.target.value)}
-                      className="border-surface-700 bg-surface-900 mt-1 w-full rounded-xl border px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
+                      className="border-border bg-background text-foreground focus:border-primary mt-1 w-full rounded-xl border px-3 py-2 text-xs focus:outline-none"
                     />
-                    <p className="text-surface-500 mt-1 text-[11px]">
+                    <p className="text-muted-foreground mt-1 text-xs">
                       Mentor&apos;s preferred time:{" "}
                       {selectedSpeaker.preferredCadence || "Weekdays & Weekends"}
                     </p>
                   </div>
 
                   <div>
-                    <label className="text-surface-300 text-xs font-bold">
+                    <label className="text-muted-foreground text-xs font-bold">
                       Session Goals &amp; Questions
                     </label>
                     <textarea
@@ -420,23 +418,23 @@ export function SpeakerNetworkClient({
                       placeholder="Provide specific questions, repo links, or slides to make the session highly productive..."
                       value={bookingDesc}
                       onChange={(e) => setBookingDesc(e.target.value)}
-                      className="border-surface-700 bg-surface-900 mt-1 w-full rounded-xl border px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
+                      className="border-border bg-background text-foreground focus:border-primary mt-1 w-full rounded-xl border px-3 py-2 text-xs focus:outline-none"
                     />
                   </div>
 
-                  <div className="border-surface-800 flex items-center justify-end gap-3 border-t pt-3">
+                  <div className="border-border flex items-center justify-end gap-3 border-t pt-3">
                     <Button
                       type="button"
                       variant="ghost"
                       onClick={() => setSelectedSpeaker(null)}
-                      className="text-surface-400 text-xs hover:text-white"
+                      className="text-muted-foreground hover:text-foreground text-xs"
                     >
                       Cancel
                     </Button>
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="bg-purple-600 text-xs font-bold text-white hover:bg-purple-500"
+                      className="bg-primary text-primary-foreground hover:bg-primary-hover text-xs font-bold"
                     >
                       {isSubmitting ? "Submitting..." : "Submit Booking Request"}
                     </Button>

@@ -40,7 +40,7 @@ export default async function AdminHackathonsIndexPage() {
     <div className="mx-auto max-w-7xl space-y-8 p-6 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="flex items-center gap-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
+          <h1 className="text-foreground flex items-center gap-3 text-2xl font-black tracking-tight sm:text-3xl">
             <Trophy className="text-primary h-7 w-7" />
             Hackathons Engine Control
           </h1>
@@ -79,7 +79,7 @@ export default async function AdminHackathonsIndexPage() {
                 </div>
 
                 <div>
-                  <h2 className="text-xl font-black text-white">{h.title}</h2>
+                  <h2 className="text-foreground text-xl font-black">{h.title}</h2>
                   <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs">
                     <Calendar className="h-3.5 w-3.5" />
                     <span>
@@ -98,7 +98,7 @@ export default async function AdminHackathonsIndexPage() {
                   <div className="border-border grid grid-cols-3 gap-2 border-y py-3 text-center">
                     <div>
                       <div className="text-muted-foreground text-xs font-bold uppercase">Teams</div>
-                      <div className="mt-0.5 font-mono text-base font-black text-white">
+                      <div className="text-foreground mt-0.5 font-mono text-base font-black">
                         {detail._count.teams}
                       </div>
                     </div>
@@ -124,7 +124,7 @@ export default async function AdminHackathonsIndexPage() {
 
               <div className="space-y-2 pt-6">
                 <Button
-                  className="bg-primary hover:bg-primary-hover w-full font-bold text-white"
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground w-full font-bold"
                   asChild
                 >
                   <Link href={`/admin/hackathons/${detail?.id || h.id}`}>

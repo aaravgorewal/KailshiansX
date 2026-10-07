@@ -3,6 +3,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Mail } from "lucide-react";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   title: "Check your email | KailshiansX",
@@ -10,24 +12,31 @@ export const metadata: Metadata = {
 
 export default function VerifyRequestPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--bg-page)] px-4">
-      <div className="card-glow w-full max-w-sm space-y-4 rounded-2xl p-10 text-center">
-        <div className="bg-brand-500/10 mx-auto flex h-14 w-14 items-center justify-center rounded-full">
-          <Mail className="text-brand-400" size={28} />
+    <div className="bg-background flex min-h-screen items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-sm space-y-5 p-8 text-center">
+        <div className="bg-muted text-foreground mx-auto flex h-12 w-12 items-center justify-center rounded-full">
+          <Mail className="h-6 w-6" />
         </div>
-        <h1 className="text-xl font-bold text-[var(--text-primary)]">Check your inbox</h1>
-        <p className="text-sm leading-relaxed text-[var(--text-muted)]">
-          A sign-in link has been sent to your email address. Click the link to complete sign-in —
-          it expires in 10 minutes.
-        </p>
-        <p className="text-xs text-[var(--text-muted)]">
+        <div>
+          <h1 className="text-foreground text-xl font-semibold">Check your inbox</h1>
+          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+            A sign-in link has been sent to your email address. Click the link to complete sign-in —
+            it expires in 10 minutes.
+          </p>
+        </div>
+        <p className="text-muted-foreground text-xs">
           Didn&apos;t receive it? Check your spam folder or{" "}
-          <Link href="/signin" className="text-brand-400 hover:underline">
+          <Link href="/signin" className="text-foreground underline underline-offset-2">
             try again
           </Link>
           .
         </p>
-      </div>
+        <div className="pt-2">
+          <Button asChild variant="secondary" className="w-full">
+            <Link href="/">Back to Home</Link>
+          </Button>
+        </div>
+      </Card>
     </div>
   );
 }

@@ -212,7 +212,7 @@ test.describe("Global Shell, Fonts, Navbar & Footer", () => {
       // Ensure no PlaceholderPage text
       const pageText = await page.textContent("body");
       expect(pageText).not.toContain("Coming Soon");
-      expect(pageText).not.toContain("PRD §");
+      expect(pageText).not.toContain("");
     }
   });
 });

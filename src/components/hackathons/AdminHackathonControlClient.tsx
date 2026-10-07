@@ -10,7 +10,7 @@ import {
   CheckCircle2,
   AlertCircle,
   ExternalLink,
-  Sparkles,
+  Zap,
   ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -311,22 +311,22 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
         <div>
           <Link
             href="/admin/events"
-            className="text-surface-400 mb-2 inline-flex items-center gap-1.5 text-xs transition-colors hover:text-white"
+            className="text-muted-foreground hover:text-foreground mb-2 inline-flex items-center gap-1.5 text-xs transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to Events
           </Link>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+            <h1 className="text-foreground text-2xl font-black tracking-tight sm:text-3xl">
               {data.event.title} &bull; Control Room
             </h1>
             {data.detail.isResultsPublished ? (
-              <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-xs font-bold text-emerald-400">
+              <span className="border-success/30 bg-success/10 text-success flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs font-bold">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 Results Published
               </span>
             ) : (
-              <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 font-mono text-xs font-bold text-amber-400">
+              <span className="border-border bg-primary/10 text-primary rounded-full border px-3 py-1 font-mono text-xs font-bold">
                 Judging In Progress
               </span>
             )}
@@ -343,7 +343,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
 
           <Button variant="outline" size="sm" asChild>
             <Link href={`/events/${data.event.slug}/judge`}>
-              <Gavel className="mr-1.5 h-3.5 w-3.5 text-purple-400" />
+              <Gavel className="text-primary mr-1.5 h-3.5 w-3.5" />
               Judge Cockpit
             </Link>
           </Button>
@@ -351,9 +351,9 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
           <Button
             onClick={handlePublishResults}
             disabled={publishing}
-            className="bg-brand-500 hover:bg-brand-600 font-bold text-white"
+            className="bg-primary hover:bg-primary-hover text-primary-foreground font-bold"
           >
-            <Sparkles className="mr-2 h-4 w-4" />
+            <Zap className="mr-2 h-4 w-4" />
             {publishing
               ? "Publishing..."
               : data.detail.isResultsPublished
@@ -368,21 +368,21 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
         <div
           className={`flex items-center justify-between rounded-2xl p-4 text-xs font-semibold transition-all sm:text-sm ${
             toast.type === "success"
-              ? "border border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
-              : "border border-rose-500/30 bg-rose-500/10 text-rose-300"
+              ? "border-success/30 bg-success/10 text-success border"
+              : "border-destructive/30 bg-destructive/10 text-destructive border"
           }`}
         >
           <div className="flex items-center gap-2.5">
             {toast.type === "success" ? (
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+              <CheckCircle2 className="text-success h-4 w-4 shrink-0" />
             ) : (
-              <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+              <AlertCircle className="text-destructive h-4 w-4 shrink-0" />
             )}
             <span>{toast.text}</span>
           </div>
           <button
             onClick={() => setToast(null)}
-            className="text-surface-400 px-2 py-1 text-xs hover:text-white"
+            className="text-muted-foreground hover:text-foreground px-2 py-1 text-xs"
           >
             Dismiss
           </button>
@@ -391,38 +391,40 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5 backdrop-blur-xl">
-          <div className="text-surface-400 text-xs font-bold uppercase">Total Teams</div>
-          <div className="mt-1 font-mono text-2xl font-black text-white">{data.teams.length}</div>
+        <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-xl">
+          <div className="text-muted-foreground text-xs font-bold uppercase">Total Teams</div>
+          <div className="text-foreground mt-1 font-mono text-2xl font-black">
+            {data.teams.length}
+          </div>
         </div>
-        <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5 backdrop-blur-xl">
-          <div className="text-surface-400 text-xs font-bold uppercase">Submissions</div>
-          <div className="text-brand-400 mt-1 font-mono text-2xl font-black">
+        <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-xl">
+          <div className="text-muted-foreground text-xs font-bold uppercase">Submissions</div>
+          <div className="text-primary mt-1 font-mono text-2xl font-black">
             {data.submissions.length}
           </div>
         </div>
-        <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5 backdrop-blur-xl">
-          <div className="text-surface-400 text-xs font-bold uppercase">Active Judges</div>
-          <div className="mt-1 font-mono text-2xl font-black text-purple-400">
+        <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-xl">
+          <div className="text-muted-foreground text-xs font-bold uppercase">Active Judges</div>
+          <div className="text-primary mt-1 font-mono text-2xl font-black">
             {data.judges.length}
           </div>
         </div>
-        <div className="border-surface-800 bg-surface-900/60 rounded-2xl border p-5 backdrop-blur-xl">
-          <div className="text-surface-400 text-xs font-bold uppercase">Prize Pool</div>
-          <div className="mt-1 font-mono text-2xl font-black text-emerald-400">
+        <div className="border-border bg-card rounded-2xl border p-5 backdrop-blur-xl">
+          <div className="text-muted-foreground text-xs font-bold uppercase">Prize Pool</div>
+          <div className="text-success mt-1 font-mono text-2xl font-black">
             ₹{data.prizes.reduce((acc, p) => acc + p.cashAmount, 0).toLocaleString("en-IN")}
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="border-surface-800 flex items-center gap-2 border-b pb-2">
+      <div className="border-border flex items-center gap-2 border-b pb-2">
         <button
           onClick={() => setActiveTab("SUBMISSIONS")}
           className={`rounded-xl px-4 py-2 text-xs font-bold transition-all sm:text-sm ${
             activeTab === "SUBMISSIONS"
-              ? "bg-surface-800 text-white"
-              : "text-surface-400 hover:text-surface-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Submissions &amp; Scoring Matrix ({data.submissions.length})
@@ -431,8 +433,8 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
           onClick={() => setActiveTab("PRIZES")}
           className={`rounded-xl px-4 py-2 text-xs font-bold transition-all sm:text-sm ${
             activeTab === "PRIZES"
-              ? "bg-surface-800 text-white"
-              : "text-surface-400 hover:text-surface-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Prize Disbursement ({data.prizes.length})
@@ -441,8 +443,8 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
           onClick={() => setActiveTab("JUDGES")}
           className={`rounded-xl px-4 py-2 text-xs font-bold transition-all sm:text-sm ${
             activeTab === "JUDGES"
-              ? "bg-surface-800 text-white"
-              : "text-surface-400 hover:text-surface-200"
+              ? "bg-muted text-foreground"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Judge Roster ({data.judges.length})
@@ -454,8 +456,10 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
         <div className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-lg font-bold text-white">Project Submissions &amp; Standings</h2>
-              <p className="text-surface-400 text-xs">
+              <h2 className="text-foreground text-lg font-bold">
+                Project Submissions &amp; Standings
+              </h2>
+              <p className="text-muted-foreground text-xs">
                 Assign winner tiers and official ranks before triggering public results publishing.
               </p>
             </div>
@@ -467,7 +471,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                 onClick={() => handleIssueCertificates("ALL")}
                 disabled={issuingCerts}
               >
-                <Award className="text-brand-400 mr-1.5 h-3.5 w-3.5" />
+                <Award className="text-primary mr-1.5 h-3.5 w-3.5" />
                 Issue All Certificates
               </Button>
               <Button
@@ -476,15 +480,15 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                 onClick={() => handleIssueCertificates("WINNERS")}
                 disabled={issuingCerts}
               >
-                <Trophy className="mr-1.5 h-3.5 w-3.5 text-amber-400" />
+                <Trophy className="text-primary mr-1.5 h-3.5 w-3.5" />
                 Issue Winner Certificates
               </Button>
             </div>
           </div>
 
-          <div className="border-surface-800 bg-surface-900/60 overflow-x-auto rounded-2xl border">
+          <div className="border-border bg-card overflow-x-auto rounded-2xl border">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-surface-850/80 text-surface-400 border-surface-800 border-b font-mono text-[11px] uppercase">
+              <thead className="bg-muted text-muted-foreground border-border border-b font-mono text-xs uppercase">
                 <tr>
                   <th className="px-4 py-3">Rank / Status</th>
                   <th className="px-4 py-3">Project &amp; Team</th>
@@ -495,7 +499,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                   <th className="px-4 py-3 text-right">Award Tier</th>
                 </tr>
               </thead>
-              <tbody className="divide-surface-800 divide-y">
+              <tbody className="divide-border divide-y">
                 {data.submissions.map((sub) => {
                   const assignment = rankAssignments[sub.id] || {
                     rank: 0,
@@ -504,7 +508,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                   };
 
                   return (
-                    <tr key={sub.id} className="hover:bg-surface-850/40 transition-colors">
+                    <tr key={sub.id} className="hover:bg-muted transition-colors">
                       <td className="px-4 py-3.5 font-mono font-bold">
                         <div className="flex items-center gap-2">
                           <input
@@ -522,21 +526,21 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                                 },
                               }))
                             }
-                            className="bg-surface-800 border-surface-700 w-12 rounded-lg border p-1 text-center font-mono text-xs text-white"
+                            className="bg-muted border-border text-foreground w-12 rounded-lg border p-1 text-center font-mono text-xs"
                           />
                           {assignment.isWinner && (
-                            <Trophy className="h-4 w-4 shrink-0 text-amber-400" />
+                            <Trophy className="text-primary h-4 w-4 shrink-0" />
                           )}
                         </div>
                       </td>
                       <td className="px-4 py-3.5">
-                        <div className="font-bold text-white">{sub.title}</div>
-                        <div className="text-surface-400 text-xs">
-                          Squad: <strong className="text-surface-200">{sub.teamName}</strong>
+                        <div className="text-foreground font-bold">{sub.title}</div>
+                        <div className="text-muted-foreground text-xs">
+                          Squad: <strong className="text-foreground">{sub.teamName}</strong>
                         </div>
                       </td>
                       <td className="px-4 py-3.5">
-                        <span className="text-surface-300 bg-surface-800 rounded px-2 py-0.5 text-[10px] font-bold uppercase">
+                        <span className="text-muted-foreground bg-muted rounded px-2 py-0.5 text-xs font-bold uppercase">
                           {sub.track}
                         </span>
                       </td>
@@ -546,7 +550,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                             href={sub.repoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-surface-400 hover:text-white"
+                            className="text-muted-foreground hover:text-foreground"
                             title="GitHub"
                           >
                             <GithubIcon className="h-4 w-4" />
@@ -556,7 +560,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                               href={sub.demoUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-brand-400 hover:text-brand-300"
+                              className="text-primary hover:text-primary"
                               title="Demo"
                             >
                               <ExternalLink className="h-4 w-4" />
@@ -564,10 +568,10 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                           )}
                         </div>
                       </td>
-                      <td className="text-surface-300 px-4 py-3.5 text-center font-mono text-xs">
+                      <td className="text-muted-foreground px-4 py-3.5 text-center font-mono text-xs">
                         {sub.evaluationsCount} judges
                       </td>
-                      <td className="px-4 py-3.5 text-right font-mono font-bold text-emerald-400">
+                      <td className="text-success px-4 py-3.5 text-right font-mono font-bold">
                         {sub.normalizedScore ? sub.normalizedScore.toFixed(1) : "—"}
                       </td>
                       <td className="px-4 py-3.5 text-right">
@@ -583,7 +587,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                               },
                             }))
                           }
-                          className="bg-surface-800 border-surface-700 text-surface-200 rounded-lg border px-2 py-1 text-xs"
+                          className="bg-muted border-border text-foreground rounded-lg border px-2 py-1 text-xs"
                         >
                           <option value="PARTICIPANT">Participant</option>
                           <option value="GRAND_PRIZE">🏆 Grand Prize (Winner)</option>
@@ -606,15 +610,15 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
       {activeTab === "PRIZES" && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-lg font-bold text-white">Prize Disbursement &amp; Payouts</h2>
-            <p className="text-surface-400 text-xs">
+            <h2 className="text-foreground text-lg font-bold">Prize Disbursement &amp; Payouts</h2>
+            <p className="text-muted-foreground text-xs">
               Track cash bounty transfers, transaction references, and disbursement statuses.
             </p>
           </div>
 
-          <div className="border-surface-800 bg-surface-900/60 overflow-x-auto rounded-2xl border">
+          <div className="border-border bg-card overflow-x-auto rounded-2xl border">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-surface-850/80 text-surface-400 border-surface-800 border-b font-mono text-[11px] uppercase">
+              <thead className="bg-muted text-muted-foreground border-border border-b font-mono text-xs uppercase">
                 <tr>
                   <th className="px-4 py-3">Prize Title</th>
                   <th className="px-4 py-3">Track</th>
@@ -625,42 +629,44 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-surface-800 divide-y">
+              <tbody className="divide-border divide-y">
                 {data.prizes.map((prize) => {
                   const statusColors = {
-                    PENDING: "bg-surface-800 text-surface-300",
-                    IN_REVIEW: "bg-amber-500/10 border-amber-500/20 text-amber-400",
-                    PROCESSING: "bg-blue-500/10 border-blue-500/20 text-blue-400",
-                    DISBURSED: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
+                    PENDING: "bg-muted text-muted-foreground",
+                    IN_REVIEW: "bg-primary/10 border-border text-primary",
+                    PROCESSING: "bg-primary/10 border-primary/20 text-primary",
+                    DISBURSED: "bg-success/10 border-success/20 text-success",
                   };
 
                   return (
-                    <tr key={prize.id} className="hover:bg-surface-850/40 transition-colors">
-                      <td className="flex items-center gap-2 px-4 py-3.5 font-bold text-white">
-                        <DollarSign className="h-4 w-4 text-emerald-400" />
+                    <tr key={prize.id} className="hover:bg-muted transition-colors">
+                      <td className="text-foreground flex items-center gap-2 px-4 py-3.5 font-bold">
+                        <DollarSign className="text-success h-4 w-4" />
                         {prize.title}
                       </td>
-                      <td className="text-surface-400 px-4 py-3.5">{prize.track || "Overall"}</td>
-                      <td className="px-4 py-3.5 font-mono font-bold text-emerald-400">
+                      <td className="text-muted-foreground px-4 py-3.5">
+                        {prize.track || "Overall"}
+                      </td>
+                      <td className="text-success px-4 py-3.5 font-mono font-bold">
                         ₹{prize.cashAmount.toLocaleString("en-IN")}
                       </td>
                       <td className="px-4 py-3.5">
                         {prize.winningTeam ? (
-                          <strong className="text-white">{prize.winningTeam.name}</strong>
+                          <strong className="text-foreground">{prize.winningTeam.name}</strong>
                         ) : (
-                          <span className="text-surface-500 italic">Unassigned</span>
+                          <span className="text-muted-foreground italic">Unassigned</span>
                         )}
                       </td>
                       <td className="px-4 py-3.5">
                         <span
-                          className={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase ${
+                          className={`rounded-full border px-2 py-0.5 font-mono text-xs font-bold uppercase ${
                             statusColors[prize.disbursementStatus]
                           }`}
                         >
                           {prize.disbursementStatus}
                         </span>
                       </td>
-                      <td className="text-surface-300 px-4 py-3.5 font-mono text-xs">
+                      <td className="text-muted-foreground px-4 py-3.5 font-mono text-xs">
                         {prize.transactionRef || "—"}
                       </td>
                       <td className="px-4 py-3.5 text-right">
@@ -690,15 +696,17 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold text-white">Grand Jury &amp; Official Judges</h2>
-              <p className="text-surface-400 text-xs">
+              <h2 className="text-foreground text-lg font-bold">
+                Grand Jury &amp; Official Judges
+              </h2>
+              <p className="text-muted-foreground text-xs">
                 Jury members who have grading privileges for this hackathon.
               </p>
             </div>
 
             <Button
               onClick={() => setAddJudgeOpen(true)}
-              className="bg-purple-600 font-bold text-white hover:bg-purple-500"
+              className="bg-primary text-foreground hover:bg-primary font-bold"
               size="sm"
             >
               <Gavel className="mr-1.5 h-3.5 w-3.5" />
@@ -710,25 +718,25 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
             {data.judges.map((judge) => (
               <div
                 key={judge.id}
-                className="border-surface-800 bg-surface-900/60 space-y-3 rounded-2xl border p-5 backdrop-blur-xl"
+                className="border-border bg-card space-y-3 rounded-2xl border p-5 backdrop-blur-xl"
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 font-bold text-purple-400">
+                  <div className="border-primary/20 bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-xl border font-bold">
                     <Gavel className="h-5 w-5" />
                   </div>
-                  <span className="bg-surface-800 text-surface-300 rounded px-2 py-0.5 font-mono text-[10px] uppercase">
+                  <span className="bg-muted text-muted-foreground rounded px-2 py-0.5 font-mono text-xs uppercase">
                     Track: {judge.track || "ALL"}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="text-base font-bold text-white">
+                  <h3 className="text-foreground text-base font-bold">
                     {judge.user.name || "Anonymous Judge"}
                   </h3>
-                  <p className="text-surface-400 text-xs">{judge.user.email}</p>
+                  <p className="text-muted-foreground text-xs">{judge.user.email}</p>
                 </div>
 
-                <div className="border-surface-800 text-surface-400 border-t pt-2 text-xs">
+                <div className="border-border text-muted-foreground border-t pt-2 text-xs">
                   <span>{judge.title || "Grand Jury Member"}</span>
                   {judge.company && ` @ ${judge.company}`}
                 </div>
@@ -741,17 +749,17 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
       {/* Prize Edit Modal */}
       {editingPrize && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-5 rounded-3xl border p-6">
+          <div className="bg-card border-border w-full max-w-md space-y-5 rounded-3xl border p-6">
             <div>
-              <h3 className="text-lg font-bold text-white">Update Prize Disbursement</h3>
-              <p className="text-surface-400 mt-1 text-xs">
+              <h3 className="text-foreground text-lg font-bold">Update Prize Disbursement</h3>
+              <p className="text-muted-foreground mt-1 text-xs">
                 {editingPrize.title} &bull; ₹{editingPrize.cashAmount.toLocaleString("en-IN")}
               </p>
             </div>
 
             <form onSubmit={handleUpdatePrize} className="space-y-4">
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-bold uppercase">
+                <label className="text-muted-foreground mb-1 block text-xs font-bold uppercase">
                   Disbursement Status
                 </label>
                 <select
@@ -761,7 +769,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                       e.target.value as "PENDING" | "IN_REVIEW" | "PROCESSING" | "DISBURSED"
                     )
                   }
-                  className="bg-surface-800 border-surface-700 w-full rounded-xl border p-2.5 text-xs text-white"
+                  className="bg-muted border-border text-foreground w-full rounded-xl border p-2.5 text-xs"
                 >
                   <option value="PENDING">PENDING</option>
                   <option value="IN_REVIEW">IN_REVIEW</option>
@@ -771,7 +779,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-bold uppercase">
+                <label className="text-muted-foreground mb-1 block text-xs font-bold uppercase">
                   Transaction Reference (UPI / Bank Txn ID)
                 </label>
                 <input
@@ -779,7 +787,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                   value={txnRef}
                   onChange={(e) => setTxnRef(e.target.value)}
                   placeholder="e.g. UPI-TXN-90283401928"
-                  className="bg-surface-800 border-surface-700 w-full rounded-xl border p-2.5 text-xs text-white"
+                  className="bg-muted border-border text-foreground w-full rounded-xl border p-2.5 text-xs"
                 />
               </div>
 
@@ -796,7 +804,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                   type="submit"
                   size="sm"
                   disabled={savingPrize}
-                  className="bg-emerald-600 font-bold text-white hover:bg-emerald-500"
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground font-bold"
                 >
                   {savingPrize ? "Saving..." : "Save Disbursement"}
                 </Button>
@@ -809,17 +817,17 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
       {/* Add Judge Modal */}
       {addJudgeOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="bg-surface-900 border-surface-800 w-full max-w-md space-y-5 rounded-3xl border p-6">
+          <div className="bg-card border-border w-full max-w-md space-y-5 rounded-3xl border p-6">
             <div>
-              <h3 className="text-lg font-bold text-white">Assign Official Judge</h3>
-              <p className="text-surface-400 mt-1 text-xs">
+              <h3 className="text-foreground text-lg font-bold">Assign Official Judge</h3>
+              <p className="text-muted-foreground mt-1 text-xs">
                 Grant rubric evaluation privileges to an existing user account.
               </p>
             </div>
 
             <form onSubmit={handleAddJudge} className="space-y-4">
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-bold uppercase">
+                <label className="text-muted-foreground mb-1 block text-xs font-bold uppercase">
                   User ID (CUID)
                 </label>
                 <input
@@ -828,13 +836,13 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                   value={judgeForm.userId}
                   onChange={(e) => setJudgeForm({ ...judgeForm, userId: e.target.value })}
                   placeholder="e.g. cmur... or user ID"
-                  className="bg-surface-800 border-surface-700 w-full rounded-xl border p-2.5 text-xs text-white"
+                  className="bg-muted border-border text-foreground w-full rounded-xl border p-2.5 text-xs"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-bold uppercase">
+                  <label className="text-muted-foreground mb-1 block text-xs font-bold uppercase">
                     Title / Role
                   </label>
                   <input
@@ -842,11 +850,11 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                     value={judgeForm.title}
                     onChange={(e) => setJudgeForm({ ...judgeForm, title: e.target.value })}
                     placeholder="e.g. Principal Architect"
-                    className="bg-surface-800 border-surface-700 w-full rounded-xl border p-2.5 text-xs text-white"
+                    className="bg-muted border-border text-foreground w-full rounded-xl border p-2.5 text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-surface-300 mb-1 block text-xs font-bold uppercase">
+                  <label className="text-muted-foreground mb-1 block text-xs font-bold uppercase">
                     Company
                   </label>
                   <input
@@ -854,19 +862,19 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                     value={judgeForm.company}
                     onChange={(e) => setJudgeForm({ ...judgeForm, company: e.target.value })}
                     placeholder="e.g. Google Cloud"
-                    className="bg-surface-800 border-surface-700 w-full rounded-xl border p-2.5 text-xs text-white"
+                    className="bg-muted border-border text-foreground w-full rounded-xl border p-2.5 text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-surface-300 mb-1 block text-xs font-bold uppercase">
+                <label className="text-muted-foreground mb-1 block text-xs font-bold uppercase">
                   Assigned Track
                 </label>
                 <select
                   value={judgeForm.track}
                   onChange={(e) => setJudgeForm({ ...judgeForm, track: e.target.value })}
-                  className="bg-surface-800 border-surface-700 w-full rounded-xl border p-2.5 text-xs text-white"
+                  className="bg-muted border-border text-foreground w-full rounded-xl border p-2.5 text-xs"
                 >
                   <option value="ALL">All Tracks (Grand Jury)</option>
                   <option value="Autonomous AI Agents">Autonomous AI Agents</option>
@@ -888,7 +896,7 @@ export function AdminHackathonControlClient({ initialData }: { initialData: Admi
                   type="submit"
                   size="sm"
                   disabled={savingJudge}
-                  className="bg-purple-600 font-bold text-white hover:bg-purple-500"
+                  className="bg-primary text-foreground hover:bg-primary font-bold"
                 >
                   {savingJudge ? "Assigning..." : "Assign Judge"}
                 </Button>
