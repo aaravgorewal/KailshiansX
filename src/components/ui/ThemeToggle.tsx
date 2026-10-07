@@ -27,10 +27,16 @@ export function ThemeToggle() {
     }
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
-      // Focus currently selected item or first item
+      // Focus currently selected item or first item only if focus is still on trigger
       const idx = theme === "light" ? 0 : theme === "dark" ? 1 : 2;
       requestAnimationFrame(() => {
-        itemRefs.current[idx]?.focus();
+        if (
+          buttonRef.current &&
+          (document.activeElement === buttonRef.current ||
+            !menuRef.current?.contains(document.activeElement))
+        ) {
+          itemRefs.current[idx]?.focus();
+        }
       });
     }
     return () => {

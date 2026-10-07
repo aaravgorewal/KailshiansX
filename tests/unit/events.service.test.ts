@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import type { Prisma } from "@prisma/client";
 import {
   RegistrationError,
   SEAT_HOLD_DURATION_MS,
@@ -27,7 +28,7 @@ describe("Event & Quota Services (Unit)", () => {
           status: "CONFIRMED",
         }),
       },
-    } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as unknown as Prisma.TransactionClient;
 
     await expect(
       assertNoDuplicateRegistration(mockTx, "evt_1", "user@example.com")
@@ -45,7 +46,7 @@ describe("Event & Quota Services (Unit)", () => {
         }),
         update: vi.fn().mockResolvedValue({ id: "reg_expired", status: "CANCELLED" }),
       },
-    } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as unknown as Prisma.TransactionClient;
 
     await expect(
       assertNoDuplicateRegistration(mockTx, "evt_1", "user@example.com")
@@ -73,7 +74,7 @@ describe("Event & Quota Services (Unit)", () => {
           saleEnd: null,
         }),
       },
-    } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as unknown as Prisma.TransactionClient;
 
     await expect(
       reserveTicketSeat(mockTx, "evt_1", "tkt_tier_1", "newuser@example.com")
@@ -96,7 +97,7 @@ describe("Event & Quota Services (Unit)", () => {
           saleEnd: null,
         }),
       },
-    } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as unknown as Prisma.TransactionClient;
 
     const reservation = await reserveTicketSeat(
       mockTx,

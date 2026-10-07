@@ -36,45 +36,51 @@ export default function ContactPage() {
       </header>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-        <div className="border-border bg-card rounded-lg border p-6">
-          <Mail className="text-foreground size-5" />
-          <h2 className="text-foreground mt-4 text-sm font-semibold">General Support</h2>
-          <p className="text-muted-foreground mt-1 text-xs">
-            Questions regarding event tickets, certificates, or platform accounts.
-          </p>
+        <div className="border-border bg-card flex h-full flex-col justify-between rounded-lg border p-6">
+          <div>
+            <Mail className="text-foreground size-5" />
+            <h2 className="text-foreground mt-4 text-sm font-semibold">General Support</h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Questions regarding event tickets, certificates, or platform accounts.
+            </p>
+          </div>
           <a
             href="mailto:support@kailshians.com"
-            className="text-foreground mt-3 block text-sm font-medium underline underline-offset-4 hover:opacity-80"
+            className="text-foreground focus-visible:ring-ring mt-3 block rounded text-sm font-medium underline underline-offset-4 hover:opacity-80 focus-visible:ring-1 focus-visible:outline-none"
           >
             support@kailshians.com
           </a>
         </div>
 
-        <div className="border-border bg-card rounded-lg border p-6">
-          <MessageSquare className="text-foreground size-5" />
-          <h2 className="text-foreground mt-4 text-sm font-semibold">
-            Partnerships &amp; Sponsors
-          </h2>
-          <p className="text-muted-foreground mt-1 text-xs">
-            Corporate hackathon sponsorships, tech talk collabs, and mentor engagements.
-          </p>
+        <div className="border-border bg-card flex h-full flex-col justify-between rounded-lg border p-6">
+          <div>
+            <MessageSquare className="text-foreground size-5" />
+            <h2 className="text-foreground mt-4 text-sm font-semibold">
+              Partnerships &amp; Sponsors
+            </h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Corporate hackathon sponsorships, tech talk collabs, and mentor engagements.
+            </p>
+          </div>
           <a
             href="mailto:partners@kailshians.com"
-            className="text-foreground mt-3 block text-sm font-medium underline underline-offset-4 hover:opacity-80"
+            className="text-foreground focus-visible:ring-ring mt-3 block rounded text-sm font-medium underline underline-offset-4 hover:opacity-80 focus-visible:ring-1 focus-visible:outline-none"
           >
             partners@kailshians.com
           </a>
         </div>
 
-        <div className="border-border bg-card rounded-lg border p-6">
-          <MapPin className="text-foreground size-5" />
-          <h2 className="text-foreground mt-4 text-sm font-semibold">Headquarters</h2>
-          <p className="text-muted-foreground mt-1 text-xs">
-            Kailshians Web Services Private Limited
-          </p>
-          <p className="text-muted-foreground mt-3 text-xs leading-relaxed">
-            Bengaluru &amp; New Delhi, India
-          </p>
+        <div className="border-border bg-card flex h-full flex-col justify-between rounded-lg border p-6">
+          <div>
+            <MapPin className="text-foreground size-5" />
+            <h2 className="text-foreground mt-4 text-sm font-semibold">Headquarters</h2>
+            <p className="text-muted-foreground mt-1 text-xs">
+              Kailshians Web Services Private Limited
+            </p>
+            <p className="text-muted-foreground mt-3 text-xs leading-relaxed">
+              Bengaluru &amp; New Delhi, India
+            </p>
+          </div>
         </div>
       </div>
 
@@ -85,7 +91,7 @@ export default function ContactPage() {
           addressed to our designated Grievance Officer at{" "}
           <a
             href="mailto:grievance@kailshians.com"
-            className="text-foreground underline underline-offset-4"
+            className="text-foreground focus-visible:ring-ring rounded underline underline-offset-4 hover:opacity-80 focus-visible:ring-1 focus-visible:outline-none"
           >
             grievance@kailshians.com
           </a>

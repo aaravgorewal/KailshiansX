@@ -115,14 +115,9 @@ const RULES = [
     message: "hover:scale-* is forbidden",
   },
   {
-    id: "text-10px",
-    pattern: /\btext-\[10px\]/,
-    message: "text-[10px] is below minimum text size (12px)",
-  },
-  {
-    id: "text-11px",
-    pattern: /\btext-\[11px\]/,
-    message: "text-[11px] is below minimum text size (12px)",
+    id: "text-sub-12px",
+    pattern: /\btext-\[(?:[0-9]|1[01])px\]/,
+    message: "Sub-12px arbitrary font size is below minimum text size (12px)",
   },
   {
     id: "sparkles-icon",

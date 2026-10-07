@@ -224,7 +224,7 @@ export function WorkshopsClient({
               type="button"
               onClick={() => updateFilters("upcoming", activeCategory)}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors",
+                "focus-visible:ring-ring flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                 activeTab === "upcoming"
                   ? "bg-background text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -241,7 +241,7 @@ export function WorkshopsClient({
               type="button"
               onClick={() => updateFilters("past", activeCategory)}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors",
+                "focus-visible:ring-ring flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                 activeTab === "past"
                   ? "bg-background text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -269,10 +269,10 @@ export function WorkshopsClient({
             type="button"
             onClick={() => updateFilters(activeTab, "ALL")}
             className={cn(
-              "rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
+              "focus-visible:ring-ring rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
               activeCategory === "ALL"
-                ? "border-primary bg-primary/10 text-foreground font-semibold"
-                : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
+                ? "border-primary bg-muted text-accent-text font-semibold"
+                : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
             )}
           >
             All Tracks
@@ -286,10 +286,10 @@ export function WorkshopsClient({
                 type="button"
                 onClick={() => updateFilters(activeTab, cat)}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none",
+                  "focus-visible:ring-ring flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
                   isSelected
-                    ? "border-primary bg-primary/10 text-foreground font-semibold"
-                    : "border-border bg-card text-muted-foreground hover:border-border hover:text-foreground"
+                    ? "border-primary bg-muted text-accent-text font-semibold"
+                    : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
                 )}
               >
                 {CATEGORY_ICONS[cat]}
@@ -334,7 +334,7 @@ export function WorkshopsClient({
             const isFree = !primaryTicket || primaryTicket.price === 0;
 
             return (
-              <Card key={w.id} className="group relative flex flex-col justify-between p-5">
+              <Card key={w.id} className="group relative flex h-full flex-col justify-between p-5">
                 <div className="space-y-3">
                   {/* Category & Past/Upcoming State */}
                   <div className="flex items-center justify-between text-xs">
@@ -351,7 +351,10 @@ export function WorkshopsClient({
 
                   {/* Title & Overview with clickable card overlay */}
                   <div className="space-y-1.5">
-                    <h3 className="text-foreground hover:text-accent-text line-clamp-2 text-base font-bold transition-colors">
+                    <h3
+                      title={w.title}
+                      className="text-foreground hover:text-accent-text line-clamp-2 text-base font-bold transition-colors"
+                    >
                       <Link
                         href={`/events/${w.slug}`}
                         className="after:absolute after:inset-0 after:z-0 focus-visible:underline focus-visible:outline-none"
@@ -360,7 +363,10 @@ export function WorkshopsClient({
                       </Link>
                     </h3>
                     {w.overview && (
-                      <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
+                      <p
+                        title={w.overview}
+                        className="text-muted-foreground line-clamp-2 text-xs leading-relaxed"
+                      >
                         {w.overview}
                       </p>
                     )}

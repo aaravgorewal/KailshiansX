@@ -174,9 +174,9 @@ export function TechTalksSearchClient({
             <button
               type="button"
               onClick={() => handleTabChange("all")}
-              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`focus-visible:ring-ring rounded-md border px-3 py-1.5 text-xs font-medium transition-[background-color,border-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                 activeTab === "all"
-                  ? "border-primary bg-background text-foreground"
+                  ? "border-primary bg-background text-foreground font-semibold"
                   : "border-border bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -185,9 +185,9 @@ export function TechTalksSearchClient({
             <button
               type="button"
               onClick={() => handleTabChange("upcoming")}
-              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`focus-visible:ring-ring rounded-md border px-3 py-1.5 text-xs font-medium transition-[background-color,border-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                 activeTab === "upcoming"
-                  ? "border-primary bg-background text-foreground"
+                  ? "border-primary bg-background text-foreground font-semibold"
                   : "border-border bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -196,9 +196,9 @@ export function TechTalksSearchClient({
             <button
               type="button"
               onClick={() => handleTabChange("past")}
-              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`focus-visible:ring-ring rounded-md border px-3 py-1.5 text-xs font-medium transition-[background-color,border-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                 activeTab === "past"
-                  ? "border-primary bg-background text-foreground"
+                  ? "border-primary bg-background text-foreground font-semibold"
                   : "border-border bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -217,9 +217,9 @@ export function TechTalksSearchClient({
                 key={topic}
                 type="button"
                 onClick={() => handleQueryChange(isSelected ? "" : topic)}
-                className={`rounded-md border px-2.5 py-1 text-xs transition-colors ${
+                className={`focus-visible:ring-ring rounded-md border px-2.5 py-1 text-xs transition-[background-color,border-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                   isSelected
-                    ? "border-primary bg-background text-foreground"
+                    ? "border-primary bg-background text-foreground font-semibold"
                     : "border-border bg-background text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -269,14 +269,17 @@ export function TechTalksSearchClient({
             return (
               <Card
                 key={talk.id}
-                className="hover:border-muted-foreground flex flex-col justify-between p-6 transition-[border-color] duration-150"
+                className="hover:border-muted-foreground flex h-full flex-col justify-between p-6 transition-[border-color] duration-150"
               >
                 <div className="space-y-4">
                   {/* Host Institution & Status (Neutral text, no colored pills) */}
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <div className="text-muted-foreground flex items-center gap-1.5 truncate">
                       <School className="size-3.5 shrink-0" />
-                      <span className="truncate">
+                      <span
+                        title={hostPartner?.name || "Kailshians Community"}
+                        className="truncate"
+                      >
                         {hostPartner?.name || "Kailshians Community"}
                       </span>
                     </div>
@@ -290,12 +293,16 @@ export function TechTalksSearchClient({
                   <div className="space-y-1.5">
                     <Link
                       href={`/tech-talks/${talk.slug}`}
+                      title={talk.title}
                       className="text-foreground hover:text-primary line-clamp-2 text-base font-semibold transition-colors"
                     >
                       {talk.title}
                     </Link>
                     {talk.overview && (
-                      <p className="text-muted-foreground line-clamp-3 text-xs leading-relaxed">
+                      <p
+                        title={talk.overview}
+                        className="text-muted-foreground line-clamp-3 text-xs leading-relaxed"
+                      >
                         {talk.overview}
                       </p>
                     )}

@@ -251,11 +251,11 @@ export function CertificateDesignerCanvas({
                 <div className="text-muted-foreground flex items-end justify-between px-6 pb-2 text-xs">
                   <div className="border-border w-36 border-t pt-1 text-left">
                     <div className="text-foreground text-xs font-bold">Aarav Gorewal</div>
-                    <div className="text-[9px]">Founder, KailshiansX</div>
+                    <div className="text-xs">Founder, KailshiansX</div>
                   </div>
                   <div className="border-border w-36 border-t pt-1 text-right">
                     <div className="text-foreground text-xs font-bold">KWS Engineering</div>
-                    <div className="text-[9px]">Verified Issuing Chapter</div>
+                    <div className="text-xs">Verified Issuing Chapter</div>
                   </div>
                 </div>
               </div>

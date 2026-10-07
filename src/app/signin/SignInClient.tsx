@@ -51,7 +51,7 @@ export function SignInClient({ callbackUrl }: Props) {
         <div className="text-center">
           <Link
             href="/"
-            className="text-foreground inline-flex items-center gap-2 text-2xl font-bold tracking-tight"
+            className="text-foreground focus-visible:ring-ring inline-flex items-center gap-2 rounded-md text-2xl font-bold tracking-tight transition-opacity focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
           >
             KailshiansX
           </Link>
@@ -100,7 +100,7 @@ export function SignInClient({ callbackUrl }: Props) {
                       setTab(t);
                       setError(null);
                     }}
-                    className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-[background-color,color] duration-150 ${
+                    className={`focus-visible:ring-ring flex-1 rounded-md py-1.5 text-xs font-medium transition-[background-color,color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 ${
                       tab === t
                         ? "bg-background text-foreground shadow-sm"
                         : "text-muted-foreground hover:text-foreground"
@@ -182,11 +182,17 @@ export function SignInClient({ callbackUrl }: Props) {
               {/* Legal Note */}
               <p className="text-muted-foreground text-center text-xs">
                 By signing in you agree to our{" "}
-                <Link href="/terms" className="text-foreground underline underline-offset-2">
+                <Link
+                  href="/terms"
+                  className="text-foreground focus-visible:ring-ring rounded underline-offset-2 hover:underline focus-visible:ring-1 focus-visible:outline-none"
+                >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="text-foreground underline underline-offset-2">
+                <Link
+                  href="/privacy"
+                  className="text-foreground focus-visible:ring-ring rounded underline-offset-2 hover:underline focus-visible:ring-1 focus-visible:outline-none"
+                >
                   Privacy Policy
                 </Link>
                 .
