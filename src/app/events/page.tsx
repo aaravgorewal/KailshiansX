@@ -1,49 +1,36 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Prisma } from "@prisma/client";
-import { Search } from "lucide-react";
 
 import { db } from "@/lib/db";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { EventCard, type EventType, type EventStatus } from "@/components/ui/EventCard";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { SITE_CONFIG } from "@/lib/config";
+import { Button } from "@/components/ui/Button";
 import { EventsFilterBar } from "@/components/events/EventsFilterBar";
-import { EventsPagination } from "@/components/events/EventsPagination";
+import { EventRow } from "@/components/events/EventRow";
+import { LoadMoreButton } from "@/components/events/LoadMoreButton";
 
 export const revalidate = 60;
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
-
 export const metadata: Metadata = {
-  title: "Developer Events, Hackathons & Tech Talks | KailshiansX",
+  title: "Events | KailshiansX",
   description:
-    "Discover hackathons, engineering meetups, hands-on workshops, and architecture deep dives across India. Filter by city, format, or date.",
-  keywords: [
-    "developer events India",
-    "hackathons Delhi Jaipur",
-    "tech meetups",
-    "workshops",
-    "systems engineering talks",
-    "PadharoX",
-    "NirmanX",
-    "KailshiansX",
-  ],
+    "Discover developer meetups, hackathons, workshops, and architecture deep dives across India.",
   alternates: {
-    canonical: `${APP_URL}/events`,
+    canonical: `${SITE_CONFIG.url}/events`,
   },
   openGraph: {
-    title: "Developer Events, Hackathons & Tech Talks | KailshiansX",
+    title: "Events | KailshiansX",
     description:
-      "Verified developer gatherings across India. From intensive 36h hackathons to deep-dive architecture talks.",
-    url: `${APP_URL}/events`,
-    siteName: "KailshiansX",
+      "Discover developer meetups, hackathons, workshops, and architecture deep dives across India.",
+    url: `${SITE_CONFIG.url}/events`,
+    siteName: SITE_CONFIG.name,
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Developer Events & Hackathons | KailshiansX",
-    description: "Browse verified developer gatherings, build-a-thons, and workshops across India.",
-    images: ["/og-image.png"],
+    title: "Events | KailshiansX",
+    description:
+      "Discover developer meetups, hackathons, workshops, and architecture deep dives across India.",
   },
 };
 
@@ -51,243 +38,146 @@ interface EventsPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+const PAGE_SIZE = 8;
+
 export default async function EventsPage({ searchParams }: EventsPageProps) {
   const params = await searchParams;
   const now = new Date();
 
-  const q = typeof params.q === "string" ? params.q.trim() : "";
-  const timeline =
-    params.timeline === "past" || params.timeline === "all" ? params.timeline : "upcoming";
-  const type = typeof params.type === "string" ? params.type : "ALL";
-  const city = typeof params.city === "string" ? params.city : "ALL";
-  const page = Math.max(1, parseInt(typeof params.page === "string" ? params.page : "1", 10) || 1);
-  const pageSize = 8;
+  const rawType = typeof params.type === "string" ? params.type.toLowerCase() : "all";
+  const city = typeof params.city === "string" ? params.city : "all";
+  const when = params.when === "past" ? "past" : "upcoming";
+  const limit = Math.max(
+    PAGE_SIZE,
+    parseInt(typeof params.limit === "string" ? params.limit : String(PAGE_SIZE), 10) || PAGE_SIZE
+  );
 
-  // Build Prisma Where Clause
+  const TYPE_MAP: Record<string, Prisma.EnumEventTypeFilter["equals"]> = {
+    meetup: "MEETUP",
+    hackathon: "HACKATHON",
+    workshop: "WORKSHOP",
+    talk: "TECH_TALK",
+  };
+
   const where: Prisma.EventWhereInput = {
     status: "PUBLISHED",
     deletedAt: null,
   };
 
-  // Timeline Filter
-  if (timeline === "upcoming") {
-    where.startDate = { gte: now };
-  } else if (timeline === "past") {
+  // 1. Timeline filter (upcoming / past)
+  if (when === "past") {
     where.startDate = { lt: now };
+  } else {
+    where.startDate = { gte: now };
   }
 
-  // Type Filter
-  if (type !== "ALL") {
-    where.type = type as Prisma.EnumEventTypeFilter["equals"];
+  // 2. Type filter
+  if (rawType !== "all" && TYPE_MAP[rawType]) {
+    where.type = TYPE_MAP[rawType];
   }
 
-  // City Filter
-  if (city !== "ALL") {
+  // 3. City filter
+  if (city && city !== "all") {
     where.city = {
       name: { equals: city, mode: "insensitive" },
     };
   }
 
-  // Search Filter
-  if (q) {
-    where.OR = [
-      { title: { contains: q, mode: "insensitive" } },
-      { overview: { contains: q, mode: "insensitive" } },
-      { venue: { contains: q, mode: "insensitive" } },
-      { city: { name: { contains: q, mode: "insensitive" } } },
-    ];
-  }
-
-  // Run Queries in Parallel
-  const [events, totalResults, upcomingCount, pastCount, citiesRaw] = await Promise.all([
+  // Execute database queries in parallel
+  const [events, totalCount, cities] = await Promise.all([
     db.event.findMany({
       where,
-      orderBy: timeline === "past" ? { startDate: "desc" } : { startDate: "asc" },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+      orderBy: when === "past" ? { startDate: "desc" } : { startDate: "asc" },
+      take: limit,
       include: {
         city: true,
         ticketTypes: true,
-        _count: {
-          select: { registrations: true, speakers: true },
+        seriesEdition: {
+          include: {
+            series: { select: { name: true } },
+          },
+        },
+        galleryAlbums: {
+          where: { isPublished: true },
+          take: 1,
+          select: { id: true },
+        },
+        techTalkResource: {
+          select: { videoUrl: true },
         },
       },
     }),
     db.event.count({ where }),
-    db.event.count({
-      where: { status: "PUBLISHED", deletedAt: null, startDate: { gte: now } },
-    }),
-    db.event.count({
-      where: { status: "PUBLISHED", deletedAt: null, startDate: { lt: now } },
-    }),
     db.city.findMany({
       where: {
         events: { some: { status: "PUBLISHED", deletedAt: null } },
       },
-      include: {
-        _count: {
-          select: {
-            events: { where: { status: "PUBLISHED", deletedAt: null } },
-          },
-        },
-      },
+      select: { name: true },
       orderBy: { name: "asc" },
     }),
   ]);
 
-  const totalPages = Math.ceil(totalResults / pageSize);
-
-  const cityOptions = citiesRaw.map((c) => ({
-    name: c.name,
-    count: c._count.events,
-  }));
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: events.map((event, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "Event",
-        name: event.title,
-        description: event.overview || event.title,
-        startDate: event.startDate.toISOString(),
-        endDate: (event.endDate || event.startDate).toISOString(),
-        eventStatus: "https://schema.org/EventScheduled",
-        eventAttendanceMode:
-          event.attendanceMode === "VIRTUAL"
-            ? "https://schema.org/OnlineEventAttendanceMode"
-            : "https://schema.org/OfflineEventAttendanceMode",
-        location: {
-          "@type": "Place",
-          name: event.venue || "Venue",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: event.city?.name || "India",
-            addressRegion: event.city?.state || "India",
-            addressCountry: "IN",
-          },
-        },
-        image: event.coverImage || `${APP_URL}/events/${event.slug}/opengraph-image`,
-        url: `${APP_URL}/events/${event.slug}`,
-      },
-    })),
-  };
+  const cityNames = cities.map((c) => c.name);
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <div className="bg-background min-h-screen pb-24">
-        {/* Header Banner */}
-        <section className="border-border bg-card/40 border-b py-12">
-          <div className="container-page text-center">
-            <SectionHeader
-              title="Developer Gatherings & Events"
-              description="Discover hackathons, engineering meetups, hands-on workshops, and architecture deep dives across India."
-              align="center"
-            />
-          </div>
-        </section>
+    <div className="py-12 md:py-20">
+      <div className="container-page">
+        {/* H1 "Events" (.display, smaller clamp) */}
+        <div className="mb-8 md:mb-12">
+          <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            Events
+          </h1>
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
+            Developer meetups, hackathons, workshops, and technical gatherings across India.
+          </p>
+        </div>
 
-        {/* Main Events Catalog Area */}
-        <main className="container-page pt-8">
-          {/* Dynamic Interactive Filter Bar */}
-          <div className="border-border bg-card mb-8 rounded-lg border p-4 sm:p-6">
-            <EventsFilterBar
-              initialSearch={q}
-              initialTimeline={timeline}
-              initialType={type}
-              initialCity={city}
-              cities={cityOptions}
-              totalResults={totalResults}
-              upcomingCount={upcomingCount}
-              pastCount={pastCount}
-            />
-          </div>
+        {/* One-line filter bar */}
+        <div className="mb-8 sm:mb-12">
+          <EventsFilterBar cities={cityNames} />
+        </div>
 
-          {/* Events Grid or Empty State */}
-          {events.length > 0 ? (
-            <div className="space-y-12">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {events.map((event, index) => {
-                  const isFree =
-                    event.ticketTypes.length === 0 ||
-                    event.ticketTypes.some((t) => Number(t.price) === 0);
-                  const lowestPrice =
-                    event.ticketTypes.length > 0
-                      ? Math.min(...event.ticketTypes.map((t) => Number(t.price)))
-                      : 0;
-
-                  const tags = [
-                    event.type === "HACKATHON"
-                      ? "Hackathon"
-                      : event.type === "WORKSHOP"
-                        ? "Workshop"
-                        : event.type === "TECH_TALK"
-                          ? "Tech Talk"
-                          : "Meetup",
-                    event.attendanceMode === "IN_PERSON" ? "In-Person" : "Virtual",
-                  ];
-
-                  return (
-                    <EventCard
-                      key={event.id}
-                      id={event.id}
-                      title={event.title}
-                      slug={event.slug}
-                      type={event.type as EventType}
-                      status={event.status as EventStatus}
-                      startDate={event.startDate}
-                      endDate={event.endDate || undefined}
-                      venue={event.venue || undefined}
-                      city={event.city?.name || undefined}
-                      coverUrl={event.coverImage || undefined}
-                      isFree={isFree}
-                      price={isFree ? 0 : lowestPrice}
-                      attendeeCount={event._count.registrations}
-                      speakerCount={event._count.speakers}
-                      tags={tags}
-                      priority={index < 2}
-                    />
-                  );
-                })}
-              </div>
-
-              {/* Server-side Pagination */}
-              {totalPages > 1 && (
-                <div className="border-border border-t pt-6">
-                  <EventsPagination currentPage={page} totalPages={totalPages} />
-                </div>
-              )}
+        {/* Results */}
+        {events.length > 0 ? (
+          <div>
+            <div className="divide-border border-border divide-y border-y">
+              {events.map((event) => (
+                <EventRow
+                  key={event.id}
+                  id={event.id}
+                  slug={event.slug}
+                  title={event.title}
+                  startDate={event.startDate}
+                  city={event.city?.name}
+                  seriesName={event.seriesEdition?.series?.name}
+                  ticketTypes={event.ticketTypes}
+                  isPast={when === "past"}
+                  recordingUrl={event.techTalkResource?.videoUrl}
+                  galleryAlbumId={event.galleryAlbums?.[0]?.id}
+                />
+              ))}
             </div>
-          ) : (
-            <EmptyState
-              icon={<Search className="text-muted-foreground size-10" aria-hidden="true" />}
-              title="No events found"
-              description={
-                q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
-                  ? "No events match your current filter selection. Try clearing your filters or exploring past events."
-                  : "No upcoming events scheduled right now. Check back soon for announcements!"
-              }
-              action={
-                q || type !== "ALL" || city !== "ALL" || timeline !== "upcoming"
-                  ? {
-                      label: "Clear filters",
-                      href: "/events",
-                    }
-                  : {
-                      label: "View past events",
-                      href: "/events?timeline=past",
-                    }
-              }
-            />
-          )}
-        </main>
+
+            {/* Pagination = Load more button */}
+            <LoadMoreButton currentLimit={limit} totalCount={totalCount} pageSize={PAGE_SIZE} />
+          </div>
+        ) : (
+          /* Empty state with "Clear filters" */
+          <div className="border-border bg-card my-8 rounded-2xl border p-12 text-center">
+            <h2 className="text-foreground text-lg font-semibold">
+              No events found matching your filters.
+            </h2>
+            <p className="text-muted-foreground mx-auto mt-2 max-w-sm text-sm">
+              Try selecting another type or city, or switch to view upcoming developer gatherings.
+            </p>
+            <div className="mt-6 flex justify-center">
+              <Button asChild variant="secondary" size="md">
+                <Link href="/events">Clear filters</Link>
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }

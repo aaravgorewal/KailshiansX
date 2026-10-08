@@ -178,16 +178,18 @@ describe("Security, SEO, and Analytics Suite", () => {
       assert.ok(disallows.includes("/api/"));
     });
 
-    test("should generate comprehensive dynamic sitemap entries including events, albums, and series", async () => {
+    test("should generate comprehensive dynamic sitemap entries including events and gallery", async () => {
       const sitemap = await generateSitemap();
       assert.ok(Array.isArray(sitemap));
-      assert.ok(sitemap.length >= 15);
+      assert.ok(sitemap.length >= 8);
 
       const urls = sitemap.map((s) => s.url);
       assert.ok(urls.some((u) => u.endsWith("/")));
       assert.ok(urls.some((u) => u.endsWith("/events")));
-      assert.ok(urls.some((u) => u.endsWith("/workshops")));
-      assert.ok(urls.some((u) => u.endsWith("/tech-talks")));
+      assert.ok(urls.some((u) => u.endsWith("/community")));
+      assert.ok(urls.some((u) => u.endsWith("/gallery")));
+      assert.ok(urls.some((u) => u.endsWith("/about")));
+      assert.ok(urls.some((u) => u.endsWith("/partner")));
       assert.ok(urls.some((u) => u.endsWith("/privacy")));
       assert.ok(urls.some((u) => u.endsWith("/terms")));
     });

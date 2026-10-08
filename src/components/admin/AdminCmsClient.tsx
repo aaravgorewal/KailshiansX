@@ -24,7 +24,7 @@ import {
   Building2,
   Globe,
 } from "lucide-react";
-import { LinkedinIcon } from "@/components/ui/social-icons";
+import { LinkedinIcon } from "@/components/common/social-icons";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";

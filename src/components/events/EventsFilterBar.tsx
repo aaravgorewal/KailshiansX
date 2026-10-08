@@ -1,291 +1,131 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Search, X, Calendar, RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export interface CityOption {
-  name: string;
-  count: number;
-}
-
-export interface EventsFilterBarProps {
-  initialSearch?: string;
-  initialTimeline?: string;
-  initialType?: string;
-  initialCity?: string;
-  cities: CityOption[];
-  totalResults: number;
-  upcomingCount: number;
-  pastCount: number;
-  className?: string;
+interface EventsFilterBarProps {
+  cities: string[];
 }
 
 const TYPE_OPTIONS = [
-  { id: "ALL", label: "All types" },
-  { id: "MEETUP", label: "Meetup" },
-  { id: "HACKATHON", label: "Hackathon" },
-  { id: "WORKSHOP", label: "Workshop" },
-  { id: "TECH_TALK", label: "Tech talk" },
+  { label: "All", value: "all" },
+  { label: "Meetups", value: "meetup" },
+  { label: "Hackathons", value: "hackathon" },
+  { label: "Workshops", value: "workshop" },
+  { label: "Talks", value: "talk" },
 ];
 
-export function EventsFilterBar({
-  initialSearch = "",
-  initialTimeline = "upcoming",
-  initialType = "ALL",
-  initialCity = "ALL",
-  cities = [],
-  totalResults,
-  upcomingCount,
-  pastCount,
-  className,
-}: EventsFilterBarProps) {
+export function EventsFilterBar({ cities }: EventsFilterBarProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [searchVal, setSearchVal] = React.useState(initialSearch);
-  const [prevInitialSearch, setPrevInitialSearch] = React.useState(initialSearch);
+  const currentType = searchParams.get("type") || "all";
+  const currentCity = searchParams.get("city") || "all";
+  const currentWhen = searchParams.get("when") || "upcoming";
 
-  if (prevInitialSearch !== initialSearch) {
-    setPrevInitialSearch(initialSearch);
-    setSearchVal(initialSearch);
-  }
+  const updateParam = (key: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("limit"); // reset pagination on filter change
 
-  const updateFilters = React.useCallback(
-    (updates: Record<string, string | null>) => {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
+    if (!value || value === "all" || (key === "when" && value === "upcoming")) {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
 
-      Object.entries(updates).forEach(([key, val]) => {
-        if (!val || val === "ALL" || (key === "timeline" && val === "upcoming") || val === "") {
-          current.delete(key);
-        } else {
-          current.set(key, val);
-        }
-      });
-
-      // Always reset to page 1 on filter modification
-      current.delete("page");
-
-      const query = current.toString();
-      const targetUrl = query ? `${pathname}?${query}` : pathname;
-      router.push(targetUrl, { scroll: false });
-    },
-    [pathname, router, searchParams]
-  );
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateFilters({ q: searchVal.trim() });
-  };
-
-  const handleClearSearch = () => {
-    setSearchVal("");
-    updateFilters({ q: null });
-  };
-
-  const hasActiveFilters = Boolean(
-    (searchParams.get("q") && searchParams.get("q") !== "") ||
-    (searchParams.get("timeline") && searchParams.get("timeline") !== "upcoming") ||
-    (searchParams.get("type") && searchParams.get("type") !== "ALL") ||
-    (searchParams.get("city") && searchParams.get("city") !== "ALL")
-  );
-
-  const clearAllFilters = () => {
-    setSearchVal("");
-    router.push(pathname, { scroll: false });
+    const qs = params.toString();
+    router.push(qs ? `/events?${qs}` : "/events", { scroll: false });
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
-      {/* Search Input & Timeline Segmented Control */}
-      <div className="flex flex-col items-stretch justify-between gap-3 md:flex-row md:items-center">
-        {/* Search Input */}
-        <form onSubmit={handleSearchSubmit} className="relative max-w-lg flex-1">
-          <Search
-            className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2"
-            aria-hidden="true"
-          />
-          <input
-            type="search"
-            value={searchVal}
-            onChange={(e) => setSearchVal(e.target.value)}
-            placeholder="Search events, cities, topics, venues..."
-            aria-label="Search events"
-            className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border pr-9 pl-10 text-sm focus:ring-1 focus:outline-none"
-          />
-          {searchVal && (
+    <div className="border-border flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
+      {/* 1. Type Pills as Plain Text Buttons */}
+      <div className="no-scrollbar flex items-center gap-4 overflow-x-auto sm:gap-6">
+        {TYPE_OPTIONS.map((opt) => {
+          const isSelected =
+            currentType.toLowerCase() === opt.value.toLowerCase() ||
+            (opt.value === "all" && !searchParams.get("type"));
+
+          return (
             <button
+              key={opt.value}
               type="button"
-              onClick={handleClearSearch}
-              aria-label="Clear search"
-              className="text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-1 transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
-            >
-              <X className="size-4" aria-hidden="true" />
-            </button>
-          )}
-        </form>
-
-        {/* Upcoming/Past/All Segmented Control */}
-        <div className="border-border bg-muted inline-flex items-center self-start rounded-lg border p-1 md:self-auto">
-          <button
-            type="button"
-            onClick={() => updateFilters({ timeline: "upcoming" })}
-            className={cn(
-              "focus-visible:ring-ring flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-              initialTimeline === "upcoming"
-                ? "bg-background text-foreground font-semibold shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            <Calendar className="size-3.5" aria-hidden="true" />
-            <span>Upcoming</span>
-            {Boolean(upcomingCount && upcomingCount > 0) && (
-              <span className="bg-muted py-0.2 text-foreground rounded px-1.5 font-mono text-xs">
-                {upcomingCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => updateFilters({ timeline: "past" })}
-            className={cn(
-              "focus-visible:ring-ring flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-              initialTimeline === "past"
-                ? "bg-background text-foreground font-semibold shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            <span>Past</span>
-            {Boolean(pastCount && pastCount > 0) && (
-              <span className="bg-muted py-0.2 text-foreground rounded px-1.5 font-mono text-xs">
-                {pastCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => updateFilters({ timeline: "all" })}
-            className={cn(
-              "focus-visible:ring-ring rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-              initialTimeline === "all"
-                ? "bg-background text-foreground font-semibold shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            <span>All</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Type & City Filter Chips */}
-      <div className="flex flex-col gap-3 pt-1">
-        {/* Format / Type Chips */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-muted-foreground text-xs font-medium">Format:</span>
-          {TYPE_OPTIONS.map((opt) => {
-            const active = initialType === opt.id;
-            return (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => updateFilters({ type: opt.id })}
-                className={cn(
-                  "focus-visible:ring-ring rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-                  active
-                    ? "border-primary bg-muted text-accent-text font-semibold"
-                    : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
-                )}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* City Filter Chips */}
-        {cities.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-muted-foreground text-xs font-medium">City:</span>
-            <button
-              type="button"
-              onClick={() => updateFilters({ city: "ALL" })}
+              onClick={() => updateParam("type", opt.value)}
               className={cn(
-                "focus-visible:ring-ring rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-                initialCity === "ALL"
-                  ? "border-primary bg-muted text-accent-text font-semibold"
-                  : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
+                "cursor-pointer text-sm font-medium whitespace-nowrap transition-colors",
+                isSelected
+                  ? "text-foreground underline decoration-2 underline-offset-8"
+                  : "text-muted-foreground hover:text-foreground no-underline"
               )}
             >
-              All cities
+              {opt.label}
             </button>
-            {cities.map((city) => {
-              const active = initialCity.toLowerCase() === city.name.toLowerCase();
-              return (
-                <button
-                  key={city.name}
-                  type="button"
-                  onClick={() => updateFilters({ city: city.name })}
-                  className={cn(
-                    "focus-visible:ring-ring flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-                    active
-                      ? "border-primary bg-muted text-accent-text font-semibold"
-                      : "border-border bg-card text-muted-foreground hover:border-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <span>{city.name}</span>
-                  {Boolean(city.count && city.count > 0) && (
-                    <span className="text-muted-foreground font-mono text-xs">({city.count})</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
+          );
+        })}
       </div>
 
-      {/* Filter Status Summary & Clear Filters */}
-      <div className="border-border text-muted-foreground flex flex-wrap items-center justify-between gap-3 border-t pt-3 text-xs">
-        <div>
-          Showing <span className="text-foreground font-semibold">{totalResults}</span>{" "}
-          {totalResults === 1 ? "event" : "events"}
-          {initialCity !== "ALL" && (
-            <span>
-              {" "}
-              in <strong className="text-foreground font-medium">{initialCity}</strong>
-            </span>
-          )}
-          {initialType !== "ALL" && (
-            <span>
-              {" "}
-              matching <strong className="text-foreground font-medium">{initialType}</strong>
-            </span>
-          )}
-          {initialSearch && (
-            <span>
-              {" "}
-              for &ldquo;<strong className="text-foreground font-medium">{initialSearch}</strong>
-              &rdquo;
-            </span>
-          )}
+      {/* 2. City Select & Upcoming/Past Toggle */}
+      <div className="flex items-center gap-4 sm:gap-6">
+        {/* City Select */}
+        <div className="relative">
+          <select
+            aria-label="Filter by city"
+            value={currentCity}
+            onChange={(e) => updateParam("city", e.target.value)}
+            className="border-input bg-card text-foreground focus-visible:ring-ring flex h-9 cursor-pointer appearance-none rounded-lg border px-3 py-1 pr-8 text-sm outline-none focus-visible:ring-2"
+          >
+            <option value="all">All cities</option>
+            {cities.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
+          <div className="text-muted-foreground pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
+            <svg
+              className="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
         </div>
 
-        {hasActiveFilters && (
-          <Button
+        {/* Upcoming / Past Toggle */}
+        <div className="flex items-center gap-2">
+          <button
             type="button"
-            variant="ghost"
-            size="sm"
-            onClick={clearAllFilters}
-            className="text-foreground hover:bg-muted h-7 gap-1.5 text-xs"
+            onClick={() => updateParam("when", "upcoming")}
+            className={cn(
+              "cursor-pointer text-sm font-medium transition-colors",
+              currentWhen === "upcoming"
+                ? "text-foreground underline decoration-2 underline-offset-8"
+                : "text-muted-foreground hover:text-foreground no-underline"
+            )}
           >
-            <RotateCcw className="size-3.5" aria-hidden="true" />
-            <span>Clear filters</span>
-          </Button>
-        )}
+            Upcoming
+          </button>
+          <span className="text-muted-foreground text-xs select-none">/</span>
+          <button
+            type="button"
+            onClick={() => updateParam("when", "past")}
+            className={cn(
+              "cursor-pointer text-sm font-medium transition-colors",
+              currentWhen === "past"
+                ? "text-foreground underline decoration-2 underline-offset-8"
+                : "text-muted-foreground hover:text-foreground no-underline"
+            )}
+          >
+            Past
+          </button>
+        </div>
       </div>
     </div>
   );

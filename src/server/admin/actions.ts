@@ -19,6 +19,7 @@ import {
   StateLeadStatus,
   CollaborationStage,
   CollaborationType,
+  TeamApplicationStatus,
   UserRole,
   SeriesKind,
 } from "@prisma/client";
@@ -772,6 +773,7 @@ export async function updateCampusLeadStatus(
   }
 
   revalidatePath("/admin/campus-leads");
+  revalidatePath("/admin/applications");
   return { success: true, status: updated.status };
 }
 
@@ -817,6 +819,7 @@ export async function updateStateLeadStatus(
   }
 
   revalidatePath("/admin/state-leads");
+  revalidatePath("/admin/applications");
   return { success: true, status: updated.status };
 }
 
@@ -850,7 +853,49 @@ export async function updateCollaborationStage(
   });
 
   revalidatePath("/admin/collaborations");
+  revalidatePath("/admin/applications");
   return { success: true, stage: updated.stage };
+}
+
+export type UnifiedApplicationType = "CAMPUS_LEAD" | "STATE_LEAD" | "TEAM" | "PARTNER";
+
+export async function updateUnifiedApplicationStatus(
+  type: UnifiedApplicationType,
+  id: string,
+  newStatus: string,
+  adminNotes?: string
+) {
+  const session = await requireAdmin();
+
+  if (type === "CAMPUS_LEAD") {
+    return await updateCampusLeadStatus(id, newStatus as CampusLeadStatus, adminNotes);
+  } else if (type === "STATE_LEAD") {
+    return await updateStateLeadStatus(id, newStatus as StateLeadStatus, adminNotes);
+  } else if (type === "TEAM") {
+    const original = await db.teamApplication.findUnique({ where: { id } });
+    if (!original) throw new Error("Team application not found");
+    const updated = await db.teamApplication.update({
+      where: { id },
+      data: {
+        status: newStatus as TeamApplicationStatus,
+        ...(adminNotes !== undefined ? { adminNotes } : {}),
+      },
+    });
+    await writeAudit({
+      userId: session.user.id,
+      action: "UPDATE",
+      entityType: "TeamApplication",
+      entityId: id,
+      before: { status: original.status, notes: original.adminNotes },
+      after: { status: updated.status, notes: updated.adminNotes },
+    });
+    revalidatePath("/admin/applications");
+    return { success: true, status: updated.status };
+  } else if (type === "PARTNER") {
+    return await updateCollaborationStage(id, newStatus as CollaborationStage, adminNotes);
+  }
+
+  throw new Error("Invalid application type");
 }
 
 export async function createCollaborationLead(data: {

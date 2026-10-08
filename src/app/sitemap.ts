@@ -7,21 +7,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     { path: "/", priority: 1.0, changeFrequency: "daily" as const },
     { path: "/events", priority: 0.9, changeFrequency: "daily" as const },
-    { path: "/workshops", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/tech-talks", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/meetup-series", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/hackathon-series", priority: 0.8, changeFrequency: "weekly" as const },
     { path: "/community", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/campus-leads", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/state-leads", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/collaborations", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/gallery", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/join-team", priority: 0.8, changeFrequency: "weekly" as const },
-    { path: "/core-team", priority: 0.7, changeFrequency: "monthly" as const },
-    { path: "/founder", priority: 0.7, changeFrequency: "monthly" as const },
-    { path: "/who-we-are", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/about", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/partner", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/privacy", priority: 0.3, changeFrequency: "yearly" as const },
     { path: "/terms", priority: 0.3, changeFrequency: "yearly" as const },
+    { path: "/refunds", priority: 0.3, changeFrequency: "yearly" as const },
+    { path: "/contact", priority: 0.5, changeFrequency: "monthly" as const },
   ];
 
   const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((r) => ({
@@ -78,26 +71,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Failed to generate gallery sitemap entries:", error);
   }
 
-  // Query series (Meetups & Hackathons)
-  let seriesEntries: MetadataRoute.Sitemap = [];
-  try {
-    const seriesList = await db.series.findMany({
-      select: {
-        slug: true,
-        kind: true,
-        updatedAt: true,
-      },
-    });
-
-    seriesEntries = seriesList.map((s) => ({
-      url: `${APP_URL}/${s.kind === "HACKATHON" ? "hackathon-series" : "meetup-series"}/${s.slug}`,
-      lastModified: s.updatedAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
-  } catch (error) {
-    console.error("Failed to generate series sitemap entries:", error);
-  }
-
-  return [...staticEntries, ...eventEntries, ...albumEntries, ...seriesEntries];
+  return [...staticEntries, ...eventEntries, ...albumEntries];
 }

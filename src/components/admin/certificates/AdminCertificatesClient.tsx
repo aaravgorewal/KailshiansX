@@ -443,7 +443,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
         <Link
           href="/verify"
           target="_blank"
-          className="text-primary hover:text-primary bg-primary/10 hover:bg-primary/20 border-primary/30 ml-auto flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-sm transition-colors"
+          className="text-primary-hover dark:text-primary bg-primary/10 hover:bg-primary/20 border-primary/30 ml-auto flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold shadow-sm transition-colors"
         >
           <ShieldCheck className="h-4 w-4" />
           <span>Public /verify Portal</span>
@@ -453,12 +453,12 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
 
       {/* TAB 1: STUDIO */}
       {activeTab === "STUDIO" && (
-        <div className="animate-in fade-in space-y-8 duration-200">
+        <div className="space-y-8">
           {/* STEP 1: PICK EVENT */}
           <div className="bg-card border-border space-y-4 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-primary bg-primary/10 border-primary/20 rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
+                <span className="text-primary-hover dark:text-primary bg-primary/10 border-primary/20 rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                   Step 1
                 </span>
                 <h3 className="text-foreground mt-2 text-lg font-extrabold">Select Event</h3>
@@ -505,7 +505,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           <div className="bg-card border-border space-y-5 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
+                <span className="border-primary/20 bg-primary/10 text-primary-hover dark:text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                   Step 2
                 </span>
                 <h3 className="text-foreground mt-2 text-lg font-extrabold">Import Participants</h3>
@@ -625,7 +625,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
                               {p.registrationCode}
                             </span>
                             {hasCert && (
-                              <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-2 py-0.5 text-xs font-bold">
+                              <span className="border-primary/20 bg-primary/10 text-primary-hover dark:text-primary rounded-full border px-2 py-0.5 text-xs font-bold">
                                 Issued: {p.certificate?.uniqueId}
                               </span>
                             )}
@@ -662,7 +662,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           {/* STEP 3: TEMPLATE & DRAG-POSITION DESIGNER */}
           <div className="bg-card border-border space-y-4 rounded-2xl border p-6 shadow-xl backdrop-blur-xl">
             <div>
-              <span className="border-primary/20 bg-primary/10 text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
+              <span className="border-primary/20 bg-primary/10 text-primary-hover dark:text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                 Step 3
               </span>
               <h3 className="text-foreground mt-2 text-lg font-extrabold">
@@ -695,7 +695,7 @@ export function AdminCertificatesClient({ events, initialStats, initialCertifica
           <div className="bg-card border-border space-y-5 rounded-2xl border p-6 shadow-xl">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div>
-                <span className="border-border bg-primary/10 text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
+                <span className="border-border bg-primary/10 text-primary-hover dark:text-primary rounded-full border px-2.5 py-0.5 text-xs font-bold tracking-wider uppercase">
                   Step 4
                 </span>
                 <h3 className="text-foreground mt-2 text-lg font-extrabold">

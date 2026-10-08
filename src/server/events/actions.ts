@@ -15,6 +15,9 @@ export interface InitiateRegistrationResult {
   registrationCode?: string;
   redirectUrl?: string;
   error?: string;
+  errorCode?: string;
+  existingRegistrationId?: string;
+  existingRegistrationCode?: string;
   razorpayOrder?: {
     id: string;
     amount: number;
@@ -158,7 +161,7 @@ export async function initiateRegistration(
           isFree: true,
           registrationId: registration.id,
           registrationCode,
-          redirectUrl: `/events/${event.slug}/ticket/${registrationCode}`,
+          redirectUrl: `/registration/${registration.id}`,
         };
       }
 
@@ -212,7 +215,13 @@ export async function initiateRegistration(
     return result;
   } catch (error) {
     if (error instanceof RegistrationError) {
-      return { success: false, error: error.message };
+      return {
+        success: false,
+        error: error.message,
+        errorCode: error.code,
+        existingRegistrationId: error.existingRegistrationId,
+        existingRegistrationCode: error.existingRegistrationCode,
+      };
     }
     console.error("Registration initiation failed:", error);
     return {
@@ -235,7 +244,13 @@ export async function verifyPaymentAndComplete({
   razorpayOrderId: string;
   razorpayPaymentId: string;
   razorpaySignature: string;
-}): Promise<{ success: boolean; registrationCode?: string; redirectUrl?: string; error?: string }> {
+}): Promise<{
+  success: boolean;
+  registrationId?: string;
+  registrationCode?: string;
+  redirectUrl?: string;
+  error?: string;
+}> {
   try {
     // 1. Verify Razorpay cryptographic signature
     const isValid = verifyRazorpayPaymentSignature({
@@ -342,8 +357,9 @@ export async function verifyPaymentAndComplete({
 
     return {
       success: true,
+      registrationId: finalized.id,
       registrationCode: finalized.registrationCode,
-      redirectUrl: `/events/${finalized.event.slug}/ticket/${finalized.registrationCode}`,
+      redirectUrl: `/registration/${finalized.id}`,
     };
   } catch (error) {
     console.error("Payment verification failed:", error);

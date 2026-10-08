@@ -66,8 +66,6 @@ export function DeveloperPassportCard({ passport, isOwner = false, onVisibilityC
 
   return (
     <div className="bg-card border-border relative overflow-hidden rounded-2xl border p-6 shadow-sm sm:p-8">
-      {/* Decorative neon gradient header accents */}
-
       <div className="border-border relative z-10 flex flex-col items-start justify-between gap-6 border-b pb-6 lg:flex-row lg:items-center">
         {/* User Identity Info */}
         <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">

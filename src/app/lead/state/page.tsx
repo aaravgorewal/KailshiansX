@@ -46,7 +46,7 @@ export default async function StateLeadPage({ searchParams }: PageProps) {
 
   const data = await getStateLeadDashboard(targetIdentifier);
   if (!data) {
-    redirect("/state-leads?error=StateLeadProfileNotFound");
+    redirect("/community#lead?error=StateLeadProfileNotFound");
   }
 
   return (

@@ -1,11 +1,14 @@
 "use server";
 
+import { headers } from "next/headers";
 import { db } from "@/lib/db";
+import { checkRateLimit, getClientIp } from "@/server/security/rate-limit";
 import {
   collegeCollaborationSchema,
   communityCollaborationSchema,
   venueCollaborationSchema,
   sponsorCollaborationSchema,
+  partnerInquirySchema,
 } from "@/lib/validations/collaborations";
 import {
   sendCollaborationAcknowledgementEmail,
@@ -447,6 +450,116 @@ export async function submitSponsorCollaboration(
       success: false,
       error:
         "An unexpected error occurred while saving your collaboration inquiry. Please try again.",
+    };
+  }
+}
+
+/**
+ * Path 5: Unified Partner Inquiry (/partner)
+ * Short form writing to CollaborationLead table with the type from radio
+ */
+export async function submitPartnerInquiry(rawInput: unknown): Promise<CollaborationActionResult> {
+  // 1. Rate limiting check
+  try {
+    const headersList = await headers();
+    const ip = getClientIp(headersList);
+    const rl = await checkRateLimit(ip, "form");
+    if (!rl.success) {
+      return {
+        success: false,
+        error: "Too many requests. Please wait a few moments before trying again.",
+      };
+    }
+  } catch {
+    // Non-request context (e.g. tests)
+  }
+
+  // 2. Anti-spam honeypot check
+  if (
+    rawInput &&
+    typeof rawInput === "object" &&
+    "honeypot" in rawInput &&
+    rawInput.honeypot &&
+    String(rawInput.honeypot).trim().length > 0
+  ) {
+    return { success: false, error: "Bot detected. Submission rejected." };
+  }
+
+  // 3. Schema validation
+  const parsed = partnerInquirySchema.safeParse(rawInput);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: "Please complete all required fields correctly.",
+      fieldErrors: parsed.error.flatten().fieldErrors,
+    };
+  }
+
+  const data = parsed.data;
+
+  try {
+    const cityRecord = await resolveCity(data.city);
+
+    const lead = await db.collaborationLead.create({
+      data: {
+        type: data.type,
+        stage: "LEAD",
+        organisation: data.organisation.trim(),
+        contactPerson: data.contactPerson.trim(),
+        email: data.email.toLowerCase().trim(),
+        phone: data.phone.trim(),
+        website: data.website?.trim() || null,
+        cityName: data.city.trim(),
+        cityId: cityRecord?.id || null,
+        proposedEvent: data.message.trim(),
+        resourcesOffered: `Partnership Inquiry (${data.type})`,
+        message: data.message.trim(),
+        adminNotes: `Submitted via /partner on ${new Date().toISOString()}`,
+      },
+    });
+
+    const refCode = `KX-COLLAB-${lead.id.slice(-6).toUpperCase()}`;
+
+    // 4. Trigger auto-acknowledgement and internal team notifications asynchronously
+    await Promise.allSettled([
+      sendCollaborationAcknowledgementEmail({
+        email: data.email.toLowerCase().trim(),
+        name: data.contactPerson.trim(),
+        organisation: data.organisation.trim(),
+        type: data.type,
+        leadId: lead.id,
+        city: data.city.trim(),
+        phone: data.phone.trim(),
+        website: data.website?.trim() || null,
+        proposedEvent: data.message.trim(),
+        resourcesOffered: `Partnership Inquiry (${data.type})`,
+        message: data.message.trim(),
+      }),
+      sendCollaborationInternalNotificationEmail({
+        email: data.email.toLowerCase().trim(),
+        name: data.contactPerson.trim(),
+        organisation: data.organisation.trim(),
+        type: data.type,
+        leadId: lead.id,
+        city: data.city.trim(),
+        phone: data.phone.trim(),
+        website: data.website?.trim() || null,
+        proposedEvent: data.message.trim(),
+        resourcesOffered: `Partnership Inquiry (${data.type})`,
+        message: data.message.trim(),
+      }),
+    ]);
+
+    return {
+      success: true,
+      leadId: lead.id,
+      referenceCode: refCode,
+    };
+  } catch (error) {
+    console.error("Failed to submit partner inquiry:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred while saving your inquiry. Please try again.",
     };
   }
 }

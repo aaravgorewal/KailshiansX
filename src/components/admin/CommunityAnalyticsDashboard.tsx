@@ -113,12 +113,12 @@ export function CommunityAnalyticsDashboard({ metrics }: Props) {
   };
 
   return (
-    <div className="animate-in fade-in space-y-8 duration-300">
+    <div className="space-y-8">
       {/* ─── TOP HERO COCKPIT ──────────────────────────────────────────────── */}
       <div className="border-border bg-card relative overflow-hidden rounded-xl border p-6 sm:p-8">
         <div className="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
           <div className="space-y-2">
-            <div className="border-primary/30 bg-muted text-accent-text inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
+            <div className="border-primary/30 bg-primary/10 text-primary-hover dark:text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
               <Zap className="h-3.5 w-3.5" />
               <span>Executive Intelligence</span>
             </div>

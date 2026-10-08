@@ -526,7 +526,7 @@ export function StateLeadDashboardClient({ initialData, isAdminViewing = false }
                 Identify proactive students across engineering colleges in {data.state} and nominate
                 them for Campus Lead roles.
               </p>
-              <Link href="/campus-leads">
+              <Link href="/community#lead">
                 <Button size="sm">
                   <span>Share Campus Lead Application Link →</span>
                 </Button>

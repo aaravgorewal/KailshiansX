@@ -45,7 +45,7 @@ export default async function CampusLeadPage({ searchParams }: PageProps) {
 
   const data = await getCampusLeadDashboard(targetIdentifier);
   if (!data) {
-    redirect("/campus-leads?error=CampusLeadProfileNotFound");
+    redirect("/community#lead?error=CampusLeadProfileNotFound");
   }
 
   return (

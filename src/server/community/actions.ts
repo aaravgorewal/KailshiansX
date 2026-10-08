@@ -1,15 +1,19 @@
 "use server";
 
+import { headers } from "next/headers";
 import { db } from "@/lib/db";
+import { checkRateLimit, getClientIp } from "@/server/security/rate-limit";
 import {
   campusLeadApplicationSchema,
   stateLeadApplicationSchema,
   startChapterSchema,
   mentorSpeakerInquirySchema,
+  leadApplicationFormSchema,
   type CampusLeadApplicationInput,
   type StateLeadApplicationInput,
   type StartChapterInput,
   type MentorSpeakerInquiryInput,
+  type LeadApplicationFormInput,
 } from "@/lib/validations/community-leads";
 import {
   sendCampusLeadConfirmationEmail,
@@ -30,6 +34,21 @@ export interface CommunityActionResult {
 export async function applyCampusLead(
   rawInput: CampusLeadApplicationInput
 ): Promise<CommunityActionResult> {
+  // Rate limiting check
+  try {
+    const headersList = await headers();
+    const ip = getClientIp(headersList);
+    const rl = await checkRateLimit(ip, "form");
+    if (!rl.success) {
+      return {
+        success: false,
+        error: "Too many submission attempts. Please wait a few moments before trying again.",
+      };
+    }
+  } catch {
+    // Non-request context (e.g. unit tests)
+  }
+
   // Spam protection check before schema validation
   if (rawInput.honeypot && rawInput.honeypot.trim().length > 0) {
     return { success: false, error: "Bot detected. Submission rejected." };
@@ -87,8 +106,8 @@ export async function applyCampusLead(
         cityId: cityRecord.id,
         courseYear: data.courseYear.trim(),
         linkedin: data.linkedin.trim(),
-        experience: data.experience.trim(),
-        communityInvolvement: data.communityInvolvement.trim(),
+        experience: data.experience?.trim() || "",
+        communityInvolvement: data.communityInvolvement?.trim() || "",
         whyKailshiansX: data.whyKailshiansX.trim(),
         availability: data.availability.trim(),
         referredBy: data.referredBy?.trim() || null,
@@ -125,6 +144,21 @@ export async function applyCampusLead(
 export async function applyStateLead(
   rawInput: StateLeadApplicationInput
 ): Promise<CommunityActionResult> {
+  // Rate limiting check
+  try {
+    const headersList = await headers();
+    const ip = getClientIp(headersList);
+    const rl = await checkRateLimit(ip, "form");
+    if (!rl.success) {
+      return {
+        success: false,
+        error: "Too many submission attempts. Please wait a few moments before trying again.",
+      };
+    }
+  } catch {
+    // Non-request context (e.g. unit tests)
+  }
+
   // Spam protection early check
   if (rawInput.honeypot && rawInput.honeypot.trim().length > 0) {
     return { success: false, error: "Bot detected. Submission rejected." };
@@ -161,14 +195,14 @@ export async function applyStateLead(
         name: data.name.trim(),
         email: data.email.toLowerCase().trim(),
         phone: data.phone?.trim(),
-        state: data.state.trim(),
+        state: data.state?.trim() || data.city.trim(),
         city: data.city.trim(),
-        citiesCovered: data.citiesCovered.trim(),
-        currentRole: data.currentRole.trim(),
+        citiesCovered: data.citiesCovered?.trim() || data.city.trim(),
+        currentRole: data.currentRole?.trim() || "",
         linkedin: data.linkedin.trim(),
-        experience: data.experience.trim(),
-        leadershipEvidence: data.leadershipEvidence.trim(),
-        communityVision: data.communityVision.trim(),
+        experience: data.experience?.trim() || "",
+        leadershipEvidence: data.leadershipEvidence?.trim() || "",
+        communityVision: data.communityVision?.trim() || "",
         whyKailshiansX: data.whyKailshiansX.trim(),
         availabilityHours: data.availabilityHours.trim(),
         status: "APPLIED",
@@ -193,6 +227,64 @@ export async function applyStateLead(
       success: false,
       error: "An unexpected error occurred while saving your application. Please try again.",
     };
+  }
+}
+
+/**
+ * Submit Community Lead Application (Unified Form on /community#lead)
+ * Writes to either CampusLeadApplication or StateLeadApplication based on applyingFor radio.
+ */
+export async function submitLeadApplication(
+  rawInput: LeadApplicationFormInput
+): Promise<CommunityActionResult> {
+  // Honeypot trap
+  if (rawInput.honeypot && rawInput.honeypot.trim().length > 0) {
+    return { success: false, error: "Bot detected. Submission rejected." };
+  }
+
+  const result = leadApplicationFormSchema.safeParse(rawInput);
+  if (!result.success) {
+    return {
+      success: false,
+      error: "Please correct the highlighted form errors.",
+      fieldErrors: result.error.flatten().fieldErrors,
+    };
+  }
+
+  const data = result.data;
+
+  if (data.applyingFor === "campus") {
+    return applyCampusLead({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      college: data.college,
+      city: data.city,
+      courseYear: data.courseYear,
+      linkedin: data.linkedin,
+      experience: data.whyLead,
+      communityInvolvement: data.whyLead,
+      whyKailshiansX: data.whyLead,
+      availability: data.availability,
+      honeypot: data.honeypot,
+    });
+  } else {
+    return applyStateLead({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      state: data.city,
+      city: data.city,
+      citiesCovered: data.city,
+      currentRole: data.college,
+      linkedin: data.linkedin,
+      experience: data.whyLead,
+      leadershipEvidence: data.whyLead,
+      communityVision: data.whyLead,
+      whyKailshiansX: data.whyLead,
+      availabilityHours: data.availability,
+      honeypot: data.honeypot,
+    });
   }
 }
 

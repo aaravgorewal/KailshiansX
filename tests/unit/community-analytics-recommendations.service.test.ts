@@ -372,7 +372,7 @@ describe("Personalized Recommendations Engine", () => {
     // Campus Lead role should be recommended because user has college and is not a lead
     const campusRole = recs.recommendedRoles.find((r) => r.roleId === "campus-lead");
     expect(campusRole).toBeDefined();
-    expect(campusRole?.ctaLink).toBe("/campus-leads");
+    expect(campusRole?.ctaLink).toBe("/community#lead");
     expect(campusRole?.matchReasons.some((r) => r.includes("IIT Delhi"))).toBe(true);
   });
 });

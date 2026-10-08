@@ -5,12 +5,72 @@ import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import {
   teamApplicationSchema,
+  aboutRoleApplicationSchema,
   updateApplicationStatusSchema,
   UpdateApplicationStatusData,
 } from "@/lib/validations/team-application";
+import { TEAM_AREAS } from "@/lib/team-constants";
 import { requireAdmin } from "@/server/auth/require-role";
 import { queueApplicationReceivedEmail, queueStatusChangeEmail } from "@/server/email";
 import type { TeamApplicationStatus } from "@prisma/client";
+
+export async function submitAboutRoleApplication(data: unknown) {
+  const parsed = aboutRoleApplicationSchema.safeParse(data);
+  if (!parsed.success) {
+    const errorMsg = parsed.error.issues[0]?.message || "Invalid application data";
+    return { success: false, error: errorMsg };
+  }
+
+  const { name, email, phone, role, area, link, whyYou, honeypot } = parsed.data;
+
+  if (honeypot && honeypot.length > 0) {
+    return { success: true, message: "Application submitted successfully." };
+  }
+
+  const mappedArea = area && (TEAM_AREAS as readonly string[]).includes(area) ? area : "Technology";
+
+  const existingPending = await db.teamApplication.findFirst({
+    where: {
+      email: { equals: email, mode: "insensitive" },
+      status: { in: ["NEW", "REVIEWING", "INTERVIEW"] },
+    },
+  });
+
+  if (existingPending) {
+    return {
+      success: false,
+      error: "You already have an active application under review. Our team will contact you soon!",
+    };
+  }
+
+  const application = await db.teamApplication.create({
+    data: {
+      name,
+      email,
+      phone: phone || null,
+      area: mappedArea,
+      roleApplied: role,
+      linkedin: link || null,
+      motivation: whyYou,
+      status: "NEW",
+    },
+  });
+
+  await queueApplicationReceivedEmail(application.email, {
+    name: application.name,
+    applicationType: "TEAM",
+    referenceId: application.id,
+    roleOrJurisdiction: `${application.roleApplied} (${application.area})`,
+  }).catch((err) => console.error("Team application email error:", err));
+
+  return {
+    success: true,
+    id: application.id,
+    applicationId: application.id,
+    message:
+      "Thank you for applying to the KailshiansX Core Team! We'll review your application shortly.",
+  };
+}
 
 export async function submitTeamApplication(data: unknown) {
   // Validate schema

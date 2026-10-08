@@ -1,10 +1,7 @@
 // src/app/auth/error/page.tsx
-// Auth.js error page — handles error=AccessDenied, OAuthAccountNotLinked, etc.
+// Auth.js error page — centered narrow column with error message and sign-in
 import type { Metadata } from "next";
-import Link from "next/link";
-import { AlertTriangle } from "lucide-react";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { SignInClient } from "@/app/signin/SignInClient";
 
 export const metadata: Metadata = {
   title: "Authentication Error | KailshiansX",
@@ -31,27 +28,5 @@ export default async function AuthErrorPage({ searchParams }: Props) {
   const errorCode = params.error ?? "Default";
   const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.Default;
 
-  return (
-    <div className="bg-background flex min-h-screen items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-sm space-y-5 p-8 text-center">
-        <div className="bg-destructive/10 text-destructive mx-auto flex h-12 w-12 items-center justify-center rounded-full">
-          <AlertTriangle className="h-6 w-6" />
-        </div>
-        <div>
-          <h1 className="text-foreground text-xl font-semibold">
-            {errorCode === "AccessDenied" ? "Access Denied" : "Sign-in Error"}
-          </h1>
-          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{message}</p>
-        </div>
-        <div className="flex flex-col gap-2 pt-2 sm:flex-row">
-          <Button asChild variant="primary" className="flex-1">
-            <Link href="/signin">Back to Sign In</Link>
-          </Button>
-          <Button asChild variant="secondary" className="flex-1">
-            <Link href="/">Go Home</Link>
-          </Button>
-        </div>
-      </Card>
-    </div>
-  );
+  return <SignInClient callbackUrl="/" errorMessage={message} />;
 }

@@ -23,8 +23,7 @@ const noForbiddenColorsRule = {
         "Forbidden Tailwind palette utility '{{match}}'. Use semantic tokens (primary, muted, card, destructive, success, warning, etc.) instead.",
       arbitraryColor:
         "Arbitrary color utility '{{match}}' is forbidden. Use design system semantic tokens instead.",
-      legacyToken:
-        "Legacy token utility '{{match}}' is forbidden. Use semantic tokens instead.",
+      legacyToken: "Legacy token utility '{{match}}' is forbidden. Use semantic tokens instead.",
     },
     schema: [],
   },
@@ -127,12 +126,7 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   // Override default ignores of eslint-config-next.
-  globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
   {
     files: ["src/**/*.{ts,tsx}"],
     ignores: [
@@ -151,6 +145,7 @@ const eslintConfig = defineConfig([
     },
     rules: {
       "kailshiansx-design/no-forbidden-colors": "error",
+      "@typescript-eslint/no-explicit-any": "error",
     },
   },
 ]);

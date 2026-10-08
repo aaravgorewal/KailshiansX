@@ -893,6 +893,8 @@ async function main() {
         eventId: raibarX01.id,
         title: "RaibarX Edition 01 — Official Gallery",
         category: "meetup",
+        coverImage:
+          "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80",
         isPublished: true,
       },
     });
@@ -935,6 +937,8 @@ async function main() {
         eventId: nirmanX01.id,
         title: "NirmanX 2025 — National Hackathon Showcase",
         category: "hackathon",
+        coverImage:
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&auto=format&fit=crop&q=80",
         isPublished: true,
       },
     });
@@ -978,6 +982,8 @@ async function main() {
         eventId: tricityX01.id,
         title: "TricityX Edition 01 — Chandigarh Tech Summit",
         category: "meetup",
+        coverImage:
+          "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1200&auto=format&fit=crop&q=80",
         isPublished: true,
       },
     });
@@ -1005,6 +1011,50 @@ async function main() {
           url: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&auto=format&fit=crop&q=80",
           caption: "Developers mingling during lunch session",
           altText: "Community gathering",
+          sortOrder: 3,
+        },
+      ],
+    });
+  }
+
+  const existingWorkshopAlbum = await prisma.galleryAlbum.findFirst({
+    where: { category: "workshop" },
+  });
+  if (!existingWorkshopAlbum) {
+    const workshopAlbum = await prisma.galleryAlbum.create({
+      data: {
+        isSeed: true,
+        eventId: cloudWorkshop.id,
+        title: "Cloud & DevOps Bootcamp — Hands-on Labs",
+        category: "workshop",
+        coverImage: "/images/hero.webp",
+        isPublished: true,
+      },
+    });
+    await prisma.galleryImage.createMany({
+      data: [
+        {
+          isSeed: true,
+          albumId: workshopAlbum.id,
+          url: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1200&q=80",
+          caption: "Hands-on container orchestration lab",
+          altText: "Engineers working on laptops",
+          sortOrder: 1,
+        },
+        {
+          isSeed: true,
+          albumId: workshopAlbum.id,
+          url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80",
+          caption: "Peer programming and architecture reviews",
+          altText: "Group collaboration",
+          sortOrder: 2,
+        },
+        {
+          isSeed: true,
+          albumId: workshopAlbum.id,
+          url: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=80",
+          caption: "Q&A and real-world deployment teardown",
+          altText: "Speaker demonstrating on screen",
           sortOrder: 3,
         },
       ],
@@ -1372,7 +1422,11 @@ async function main() {
   const [padharoX01, nirmanX2026, techTalkScale, techTalkAgents, workshopRust] = await Promise.all([
     prisma.event.upsert({
       where: { slug: "padharox-01" },
-      update: { isSeed: true },
+      update: {
+        isSeed: true,
+        coverImage:
+          "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&auto=format&fit=crop&q=80",
+      },
       create: {
         isSeed: true,
         slug: "padharox-01",
@@ -1381,6 +1435,8 @@ async function main() {
         status: "PUBLISHED",
         overview:
           "Rajasthan's biggest developer gathering of 2026. Deep dives on generative AI agents, cloud architectures, and open source scaling.",
+        coverImage:
+          "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&auto=format&fit=crop&q=80",
         cityId: jaipur.id,
         venue: "JECC Auditorium",
         venueAddress: "RIICO Industrial Area, Sitapura, Jaipur, Rajasthan 302022",
@@ -1906,6 +1962,7 @@ async function main() {
   }
 
   // Schedule for PadharoX 01
+  await prisma.eventScheduleItem.deleteMany({ where: { eventId: padharoX01.id } });
   await prisma.eventScheduleItem.createMany({
     data: [
       {
@@ -1971,6 +2028,7 @@ async function main() {
   });
 
   // FAQs for PadharoX 01
+  await prisma.eventFaq.deleteMany({ where: { eventId: padharoX01.id } });
   await prisma.eventFaq.createMany({
     data: [
       {
@@ -2010,6 +2068,7 @@ async function main() {
   });
 
   // Tracks for PadharoX 01
+  await prisma.eventTrack.deleteMany({ where: { eventId: padharoX01.id } });
   await prisma.eventTrack.createMany({
     data: [
       {
@@ -2033,52 +2092,8 @@ async function main() {
     skipDuplicates: true,
   });
 
-  // Gallery Album for PadharoX 01
-  const existingPadharoAlbum = await prisma.galleryAlbum.findFirst({
-    where: { eventId: padharoX01.id },
-  });
-  if (!existingPadharoAlbum) {
-    const padharoAlbum = await prisma.galleryAlbum.create({
-      data: {
-        isSeed: true,
-        eventId: padharoX01.id,
-        title: "PadharoX 01 — Community Preview & Teaser",
-        category: "meetup",
-        isPublished: true,
-      },
-    });
-    await prisma.galleryImage.createMany({
-      data: [
-        {
-          isSeed: true,
-          albumId: padharoAlbum.id,
-          url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
-          caption: "Auditorium Main Stage at JECC Jaipur",
-          altText: "Conference hall stage",
-          sortOrder: 1,
-        },
-        {
-          isSeed: true,
-          albumId: padharoAlbum.id,
-          url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1200&q=80",
-          caption: "Developer Networking and Discussions",
-          altText: "Developers networking",
-          sortOrder: 2,
-        },
-        {
-          isSeed: true,
-          albumId: padharoAlbum.id,
-          url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&q=80",
-          caption: "Collaborative Workshop & Coding Labs",
-          altText: "Coding workshop",
-          sortOrder: 3,
-        },
-      ],
-      skipDuplicates: true,
-    });
-  }
-
   // Schedule and FAQs for NirmanX 2026
+  await prisma.eventScheduleItem.deleteMany({ where: { eventId: nirmanX2026.id } });
   await prisma.eventScheduleItem.createMany({
     data: [
       {
@@ -2131,6 +2146,7 @@ async function main() {
     skipDuplicates: true,
   });
 
+  await prisma.eventFaq.deleteMany({ where: { eventId: nirmanX2026.id } });
   await prisma.eventFaq.createMany({
     data: [
       {
@@ -2161,6 +2177,7 @@ async function main() {
     skipDuplicates: true,
   });
 
+  await prisma.eventTrack.deleteMany({ where: { eventId: nirmanX2026.id } });
   await prisma.eventTrack.createMany({
     data: [
       {

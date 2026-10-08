@@ -280,6 +280,12 @@ export function EventEditorClient({
     text: string;
   } | null>(null);
 
+  // Autosave draft state
+  const [autosaveStatus, setAutosaveStatus] = React.useState<"idle" | "saving" | "saved" | "error">(
+    "idle"
+  );
+  const [lastAutosavedAt, setLastAutosavedAt] = React.useState<Date | null>(null);
+
   // Quick Speaker Creation Modal
   const [showSpeakerModal, setShowSpeakerModal] = React.useState(false);
   const [newSpeakerName, setNewSpeakerName] = React.useState("");
@@ -421,6 +427,112 @@ export function EventEditorClient({
     }
   };
 
+  // Autosave Draft Handler
+  const handleAutosave = React.useCallback(async () => {
+    if (!isEditing || !initialEvent?.id || isSubmitting) return;
+    if (!title.trim() || !slug.trim()) return;
+
+    try {
+      setAutosaveStatus("saving");
+      const payload: EventFormData = {
+        title: title.trim(),
+        slug: slug.trim().toLowerCase(),
+        type,
+        status: status === EventStatus.PUBLISHED ? EventStatus.PUBLISHED : EventStatus.DRAFT,
+        category,
+        overview,
+        coverImage,
+        cityId: cityId || null,
+        venue: venue.trim() || null,
+        venueAddress: venueAddress.trim() || null,
+        venueMapUrl: venueMapUrl.trim() || null,
+        attendanceMode,
+        startDate: new Date(startDate).toISOString(),
+        endDate: endDate ? new Date(endDate).toISOString() : null,
+        registrationDeadline: registrationDeadline
+          ? new Date(registrationDeadline).toISOString()
+          : null,
+        maxCapacity: maxCapacity ? Number(maxCapacity) : null,
+        isFeatured,
+        scheduleItems,
+        speakers: assignedSpeakers,
+        tracks,
+        tickets,
+        partners: assignedPartners,
+        faqs,
+      };
+
+      await updateEvent(initialEvent.id, payload);
+      setAutosaveStatus("saved");
+      setLastAutosavedAt(new Date());
+    } catch {
+      setAutosaveStatus("error");
+    }
+  }, [
+    isEditing,
+    initialEvent,
+    isSubmitting,
+    title,
+    slug,
+    type,
+    status,
+    category,
+    overview,
+    coverImage,
+    cityId,
+    venue,
+    venueAddress,
+    venueMapUrl,
+    attendanceMode,
+    startDate,
+    endDate,
+    registrationDeadline,
+    maxCapacity,
+    isFeatured,
+    scheduleItems,
+    assignedSpeakers,
+    tracks,
+    tickets,
+    assignedPartners,
+    faqs,
+  ]);
+
+  const initialRender = React.useRef(true);
+  React.useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      handleAutosave();
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [
+    title,
+    slug,
+    type,
+    category,
+    overview,
+    coverImage,
+    cityId,
+    venue,
+    venueAddress,
+    venueMapUrl,
+    attendanceMode,
+    startDate,
+    endDate,
+    registrationDeadline,
+    maxCapacity,
+    isFeatured,
+    scheduleItems,
+    assignedSpeakers,
+    tracks,
+    tickets,
+    assignedPartners,
+    faqs,
+    handleAutosave,
+  ]);
+
   // Duplicate Event Handler
   const handleDuplicate = async () => {
     if (!initialEvent?.id) return;
@@ -536,6 +648,17 @@ export function EventEditorClient({
           <h1 className="text-foreground max-w-xl truncate text-xl font-black sm:text-2xl">
             {title || "Untitled Event"}
           </h1>
+          {/* Autosave status */}
+          {isEditing && (
+            <p className="text-muted-foreground font-mono text-xs">
+              {autosaveStatus === "saving" && "Autosaving…"}
+              {autosaveStatus === "saved" &&
+                `Saved ${lastAutosavedAt ? lastAutosavedAt.toLocaleTimeString() : ""}`}
+              {autosaveStatus === "error" && (
+                <span className="text-destructive">Autosave failed</span>
+              )}
+            </p>
+          )}
         </div>
 
         {/* Action Controls */}

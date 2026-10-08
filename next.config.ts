@@ -21,7 +21,9 @@ const cspHeader = `
 const nextConfig: NextConfig = {
   // Image optimization with modern WebP and AVIF formats
   images: {
-    formats: ["image/avif", "image/webp"],
+    formats: ["image/webp"],
+    deviceSizes: [384, 480, 640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
     remotePatterns: [
       {
         protocol: "https",
@@ -80,6 +82,86 @@ const nextConfig: NextConfig = {
             value: "max-age=63072000; includeSubDomains; preload",
           },
         ],
+      },
+    ];
+  },
+  // 308 Permanent Redirects for deprecated routes
+  async redirects() {
+    return [
+      {
+        source: "/workshops",
+        destination: "/events?type=workshop",
+        permanent: true,
+      },
+      {
+        source: "/workshops/:slug",
+        destination: "/events?type=workshop",
+        permanent: true,
+      },
+      {
+        source: "/tech-talks",
+        destination: "/events?type=talk",
+        permanent: true,
+      },
+      {
+        source: "/tech-talks/:slug",
+        destination: "/events?type=talk",
+        permanent: true,
+      },
+      {
+        source: "/meetup-series",
+        destination: "/events?type=meetup",
+        permanent: true,
+      },
+      {
+        source: "/meetup-series/:slug",
+        destination: "/events?type=meetup",
+        permanent: true,
+      },
+      {
+        source: "/hackathon-series",
+        destination: "/events?type=hackathon",
+        permanent: true,
+      },
+      {
+        source: "/hackathon-series/:slug",
+        destination: "/events?type=hackathon",
+        permanent: true,
+      },
+      {
+        source: "/campus-leads",
+        destination: "/community#lead",
+        permanent: true,
+      },
+      {
+        source: "/state-leads",
+        destination: "/community#lead",
+        permanent: true,
+      },
+      {
+        source: "/collaborations",
+        destination: "/partner",
+        permanent: true,
+      },
+      {
+        source: "/who-we-are",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/founder",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/core-team",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/join-team",
+        destination: "/about",
+        permanent: true,
       },
     ];
   },

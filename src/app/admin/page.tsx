@@ -15,7 +15,7 @@ import {
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/server/auth/require-role";
 import { formatDate } from "@/lib/utils";
-import { Card } from "@/components/ui/Card";
+import { Card } from "@/components/common/Card";
 import { Button } from "@/components/ui/Button";
 import { StatusCell } from "@/components/admin/StatusCell";
 

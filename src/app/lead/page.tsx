@@ -33,7 +33,7 @@ export default async function LeadPortalPage() {
   if (role === "CAMPUS_LEAD") {
     const campusData = await getCampusLeadDashboard(session.user.id);
     if (!campusData) {
-      redirect("/campus-leads?error=NoActiveCampusLeadFound");
+      redirect("/community#lead?error=NoActiveCampusLeadFound");
     }
     return <CampusLeadDashboardClient initialData={campusData} />;
   }
@@ -42,7 +42,7 @@ export default async function LeadPortalPage() {
   if (role === "STATE_LEAD") {
     const stateData = await getStateLeadDashboard(session.user.id);
     if (!stateData) {
-      redirect("/state-leads?error=NoActiveStateLeadFound");
+      redirect("/community#lead?error=NoActiveStateLeadFound");
     }
     return <StateLeadDashboardClient initialData={stateData} />;
   }

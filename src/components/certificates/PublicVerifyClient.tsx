@@ -252,8 +252,6 @@ export function PublicVerifyClient({ initialQuery = "", initialCertificate = nul
 
           {/* High-Resolution Certificate Visual Card */}
           <div className="border-border bg-card relative overflow-hidden rounded-3xl border-2 p-8 text-center shadow-2xl sm:p-12">
-            {/* Corner neon gradients */}
-
             {/* Inner Border */}
             <div className="border-primary/20 pointer-events-none absolute inset-4 rounded-2xl border sm:inset-6" />
             <div className="border-border pointer-events-none absolute inset-6 rounded-xl border sm:inset-8" />

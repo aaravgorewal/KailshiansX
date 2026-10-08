@@ -122,7 +122,7 @@ export async function generateCertificatePdf(
       color: rgb(10 / 255, 15 / 255, 29 / 255), // #0a0f1d
     });
 
-    // Dark gradient inner panel
+    // Dark inner panel
     page.drawRectangle({
       x: 24,
       y: 24,

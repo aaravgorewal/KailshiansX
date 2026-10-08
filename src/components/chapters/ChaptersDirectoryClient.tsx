@@ -76,7 +76,7 @@ export function ChaptersDirectoryClient({
                   Start a Chapter
                 </Button>
               </Link>
-              <Link href="/campus-leads">
+              <Link href="/community#lead">
                 <Button
                   variant="outline"
                   className="border-border hover:bg-muted text-foreground font-bold"

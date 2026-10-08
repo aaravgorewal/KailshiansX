@@ -6,7 +6,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { FileText, Video, ExternalLink, Edit2, Plus } from "lucide-react";
-import { GithubIcon } from "@/components/ui/social-icons";
+import { GithubIcon } from "@/components/common/social-icons";
 import { AdminDataTable, type ColumnDef } from "./AdminDataTable";
 import { AdminModal } from "./AdminModal";
 import { Button } from "@/components/ui/Button";
@@ -199,7 +199,7 @@ export function AdminTechTalksClient({ initialTalks }: AdminTechTalksClientProps
             <Edit2 className="h-3 w-3" /> Resources
           </Button>
           <Link
-            href={`/tech-talks/${item.slug}`}
+            href="/events?type=talk"
             target="_blank"
             className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1.5"
             title="Preview public talk page"

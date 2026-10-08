@@ -209,42 +209,6 @@ test.describe("KailshiansX End-to-End User Journeys", () => {
     await context.close();
   });
 
-  test("Flow 5: Submit application on /join-team", async ({ page }) => {
-    await page.goto("/join-team");
-    await expect(page.locator("h2").first()).toContainText(/Build the Infrastructure/i);
-
-    // Click "Apply for this Role" on any role
-    const applyButton = page.locator('button:has-text("Apply for this Role")').first();
-    await applyButton.click();
-
-    // Fill form
-    await page.fill('input[placeholder="e.g. Aarav Sharma"]', "Aarav E2E Applicant");
-    await page.fill(
-      'input[placeholder="aarav@example.com"]',
-      `applicant-${Date.now()}@example.com`
-    );
-    await page.fill('input[placeholder="+91 98765 43210"]', "+91 9876543210");
-    await page.fill(
-      'textarea[placeholder*="Detail technical stacks used"]',
-      "Built scalable microservices and Next.js applications handling thousands of users."
-    );
-    await page.fill(
-      'textarea[placeholder*="What excites you about our mission?"]',
-      "Passionate about growing developer communities and empowering student builders."
-    );
-
-    // Submit application
-    const submitBtn = page.locator('button[type="submit"]:has-text("Submit Application")');
-    await submitBtn.scrollIntoViewIfNeeded();
-    await submitBtn.click();
-
-    // Verify success banner appears
-    await expect(page.locator("text=Application Received!")).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.locator("text=Application Reference:")).toBeVisible();
-  });
-
   test("Flow 6: Member profile (/me) and public Developer Passport (/passport/[username])", async ({
     browser,
   }) => {

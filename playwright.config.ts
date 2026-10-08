@@ -12,7 +12,7 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? [["html", { open: "never" }], ["list"]] : "list",
   use: {
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3000",
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3008",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
@@ -23,8 +23,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run start",
-    url: "http://127.0.0.1:3000",
+    command: "npx next start -p 3008",
+    url: "http://127.0.0.1:3008",
     reuseExistingServer: true,
     timeout: 120 * 1000,
   },

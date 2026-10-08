@@ -230,3 +230,35 @@ export const sponsorCollaborationSchema = z.object({
 });
 
 export type SponsorCollaborationInput = z.infer<typeof sponsorCollaborationSchema>;
+
+/**
+ * Short Form: Unified Partner Inquiry Schema (/partner)
+ */
+export const partnerInquirySchema = z.object({
+  type: z.enum(["COLLEGE", "COMMUNITY", "VENUE", "SPONSOR"], {
+    message: "Please select partner type",
+  }),
+  organisation: z
+    .string()
+    .min(2, "Organisation name must be at least 2 characters")
+    .max(150, "Organisation name is too long"),
+  contactPerson: z
+    .string()
+    .min(2, "Contact person name must be at least 2 characters")
+    .max(100, "Contact person name is too long"),
+  email: z.string().email("Please enter a valid email address"),
+  phone: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .max(18, "Phone number is too long")
+    .regex(/^[+0-9\s-]+$/, "Please enter a valid phone number"),
+  city: z.string().min(2, "City must be at least 2 characters").max(100, "City name is too long"),
+  website: z.string().max(300, "Link is too long").optional().or(z.literal("")),
+  message: z
+    .string()
+    .min(10, "Please describe what you would like to do together (min 10 characters)")
+    .max(2000, "Message cannot exceed 2000 characters"),
+  honeypot: z.string().max(0, "Bot detected").optional().or(z.literal("")),
+});
+
+export type PartnerInquiryInput = z.infer<typeof partnerInquirySchema>;

@@ -1,16 +1,12 @@
 "use client";
-// src/components/auth/UserMenu.tsx
-// Minimal user menu shown in the Navbar when signed in.
-// Restyled to semantic design tokens (no hardcoded palette colors).
 
-import { signOut } from "next-auth/react";
-import { useState, useRef, useEffect } from "react";
+import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { LogOut, Settings, ChevronDown, User, Ticket, Compass } from "lucide-react";
+import { LogOut, LayoutDashboard, Shield, ChevronDown } from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
-interface Props {
+interface UserMenuProps {
   user: {
     name?: string | null;
     email?: string | null;
@@ -19,20 +15,7 @@ interface Props {
   };
 }
 
-const ROLE_LABELS: Record<UserRole, string> = {
-  SUPER_ADMIN: "Super Admin",
-  ADMIN: "Admin",
-  JUDGE: "Judge",
-  EVENT_MANAGER: "Event Manager",
-  CAMPUS_LEAD: "Campus Lead",
-  STATE_LEAD: "State Lead",
-  CHAPTER_LEAD: "Chapter Lead",
-  PARTNER: "Partner",
-  MEMBER: "Member",
-  VIEWER: "Viewer",
-};
-
-function getInitials(name?: string | null) {
+function getInitials(name?: string | null): string {
   if (!name) return "?";
   return name
     .split(" ")
@@ -42,35 +25,53 @@ function getInitials(name?: string | null) {
     .toUpperCase();
 }
 
-export function UserMenu({ user }: Props) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const roleLabel = ROLE_LABELS[user.role] ?? user.role;
+export function UserMenu({ user }: UserMenuProps) {
+  const [open, setOpen] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+
   const isAdmin = ["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"].includes(user.role);
 
   // Close on outside click
-  useEffect(() => {
-    function handler(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+  React.useEffect(() => {
+    function handlePointerDown(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+    if (open) {
+      document.addEventListener("mousedown", handlePointerDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, [open]);
+
+  // Keyboard navigation & Escape handling
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+    } else if (e.key === "ArrowDown" && !open) {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
 
   return (
-    <div ref={ref} className="relative">
-      {/* Trigger */}
+    <div ref={containerRef} className="relative inline-block text-left" onKeyDown={handleKeyDown}>
       <button
+        ref={triggerRef}
+        type="button"
         id="user-menu-trigger"
-        onClick={() => setOpen((o) => !o)}
-        className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg px-2 py-1.5 transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-haspopup="menu"
         aria-expanded={open}
-        aria-haspopup="true"
+        aria-label="User account menu"
+        className="hover:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg p-1 transition-colors focus-visible:ring-2 focus-visible:outline-none"
       >
-        {/* Avatar */}
-        <div className="border-border bg-muted relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border">
+        <div className="border-border bg-muted relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full border">
           {user.image ? (
             <Image
               src={user.image}
@@ -80,103 +81,75 @@ export function UserMenu({ user }: Props) {
               sizes="32px"
             />
           ) : (
-            <span className="text-foreground text-xs font-semibold">{getInitials(user.name)}</span>
+            <span className="text-foreground font-mono text-xs font-semibold">
+              {getInitials(user.name)}
+            </span>
           )}
         </div>
-        <span
-          title={user.name ?? user.email ?? "Account"}
-          className="text-foreground hidden max-w-[120px] truncate text-sm font-medium sm:block"
-        >
+        <span className="text-foreground hidden max-w-[120px] truncate text-xs font-medium sm:inline-block">
           {user.name ?? user.email ?? "Account"}
         </span>
         <ChevronDown
-          size={14}
-          className={`text-muted-foreground transition-transform duration-150 ${open ? "rotate-180" : ""}`}
+          className={`text-muted-foreground size-3.5 transition-transform duration-150 ${
+            open ? "rotate-180" : ""
+          }`}
+          aria-hidden="true"
         />
       </button>
 
-      {/* Dropdown */}
       {open && (
-        <div className="border-border bg-card text-card-foreground animate-in fade-in-0 absolute top-full right-0 z-50 mt-2 w-64 rounded-lg border p-1 shadow-sm duration-150">
-          {/* User info */}
-          <div className="border-border border-b px-3 py-2.5">
-            <p
-              title={user.name ?? "User"}
-              className="text-foreground truncate text-sm font-semibold"
-            >
-              {user.name ?? "User"}
-            </p>
-            <p title={user.email ?? ""} className="text-muted-foreground mt-0.5 truncate text-xs">
-              {user.email}
-            </p>
-            <p className="text-muted-foreground mt-1 text-xs">{roleLabel}</p>
+        <div
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="user-menu-trigger"
+          className="border-border bg-card absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-lg border p-1 shadow-none focus:outline-none"
+        >
+          {/* User brief header */}
+          <div className="border-border border-b px-3 py-2">
+            <p className="text-foreground truncate text-xs font-semibold">{user.name ?? "User"}</p>
+            <p className="text-muted-foreground truncate text-xs">{user.email}</p>
           </div>
 
-          {/* Links */}
           <div className="py-1">
+            {/* Dashboard */}
             <Link
               href="/me"
-              id="link-user-me"
+              role="menuitem"
               onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
+              className="text-foreground hover:bg-muted focus-visible:bg-muted flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none"
             >
-              <User size={15} className="text-muted-foreground" />
-              <span>Developer Passport (/me)</span>
+              <LayoutDashboard className="text-muted-foreground size-3.5" aria-hidden="true" />
+              <span>Dashboard</span>
             </Link>
 
-            <Link
-              href="/me?tab=tickets"
-              onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
-            >
-              <Ticket size={15} className="text-muted-foreground" />
-              <span>My Tickets & Events</span>
-            </Link>
-
-            <Link
-              href="/me/bookings"
-              id="link-user-bookings"
-              onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
-            >
-              <Ticket size={15} className="text-muted-foreground" />
-              <span>Mentor Bookings</span>
-            </Link>
-
-            <Link
-              href="/me/mentor"
-              id="link-user-mentor"
-              onClick={() => setOpen(false)}
-              className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
-            >
-              <Compass size={15} className="text-muted-foreground" />
-              <span>Mentor Cockpit</span>
-            </Link>
-
+            {/* Admin */}
             {isAdmin && (
               <Link
                 href="/admin"
+                role="menuitem"
                 onClick={() => setOpen(false)}
-                className="text-foreground hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
+                className="text-foreground hover:bg-muted focus-visible:bg-muted flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none"
               >
-                <Settings size={15} className="text-muted-foreground" />
-                <span>Admin Dashboard</span>
+                <Shield className="text-muted-foreground size-3.5" aria-hidden="true" />
+                <span>Admin</span>
               </Link>
             )}
           </div>
 
-          {/* Sign out */}
-          <div className="border-border mt-1 border-t pt-1">
+          {/* Sign Out */}
+          <div className="border-border border-t pt-1">
             <button
-              id="btn-signout"
-              onClick={() => {
+              type="button"
+              role="menuitem"
+              onClick={async () => {
                 setOpen(false);
+                const { signOut } = await import("next-auth/react");
                 signOut({ callbackUrl: "/" });
               }}
-              className="text-destructive hover:bg-muted focus-visible:ring-ring flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-[background-color,opacity] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80"
+              className="text-destructive hover:bg-muted focus-visible:bg-muted flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none"
             >
-              <LogOut size={15} />
-              <span>Sign Out</span>
+              <LogOut className="size-3.5" aria-hidden="true" />
+              <span>Sign out</span>
             </button>
           </div>
         </div>

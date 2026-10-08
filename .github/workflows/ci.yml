@@ -38,7 +38,7 @@ jobs:
       AUTH_GOOGLE_ID: "ci_google_id"
       AUTH_GOOGLE_SECRET: "ci_google_secret"
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
-      PLAYWRIGHT_TEST_BASE_URL: "http://localhost:3000"
+      PLAYWRIGHT_TEST_BASE_URL: "http://localhost:3008"
       RESEND_API_KEY: "re_ci_dummy_key_2026"
       RESEND_FROM_EMAIL: "notifications@kailshiansx.com"
       RAZORPAY_KEY_ID: "rzp_test_dummy_key"
@@ -74,14 +74,14 @@ jobs:
           echo "Checking migration status..."
           npx prisma migrate status
 
+      - name: TypeScript Typecheck
+        run: npm run typecheck
+
       - name: ESLint Check (Zero Warnings Enforced)
         run: npx eslint . --max-warnings=0
 
       - name: Check Colors Guardrail (Zero Violations Enforced)
         run: npm run check:colors
-
-      - name: TypeScript Typecheck
-        run: npm run typecheck
 
       - name: Production Build Check
         run: npm run build
@@ -100,6 +100,28 @@ jobs:
 
       - name: Run Playwright UI & Theme Matrix Tests
         run: npm run test:ui
+
+      - name: Start Production Server for Lighthouse CI
+        run: |
+          npx next start -p 3008 &
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:3008 > /dev/null; then
+              echo "Server ready on 3008"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Run Lighthouse CI Audit
+        run: npx @lhci/cli autorun
+
+      - name: Upload Lighthouse CI Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 14
 
       - name: Upload Playwright Report & Screenshots
         uses: actions/upload-artifact@v4

@@ -75,16 +75,16 @@ export function ApplicationsTracker({ applications }: Props) {
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/join-team"
+            href="/about"
             className="bg-primary hover:bg-primary-hover text-primary-foreground inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-md transition-colors"
           >
-            Join Team
+            About KailshiansX
           </Link>
           <Link
-            href="/campus-leads"
+            href="/community#lead"
             className="bg-muted hover:bg-muted text-foreground border-border inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors"
           >
-            Apply for Campus Lead
+            Community Leads
           </Link>
         </div>
       </div>
@@ -144,7 +144,7 @@ export function ApplicationsTracker({ applications }: Props) {
 
               {app.type === "CAMPUS_LEAD" && (
                 <Link
-                  href="/campus-leads"
+                  href="/community#lead"
                   className="text-primary hover:text-primary flex items-center gap-1 text-xs font-semibold"
                 >
                   Program Details

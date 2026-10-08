@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
-import { cva, type VariantProps } from "class-variance-authority";
-import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { ToastVariant } from "./useToast";
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -23,36 +22,36 @@ const ToastViewport = React.forwardRef<
 ));
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
-const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-start justify-between gap-3 overflow-hidden rounded-lg border border-border bg-card p-4 transition-opacity duration-150 data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=open]:fade-in-80",
-  {
-    variants: {
-      variant: {
-        default: "text-foreground",
-        success: "text-foreground border-border",
-        destructive: "text-foreground border-destructive/50",
-        warning: "text-foreground border-border",
-        info: "text-foreground border-border",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
+const baseToastClasses =
+  "group pointer-events-auto relative flex w-full items-start justify-between gap-3 overflow-hidden rounded-lg border border-border bg-card p-4 transition-opacity duration-150 data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=open]:fade-in-80";
+
+const toastVariantClasses: Record<ToastVariant, string> = {
+  default: "text-foreground",
+  success: "text-foreground border-border",
+  destructive: "text-foreground border-destructive/50",
+  warning: "text-foreground border-border",
+  info: "text-foreground border-border",
+};
+
+function toastVariants({ variant = "default" }: { variant?: ToastVariant } = {}) {
+  return cn(baseToastClasses, toastVariantClasses[variant] || toastVariantClasses.default);
+}
+
+export interface ToastProps extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> {
+  variant?: ToastVariant;
+}
+
+const Toast = React.forwardRef<React.ElementRef<typeof ToastPrimitives.Root>, ToastProps>(
+  ({ className, variant, ...props }, ref) => {
+    return (
+      <ToastPrimitives.Root
+        ref={ref}
+        className={cn(toastVariants({ variant }), className)}
+        {...props}
+      />
+    );
   }
 );
-
-const Toast = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Root>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> & VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
-  return (
-    <ToastPrimitives.Root
-      ref={ref}
-      className={cn(toastVariants({ variant }), className)}
-      {...props}
-    />
-  );
-});
 Toast.displayName = ToastPrimitives.Root.displayName;
 
 const ToastAction = React.forwardRef<
@@ -83,7 +82,18 @@ const ToastClose = React.forwardRef<
     toast-close=""
     {...props}
   >
-    <X className="size-4" />
+    <svg
+      className="size-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
   </ToastPrimitives.Close>
 ));
 ToastClose.displayName = ToastPrimitives.Close.displayName;
@@ -112,11 +122,9 @@ const ToastDescription = React.forwardRef<
 ));
 ToastDescription.displayName = ToastPrimitives.Description.displayName;
 
-type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>;
 type ToastActionElement = React.ReactElement<typeof ToastAction>;
 
 export {
-  type ToastProps,
   type ToastActionElement,
   ToastProvider,
   ToastViewport,

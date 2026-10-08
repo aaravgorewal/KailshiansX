@@ -476,7 +476,7 @@ export async function getDeveloperPassportData(
       subtitle: `${user.campusLead.college?.name ?? "University Campus"} • ${user.campusLead.city?.name ?? "India"}`,
       badgeText: "Leadership",
       badgeVariant: "green",
-      link: "/campus-leads",
+      link: "/community#lead",
     });
   }
 
@@ -490,7 +490,7 @@ export async function getDeveloperPassportData(
       subtitle: `${user.stateLead.state} Chapter Coordinator`,
       badgeText: "State Lead",
       badgeVariant: "green",
-      link: "/state-leads",
+      link: "/community#lead",
     });
   }
 

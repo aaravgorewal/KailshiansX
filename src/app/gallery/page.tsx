@@ -1,62 +1,25 @@
-// src/app/gallery/page.tsx
-// Public gallery organized by category and event
-
 import type { Metadata } from "next";
-import { auth } from "@/lib/auth";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GalleryOverviewClient } from "@/components/gallery/GalleryOverviewClient";
 import { getGalleryOverview } from "@/server/gallery/queries";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Community & Event Gallery | KailshiansX",
+  title: "Gallery | KailshiansX",
   description:
-    "Explore photo archives from KailshiansX hackathons, meetups, workshops, tech talks, community summits, and behind-the-scenes builder moments across India.",
-  alternates: {
-    canonical: `${APP_URL}/gallery`,
-  },
-  openGraph: {
-    title: "Community & Event Gallery | KailshiansX",
-    description:
-      "High-resolution photos from NirmanX, RaibarX, PadharoX, architecture workshops, and campus builder chapters.",
-    url: `${APP_URL}/gallery`,
-    siteName: "KailshiansX",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "KailshiansX Gallery",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Community & Event Gallery | KailshiansX",
-    description:
-      "Explore photo archives from KailshiansX hackathons, meetups, workshops, tech talks, and builder moments.",
-    images: ["/og-image.png"],
-  },
+    "Photo archives from KailshiansX hackathons, meetups, workshops, tech talks, and builder chapters across India.",
 };
 
 export default async function GalleryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; eventId?: string; search?: string }>;
+  searchParams: Promise<{ category?: string }>;
 }) {
   const sParams = await searchParams;
-  const session = await auth();
-  const isAdmin = ["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"].includes(session?.user?.role || "");
-
-  const { albums, totalImagesCount, categoryCounts, eventsWithAlbums } = await getGalleryOverview({
+  const { albums } = await getGalleryOverview({
     category: sParams.category,
-    eventId: sParams.eventId,
-    search: sParams.search,
   });
 
-  // Serialize albums for client component
   const serializedAlbums = albums.map((alb) => ({
     id: alb.id,
     title: alb.title,
@@ -82,54 +45,19 @@ export default async function GalleryPage({
     _count: alb._count,
   }));
 
-  const serializedEvents = eventsWithAlbums.map((ev) => ({
-    id: ev.id,
-    title: ev.title,
-    slug: ev.slug,
-    type: ev.type,
-    city: ev.city,
-    _count: ev._count,
-  }));
-
   return (
-    <div className="bg-background min-h-screen pb-24">
-      {/* ─── HEADER BANNER ─────────────────────────────────────────────────── */}
-      <section className="border-border border-b py-12">
-        <div className="container-page">
-          <SectionHeader
-            title="Visual Archive"
-            description="Moments from hackathons, architecture masterclasses, collegiate summits, and behind-the-scenes rituals across India."
-          />
+    <main className="container-page min-h-screen space-y-10 py-12 sm:py-16">
+      <div>
+        <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+          Gallery
+        </h1>
+        <p className="text-muted-foreground mt-2 max-w-2xl text-base">
+          Photo archives from KailshiansX hackathons, meetups, workshops, tech talks, and builder
+          chapters across India.
+        </p>
+      </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="text-muted-foreground mt-6 flex flex-wrap items-center gap-6 font-mono text-xs">
-            <div>
-              <strong className="text-foreground font-semibold">{albums.length}</strong> Curated
-              Albums
-            </div>
-            <span>•</span>
-            <div>
-              <strong className="text-foreground font-semibold">{totalImagesCount}</strong> High-Res
-              Photos
-            </div>
-            <span>•</span>
-            <div>
-              <strong className="text-foreground font-semibold">6</strong> Categories
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── MAIN GALLERY CONTENT ──────────────────────────────────────────── */}
-      <main className="container-page mt-8">
-        <GalleryOverviewClient
-          albums={serializedAlbums}
-          categoryCounts={categoryCounts}
-          eventsWithAlbums={serializedEvents}
-          totalPhotosCount={totalImagesCount}
-          isAdmin={isAdmin}
-        />
-      </main>
-    </div>
+      <GalleryOverviewClient albums={serializedAlbums} />
+    </main>
   );
 }

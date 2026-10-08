@@ -25,9 +25,16 @@
   --color-destructive: var(--destructive);
   --color-scrim: var(--scrim);
 
-  /* Fonts */
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Fonts: Geist only with system-ui fallback */
+  --font-sans: var(--font-sans), system-ui;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 
   /* Border radius */
   --radius-sm: 0.25rem;
@@ -47,25 +54,31 @@
     border-color: var(--border);
   }
 
+  /* Smooth scroll exclusively inside no-preference media query */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   html {
-    scroll-behavior: smooth;
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    overflow-x: clip;
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
   }
 
   body {
+    overflow-x: clip;
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
-    overflow-x: clip;
   }
 
-  /* Focus ring */
+  /* Instant focus ring */
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
@@ -113,7 +126,7 @@
     text-decoration: none;
   }
 
-  /* Reduced motion — disables transitions and animations */
+  /* Reduced motion block */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -123,10 +136,60 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+
+    [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* Fallback for when JavaScript is off */
+  @media (scripting: none) {
+    [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
   }
 }
 
-/* ─── Component layer ────────────────────────────────────────────────────────── */
+/* ─── Typography & Component Utilities ────────────────────────────────────────── */
+@layer utilities {
+  .display {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  .h2 {
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .h3 {
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  .body-lg {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  .eyebrow-free {
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: inherit;
+    font-weight: normal;
+  }
+}
+
 @layer components {
   /* Flat border card following UI rules */
   .card-flat {
@@ -159,5 +222,43 @@
       padding-left: 2rem;
       padding-right: 2rem;
     }
+  }
+}
+
+/* ─── View Transitions API & Subtle 150ms Route Transitions ──────────────────── */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 150ms ease-out both vt-fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 150ms ease-in both vt-fade-in;
+}
+
+@keyframes vt-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
 }

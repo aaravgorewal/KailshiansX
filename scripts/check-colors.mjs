@@ -24,9 +24,8 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..", "src");
 const REPO_ROOT = join(__dirname, "..");
 
-/** Files whose raw color literals are intentional (token definitions, brand icon exceptions, OG images, canvas editors). */
+/** Files whose raw color literals are intentional (tokens.css is single source of truth; brand icon exceptions, OG images, canvas editors). */
 const ALLOWED_RAW_COLOR_FILES = new Set([
-  "src/app/globals.css",
   "src/styles/tokens.css",
   "src/components/auth/GoogleIcon.tsx",
   "src/app/gallery/[albumId]/opengraph-image.tsx",
@@ -34,16 +33,10 @@ const ALLOWED_RAW_COLOR_FILES = new Set([
 ]);
 
 /** Folders whose raw color literals are intentional (server email/PDF/QR generation, api mock endpoints). */
-const ALLOWED_DIRECTORIES = [
-  "src/server/",
-  "src/app/api/",
-];
+const ALLOWED_DIRECTORIES = ["src/server/", "src/app/api/"];
 
 function isColorExempt(f) {
-  return (
-    ALLOWED_RAW_COLOR_FILES.has(f) ||
-    ALLOWED_DIRECTORIES.some((dir) => f.startsWith(dir))
-  );
+  return ALLOWED_RAW_COLOR_FILES.has(f) || ALLOWED_DIRECTORIES.some((dir) => f.startsWith(dir));
 }
 
 /**
@@ -65,10 +58,7 @@ const RULES = [
     // Allow rgb() only in server-side PDF/email files (they use pdf-lib / react-email inline styles)
     pattern: /\brgba?\s*\(/,
     message: "Hardcoded rgb()/rgba() color literal",
-    skip: (f) =>
-      isColorExempt(f) ||
-      f.startsWith("src/server/") ||
-      f.startsWith("src/lib/"),
+    skip: (f) => isColorExempt(f) || f.startsWith("src/server/") || f.startsWith("src/lib/"),
   },
   {
     id: "hsl-literal",
@@ -101,7 +91,8 @@ const RULES = [
   },
   {
     id: "tw-gradient-stop",
-    pattern: /\b(from|via|to)-(black|white|transparent|current|inherit|[a-z]+-[0-9]{2,3}|\[#[0-9a-fA-F]+\]|[0-9]{1,3}%)/,
+    pattern:
+      /\b(from|via|to)-(black|white|transparent|current|inherit|[a-z]+-[0-9]{2,3}|\[#[0-9a-fA-F]+\]|[0-9]{1,3}%)/,
     message: "Tailwind gradient stop (from-/via-/to-) is forbidden",
   },
   {
@@ -160,11 +151,15 @@ const violations = [];
 // If file paths are passed as arguments (e.g. by lint-staged), only scan those files.
 const fileArgs = process.argv
   .slice(2)
-  .filter((arg) => !arg.startsWith("--") && (arg.endsWith(".ts") || arg.endsWith(".tsx") || arg.endsWith(".css")));
+  .filter(
+    (arg) =>
+      !arg.startsWith("--") && (arg.endsWith(".ts") || arg.endsWith(".tsx") || arg.endsWith(".css"))
+  );
 
-const targetFiles = fileArgs.length > 0
-  ? fileArgs.map((f) => (isAbsolute(f) ? f : join(REPO_ROOT, f)))
-  : Array.from(walkFiles(ROOT, [".ts", ".tsx", ".css"]));
+const targetFiles =
+  fileArgs.length > 0
+    ? fileArgs.map((f) => (isAbsolute(f) ? f : join(REPO_ROOT, f)))
+    : Array.from(walkFiles(ROOT, [".ts", ".tsx", ".css"]));
 
 for (const absPath of targetFiles) {
   const relPath = relative(REPO_ROOT, absPath); // e.g. "src/app/page.tsx"
@@ -206,14 +201,10 @@ for (const v of violations) {
   (byRule[v.rule] = byRule[v.rule] || []).push(v);
 }
 
-process.stderr.write(
-  `\ncheck:colors — ${violations.length} violation(s) found:\n\n`
-);
+process.stderr.write(`\ncheck:colors — ${violations.length} violation(s) found:\n\n`);
 
 for (const [ruleId, items] of Object.entries(byRule)) {
-  process.stderr.write(
-    `  [${ruleId}] ${items[0].message} — ${items.length} occurrence(s)\n`
-  );
+  process.stderr.write(`  [${ruleId}] ${items[0].message} — ${items.length} occurrence(s)\n`);
   for (const v of items) {
     process.stderr.write(`    ${v.file}:${v.line}\n`);
     process.stderr.write(`      ${v.snippet}\n`);
@@ -222,9 +213,7 @@ for (const [ruleId, items] of Object.entries(byRule)) {
 }
 
 const fileCount = new Set(violations.map((v) => v.file)).size;
-process.stderr.write(
-  `Total: ${violations.length} violation(s) across ${fileCount} file(s).\n`
-);
+process.stderr.write(`Total: ${violations.length} violation(s) across ${fileCount} file(s).\n`);
 process.stderr.write(
   "\nFix all violations before committing. See docs/DESIGN_SYSTEM.md for design system guidelines.\n\n"
 );

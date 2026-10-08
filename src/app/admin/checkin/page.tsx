@@ -52,6 +52,7 @@ export default async function AdminCheckinPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/admin"
+              aria-label="Back to Admin"
               className="border-border bg-muted text-muted-foreground hover:text-foreground inline-flex size-8 items-center justify-center rounded-lg border transition"
             >
               <ArrowLeft className="size-4" />

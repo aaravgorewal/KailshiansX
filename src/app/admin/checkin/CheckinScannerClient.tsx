@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import jsQR from "jsqr";
+type JsQRType = typeof import("jsqr").default;
 import {
   Camera,
   Search,
@@ -222,10 +222,16 @@ export function CheckinScannerClient({
 
     let currentStream: MediaStream | null = null;
     let animationFrameId: number;
+    let jsQRInstance: JsQRType | null = null;
 
     async function startCamera() {
       setCameraError(null);
       try {
+        if (!jsQRInstance) {
+          const mod = await import("jsqr");
+          jsQRInstance = mod.default;
+        }
+
         const constraints: MediaStreamConstraints = {
           video: selectedDeviceId
             ? { deviceId: { exact: selectedDeviceId } }
@@ -270,9 +276,11 @@ export function CheckinScannerClient({
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-          inversionAttempts: "dontInvert",
-        });
+        const code = jsQRInstance
+          ? jsQRInstance(imageData.data, imageData.width, imageData.height, {
+              inversionAttempts: "dontInvert",
+            })
+          : null;
 
         if (code && code.data) {
           const scannedText = code.data.trim();

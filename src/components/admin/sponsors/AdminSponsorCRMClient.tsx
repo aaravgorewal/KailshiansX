@@ -152,18 +152,22 @@ const STAGES: { key: SponsorDealStage; label: string; color: string }[] = [
   {
     key: "INITIAL_CONTACT",
     label: "Initial Contact",
-    color: "bg-primary/10 text-primary border-primary/20",
+    color: "bg-primary/10 text-primary-hover dark:text-primary border-primary/20",
   },
-  { key: "PITCHING", label: "Pitching", color: "bg-primary/10 text-primary border-primary/20" },
+  {
+    key: "PITCHING",
+    label: "Pitching",
+    color: "bg-primary/10 text-primary-hover dark:text-primary border-primary/20",
+  },
   {
     key: "PROPOSAL_SENT",
     label: "Proposal Sent",
-    color: "bg-primary/10 text-primary border-primary/20",
+    color: "bg-primary/10 text-primary-hover dark:text-primary border-primary/20",
   },
   {
     key: "NEGOTIATION",
     label: "Negotiation",
-    color: "bg-primary/10 text-primary border-border",
+    color: "bg-primary/10 text-primary-hover dark:text-primary border-border",
   },
   {
     key: "CONTRACT_SIGNED",
@@ -446,7 +450,7 @@ export function AdminSponsorCRMClient({
       {/* ─── HEADER & KPI SUMMARY ────────────────────────────────────────── */}
       <div className="border-border flex flex-col justify-between gap-4 border-b pb-6 md:flex-row md:items-center">
         <div>
-          <div className="bg-primary/10 border-primary/20 text-primary mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
+          <div className="bg-primary/10 border-primary/20 text-primary-hover dark:text-primary mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold">
             <Building2 className="h-3.5 w-3.5" />
             <span>Enterprise Sponsor CRM</span>
           </div>
@@ -683,7 +687,7 @@ export function AdminSponsorCRMClient({
                           >
                             <div className="flex items-start justify-between gap-2">
                               <div>
-                                <span className="text-primary bg-primary/10 mb-1 inline-block rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase">
+                                <span className="text-primary-hover dark:text-primary bg-primary/10 mb-1 inline-block rounded-md px-2 py-0.5 text-xs font-bold tracking-wider uppercase">
                                   {deal.tier}
                                 </span>
                                 <h4 className="group-hover:text-primary text-foreground text-xs font-bold transition-colors">
@@ -758,7 +762,7 @@ export function AdminSponsorCRMClient({
                                   });
                                   setDealModalOpen(true);
                                 }}
-                                className="text-primary hover:text-primary hover:bg-primary/10 rounded px-2 py-1 text-xs font-semibold"
+                                className="text-primary-hover dark:text-primary hover:bg-primary/10 rounded px-2 py-1 text-xs font-semibold"
                               >
                                 Edit
                               </button>
@@ -985,10 +989,10 @@ export function AdminSponsorCRMClient({
                               del.status === "FULFILLED"
                                 ? "border-success/30 bg-success/15 text-success border"
                                 : del.status === "IN_PROGRESS"
-                                  ? "border-primary/30 bg-primary/15 text-primary border"
+                                  ? "border-primary/30 bg-primary/15 text-primary-hover dark:text-primary border"
                                   : del.status === "WAIVED"
                                     ? "bg-muted text-muted-foreground"
-                                    : "border-border bg-primary/10 text-primary border"
+                                    : "border-border bg-primary/10 text-primary-hover dark:text-primary border"
                             }`}
                           >
                             {del.status}
@@ -1144,7 +1148,7 @@ export function AdminSponsorCRMClient({
                               inv.status === "PAID"
                                 ? "border-success/30 bg-success/15 text-success border"
                                 : inv.status === "SENT"
-                                  ? "border-primary/30 bg-primary/15 text-primary border"
+                                  ? "border-primary/30 bg-primary/15 text-primary-hover dark:text-primary border"
                                   : inv.status === "OVERDUE"
                                     ? "border-destructive/30 bg-destructive/15 text-destructive border"
                                     : "bg-muted text-muted-foreground"

@@ -38,8 +38,6 @@ export default async function Image({ params }: { params: Promise<{ albumId: str
         justifyContent: "space-between",
         padding: "56px 64px",
         backgroundColor: "#07090e",
-        backgroundImage:
-          "radial-gradient(ellipse at 15% 15%, rgba(61, 97, 252, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 85% 85%, rgba(139, 61, 255, 0.25) 0%, transparent 50%)",
         color: "#f8fafc",
         fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}

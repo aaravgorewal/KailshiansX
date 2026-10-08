@@ -415,7 +415,7 @@ export function CertificateDesignerCanvas({
               <Sliders className="text-primary h-4 w-4" />
               <span>Element Properties</span>
             </h4>
-            <span className="text-primary bg-primary/10 border-primary/20 rounded-md border px-2 py-0.5 font-mono text-xs">
+            <span className="text-primary-hover dark:text-primary bg-primary/10 border-primary/20 rounded-md border px-2 py-0.5 font-mono text-xs">
               {activeKey}
             </span>
           </div>

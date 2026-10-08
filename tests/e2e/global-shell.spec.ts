@@ -78,7 +78,7 @@ test.describe("Global Shell, Fonts, Navbar & Footer", () => {
     }
   }
 
-  test("3. Desktop Navbar: dropdown menu interactions & readability", async ({ page }) => {
+  test("3. Desktop Navbar: primary navigation links & readability", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
     await page.waitForLoadState("domcontentloaded");
@@ -86,39 +86,14 @@ test.describe("Global Shell, Fonts, Navbar & Footer", () => {
     // Center links visible
     const nav = page.locator("header nav[aria-label='Primary navigation']");
     await expect(nav).toBeVisible();
-    await expect(nav.getByRole("button", { name: /events/i })).toBeVisible();
-    await expect(nav.getByRole("button", { name: /community/i })).toBeVisible();
-    await expect(nav.getByRole("link", { name: /gallery/i })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Events" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Community" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Gallery" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "About" })).toBeVisible();
 
     // Right CTAs
     await expect(page.locator("header a#nav-signin-btn")).toBeVisible();
-    await expect(page.locator("header a", { hasText: "Explore Events" })).toBeVisible();
-
-    // Hover/click Events dropdown
-    const eventsBtn = nav.getByRole("button", { name: /events/i });
-    await eventsBtn.click();
-
-    const dropdownMenu = page.locator("header [role='menu']");
-    await expect(dropdownMenu).toBeVisible();
-
-    // Verify dropdown items
-    await expect(dropdownMenu.getByRole("menuitem", { name: /all events/i })).toBeVisible();
-    await expect(dropdownMenu.getByRole("menuitem", { name: /workshops/i })).toBeVisible();
-    await expect(dropdownMenu.getByRole("menuitem", { name: /hackathon series/i })).toBeVisible();
-
-    // Check dropdown styling: bg-card, border border-border, no shadow
-    const dropdownStyles = await dropdownMenu.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      return {
-        boxShadow: style.boxShadow,
-        borderRadius: style.borderRadius,
-      };
-    });
-    // Box shadow should be none or negligible
-    expect(
-      dropdownStyles.boxShadow === "none" ||
-        dropdownStyles.boxShadow === "rgba(0, 0, 0, 0) 0px 0px 0px 0px"
-    ).toBeTruthy();
+    await expect(page.locator("header a", { hasText: "Partner with us" })).toBeVisible();
   });
 
   test("4. Mobile Navbar: compact Events button, drawer focus trap & escape close", async ({
@@ -172,9 +147,9 @@ test.describe("Global Shell, Fonts, Navbar & Footer", () => {
     await expect(footer).toBeVisible();
 
     // 3 link column headings
-    await expect(footer.getByRole("heading", { name: "Events" })).toBeVisible();
-    await expect(footer.getByRole("heading", { name: "Community" })).toBeVisible();
-    await expect(footer.getByRole("heading", { name: "About" })).toBeVisible();
+    await expect(footer.getByRole("heading", { name: "Explore" })).toBeVisible();
+    await expect(footer.getByRole("heading", { name: "Organization" })).toBeVisible();
+    await expect(footer.getByRole("heading", { name: "Legal" })).toBeVisible();
 
     // Brand blurb
     await expect(footer.locator("text=Developer events & community platform")).toBeVisible();

@@ -1,101 +1,85 @@
 import type { Metadata } from "next";
-import { Mail, MapPin, MessageSquare } from "lucide-react";
+import { LEGAL_CONFIG } from "@/lib/legal-config";
+import { Mail, MessageSquare, MapPin } from "lucide-react";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
 
 export const metadata: Metadata = {
   title: "Contact Us | KailshiansX",
   description:
-    "Get in touch with the KailshiansX team for event support, partnerships, and community inquiries.",
+    "Get in touch with the KailshiansX team for event support, partnerships, and inquiries.",
   alternates: {
     canonical: `${APP_URL}/contact`,
-  },
-  openGraph: {
-    title: "Contact Us | KailshiansX",
-    description: "Connect with the KailshiansX team.",
-    url: `${APP_URL}/contact`,
-    siteName: "KailshiansX",
-    type: "website",
   },
 };
 
 export default function ContactPage() {
   return (
-    <div className="container-page mx-auto max-w-4xl py-12">
+    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
       <header className="border-border mb-8 border-b pb-6">
-        <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-          Connect
-        </span>
-        <h1 className="text-foreground mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Contact Us
-        </h1>
+        <h1 className="h2 text-foreground">Contact Us</h1>
         <p className="text-muted-foreground mt-2 text-sm">
-          Have questions about an upcoming event, hackathon partnership, or chapter leadership?
-          We&apos;re here to help.
+          Connect with our events team, community leads, and partner coordinators.
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-        <div className="border-border bg-card flex h-full flex-col justify-between rounded-lg border p-6">
+        <div className="border-border bg-card flex flex-col justify-between rounded-lg border p-5">
           <div>
-            <Mail className="text-foreground size-5" />
-            <h2 className="text-foreground mt-4 text-sm font-semibold">General Support</h2>
+            <Mail className="text-foreground mb-3 size-5" aria-hidden="true" />
+            <h2 className="text-foreground text-sm font-semibold">Support &amp; Tickets</h2>
             <p className="text-muted-foreground mt-1 text-xs">
-              Questions regarding event tickets, certificates, or platform accounts.
+              Assistance with ticket issues, check-ins, or refunds.
             </p>
           </div>
           <a
-            href="mailto:support@kailshians.com"
-            className="text-foreground focus-visible:ring-ring mt-3 block rounded text-sm font-medium underline underline-offset-4 hover:opacity-80 focus-visible:ring-1 focus-visible:outline-none"
+            href={`mailto:${LEGAL_CONFIG.supportEmail}`}
+            className="text-foreground mt-4 text-xs font-medium underline underline-offset-4"
           >
-            support@kailshians.com
+            {LEGAL_CONFIG.supportEmail}
           </a>
         </div>
 
-        <div className="border-border bg-card flex h-full flex-col justify-between rounded-lg border p-6">
+        <div className="border-border bg-card flex flex-col justify-between rounded-lg border p-5">
           <div>
-            <MessageSquare className="text-foreground size-5" />
-            <h2 className="text-foreground mt-4 text-sm font-semibold">
-              Partnerships &amp; Sponsors
-            </h2>
+            <MessageSquare className="text-foreground mb-3 size-5" aria-hidden="true" />
+            <h2 className="text-foreground text-sm font-semibold">Partnerships</h2>
             <p className="text-muted-foreground mt-1 text-xs">
-              Corporate hackathon sponsorships, tech talk collabs, and mentor engagements.
+              Sponsor hackathons, host tech talks, or provide venues.
             </p>
           </div>
           <a
-            href="mailto:partners@kailshians.com"
-            className="text-foreground focus-visible:ring-ring mt-3 block rounded text-sm font-medium underline underline-offset-4 hover:opacity-80 focus-visible:ring-1 focus-visible:outline-none"
+            href={`mailto:${LEGAL_CONFIG.partnersEmail}`}
+            className="text-foreground mt-4 text-xs font-medium underline underline-offset-4"
           >
-            partners@kailshians.com
+            {LEGAL_CONFIG.partnersEmail}
           </a>
         </div>
 
-        <div className="border-border bg-card flex h-full flex-col justify-between rounded-lg border p-6">
+        <div className="border-border bg-card flex flex-col justify-between rounded-lg border p-5">
           <div>
-            <MapPin className="text-foreground size-5" />
-            <h2 className="text-foreground mt-4 text-sm font-semibold">Headquarters</h2>
-            <p className="text-muted-foreground mt-1 text-xs">
-              Kailshians Web Services Private Limited
-            </p>
-            <p className="text-muted-foreground mt-3 text-xs leading-relaxed">
-              Bengaluru &amp; New Delhi, India
-            </p>
+            <MapPin className="text-foreground mb-3 size-5" aria-hidden="true" />
+            <h2 className="text-foreground text-sm font-semibold">Headquarters</h2>
+            <p className="text-muted-foreground mt-1 text-xs">{LEGAL_CONFIG.companyName}</p>
           </div>
+          <span className="text-muted-foreground mt-4 font-mono text-xs">
+            {LEGAL_CONFIG.jurisdiction}
+          </span>
         </div>
       </div>
 
-      <div className="border-border bg-card mt-12 rounded-lg border p-6 sm:p-8">
-        <h2 className="text-foreground text-base font-semibold">Grievance Redressal</h2>
+      <div className="border-border bg-card mt-10 rounded-lg border p-6">
+        <h2 className="text-foreground text-sm font-semibold">Grievance Redressal (India)</h2>
         <p className="text-muted-foreground mt-2 text-xs leading-relaxed">
-          In accordance with Information Technology rules, any content or platform grievances may be
-          addressed to our designated Grievance Officer at{" "}
+          Pursuant to Information Technology rules, user concerns and statutory grievances may be
+          directed to our designated Grievance Officer at{" "}
           <a
-            href="mailto:grievance@kailshians.com"
-            className="text-foreground focus-visible:ring-ring rounded underline underline-offset-4 hover:opacity-80 focus-visible:ring-1 focus-visible:outline-none"
+            href={`mailto:${LEGAL_CONFIG.grievanceEmail}`}
+            className="text-foreground underline underline-offset-4"
           >
-            grievance@kailshians.com
+            {LEGAL_CONFIG.grievanceEmail}
           </a>
-          . We acknowledge all inquiries within 24 business hours.
+          . Inquiries are acknowledged within 24 business hours.
         </p>
       </div>
     </div>

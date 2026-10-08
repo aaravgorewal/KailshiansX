@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Geist } from "next/font/google";
+import { Geist } from "next/font/google";
 import { NavbarWrapper } from "@/components/layout/NavbarWrapper";
 import { Footer } from "@/components/layout/Footer";
+import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -9,12 +10,9 @@ const geist = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
+  preload: true,
+  fallback: ["system-ui"],
+  adjustFontFallback: true,
 });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
@@ -80,9 +78,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
 };
 
@@ -92,8 +90,6 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-import { Toaster } from "@/components/ui/Toaster";
-import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const organizationJsonLd = {
@@ -129,12 +125,9 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={cn("font-sans", geist.variable, geistMono.variable)}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <head>
+        <meta name="description" content={APP_DESCRIPTION} />
         <script
           dangerouslySetInnerHTML={{
             __html: `!function(){try{var d=document.documentElement,c=d.classList;var e=localStorage.getItem("theme");if("dark"===e||(!e&&window.matchMedia("(prefers-color-scheme: dark)").matches)||(e==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches)){c.add("dark")}else{c.remove("dark")}}catch(t){}}();`,
@@ -152,11 +145,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange
         >
-          <NavbarWrapper />
-          <main className="flex-1 pt-16">{children}</main>
-          <Footer />
-          <Toaster />
-          <GoogleAnalytics />
+          <AppShell navbar={<NavbarWrapper />} footer={<Footer />}>
+            {children}
+          </AppShell>
         </ThemeProvider>
       </body>
     </html>

@@ -21,20 +21,32 @@ export const teamApplicationSchema = z.object({
   linkedin: z.string().max(200).optional().or(z.literal("")),
   portfolio: z.string().max(200).optional().or(z.literal("")),
   resumeUrl: z.string().max(300).optional().or(z.literal("")),
-  experience: z
-    .string()
-    .min(
-      20,
-      "Please share at least a few sentences about your relevant experience (min 20 characters)"
-    )
-    .max(4000),
+  experience: z.string().max(4000).optional().or(z.literal("")),
   motivation: z
     .string()
-    .min(20, "Tell us why you want to join KailshiansX and what drives you (min 20 characters)")
+    .min(5, "Tell us why you want to join KailshiansX (min 5 characters)")
     .max(4000),
   honeypot: z.string().max(0, "Bot submission rejected").optional().or(z.literal("")),
 });
 
+export const aboutRoleApplicationSchema = z.object({
+  name: z.string().min(2, "Full name must be at least 2 characters").max(100),
+  email: z.string().email("Please provide a valid email address").max(120),
+  phone: z
+    .string()
+    .min(10, "Please provide a valid 10-digit phone number")
+    .max(16)
+    .regex(/^[+0-9\s-]+$/, "Invalid phone format")
+    .optional()
+    .or(z.literal("")),
+  role: z.string().min(2, "Please specify the role you are applying for").max(150),
+  area: z.string().optional().or(z.literal("")),
+  link: z.string().max(300).optional().or(z.literal("")),
+  whyYou: z.string().min(5, "Please tell us why you want to join (min 5 characters)").max(4000),
+  honeypot: z.string().max(0, "Bot submission rejected").optional().or(z.literal("")),
+});
+
+export type AboutRoleApplicationInput = z.infer<typeof aboutRoleApplicationSchema>;
 export type TeamApplicationFormData = z.infer<typeof teamApplicationSchema>;
 
 export const updateApplicationStatusSchema = z.object({

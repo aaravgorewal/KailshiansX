@@ -164,3 +164,25 @@ export function formatDateTimeRange(
 
   return timeStr ? `${dateStr} · ${timeStr}` : dateStr;
 }
+
+/**
+ * Day number in Asia/Kolkata timezone:
+ * e.g. "18"
+ */
+export function formatDayNumber(dateInput: string | Date | number | null | undefined): string {
+  const d = toDate(dateInput);
+  if (!d) return "";
+  const get = getParts(d, { day: "numeric" });
+  return get("day");
+}
+
+/**
+ * Month short abbreviation uppercase in Asia/Kolkata timezone:
+ * e.g. "OCT"
+ */
+export function formatMonthShort(dateInput: string | Date | number | null | undefined): string {
+  const d = toDate(dateInput);
+  if (!d) return "";
+  const get = getParts(d, { month: "short" });
+  return get("month").toUpperCase();
+}

@@ -54,7 +54,7 @@ export const DEFAULT_TEMPLATES = [
     id: "template-tech-cyan",
     name: "Cyberpunk Neon Blue",
     description:
-      "Electric cyan and deep midnight gradients designed for technical hackathons and bootcamps.",
+      "Electric cyan and deep midnight accents designed for technical hackathons and bootcamps.",
     templateUrl: null,
     isDefault: false,
     fields: {

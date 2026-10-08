@@ -2,39 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  ExternalLink,
-  Users,
-  CheckCircle2,
-  ArrowLeft,
-  ShieldCheck,
-  Tag,
-  ChevronRight,
-  Gavel,
-} from "lucide-react";
 
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getHackathonEngineData } from "@/server/hackathons/service";
-import { HackathonEngineClient } from "@/components/hackathons/HackathonEngineClient";
+import { SITE_CONFIG } from "@/lib/config";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { SpeakerCard } from "@/components/ui/SpeakerCard";
-import { PartnerLogoGrid, type PartnerTier } from "@/components/ui/PartnerLogoGrid";
-import { FAQAccordion } from "@/components/ui/FAQAccordion";
-import { EventCard, type EventType, type EventStatus } from "@/components/ui/EventCard";
-import { EventStickyCta } from "@/components/events/EventStickyCta";
-import { EventCountdown } from "@/components/events/EventCountdown";
-import { getGoogleCalendarUrl } from "@/lib/calendar";
-import { formatDate, formatTimeRange } from "@/lib/format-date";
+import { formatDate, formatTime, formatTimeRange } from "@/lib/format-date";
 
 export const revalidate = 60;
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
+export async function generateStaticParams() {
+  const events = await db.event.findMany({
+    where: { status: "PUBLISHED", deletedAt: null },
+    select: { slug: true },
+  });
+  return events.map((e) => ({ slug: e.slug }));
+}
 
 interface EventDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -54,9 +36,8 @@ export async function generateMetadata({ params }: EventDetailPageProps): Promis
     };
   }
 
-  const title = event.metaTitle || `${event.title} | KailshiansX`;
+  const title = `${event.title} | KailshiansX`;
   const description =
-    event.metaDescription ||
     event.overview ||
     `Join ${event.title} organized by Kailshians Web Services developer community.`;
 
@@ -64,17 +45,17 @@ export async function generateMetadata({ params }: EventDetailPageProps): Promis
     title,
     description,
     alternates: {
-      canonical: `${APP_URL}/events/${event.slug}`,
+      canonical: `${SITE_CONFIG.url}/events/${event.slug}`,
     },
     openGraph: {
       title,
       description,
-      url: `${APP_URL}/events/${event.slug}`,
-      siteName: "KailshiansX",
+      url: `${SITE_CONFIG.url}/events/${event.slug}`,
+      siteName: SITE_CONFIG.name,
       type: "website",
       images: [
         {
-          url: `${APP_URL}/events/${event.slug}/opengraph-image`,
+          url: `${SITE_CONFIG.url}/events/${event.slug}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: event.title,
@@ -85,12 +66,12 @@ export async function generateMetadata({ params }: EventDetailPageProps): Promis
       card: "summary_large_image",
       title,
       description,
-      images: [`${APP_URL}/events/${event.slug}/opengraph-image`],
+      images: [`${SITE_CONFIG.url}/events/${event.slug}/opengraph-image`],
     },
   };
 }
 
-// ─── Event Detail Page Component ──────────────────────────────────────────────
+// ─── Event Detail Page ────────────────────────────────────────────────────────
 export default async function EventDetailPage({ params }: EventDetailPageProps) {
   const { slug } = await params;
   const now = new Date();
@@ -105,15 +86,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       scheduleItems: {
         orderBy: [{ sortOrder: "asc" }, { startTime: "asc" }],
       },
-      tracks: {
-        orderBy: { sortOrder: "asc" },
-      },
       speakers: {
         include: { speaker: true },
-        orderBy: { sortOrder: "asc" },
-      },
-      partners: {
-        include: { partner: true },
         orderBy: { sortOrder: "asc" },
       },
       faqs: {
@@ -121,13 +95,11 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       },
       galleryAlbums: {
         where: { isPublished: true },
-        include: {
-          images: { orderBy: { sortOrder: "asc" } },
-        },
-        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: { id: true },
       },
       _count: {
-        select: { registrations: true, speakers: true },
+        select: { registrations: true },
       },
     },
   });
@@ -136,822 +108,328 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
     notFound();
   }
 
-  const session = await auth();
-  const hackathonEngineData =
-    event.type === "HACKATHON" ? await getHackathonEngineData(event.slug, session?.user?.id) : null;
-  const isJudgeOrAdmin =
-    Boolean(session?.user?.role) &&
-    ["SUPER_ADMIN", "ADMIN", "JUDGE", "EVENT_MANAGER"].includes(session?.user?.role || "");
+  const isPast = event.startDate < now;
 
-  // Recommended other upcoming gatherings
-  const recommendedEvents = await db.event.findMany({
-    where: {
-      id: { not: event.id },
-      status: "PUBLISHED",
-      deletedAt: null,
-      startDate: { gte: now },
-    },
-    take: 3,
-    orderBy: { startDate: "asc" },
-    include: {
-      city: true,
-      ticketTypes: true,
-      _count: { select: { registrations: true, speakers: true } },
-    },
-  });
+  // Format meta line via src/lib/format-date.ts
+  const dateStr = formatDate(event.startDate);
+  const timeStr = formatTimeRange(event.startDate, event.endDate);
+  const metaParts = [dateStr, timeStr, event.venue, event.city?.name].filter(Boolean);
+  const metaLine = metaParts.join(" · ");
 
   // Calculate pricing
   const isFree =
-    event.ticketTypes.length === 0 || event.ticketTypes.some((t) => Number(t.price) === 0);
-  const lowestPrice =
+    event.ticketTypes.length === 0 ||
+    event.ticketTypes.some((t) => t.isFree || Number(t.price) === 0);
+
+  const minPrice =
     event.ticketTypes.length > 0 ? Math.min(...event.ticketTypes.map((t) => Number(t.price))) : 0;
-  const highestPrice =
-    event.ticketTypes.length > 0 ? Math.max(...event.ticketTypes.map((t) => Number(t.price))) : 0;
 
-  // Format dates via format-date.ts
-  const startDateStr = formatDate(event.startDate);
-  const timeRangeStr = formatTimeRange(event.startDate, event.endDate);
+  const priceLabel = isFree ? "Free" : `₹${minPrice.toLocaleString("en-IN")}`;
 
-  const mapQueryUrl =
-    event.venueMapUrl ||
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      [event.venue, event.venueAddress, event.city?.name, "India"].filter(Boolean).join(", ")
-    )}`;
+  // Calculate seats left (only low if <= 25 and > 0)
+  const totalSeats =
+    event.ticketTypes.reduce((acc, t) => acc + (t.quota || 0), 0) || event.maxCapacity || 0;
+  const bookedSeats = event._count.registrations;
+  const seatsLeft = totalSeats > 0 ? Math.max(0, totalSeats - bookedSeats) : null;
+  const isSeatsLow = seatsLeft !== null && seatsLeft > 0 && seatsLeft <= 25;
 
-  const googleCalUrl = getGoogleCalendarUrl({
-    title: event.title,
-    description: event.overview,
-    slug: event.slug,
-    startDate: event.startDate,
-    endDate: event.endDate,
-    venue: event.venue,
-    venueAddress: event.venueAddress,
-    cityName: event.city?.name,
-    appUrl: APP_URL,
-  });
+  // Gallery album for past events
+  const galleryAlbumId = event.galleryAlbums?.[0]?.id || null;
 
-  const icsDownloadUrl = `/api/events/${event.slug}/ics`;
-
-  // Segment speakers by role
-  const speakersList = event.speakers.filter((s) => s.role === "SPEAKER");
-  const judgesList = event.speakers.filter((s) => s.role === "JUDGE");
-  const mentorsList = event.speakers.filter((s) => s.role === "MENTOR");
-
-  // Partners formatting
-  const formattedPartners = event.partners.map((ep) => ({
-    id: ep.partner.id,
-    name: ep.partner.name,
-    websiteUrl: ep.partner.website || undefined,
-    logoUrl: ep.partner.logo || undefined,
-    tier: (ep.tier as PartnerTier) || "COMMUNITY",
-  }));
-
-  // Schema.org JSON-LD
-  const jsonLd = {
+  // JSON-LD Schema
+  const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
     name: event.title,
-    description: event.overview || event.title,
     startDate: event.startDate.toISOString(),
     endDate: (event.endDate || event.startDate).toISOString(),
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode:
       event.attendanceMode === "VIRTUAL"
         ? "https://schema.org/OnlineEventAttendanceMode"
-        : "https://schema.org/OfflineEventAttendanceMode",
+        : event.attendanceMode === "HYBRID"
+          ? "https://schema.org/MixedEventAttendanceMode"
+          : "https://schema.org/OfflineEventAttendanceMode",
     location: {
       "@type": "Place",
       name: event.venue || "Venue",
       address: {
         "@type": "PostalAddress",
-        streetAddress: event.venueAddress || undefined,
         addressLocality: event.city?.name || "India",
-        addressRegion: event.city?.state || "India",
         addressCountry: "IN",
       },
     },
-    image: event.coverImage || `${APP_URL}/events/${event.slug}/opengraph-image`,
-    organizer: {
-      "@type": "Organization",
-      name: "KailshiansX",
-      url: APP_URL,
-    },
-    offers: event.ticketTypes.map((ticket) => ({
+    image: event.coverImage ? [event.coverImage] : undefined,
+    description: event.overview || event.title,
+    offers: {
       "@type": "Offer",
-      name: ticket.name,
-      price: Number(ticket.price),
+      price: isFree ? 0 : minPrice,
       priceCurrency: "INR",
-      availability: "https://schema.org/InStock",
-      validFrom: ticket.saleStart ? ticket.saleStart.toISOString() : undefined,
-    })),
-    performer: event.speakers.map((sp) => ({
-      "@type": "Person",
-      name: sp.speaker.name,
-      jobTitle: sp.speaker.designation || undefined,
-      worksFor: sp.speaker.organisation
-        ? { "@type": "Organization", name: sp.speaker.organisation }
-        : undefined,
-    })),
+      availability: isPast
+        ? "https://schema.org/Discontinued"
+        : seatsLeft === 0
+          ? "https://schema.org/SoldOut"
+          : "https://schema.org/InStock",
+      url: `${SITE_CONFIG.url}/events/${event.slug}`,
+    },
   };
 
   return (
     <>
-      {/* Inject Schema.org JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
       />
 
-      <div className="bg-background min-h-screen pb-28">
-        {/* ─── Breadcrumb Bar ─────────────────────────────────────────────── */}
-        <div className="border-border bg-card/50 border-b py-3">
-          <div className="container-page text-muted-foreground flex items-center justify-between text-xs">
-            <Link
-              href="/events"
-              className="hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
-            >
-              <ArrowLeft className="size-3.5" aria-hidden="true" />
-              <span>Back to all events</span>
-            </Link>
+      <article className="py-12 pb-28 md:py-20 lg:pb-20">
+        <div className="container-page">
+          {/* ─── Hero ────────────────────────────────────────────────────────── */}
+          <header className="max-w-4xl">
+            {/* Title (.display smaller) */}
+            <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              {event.title}
+            </h1>
 
-            <div className="flex items-center gap-1.5 font-mono text-xs">
-              <span>KailshiansX</span>
-              <ChevronRight className="text-muted-foreground size-3" aria-hidden="true" />
-              <span>Events</span>
-              <ChevronRight className="text-muted-foreground size-3" aria-hidden="true" />
-              <span className="text-foreground max-w-[200px] truncate">{event.slug}</span>
+            {/* Meta line: date · time IST · venue · city */}
+            <p className="text-muted-foreground mt-3 text-sm font-medium sm:text-base">
+              {metaLine}
+            </p>
+          </header>
+
+          {/* Large cover photo (rounded-2xl; if none, no image block at all) */}
+          {event.coverImage && (
+            <div className="bg-muted relative mt-8 aspect-video max-h-[500px] w-full overflow-hidden rounded-2xl">
+              <Image
+                src={event.coverImage}
+                alt={event.title}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 1280px"
+                className="object-cover"
+              />
             </div>
-          </div>
-        </div>
+          )}
 
-        {/* ─── Event Hero Header ──────────────────────────────────────────── */}
-        <section aria-label="Event Header" className="border-border bg-card/30 border-b py-10">
-          <div className="container-page">
-            <div className="max-w-4xl space-y-5">
-              {/* Badges Row */}
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="neutral" size="sm">
-                  {event.type.replace("_", " ")}
-                </Badge>
-                <Badge variant={event.status === "PUBLISHED" ? "success" : "neutral"} size="sm">
-                  {event.status === "PUBLISHED" ? "Confirmed" : event.status}
-                </Badge>
-                <Badge variant="neutral" size="sm">
-                  {event.attendanceMode === "IN_PERSON" ? "In-Person Gathering" : "Virtual Stream"}
-                </Badge>
-                {event.city && (
-                  <Badge variant="neutral" size="sm">
-                    {event.city.name}, {event.city.state}
-                  </Badge>
-                )}
-              </div>
-
-              {/* Cover Image Banner */}
-              {event.coverImage && (
-                <div className="border-border bg-muted relative aspect-[21/9] w-full max-w-4xl overflow-hidden rounded-lg border">
-                  <Image
-                    src={event.coverImage}
-                    alt={event.title}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 896px"
-                    className="object-cover"
-                    unoptimized={event.coverImage.startsWith("data:")}
-                  />
-                </div>
-              )}
-
-              {/* Event Title */}
-              <h1 className="text-foreground text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                {event.title}
-              </h1>
-
-              {/* Overview / Subhead */}
+          {/* ─── Two-Column Layout ───────────────────────────────────────────── */}
+          <div className="mt-12 grid grid-cols-1 items-start gap-12 md:mt-16 lg:grid-cols-3 lg:gap-16">
+            {/* Left: Overview, Schedule, Speakers, FAQs */}
+            <div className="space-y-12 md:space-y-16 lg:col-span-2">
+              {/* 1. Overview */}
               {event.overview && (
-                <p className="text-muted-foreground max-w-3xl text-base leading-relaxed sm:text-lg">
-                  {event.overview}
-                </p>
-              )}
-
-              {/* Quick Specs Badges */}
-              <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 xl:grid-cols-4">
-                {/* Date & Time Card */}
-                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4">
-                  <div className="border-border bg-muted text-foreground rounded-md border p-2">
-                    <Calendar className="size-4" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
-                      Date &amp; Time (IST)
-                    </div>
-                    <div className="text-foreground mt-0.5 text-sm font-semibold">
-                      {startDateStr}
-                    </div>
-                    <div className="text-muted-foreground mt-0.5 text-xs">{timeRangeStr}</div>
-                  </div>
-                </div>
-
-                {/* Venue & Location Card */}
-                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4">
-                  <div className="border-border bg-muted text-foreground rounded-md border p-2">
-                    <MapPin className="size-4" aria-hidden="true" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
-                      Location
-                    </div>
-                    <div className="text-foreground mt-0.5 truncate text-sm font-semibold">
-                      {event.venue || "Announced Shortly"}
-                    </div>
-                    {event.venueAddress && (
-                      <div className="text-muted-foreground mt-0.5 truncate text-xs">
-                        {event.venueAddress}
-                      </div>
-                    )}
-                    <a
-                      href={mapQueryUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-foreground hover:text-muted-foreground mt-1 inline-flex items-center gap-1 text-xs font-medium underline"
-                    >
-                      <span>Open in Maps</span>
-                      <ExternalLink className="size-2.5" aria-hidden="true" />
-                    </a>
-                  </div>
-                </div>
-
-                <EventCountdown
-                  startDate={event.startDate.toISOString()}
-                  endDate={event.endDate ? event.endDate.toISOString() : null}
-                />
-
-                {/* Capacity & Format Card */}
-                <div className="border-border bg-card flex items-start gap-3 rounded-lg border p-4">
-                  <div className="border-border bg-muted text-foreground rounded-md border p-2">
-                    <Users className="size-4" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
-                      Capacity
-                    </div>
-                    <div className="text-foreground mt-0.5 text-sm font-semibold">
-                      {event.maxCapacity ? `${event.maxCapacity} Builders` : "Open Community RSVP"}
-                    </div>
-                    <div className="text-muted-foreground mt-0.5 text-xs">
-                      {event._count.registrations > 0
-                        ? `${event._count.registrations} registered`
-                        : "Registration open"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Main Two-Column Layout ─────────────────────────────────────── */}
-        <main className="container-page pt-10">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-            {/* Left Column: Comprehensive Detail Sections */}
-            <div className="space-y-12 lg:col-span-8">
-              {/* 1. Overview & About */}
-              <section aria-labelledby="section-overview">
-                <SectionHeader
-                  title="Event Overview"
-                  description="Curated by Kailshians Web Services to foster high-caliber engineering discussions and hands-on building."
-                  align="left"
-                  className="mb-4"
-                />
-
-                <div className="text-muted-foreground space-y-4 text-sm leading-relaxed sm:text-base">
-                  <p>
-                    {event.overview ||
-                      "Join software engineers, product architects, student builders, and open-source contributors for a day of technical deep dives, live code reviews, and networking."}
-                  </p>
-                  <p>
-                    KailshiansX events are built on real technical merit: zero commercial pitches,
-                    actionable system design lessons, and open-access mentorship from experienced
-                    practitioners.
-                  </p>
-                </div>
-              </section>
-
-              {/* 2. Eligibility & Requirements */}
-              {event.eligibility && (
-                <section
-                  aria-labelledby="section-eligibility"
-                  className="border-border bg-card rounded-lg border p-6"
-                >
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="border-border bg-muted text-foreground flex size-9 items-center justify-center rounded-md border">
-                      <ShieldCheck className="size-5" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h3 id="section-eligibility" className="text-foreground text-lg font-bold">
-                        Eligibility &amp; Prerequisites
-                      </h3>
-                      <p className="text-muted-foreground text-xs">
-                        Review before confirming your pass
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                    {event.eligibility}
-                  </p>
-
-                  <div className="border-border text-muted-foreground grid grid-cols-1 gap-3 border-t pt-4 text-xs sm:grid-cols-2">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2
-                        className="text-foreground size-4 shrink-0"
-                        aria-hidden="true"
-                      />
-                      <span>Valid college or professional ID required at check-in</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2
-                        className="text-foreground size-4 shrink-0"
-                        aria-hidden="true"
-                      />
-                      <span>Bring your own laptop &amp; development charger</span>
-                    </div>
+                <section aria-labelledby="overview-heading">
+                  <h2 id="overview-heading" className="h2 text-foreground mb-4">
+                    Overview
+                  </h2>
+                  <div className="text-muted-foreground text-base leading-relaxed whitespace-pre-line sm:text-lg">
+                    {event.overview}
                   </div>
                 </section>
               )}
 
-              {/* 3. Schedule / Agenda (Simple table/list) */}
+              {/* 2. Schedule (Simple table) */}
               {event.scheduleItems.length > 0 && (
-                <section aria-labelledby="section-schedule">
-                  <SectionHeader
-                    title="Event Schedule"
-                    description="Carefully planned sessions designed to maximize coding, learning, and peer networking."
-                    align="left"
-                    className="mb-6"
-                  />
+                <section aria-labelledby="schedule-heading">
+                  <h2 id="schedule-heading" className="h2 text-foreground mb-6">
+                    Schedule
+                  </h2>
+                  <div className="border-border overflow-x-auto border-t">
+                    <table className="w-full text-left text-sm">
+                      <thead className="border-border text-muted-foreground border-b font-mono text-xs uppercase">
+                        <tr>
+                          <th scope="col" className="py-3 pr-6 font-semibold">
+                            Time
+                          </th>
+                          <th scope="col" className="py-3 pr-6 font-semibold">
+                            Session
+                          </th>
+                          <th scope="col" className="py-3 font-semibold">
+                            Speaker
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-border divide-y">
+                        {event.scheduleItems.map((item) => {
+                          const timeLabel = item.endTime
+                            ? formatTimeRange(item.startTime, item.endTime)
+                            : formatTime(item.startTime);
+                          const speaker = event.speakers.find(
+                            (s) => s.speakerId === item.speakerId
+                          );
 
-                  <div className="border-border bg-card overflow-hidden rounded-lg border">
-                    <div className="divide-border divide-y">
-                      {event.scheduleItems.map((item, idx) => {
-                        const itemTimeStr = formatTimeRange(item.startTime, item.endTime);
-                        const speakerMatch = event.speakers.find(
-                          (s) => s.speakerId === item.speakerId
-                        )?.speaker;
+                          return (
+                            <tr key={item.id} className="py-4">
+                              <td className="text-muted-foreground py-4 pr-6 align-top font-mono whitespace-nowrap">
+                                {timeLabel}
+                              </td>
+                              <td className="py-4 pr-6 align-top">
+                                <span className="text-foreground block font-semibold">
+                                  {item.title}
+                                </span>
+                                {item.description && (
+                                  <span className="text-muted-foreground mt-1 block text-xs">
+                                    {item.description}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="text-muted-foreground py-4 align-top whitespace-nowrap">
+                                {speaker?.speaker?.name || "—"}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              )}
 
-                        return (
-                          <div key={item.id} className="p-4 sm:p-5">
-                            <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-                              <span className="text-muted-foreground flex items-center gap-1.5 font-mono text-xs">
-                                <Clock className="size-3.5" aria-hidden="true" />
-                                <span>{itemTimeStr}</span>
-                              </span>
-                              <Badge variant="neutral" size="sm">
-                                Slot {idx + 1}
-                              </Badge>
+              {/* 3. Speakers (Name, role, small round photo) */}
+              {event.speakers.length > 0 && (
+                <section aria-labelledby="speakers-heading">
+                  <h2 id="speakers-heading" className="h2 text-foreground mb-6">
+                    Speakers
+                  </h2>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    {event.speakers.map(({ speaker }) => {
+                      const roleDetails = [speaker.designation, speaker.organisation]
+                        .filter(Boolean)
+                        .join(" · ");
+
+                      return (
+                        <div
+                          key={speaker.id}
+                          className="border-border bg-card flex items-center gap-4 rounded-xl border p-4"
+                        >
+                          {speaker.photo ? (
+                            <div className="bg-muted relative size-12 shrink-0 overflow-hidden rounded-full">
+                              <Image
+                                src={speaker.photo}
+                                alt={speaker.name}
+                                fill
+                                sizes="48px"
+                                className="object-cover"
+                              />
                             </div>
-
-                            <h4 className="text-foreground mt-2 text-base font-bold">
-                              {item.title}
-                            </h4>
-
-                            {item.description && (
-                              <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
-                                {item.description}
+                          ) : (
+                            <div className="bg-muted text-foreground flex size-12 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
+                              {speaker.name.charAt(0)}
+                            </div>
+                          )}
+                          <div className="min-w-0">
+                            <h3 className="text-foreground truncate text-base font-semibold">
+                              {speaker.name}
+                            </h3>
+                            {roleDetails && (
+                              <p className="text-muted-foreground truncate text-xs">
+                                {roleDetails}
                               </p>
                             )}
-
-                            {speakerMatch && (
-                              <div className="text-muted-foreground mt-3 flex items-center gap-2.5 text-xs">
-                                <div className="bg-muted text-foreground flex size-6 items-center justify-center rounded-full font-bold">
-                                  {speakerMatch.name.charAt(0)}
-                                </div>
-                                <span>
-                                  <strong className="text-foreground">{speakerMatch.name}</strong>
-                                  {speakerMatch.designation ? ` · ${speakerMatch.designation}` : ""}
-                                </span>
-                              </div>
-                            )}
                           </div>
-                        );
-                      })}
-                    </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </section>
               )}
 
-              {/* 3.5. Hackathon Engine Cockpit */}
-              {event.type === "HACKATHON" && hackathonEngineData && (
-                <section
-                  id="hackathon-portal"
-                  aria-labelledby="section-hackathon-engine"
-                  className="space-y-6"
-                >
-                  {isJudgeOrAdmin && (
-                    <div className="border-border bg-card flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="border-border bg-muted text-foreground flex size-9 shrink-0 items-center justify-center rounded-md border">
-                          <Gavel className="size-5" aria-hidden="true" />
-                        </div>
-                        <div>
-                          <h4 className="text-foreground text-sm font-bold">
-                            Grand Jury &amp; Organizer Access
-                          </h4>
-                          <p className="text-muted-foreground text-xs">
-                            You have evaluation privileges for this hackathon. Access the official
-                            scoring rubric cockpit.
-                          </p>
-                        </div>
-                      </div>
-                      <Button size="sm" variant="secondary" asChild>
-                        <Link href={`/events/${event.slug}/judge`}>Launch Judge Cockpit</Link>
-                      </Button>
-                    </div>
-                  )}
-
-                  <SectionHeader
-                    title="Builder Cockpit &amp; Submissions"
-                    description="Form your squad, pick problem statements, submit project artifacts, and monitor the live leaderboard."
-                    align="left"
-                    className="mb-6"
-                  />
-
-                  <HackathonEngineClient initialData={hackathonEngineData} />
-                </section>
-              )}
-
-              {/* 4. Tracks & Problem Statements */}
-              {event.type !== "HACKATHON" && event.tracks.length > 0 && (
-                <section aria-labelledby="section-tracks">
-                  <SectionHeader
-                    title="Tracks &amp; Problem Statements"
-                    description="Choose your area of innovation. Multi-disciplinary tracks with focused sponsor APIs and mentorship."
-                    align="left"
-                    className="mb-6"
-                  />
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {event.tracks.map((track) => (
-                      <div
-                        key={track.id}
-                        className="border-border bg-card flex flex-col justify-between rounded-lg border p-5"
-                      >
-                        <div>
-                          <h4 className="text-foreground text-base font-bold">{track.name}</h4>
-                          {track.description && (
-                            <p className="text-muted-foreground mt-1 text-xs leading-relaxed sm:text-sm">
-                              {track.description}
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="border-border text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-xs">
-                          <span>Track Focus</span>
-                          <span>Open Submission</span>
-                        </div>
-                      </div>
+              {/* 4. FAQs only if present (plain details/summary) */}
+              {event.faqs.length > 0 && (
+                <section aria-labelledby="faqs-heading">
+                  <h2 id="faqs-heading" className="h2 text-foreground mb-6">
+                    Frequently Asked Questions
+                  </h2>
+                  <div className="divide-border border-border divide-y border-y">
+                    {event.faqs.map((faq) => (
+                      <details key={faq.id} className="group py-4">
+                        <summary className="text-foreground hover:text-accent-text flex cursor-pointer list-none items-center justify-between text-base font-medium transition-colors">
+                          <span>{faq.question}</span>
+                          <span
+                            aria-hidden="true"
+                            className="text-muted-foreground ml-4 font-mono text-lg transition-transform duration-150 group-open:rotate-45"
+                          >
+                            +
+                          </span>
+                        </summary>
+                        <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </details>
                     ))}
                   </div>
                 </section>
               )}
-
-              {/* 5. Speakers, Judges & Mentors */}
-              {event.speakers.length > 0 && (
-                <section aria-labelledby="section-speakers" className="space-y-8">
-                  <SectionHeader
-                    title="Speakers, Judges &amp; Mentors"
-                    description="Learn directly from senior engineers, startup CTOs, and open source architects."
-                    align="left"
-                    className="mb-6"
-                  />
-
-                  {/* Keynote Speakers */}
-                  {speakersList.length > 0 && (
-                    <div className="space-y-4">
-                      <h4 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                        <Badge variant="neutral" size="sm">
-                          Speakers
-                        </Badge>
-                        <span>Keynote &amp; Session Speakers</span>
-                      </h4>
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {speakersList.map((es) => (
-                          <SpeakerCard
-                            key={es.id}
-                            name={es.speaker.name}
-                            role={es.speaker.designation || "Speaker"}
-                            company={es.speaker.organisation || "Tech Community"}
-                            avatarUrl={es.speaker.photo || undefined}
-                            bio={es.speaker.bio || undefined}
-                            speakerRole="SPEAKER"
-                            socials={{
-                              twitter: es.speaker.twitter || undefined,
-                              linkedin: es.speaker.linkedin || undefined,
-                              github: es.speaker.github || undefined,
-                              website: es.speaker.website || undefined,
-                            }}
-                            sessionsCount={1}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Judges */}
-                  {judgesList.length > 0 && (
-                    <div className="border-border space-y-4 border-t pt-4">
-                      <h4 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                        <Badge variant="neutral" size="sm">
-                          Judges
-                        </Badge>
-                        <span>Evaluation Jury</span>
-                      </h4>
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {judgesList.map((es) => (
-                          <SpeakerCard
-                            key={es.id}
-                            name={es.speaker.name}
-                            role={es.speaker.designation || "Judge"}
-                            company={es.speaker.organisation || "Jury Board"}
-                            avatarUrl={es.speaker.photo || undefined}
-                            bio={es.speaker.bio || undefined}
-                            speakerRole="JUDGE"
-                            socials={{
-                              twitter: es.speaker.twitter || undefined,
-                              linkedin: es.speaker.linkedin || undefined,
-                              github: es.speaker.github || undefined,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Mentors */}
-                  {mentorsList.length > 0 && (
-                    <div className="border-border space-y-4 border-t pt-4">
-                      <h4 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                        <Badge variant="neutral" size="sm">
-                          Mentors
-                        </Badge>
-                        <span>Hands-On Mentors</span>
-                      </h4>
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {mentorsList.map((es) => (
-                          <SpeakerCard
-                            key={es.id}
-                            name={es.speaker.name}
-                            role={es.speaker.designation || "Mentor"}
-                            company={es.speaker.organisation || "Mentor"}
-                            avatarUrl={es.speaker.photo || undefined}
-                            bio={es.speaker.bio || undefined}
-                            speakerRole="MENTOR"
-                            socials={{
-                              twitter: es.speaker.twitter || undefined,
-                              linkedin: es.speaker.linkedin || undefined,
-                              github: es.speaker.github || undefined,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </section>
-              )}
-
-              {/* 6. Ticket Options (#tickets) */}
-              <section id="tickets" aria-labelledby="section-tickets" className="scroll-mt-24">
-                <SectionHeader
-                  title="Ticket Options &amp; Passes"
-                  description="Choose your ticket tier. All passes include full event access, verifiable certificate, and partner swag."
-                  align="left"
-                  className="mb-6"
-                />
-
-                <div className="space-y-4">
-                  {event.ticketTypes.length > 0 ? (
-                    event.ticketTypes.map((ticket) => {
-                      const isFreeTicket = Number(ticket.price) === 0;
-
-                      return (
-                        <div
-                          key={ticket.id}
-                          className="border-border bg-card flex flex-col items-start justify-between gap-4 rounded-lg border p-5 sm:flex-row sm:items-center"
-                        >
-                          <div className="flex-1 space-y-1">
-                            <div className="flex items-center gap-2">
-                              <h4 className="text-foreground text-base font-bold">{ticket.name}</h4>
-                              <Badge variant="neutral" size="sm">
-                                {isFreeTicket ? "Free pass" : "Paid pass"}
-                              </Badge>
-                            </div>
-
-                            {ticket.description && (
-                              <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">
-                                {ticket.description}
-                              </p>
-                            )}
-
-                            <div className="text-muted-foreground flex items-center gap-3 pt-1 font-mono text-xs">
-                              <span>Quota: {ticket.quota} seats</span>
-                              <span>•</span>
-                              <span>Certificate included</span>
-                            </div>
-                          </div>
-
-                          <div className="border-border flex w-full items-center justify-between gap-3 border-t pt-3 sm:w-auto sm:flex-col sm:items-end sm:border-0 sm:pt-0">
-                            <div className="text-foreground text-xl font-bold">
-                              {isFreeTicket ? "Free" : `₹${ticket.price}`}
-                            </div>
-
-                            <Button asChild size="sm" variant="primary">
-                              <Link href={`/events/${event.slug}/register?tier=${ticket.id}`}>
-                                Claim Pass
-                              </Link>
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div className="border-border bg-card rounded-lg border p-6 text-center">
-                      <Tag
-                        className="text-muted-foreground mx-auto mb-2 size-8"
-                        aria-hidden="true"
-                      />
-                      <h4 className="text-foreground text-base font-bold">Open Community Entry</h4>
-                      <p className="text-muted-foreground mx-auto mt-1 max-w-sm text-xs">
-                        This gathering is free for verified community members. RSVP below to confirm
-                        your seat.
-                      </p>
-                      <Button asChild className="mt-4" variant="primary">
-                        <Link href={`/events/${event.slug}/register`}>RSVP Now</Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              {/* 7. Partners & Sponsors */}
-              {formattedPartners.length > 0 && (
-                <section aria-labelledby="section-partners">
-                  <SectionHeader
-                    title="Supported by Industry Leaders"
-                    description="Cloud providers, developer toolmakers, and tech workspaces making this edition possible."
-                    align="left"
-                    className="mb-6"
-                  />
-
-                  <PartnerLogoGrid partners={formattedPartners} groupByTier={true} />
-                </section>
-              )}
-
-              {/* 8. Frequently Asked Questions */}
-              {event.faqs.length > 0 && (
-                <section aria-labelledby="section-faqs">
-                  <SectionHeader
-                    title="Frequently Asked Questions"
-                    description="Everything you need to know about attendance, schedules, certificates, and check-in."
-                    align="left"
-                    className="mb-6"
-                  />
-
-                  <FAQAccordion
-                    items={event.faqs.map((f) => ({
-                      id: f.id,
-                      question: f.question,
-                      answer: f.answer,
-                    }))}
-                  />
-                </section>
-              )}
-
-              {/* 9. Gallery Highlights */}
-              {event.galleryAlbums.length > 0 && (
-                <section aria-labelledby="section-gallery">
-                  <SectionHeader
-                    title="Moments From Previous Editions"
-                    description="Snapshots from the floor, coding sprints, and keynote stages."
-                    align="left"
-                    className="mb-6"
-                  />
-
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                    {event.galleryAlbums
-                      .flatMap((a) => a.images)
-                      .slice(0, 6)
-                      .map((img) => (
-                        <div
-                          key={img.id}
-                          className="border-border bg-muted relative aspect-video overflow-hidden rounded-lg border"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={img.url}
-                            alt={img.altText || img.caption || "Event moment"}
-                            className="size-full object-cover"
-                            loading="lazy"
-                          />
-                          {img.caption && (
-                            <div className="bg-background/80 text-foreground absolute inset-x-0 bottom-0 p-2 text-xs backdrop-blur-sm">
-                              {img.caption}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                </section>
-              )}
             </div>
 
-            {/* Right Column: Desktop Sticky Registration Box */}
-            <aside className="hidden lg:col-span-4 lg:block">
-              <EventStickyCta
-                slug={event.slug}
-                title={event.title}
-                isFree={isFree}
-                lowestPrice={lowestPrice}
-                highestPrice={highestPrice}
-                registrationDeadline={event.registrationDeadline}
-                startDate={event.startDate}
-                endDate={event.endDate}
-                status={event.status}
-                maxCapacity={event.maxCapacity}
-                attendeeCount={event._count.registrations}
-                googleCalendarUrl={googleCalUrl}
-                icsDownloadUrl={icsDownloadUrl}
-              />
+            {/* Right: Sticky Card (Desktop) */}
+            <aside className="hidden lg:col-span-1 lg:block">
+              <div className="border-border bg-card sticky top-24 space-y-6 rounded-2xl border p-6 sm:p-8">
+                <div>
+                  <span className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
+                    Admission
+                  </span>
+                  <div className="text-foreground mt-1 font-mono text-3xl font-bold">
+                    {priceLabel}
+                  </div>
+
+                  {/* Seats left ONLY if low (render count only when > 0, never {n && ...}) */}
+                  {!isPast && isSeatsLow && seatsLeft !== null && seatsLeft > 0 ? (
+                    <p className="text-destructive mt-1.5 font-mono text-xs font-medium">
+                      Only {seatsLeft} seats remaining
+                    </p>
+                  ) : null}
+                </div>
+
+                {/* Primary Action Button */}
+                {!isPast ? (
+                  <Button asChild size="lg" variant="primary" className="w-full">
+                    <Link href={`/events/${event.slug}/register`}>Register</Link>
+                  </Button>
+                ) : (
+                  <div className="space-y-3">
+                    <Button disabled size="lg" variant="secondary" className="w-full">
+                      Event ended
+                    </Button>
+                    {galleryAlbumId && (
+                      <Button asChild size="lg" variant="primary" className="w-full">
+                        <Link href={`/gallery/${galleryAlbumId}`}>View event photos</Link>
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
             </aside>
           </div>
+        </div>
+      </article>
 
-          {/* ─── Recommended Other Upcoming Events ──────────────────────────── */}
-          {recommendedEvents.length > 0 && (
-            <section
-              aria-labelledby="section-related"
-              className="border-border mt-20 border-t pt-12"
-            >
-              <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <SectionHeader
-                  title="Explore Other Upcoming Events"
-                  description="Keep the momentum going. Register for upcoming summits, hack sprints, and workshops."
-                  align="left"
-                />
-                <Button asChild variant="secondary" size="sm">
-                  <Link href="/events">View all events</Link>
-                </Button>
-              </div>
+      {/* ─── Mobile Sticky Bottom Bar ────────────────────────────────────────── */}
+      <div className="border-border bg-background/95 fixed inset-x-0 bottom-0 z-20 flex items-center justify-between border-t p-4 backdrop-blur-sm lg:hidden">
+        <div>
+          <div className="text-foreground font-mono text-xl leading-none font-bold">
+            {priceLabel}
+          </div>
+          {!isPast && isSeatsLow && seatsLeft !== null && seatsLeft > 0 ? (
+            <p className="text-destructive mt-1 font-mono text-xs font-medium">
+              {seatsLeft} seats left
+            </p>
+          ) : null}
+        </div>
 
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {recommendedEvents.map((ev, idx) => {
-                  const evIsFree =
-                    ev.ticketTypes.length === 0 ||
-                    ev.ticketTypes.some((t) => Number(t.price) === 0);
-                  const evPrice =
-                    ev.ticketTypes.length > 0
-                      ? Math.min(...ev.ticketTypes.map((t) => Number(t.price)))
-                      : 0;
-
-                  return (
-                    <EventCard
-                      key={ev.id}
-                      title={ev.title}
-                      slug={ev.slug}
-                      type={ev.type as EventType}
-                      status={ev.status as EventStatus}
-                      startDate={ev.startDate}
-                      endDate={ev.endDate || undefined}
-                      venue={ev.venue || undefined}
-                      city={ev.city?.name || undefined}
-                      coverUrl={ev.coverImage || undefined}
-                      isFree={evIsFree}
-                      price={evIsFree ? 0 : evPrice}
-                      attendeeCount={ev._count.registrations}
-                      speakerCount={ev._count.speakers}
-                      tags={[ev.type.replace("_", " "), ev.city?.name || "India"]}
-                      priority={idx < 2}
-                    />
-                  );
-                })}
-              </div>
-            </section>
+        <div>
+          {!isPast ? (
+            <Button asChild size="md" variant="primary">
+              <Link href={`/events/${event.slug}/register`}>Register</Link>
+            </Button>
+          ) : galleryAlbumId ? (
+            <Button asChild size="md" variant="primary">
+              <Link href={`/gallery/${galleryAlbumId}`}>View photos</Link>
+            </Button>
+          ) : (
+            <Button disabled size="md" variant="secondary">
+              Event ended
+            </Button>
           )}
-        </main>
-
-        {/* ─── Mobile Sticky Register CTA ─────────────────────────────────── */}
-        <EventStickyCta
-          slug={event.slug}
-          title={event.title}
-          isFree={isFree}
-          lowestPrice={lowestPrice}
-          highestPrice={highestPrice}
-          registrationDeadline={event.registrationDeadline}
-          startDate={event.startDate}
-          endDate={event.endDate}
-          status={event.status}
-          maxCapacity={event.maxCapacity}
-          attendeeCount={event._count.registrations}
-          googleCalendarUrl={googleCalUrl}
-          icsDownloadUrl={icsDownloadUrl}
-          className="lg:hidden"
-        />
+        </div>
       </div>
     </>
   );

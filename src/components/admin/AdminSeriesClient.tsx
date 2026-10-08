@@ -207,10 +207,10 @@ export function AdminSeriesClient({ initialSeries, kind }: AdminSeriesClientProp
             <Edit2 className="h-4 w-4" />
           </Button>
           <Link
-            href={isMeetup ? `/meetup-series/${item.slug}` : `/hackathon-series/${item.slug}`}
+            href={`/events?type=${isMeetup ? "meetup" : "hackathon"}`}
             target="_blank"
             className="text-muted-foreground hover:text-foreground hover:bg-muted rounded p-1.5"
-            title="Preview public series page"
+            title="Preview public events page"
           >
             <ExternalLink className="h-4 w-4" />
           </Link>

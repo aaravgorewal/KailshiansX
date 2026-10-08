@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { Card } from "@/components/common/Card";
 
 export default function GlobalError({
   error,

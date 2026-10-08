@@ -73,7 +73,7 @@ export default function PartnerPortalEntryPage() {
               packages.
             </p>
             <div className="text-primary mt-2 flex items-center justify-center gap-4 text-xs font-medium">
-              <Link href="/collaborations" className="hover:underline">
+              <Link href="/partner" className="hover:underline">
                 Sponsor an Event
               </Link>
               <span>•</span>

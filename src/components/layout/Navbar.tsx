@@ -3,201 +3,120 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Menu, ChevronDown } from "lucide-react";
+function MenuIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="4" x2="20" y1="12" y2="12" />
+      <line x1="4" x2="20" y1="6" y2="6" />
+      <line x1="4" x2="20" y1="18" y2="18" />
+    </svg>
+  );
+}
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  );
+}
 import { cn } from "@/lib/utils";
-import { PRIMARY_NAV, ALL_NAV_ITEMS, type NavItem } from "@/lib/nav";
-import { UserMenu } from "@/components/auth/UserMenu";
+import dynamic from "next/dynamic";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { Button } from "@/components/ui/Button";
 import type { UserRole } from "@prisma/client";
 
-type NavbarUser = {
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-  role: UserRole;
-} | null;
+const UserMenu = dynamic(() => import("@/components/auth/UserMenu").then((m) => m.UserMenu), {
+  ssr: false,
+});
 
-// ─── Wordmark ─────────────────────────────────────────────────────────────────
-
-function Wordmark() {
-  return (
-    <Link
-      href="/"
-      className="text-foreground text-base font-semibold tracking-tight transition-opacity hover:opacity-80"
-      aria-label="KailshiansX home"
-    >
-      KailshiansX
-    </Link>
-  );
+interface NavbarProps {
+  user: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role: UserRole;
+  } | null;
 }
 
-// ─── Desktop Dropdown Menu ───────────────────────────────────────────────────
+const NAV_LINKS = [
+  { label: "Events", href: "/events" },
+  { label: "Community", href: "/community" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "About", href: "/about" },
+];
 
-function DesktopDropdown({ item }: { item: NavItem }) {
-  const [open, setOpen] = React.useState(false);
+export function Navbar({ user }: NavbarProps) {
   const pathname = usePathname();
-  const ref = React.useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
+  const menuTriggerRef = React.useRef<HTMLButtonElement>(null);
+  const sheetRef = React.useRef<HTMLDivElement>(null);
+  const closeBtnRef = React.useRef<HTMLButtonElement>(null);
+
+  // Scroll detection: 1px border-b border-border only after scroll > 8px
   React.useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 8);
     }
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isActive =
-    item.children?.some((c) => (c.href === "/" ? pathname === "/" : pathname.startsWith(c.href))) ||
-    (item.href !== "#" && (item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)));
+  const [prevPathname, setPrevPathname] = React.useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMobileOpen(false);
+  }
 
-  return (
-    <div
-      ref={ref}
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <button
-        type="button"
-        onClick={(e) => {
-          if (e.detail === 0) {
-            setOpen((prev) => !prev);
-          } else {
-            setOpen(true);
-          }
-        }}
-        aria-expanded={open}
-        aria-haspopup="true"
-        className={cn(
-          "focus-visible:ring-ring flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-          isActive
-            ? "text-foreground underline underline-offset-4"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-        )}
-      >
-        <span>{item.label}</span>
-        <ChevronDown
-          size={14}
-          className={cn("transition-transform duration-150", open && "rotate-180")}
-        />
-      </button>
-
-      {open && (
-        <div
-          role="menu"
-          className="border-border bg-card text-card-foreground animate-in fade-in-0 absolute top-full left-0 z-50 mt-1 min-w-[220px] rounded-lg border p-1.5 duration-150"
-        >
-          {item.children?.map((child) => {
-            const isChildActive =
-              child.href === "/" ? pathname === "/" : pathname.startsWith(child.href);
-            return (
-              <Link
-                key={child.href}
-                href={child.href}
-                onClick={() => setOpen(false)}
-                role="menuitem"
-                className={cn(
-                  "focus-visible:ring-ring block rounded-md px-3 py-2 text-sm transition-[background-color,color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-                  isChildActive
-                    ? "bg-muted/60 text-foreground font-medium underline underline-offset-4"
-                    : "text-foreground hover:bg-muted"
-                )}
-              >
-                <span className="block">{child.label}</span>
-                {child.description && (
-                  <span className="text-muted-foreground mt-0.5 block text-xs">
-                    {child.description}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Desktop Nav Link (Direct) ────────────────────────────────────────────────
-
-function DesktopNavLink({ item }: { item: NavItem }) {
-  const pathname = usePathname();
-  const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-
-  return (
-    <Link
-      href={item.href}
-      className={cn(
-        "focus-visible:ring-ring rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80",
-        isActive
-          ? "text-foreground underline underline-offset-4"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-      )}
-    >
-      {item.label}
-    </Link>
-  );
-}
-
-// ─── Mobile Drawer ────────────────────────────────────────────────────────────
-
-function MobileDrawer({
-  open,
-  onClose,
-  user,
-}: {
-  open: boolean;
-  onClose: () => void;
-  user?: NavbarUser;
-}) {
-  const pathname = usePathname();
-  const drawerRef = React.useRef<HTMLDivElement>(null);
-  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
-
-  // Lock body scroll while open
+  // Body scroll lock when mobile sheet is open
   React.useEffect(() => {
-    if (!open) return;
+    if (!mobileOpen) return;
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = originalOverflow;
     };
-  }, [open]);
+  }, [mobileOpen]);
 
-  // Close when pathname changes
+  // Focus trap & Escape key listener for mobile sheet
   React.useEffect(() => {
-    onClose();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
-
-  // Focus trap & Escape key listener
-  React.useEffect(() => {
-    if (!open) return;
+    if (!mobileOpen) return;
 
     // Focus close button on open
-    closeButtonRef.current?.focus();
+    closeBtnRef.current?.focus();
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        setMobileOpen(false);
+        menuTriggerRef.current?.focus();
         return;
       }
 
       if (e.key === "Tab") {
-        if (!drawerRef.current) return;
-        const focusables = drawerRef.current.querySelectorAll<HTMLElement>(
+        if (!sheetRef.current) return;
+        const focusables = sheetRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
         if (focusables.length === 0) return;
@@ -221,175 +140,201 @@ function MobileDrawer({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
+  }, [mobileOpen]);
 
-  if (!open) return null;
+  const handleCloseSheet = () => {
+    setMobileOpen(false);
+    menuTriggerRef.current?.focus();
+  };
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-[var(--scrim)] backdrop-blur-sm transition-opacity duration-150"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Drawer panel */}
-      <div
-        ref={drawerRef}
+      <header
         className={cn(
-          "border-border bg-background fixed inset-y-0 left-0 z-50 flex h-full w-80 max-w-[calc(100vw-3rem)] flex-col border-r transition-transform duration-200 ease-out",
-          open ? "translate-x-0" : "-translate-x-full"
+          "bg-background/85 fixed inset-x-0 top-0 z-30 h-16 backdrop-blur-sm transition-colors duration-150",
+          isScrolled ? "border-border border-b" : "border-b border-transparent"
         )}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
       >
-        {/* Header */}
-        <div className="border-border flex items-center justify-between border-b px-5 py-4">
-          <Wordmark />
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <button
-              ref={closeButtonRef}
-              type="button"
-              onClick={onClose}
-              aria-label="Close navigation"
-              className="text-foreground hover:bg-muted rounded-lg p-2 transition-[background-color] duration-150"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        </div>
-
-        {/* Navigation list */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Mobile navigation">
-          {ALL_NAV_ITEMS.map((item) => {
-            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={cn(
-                  "mb-0.5 flex flex-col rounded-lg px-4 py-2.5 transition-[background-color,color] duration-150",
-                  isActive
-                    ? "bg-muted/50 text-foreground font-medium underline underline-offset-4"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                )}
-              >
-                <span className="text-sm font-medium">{item.label}</span>
-                {item.description && (
-                  <span className="text-muted-foreground mt-0.5 text-xs">{item.description}</span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Footer CTAs */}
-        <div className="border-border space-y-2 border-t px-5 py-4">
-          {user ? (
-            <Link
-              href="/me"
-              onClick={onClose}
-              className="bg-primary text-primary-foreground hover:bg-primary-hover block w-full rounded-lg py-2.5 text-center text-sm font-medium transition-[background-color] duration-150"
-            >
-              Developer Passport (/me)
-            </Link>
-          ) : (
-            <Link
-              href="/signin"
-              onClick={onClose}
-              className="bg-primary text-primary-foreground hover:bg-primary-hover block w-full rounded-lg py-2.5 text-center text-sm font-medium transition-[background-color] duration-150"
-            >
-              Sign In
-            </Link>
-          )}
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left: Wordmark KailshiansX */}
           <Link
-            href="/events"
-            onClick={onClose}
-            className="border-border bg-background text-foreground hover:bg-muted block w-full rounded-lg border py-2.5 text-center text-sm font-medium transition-[background-color] duration-150"
+            href="/"
+            className="text-foreground focus-visible:ring-ring rounded-sm text-base font-semibold tracking-tight transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:outline-none"
           >
-            Explore Events
+            KailshiansX
           </Link>
-        </div>
-      </div>
-    </>
-  );
-}
 
-// ─── Main Navbar ──────────────────────────────────────────────────────────────
-
-export function Navbar({ user }: { user: NavbarUser }) {
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-
-  return (
-    <>
-      <header className="border-border bg-background/90 fixed inset-x-0 top-0 z-30 h-16 border-b backdrop-blur-sm">
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          {/* Left — Wordmark */}
-          <Wordmark />
-
-          {/* Center — Desktop links */}
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
-            {PRIMARY_NAV.map((item) =>
-              item.children ? (
-                <DesktopDropdown key={item.href} item={item} />
-              ) : (
-                <DesktopNavLink key={item.href} item={item} />
-              )
-            )}
+          {/* Center: Events, Community, Gallery, About (Desktop) */}
+          <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+            {NAV_LINKS.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "focus-visible:ring-ring rounded-sm text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                    isActive
+                      ? "text-foreground font-medium underline underline-offset-4"
+                      : "text-muted-foreground hover:text-foreground font-medium"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Right — ThemeToggle + Auth + Mobile controls */}
-          <div className="flex items-center gap-2">
+          {/* Right: ThemeToggle, Sign in / Avatar Menu, Partner with us (Desktop) */}
+          <div className="hidden items-center gap-3 md:flex">
             <ThemeToggle />
 
-            {/* Signed-in user menu OR Sign In */}
             {user ? (
               <UserMenu user={user} />
             ) : (
-              <Link
-                href="/signin"
-                id="nav-signin-btn"
-                className="focus-visible:ring-ring text-foreground hover:bg-muted hidden items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 sm:inline-flex"
-              >
-                Sign in
-              </Link>
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/signin">Sign in</Link>
+              </Button>
             )}
 
-            {/* Desktop Explore Events CTA */}
-            <Link
-              href="/events"
-              className="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary-hover hidden items-center justify-center rounded-lg px-3.5 py-1.5 text-sm font-medium transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 sm:inline-flex"
-            >
-              Explore Events
-            </Link>
+            <Button asChild variant="primary" size="sm">
+              <Link href="/partner">Partner with us</Link>
+            </Button>
+          </div>
 
-            {/* Mobile: compact "Events" button before the hamburger */}
-            <Link
-              href="/events"
-              className="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary-hover inline-flex items-center justify-center rounded-lg px-2.5 py-1 text-xs font-medium transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 sm:hidden"
-            >
-              Events
-            </Link>
-
-            {/* Mobile hamburger button */}
+          {/* Mobile Right Controls: ThemeToggle + Menu Button */}
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
             <button
+              ref={menuTriggerRef}
               type="button"
-              onClick={() => setDrawerOpen(true)}
+              onClick={() => setMobileOpen(true)}
               aria-label="Open navigation menu"
-              aria-expanded={drawerOpen}
-              className="focus-visible:ring-ring text-foreground hover:bg-muted inline-flex items-center justify-center rounded-lg p-2 transition-[background-color] duration-150 focus-visible:ring-2 focus-visible:outline-none active:opacity-80 lg:hidden"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-navigation-sheet"
+              className="border-border bg-card text-foreground hover:bg-muted focus-visible:ring-ring flex size-9 items-center justify-center rounded-lg border transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
-              <Menu size={20} />
+              <MenuIcon className="size-4" aria-hidden="true" />
             </button>
           </div>
         </div>
       </header>
 
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} user={user} />
+      {/* Mobile Full-Screen Sheet */}
+      {mobileOpen && (
+        <div
+          id="mobile-navigation-sheet"
+          ref={sheetRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          className="bg-background fixed inset-0 z-50 flex flex-col justify-between p-6"
+        >
+          {/* Top Bar of Sheet: Wordmark + ThemeToggle + Close Button */}
+          <div className="border-border flex items-center justify-between border-b pb-4">
+            <Link
+              href="/"
+              onClick={handleCloseSheet}
+              className="text-foreground text-base font-semibold tracking-tight"
+            >
+              KailshiansX
+            </Link>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <button
+                ref={closeBtnRef}
+                type="button"
+                onClick={handleCloseSheet}
+                aria-label="Close navigation menu"
+                className="border-border bg-card text-foreground hover:bg-muted focus-visible:ring-ring flex size-9 items-center justify-center rounded-lg border transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              >
+                <XIcon className="size-4" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          {/* Main Links: Big Display Size */}
+          <nav className="flex flex-col gap-6 py-8" aria-label="Mobile primary navigation">
+            {NAV_LINKS.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={handleCloseSheet}
+                  className={cn(
+                    "focus-visible:ring-ring rounded-md text-3xl font-semibold tracking-tight transition-colors focus-visible:ring-2 focus-visible:outline-none sm:text-4xl",
+                    isActive
+                      ? "text-foreground underline underline-offset-8"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+
+            <Link
+              href="/partner"
+              onClick={handleCloseSheet}
+              className={cn(
+                "focus-visible:ring-ring rounded-md text-3xl font-semibold tracking-tight transition-colors focus-visible:ring-2 focus-visible:outline-none sm:text-4xl",
+                pathname === "/partner"
+                  ? "text-foreground underline underline-offset-8"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Partner with us
+            </Link>
+          </nav>
+
+          {/* Bottom Actions */}
+          <div className="border-border space-y-3 border-t pt-6">
+            {user ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 px-1">
+                  <div className="text-muted-foreground truncate font-mono text-xs">
+                    Signed in as{" "}
+                    <span className="text-foreground font-semibold">{user.name ?? user.email}</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button asChild variant="secondary" size="md">
+                    <Link href="/me" onClick={handleCloseSheet}>
+                      Dashboard
+                    </Link>
+                  </Button>
+                  {["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"].includes(user.role) && (
+                    <Button asChild variant="secondary" size="md">
+                      <Link href="/admin" onClick={handleCloseSheet}>
+                        Admin
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <Button asChild variant="ghost" size="lg" className="w-full">
+                <Link href="/signin" onClick={handleCloseSheet}>
+                  Sign in
+                </Link>
+              </Button>
+            )}
+
+            <Button asChild variant="primary" size="lg" className="w-full">
+              <Link href="/partner" onClick={handleCloseSheet}>
+                Partner with us
+              </Link>
+            </Button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

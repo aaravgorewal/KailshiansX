@@ -23,7 +23,7 @@ export function CertificatesList({ certificates }: Props) {
           credentials.
         </p>
         <Link
-          href="/workshops"
+          href="/events?type=workshop"
           className="bg-primary hover:bg-primary-hover text-primary-foreground inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-md transition-colors"
         >
           Browse Workshops

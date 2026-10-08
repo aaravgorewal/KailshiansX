@@ -22,8 +22,6 @@ const STEP_ICONS: Record<string, React.ElementType> = {
 export function ProgressionLadder({ progression }: Props) {
   return (
     <div className="border-border bg-card relative overflow-hidden rounded-2xl border p-6 shadow-2xl backdrop-blur-xl">
-      {/* Background ambient gradient */}
-
       <div className="relative z-10">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>

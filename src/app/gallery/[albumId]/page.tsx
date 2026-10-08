@@ -4,13 +4,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { AlbumDetailClient } from "@/components/gallery/AlbumDetailClient";
 import { AlbumCard } from "@/components/gallery/AlbumCard";
 import { getGalleryAlbumById } from "@/server/gallery/queries";
 import { GALLERY_CATEGORIES } from "@/lib/gallery";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kailshiansx.com";
-import { ChevronRight, ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -66,8 +64,6 @@ export async function generateMetadata({
 
 export default async function AlbumPage({ params }: { params: Promise<{ albumId: string }> }) {
   const { albumId } = await params;
-  const session = await auth();
-  const isAdmin = ["SUPER_ADMIN", "ADMIN", "EVENT_MANAGER"].includes(session?.user?.role || "");
 
   const data = await getGalleryAlbumById(albumId);
   if (!data || !data.album) {
@@ -110,78 +106,37 @@ export default async function AlbumPage({ params }: { params: Promise<{ albumId:
   };
 
   return (
-    <div className="bg-background min-h-screen pt-8 pb-24">
-      <div className="container-page space-y-8">
-        {/* ─── BREADCRUMBS & BACK LINK ────────────────────────────────────── */}
-        <nav aria-label="Breadcrumb" className="flex items-center justify-between text-xs">
-          <ol className="text-muted-foreground flex items-center gap-2">
-            <li>
-              <Link href="/gallery" className="hover:text-foreground transition-colors">
-                Gallery
-              </Link>
-            </li>
-            <li>
-              <ChevronRight className="text-muted-foreground size-3" />
-            </li>
-            <li>
-              <Link
-                href={`/gallery?category=${album.category}`}
-                className="hover:text-foreground capitalize transition-colors"
-              >
-                {catConfig.label}
-              </Link>
-            </li>
-            <li>
-              <ChevronRight className="text-muted-foreground size-3" />
-            </li>
-            <li className="text-foreground max-w-[200px] truncate font-medium sm:max-w-md">
-              {album.title}
-            </li>
-          </ol>
+    <main className="container-page min-h-screen space-y-12 py-12 sm:py-16">
+      <AlbumDetailClient album={serializedAlbum} />
 
-          <Link
-            href="/gallery"
-            className="text-muted-foreground hover:text-foreground hidden items-center gap-1.5 font-medium transition-colors sm:inline-flex"
-          >
-            <ArrowLeft className="size-3.5" />
-            <span>All Albums</span>
-          </Link>
-        </nav>
-
-        {/* ─── ALBUM DETAIL CLIENT (HEADER, PHOTO GRID, LIGHTBOX) ─────────── */}
-        <AlbumDetailClient album={serializedAlbum} isAdmin={isAdmin} />
-
-        {/* ─── RELATED ALBUMS SECTION ─────────────────────────────────────── */}
-        {relatedAlbums.length > 0 && (
-          <section className="border-border space-y-6 border-t pt-12">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-foreground text-lg font-semibold">More from the Archive</h2>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Explore other gatherings in the {catConfig.label} series.
-                </p>
-              </div>
-              <Link href="/gallery" className="text-primary text-xs font-medium hover:underline">
-                View Full Archive &rarr;
-              </Link>
+      {relatedAlbums.length > 0 && (
+        <section className="border-border space-y-6 border-t pt-12">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-foreground text-lg font-semibold">More from the Archive</h2>
+              <p className="text-muted-foreground mt-1 text-xs">
+                Explore other gatherings in the {catConfig.label} series.
+              </p>
             </div>
+            <Link href="/gallery" className="text-primary text-xs font-medium hover:underline">
+              View All &rarr;
+            </Link>
+          </div>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {relatedAlbums.map((relAlbum) => (
-                <AlbumCard
-                  key={relAlbum.id}
-                  id={relAlbum.id}
-                  title={relAlbum.title}
-                  category={relAlbum.category}
-                  coverImage={relAlbum.coverImage}
-                  photoCount={relAlbum._count.images}
-                  event={null}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-      </div>
-    </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedAlbums.map((relAlbum) => (
+              <AlbumCard
+                key={relAlbum.id}
+                id={relAlbum.id}
+                title={relAlbum.title}
+                category={relAlbum.category}
+                coverImage={relAlbum.coverImage}
+                event={null}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+    </main>
   );
 }

@@ -5,12 +5,21 @@ export const SEAT_HOLD_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 export class RegistrationError extends Error {
   code: string;
   statusCode: number;
+  existingRegistrationId?: string;
+  existingRegistrationCode?: string;
 
-  constructor(message: string, code = "REGISTRATION_FAILED", statusCode = 400) {
+  constructor(
+    message: string,
+    code = "REGISTRATION_FAILED",
+    statusCode = 400,
+    meta?: { existingRegistrationId?: string; existingRegistrationCode?: string }
+  ) {
     super(message);
     this.name = "RegistrationError";
     this.code = code;
     this.statusCode = statusCode;
+    this.existingRegistrationId = meta?.existingRegistrationId;
+    this.existingRegistrationCode = meta?.existingRegistrationCode;
   }
 }
 
@@ -52,7 +61,11 @@ export async function assertNoDuplicateRegistration(
     throw new RegistrationError(
       "You have already registered for this event with this email address.",
       "DUPLICATE_REGISTRATION",
-      409
+      409,
+      {
+        existingRegistrationId: existing.id,
+        existingRegistrationCode: existing.registrationCode,
+      }
     );
   }
 }

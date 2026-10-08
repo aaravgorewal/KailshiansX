@@ -1,20 +1,8 @@
-// src/components/gallery/Lightbox.tsx
-// High-performance, accessible image lightbox with keyboard navigation, focus trap, swipe, and filmstrip
-
 "use client";
 
 import * as React from "react";
 import Image from "next/image";
-import {
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  ExternalLink,
-  Maximize2,
-  Minimize2,
-  ImageIcon,
-} from "lucide-react";
+import { X, ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface LightboxImage {
@@ -35,49 +23,84 @@ export interface LightboxProps {
   onNavigate: (index: number) => void;
 }
 
-export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: LightboxProps) {
-  const [isFullscreen, setIsFullscreen] = React.useState(false);
-  // Track loadedIndex so loaded state resets synchronously when currentIndex changes — no setState in useEffect
-  const [loadedIndex, setLoadedIndex] = React.useState<number | null>(null);
+function ViewerImage({ image, index }: { image: LightboxImage; index: number }) {
+  const [loaded, setLoaded] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
 
+  return (
+    <div className="relative flex size-full max-h-[85vh] max-w-6xl items-center justify-center">
+      {!loaded && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="size-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+        </div>
+      )}
+      {hasError ? (
+        <div
+          className="bg-card/60 flex flex-col items-center justify-center gap-2 rounded-lg p-8 text-white/50"
+          aria-hidden="true"
+        >
+          <ImageIcon className="size-12 opacity-40" />
+          <span className="text-xs">Photo unavailable</span>
+        </div>
+      ) : (
+        <Image
+          key={index}
+          src={image.url}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className={cn(
+            "object-contain transition-opacity duration-200",
+            loaded ? "opacity-100" : "opacity-0"
+          )}
+          onLoad={() => setLoaded(true)}
+          onError={() => setHasError(true)}
+        />
+      )}
+    </div>
+  );
+}
+
+export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: LightboxProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
-  const filmstripRef = React.useRef<HTMLDivElement>(null);
   const touchStartXRef = React.useRef<number | null>(null);
 
   const activeImage = images[currentIndex];
   const hasMultiple = images.length > 1;
-  const isLoaded = loadedIndex === currentIndex;
 
   // Handle keyboard events (Arrow keys + Escape + Focus Trap)
   React.useEffect(() => {
     if (!isOpen) return;
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    // Focus close button immediately
     closeButtonRef.current?.focus();
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
         onClose();
-      } else if (e.key === "ArrowLeft") {
+        return;
+      }
+
+      if (e.key === "ArrowLeft" && hasMultiple) {
         e.preventDefault();
-        if (hasMultiple) {
-          setHasError(false);
-          onNavigate((currentIndex - 1 + images.length) % images.length);
-        }
-      } else if (e.key === "ArrowRight") {
+        onNavigate((currentIndex - 1 + images.length) % images.length);
+        return;
+      }
+
+      if (e.key === "ArrowRight" && hasMultiple) {
         e.preventDefault();
-        if (hasMultiple) {
-          setHasError(false);
-          onNavigate((currentIndex + 1) % images.length);
-        }
-      } else if (e.key === "Tab") {
-        // Focus trap inside lightbox container
-        if (!containerRef.current) return;
+        onNavigate((currentIndex + 1) % images.length);
+        return;
+      }
+
+      if (e.key === "Tab" && containerRef.current) {
         const focusableElements = containerRef.current.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), [href]:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          'button:not([disabled]), [href]:not([disabled]), [tabindex]:not([tabindex="-1"])'
         );
         if (focusableElements.length === 0) return;
 
@@ -109,19 +132,6 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
     };
   }, [isOpen, currentIndex, images.length, hasMultiple, onClose, onNavigate]);
 
-  // Scroll active thumbnail into view
-  React.useEffect(() => {
-    if (!isOpen || !filmstripRef.current) return;
-    const activeThumb = filmstripRef.current.children[currentIndex] as HTMLElement;
-    if (activeThumb) {
-      activeThumb.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
-    }
-  }, [currentIndex, isOpen]);
-
   // Touch Swipe handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartXRef.current = e.touches[0].clientX;
@@ -134,7 +144,6 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
     touchStartXRef.current = null;
 
     if (Math.abs(deltaX) > 50 && hasMultiple) {
-      setHasError(false);
       if (deltaX < 0) {
         // Swiped left -> next
         onNavigate((currentIndex + 1) % images.length);
@@ -145,36 +154,6 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
     }
   };
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-      setIsFullscreen(true);
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
-        setIsFullscreen(false);
-      }
-    }
-  };
-
-  const downloadCurrentImage = async () => {
-    if (!activeImage) return;
-    try {
-      const response = await fetch(activeImage.url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = `kailshiansx-photo-${currentIndex + 1}.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
-    } catch {
-      window.open(activeImage.url, "_blank");
-    }
-  };
-
   if (!isOpen || !activeImage) return null;
 
   return (
@@ -182,67 +161,27 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
       ref={containerRef}
       role="dialog"
       aria-modal="true"
-      aria-label="Image Lightbox"
-      className="animate-in fade-in fixed inset-0 z-50 flex flex-col justify-between bg-black/95 text-white duration-150"
+      aria-label="Photo viewer"
+      className="animate-in fade-in fixed inset-0 z-50 flex flex-col justify-between bg-black/95 text-white backdrop-blur-sm duration-150"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* ─── TOP BAR ──────────────────────────────────────────────────────── */}
-      <header className="relative z-20 flex items-center justify-between border-b border-white/10 bg-black/40 px-4 py-2 sm:px-6">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-xs font-semibold tracking-wider text-white/80">
+      {/* ─── TOP BAR: COUNTER & CLOSE ONLY (NO CLUTTER) ────────────────────── */}
+      <header className="relative z-20 flex items-center justify-between px-4 py-3 sm:px-6">
+        <div className="flex items-center">
+          <span className="font-mono text-xs font-medium tracking-wider text-white/80 sm:text-sm">
             {currentIndex + 1} <span className="text-white/40">/</span> {images.length}
           </span>
-          {activeImage.caption && (
-            <span className="hidden max-w-md truncate text-xs text-white/70 sm:inline-block">
-              {activeImage.caption}
-            </span>
-          )}
         </div>
 
-        <div className="flex items-center gap-1">
-          {/* Direct Download — 44px hit area */}
-          <button
-            type="button"
-            onClick={downloadCurrentImage}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-            title="Download full image"
-            aria-label="Download image"
-          >
-            <Download className="size-4" />
-          </button>
-
-          {/* Fullscreen Toggle — 44px hit area */}
-          <button
-            type="button"
-            onClick={toggleFullscreen}
-            className="hidden min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:flex"
-            title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-            aria-label="Toggle fullscreen"
-          >
-            {isFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
-          </button>
-
-          {/* Open Original — 44px hit area */}
-          <a
-            href={activeImage.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-            title="Open original in new tab"
-            aria-label="Open original"
-          >
-            <ExternalLink className="size-4" />
-          </a>
-
-          {/* Close — 44px hit area */}
+        <div>
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
             title="Close (Esc)"
-            aria-label="Close lightbox"
+            aria-label="Close viewer"
           >
             <X className="size-5" />
           </button>
@@ -255,61 +194,23 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
         {hasMultiple && (
           <button
             type="button"
-            onClick={() => {
-              setHasError(false);
-              onNavigate((currentIndex - 1 + images.length) % images.length);
-            }}
-            className="absolute left-3 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-white/20 sm:left-6"
+            onClick={() => onNavigate((currentIndex - 1 + images.length) % images.length)}
+            className="absolute left-3 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none sm:left-6"
             aria-label="Previous photo"
           >
             <ChevronLeft className="size-6" />
           </button>
         )}
 
-        {/* The Image Container */}
-        <div className="relative flex size-full max-h-[75vh] max-w-6xl items-center justify-center overflow-hidden">
-          {!isLoaded && !hasError && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="size-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            </div>
-          )}
-
-          {hasError ? (
-            <div className="flex flex-col items-center justify-center gap-2 text-white/60">
-              <ImageIcon className="size-12" />
-              <p className="text-xs">Photo could not be loaded</p>
-            </div>
-          ) : (
-            <div className="relative size-full">
-              <Image
-                key={currentIndex}
-                src={activeImage.url}
-                alt={
-                  activeImage.altText || activeImage.caption || `Gallery photo ${currentIndex + 1}`
-                }
-                fill
-                priority
-                sizes="(max-width: 1280px) 100vw, 1280px"
-                className={cn(
-                  "object-contain transition-opacity duration-200",
-                  isLoaded ? "opacity-100" : "opacity-0"
-                )}
-                onLoad={() => setLoadedIndex(currentIndex)}
-                onError={() => setHasError(true)}
-              />
-            </div>
-          )}
-        </div>
+        {/* The Image Container with key on index (no setState in effect) */}
+        <ViewerImage key={currentIndex} image={activeImage} index={currentIndex} />
 
         {/* Navigation Next — 44px hit area */}
         {hasMultiple && (
           <button
             type="button"
-            onClick={() => {
-              setHasError(false);
-              onNavigate((currentIndex + 1) % images.length);
-            }}
-            className="absolute right-3 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-white/20 sm:right-6"
+            onClick={() => onNavigate((currentIndex + 1) % images.length)}
+            className="absolute right-3 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/20 bg-black/60 text-white transition-colors hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none sm:right-6"
             aria-label="Next photo"
           >
             <ChevronRight className="size-6" />
@@ -317,53 +218,8 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
         )}
       </main>
 
-      {/* ─── BOTTOM BAR & FILMSTRIP ────────────────────────────────────────── */}
-      <footer className="relative z-20 border-t border-white/10 bg-black/40 px-4 py-3 sm:px-6">
-        {/* Caption */}
-        {activeImage.caption && (
-          <div className="mb-2 text-center text-xs font-medium text-white/90 sm:text-sm">
-            {activeImage.caption}
-          </div>
-        )}
-
-        {/* Thumbnails filmstrip — 44px+ hit area each */}
-        {hasMultiple && (
-          <div
-            ref={filmstripRef}
-            className="flex scrollbar-none items-center justify-start gap-2 overflow-x-auto py-1 sm:justify-center"
-          >
-            {images.map((img, idx) => {
-              const isActive = idx === currentIndex;
-              return (
-                <button
-                  key={img.id || idx}
-                  type="button"
-                  onClick={() => {
-                    setHasError(false);
-                    onNavigate(idx);
-                  }}
-                  className={cn(
-                    "relative size-12 shrink-0 overflow-hidden rounded-md border transition-all sm:size-14",
-                    isActive
-                      ? "border-primary ring-primary opacity-100 ring-2"
-                      : "border-white/20 opacity-50 hover:border-white/50 hover:opacity-100"
-                  )}
-                  aria-label={`View photo ${idx + 1}`}
-                >
-                  <Image
-                    src={img.thumbUrl || img.url}
-                    alt={img.altText || `Thumbnail ${idx + 1}`}
-                    fill
-                    sizes="56px"
-                    className="object-cover"
-                    loading="lazy"
-                  />
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </footer>
+      {/* Empty footer area for visual balance */}
+      <footer className="h-6 sm:h-8" />
     </div>
   );
 }

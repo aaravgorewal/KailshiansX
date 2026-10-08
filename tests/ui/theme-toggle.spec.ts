@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Theme Toggle Suite", () => {
   test("toggle Light -> Dark -> System via mouse", async ({ page }) => {
     await page.goto("/");
-    const toggleButton = page.locator('button[aria-label="Change theme"]');
+    const toggleButton = page.locator('button[aria-label="Change theme"]').first();
     await expect(toggleButton).toBeVisible();
 
     // 1. Toggle to Light
@@ -38,7 +38,7 @@ test.describe("Theme Toggle Suite", () => {
 
   test("toggle Light -> Dark -> System via keyboard", async ({ page }) => {
     await page.goto("/");
-    const toggleButton = page.locator('button[aria-label="Change theme"]');
+    const toggleButton = page.locator('button[aria-label="Change theme"]').first();
     await expect(toggleButton).toBeVisible();
 
     // Focus toggle button and open menu via Enter
@@ -78,7 +78,7 @@ test.describe("Theme Toggle Suite", () => {
 
   test("assert theme persistence after page reload", async ({ page }) => {
     await page.goto("/");
-    const toggleButton = page.locator('button[aria-label="Change theme"]');
+    const toggleButton = page.locator('button[aria-label="Change theme"]').first();
 
     // Switch to dark
     await toggleButton.click();
@@ -142,7 +142,7 @@ test.describe("Theme Toggle Suite", () => {
     await page.goto("/");
 
     // Set to System theme
-    const toggleButton = page.locator('button[aria-label="Change theme"]');
+    const toggleButton = page.locator('button[aria-label="Change theme"]').first();
     await toggleButton.click();
     await page.locator('button[role="menuitem"]:has-text("System")').click();
 

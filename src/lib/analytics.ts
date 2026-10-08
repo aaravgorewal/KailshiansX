@@ -54,31 +54,38 @@ function sendToGA4(eventName: string, params: Record<string, unknown> = {}) {
 /**
  * Sends event to internal analytics telemetry endpoint.
  */
-async function sendToInternalTelemetry(eventName: string, payload: Record<string, unknown> = {}) {
+function sendToInternalTelemetry(eventName: string, payload: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
 
-  try {
-    const body = JSON.stringify({
-      event: eventName,
-      payload,
-      pathname: window.location.pathname,
-      referrer: document.referrer || null,
-      timestamp: new Date().toISOString(),
-    });
-
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon("/api/analytics/events", body);
-    } else {
-      await fetch("/api/analytics/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-        keepalive: true,
+  const run = () => {
+    try {
+      const body = JSON.stringify({
+        event: eventName,
+        payload,
+        pathname: window.location.pathname,
+        referrer: document.referrer || null,
+        timestamp: new Date().toISOString(),
       });
+
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon("/api/analytics/events", body);
+      } else {
+        fetch("/api/analytics/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          keepalive: true,
+        }).catch(() => {});
+      }
+    } catch (err) {
+      console.debug("[Analytics Telemetry Warning]:", err);
     }
-  } catch (err) {
-    // Non-blocking telemetry failure
-    console.debug("[Analytics Telemetry Warning]:", err);
+  };
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(run, { timeout: 2000 });
+  } else {
+    setTimeout(run, 100);
   }
 }
 

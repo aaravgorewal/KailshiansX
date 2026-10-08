@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Shield } from "lucide-react";
 
 import { db } from "@/lib/db";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { auth } from "@/lib/auth";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import { formatDate } from "@/lib/format-date";
 import { RegistrationFormClient } from "./RegistrationFormClient";
 
@@ -41,30 +42,64 @@ export default async function EventRegisterPage({ params, searchParams }: EventR
   const sParams = await searchParams;
   const preselectedTierId = typeof sParams.tier === "string" ? sParams.tier : undefined;
 
-  const event = await db.event.findUnique({
-    where: { slug },
-    include: {
-      city: true,
-      ticketTypes: {
-        orderBy: [{ price: "asc" }, { sortOrder: "asc" }],
-        include: {
-          _count: {
-            select: {
-              registrations: {
-                where: {
-                  status: { in: ["CONFIRMED", "PENDING"] },
-                  deletedAt: null,
+  const [event, session] = await Promise.all([
+    db.event.findUnique({
+      where: { slug },
+      include: {
+        city: true,
+        ticketTypes: {
+          orderBy: [{ price: "asc" }, { sortOrder: "asc" }],
+          include: {
+            _count: {
+              select: {
+                registrations: {
+                  where: {
+                    status: { in: ["CONFIRMED", "PENDING"] },
+                    deletedAt: null,
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  });
+    }),
+    auth(),
+  ]);
 
   if (!event || event.status === "DRAFT" || event.deletedAt) {
     notFound();
+  }
+
+  // Prefill from signed-in user if available
+  let prefilledUser: { name: string; email: string; phone: string; college: string } | undefined;
+  if (session?.user?.id) {
+    const dbUser = await db.user.findUnique({
+      where: { id: session.user.id },
+      include: {
+        registrations: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { college: true, phone: true },
+        },
+      },
+    });
+
+    if (dbUser) {
+      prefilledUser = {
+        name: dbUser.name || session.user.name || "",
+        email: dbUser.email || session.user.email || "",
+        phone: dbUser.phone || dbUser.registrations[0]?.phone || "",
+        college: dbUser.registrations[0]?.college || "",
+      };
+    }
+  } else if (session?.user) {
+    prefilledUser = {
+      name: session.user.name || "",
+      email: session.user.email || "",
+      phone: "",
+      college: "",
+    };
   }
 
   // Format serializable ticket tiers
@@ -121,6 +156,7 @@ export default async function EventRegisterPage({ params, searchParams }: EventR
             cityName={event.city?.name}
             ticketTypes={formattedTiers}
             preselectedTierId={preselectedTierId}
+            prefilledUser={prefilledUser}
           />
         </div>
       </main>

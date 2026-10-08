@@ -1,13 +1,10 @@
-// src/components/gallery/AlbumCard.tsx
-// Album preview card with Next.js image optimization and error fallback
+"use client";
 
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, MapPin, Images, ArrowRight, ImageIcon } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
+import { ImageIcon } from "lucide-react";
 import { formatDate } from "@/lib/format-date";
-import { GALLERY_CATEGORIES } from "@/lib/gallery";
 import { cn } from "@/lib/utils";
 
 export interface AlbumCardProps {
@@ -15,13 +12,15 @@ export interface AlbumCardProps {
   title: string;
   category: string;
   coverImage?: string | null;
-  photoCount: number;
+  photoCount?: number;
   event?: {
+    id?: string;
     title: string;
     slug: string;
     startDate: Date | string;
-    type: string;
-    city?: { name: string; state: string } | null;
+    type?: string;
+    venue?: string | null;
+    city?: { name: string; state?: string } | null;
   } | null;
   previewImages?: { url: string; altText?: string | null }[];
   priority?: boolean;
@@ -31,9 +30,7 @@ export interface AlbumCardProps {
 export function AlbumCard({
   id,
   title,
-  category,
   coverImage,
-  photoCount,
   event,
   previewImages = [],
   priority = false,
@@ -41,98 +38,51 @@ export function AlbumCard({
 }: AlbumCardProps) {
   const [hasError, setHasError] = React.useState(false);
 
-  const catConfig = GALLERY_CATEGORIES.find((c) => c.key === category.toLowerCase()) || {
-    label: category,
-  };
-
-  const displayCover =
-    coverImage ||
-    previewImages[0]?.url ||
-    "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80";
+  const displayCover = coverImage || previewImages[0]?.url || null;
 
   const eventDate = event?.startDate ? formatDate(event.startDate) : null;
+  const cityName = event?.city?.name || null;
+  const metaText = [eventDate, cityName].filter(Boolean).join(" · ");
 
   return (
-    <article
-      className={cn(
-        "group border-border bg-card hover:border-primary/50 relative flex h-full flex-col justify-between overflow-hidden rounded-lg border transition-colors duration-150",
-        className
-      )}
-    >
-      {/* ─── Media Container (3:2 aspect ratio) ─────────────────────────── */}
-      <div className="bg-muted relative aspect-[3/2] w-full overflow-hidden">
-        {hasError || !displayCover ? (
-          <div className="bg-muted text-muted-foreground flex size-full items-center justify-center">
-            <ImageIcon className="size-8" />
-          </div>
-        ) : (
-          <Image
-            src={displayCover}
-            alt={title}
-            fill
-            priority={priority}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover"
-            onError={() => setHasError(true)}
-          />
-        )}
-
-        {/* Top Badges */}
-        <div className="pointer-events-none absolute inset-x-3 top-3 flex items-center justify-between">
-          <Badge variant="outline" size="sm" className="bg-card/90 backdrop-blur-sm">
-            {catConfig.label}
-          </Badge>
-
-          <span className="border-border bg-card/90 text-foreground inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-xs font-medium backdrop-blur-sm">
-            <Images className="text-muted-foreground size-3" />
-            <span>
-              {photoCount} {photoCount === 1 ? "photo" : "photos"}
-            </span>
-          </span>
-        </div>
-      </div>
-
-      {/* ─── Body Details ─────────────────────────────────────────────────── */}
-      <div className="flex flex-1 flex-col justify-between p-5">
-        <div>
-          {/* Metadata Row: Date & City */}
-          <div className="text-muted-foreground mb-2 flex flex-wrap items-center gap-3 font-mono text-xs">
-            {eventDate && (
-              <div className="flex items-center gap-1.5">
-                <Calendar className="size-3" />
-                <span>{eventDate}</span>
-              </div>
-            )}
-            {event?.city?.name && (
-              <div className="flex items-center gap-1">
-                <MapPin className="size-3" />
-                <span>{event.city.name}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Title */}
-          <h3
-            className="text-foreground group-hover:text-primary line-clamp-2 text-base font-semibold transition-colors"
-            title={title}
-          >
-            <Link
-              href={`/gallery/${id}`}
-              className="after:absolute after:inset-0 focus-visible:underline focus-visible:outline-none"
+    <article className={cn("group flex flex-col space-y-3", className)}>
+      <Link
+        href={`/gallery/${id}`}
+        aria-label={`View ${title}`}
+        className="focus-visible:ring-primary block rounded-xl focus-visible:ring-2 focus-visible:outline-none"
+      >
+        <div className="border-border bg-muted relative aspect-[3/2] w-full overflow-hidden rounded-xl border">
+          {hasError || !displayCover ? (
+            <div
+              className="text-muted-foreground bg-muted flex size-full items-center justify-center"
+              aria-hidden="true"
             >
-              {title}
-            </Link>
-          </h3>
+              <ImageIcon className="size-8 opacity-40" />
+            </div>
+          ) : (
+            <Image
+              src={displayCover}
+              alt=""
+              fill
+              priority={priority}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover transition-opacity duration-200 group-hover:opacity-90"
+              onError={() => setHasError(true)}
+            />
+          )}
         </div>
+      </Link>
 
-        {/* Bottom Bar */}
-        <div className="border-border mt-4 flex items-center justify-between border-t pt-3 text-xs">
-          <span className="text-muted-foreground group-hover:text-foreground">View Album</span>
-          <div className="text-primary flex items-center gap-1 font-medium">
-            <span>Explore</span>
-            <ArrowRight className="size-3.5" />
-          </div>
-        </div>
+      <div className="space-y-1">
+        <h2 className="text-foreground group-hover:text-primary text-base font-semibold transition-colors">
+          <Link
+            href={`/gallery/${id}`}
+            className="focus-visible:underline focus-visible:outline-none"
+          >
+            {title}
+          </Link>
+        </h2>
+        {metaText && <p className="text-muted-foreground font-mono text-xs">{metaText}</p>}
       </div>
     </article>
   );

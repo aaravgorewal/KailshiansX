@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/profile/BadgesGrid.tsx
-// Achievement badges showcase with unlock criteria, gradient glowing borders, and details.
+// Achievement badges showcase with unlock criteria, borders, and details.
 
 import React from "react";
 import {

@@ -135,7 +135,7 @@ export function PaymentRecoveryClient({
       theme: {
         color: primaryColor,
       },
-      handler: async (response) => {
+      handler: async (response: RazorpayCheckoutHandlerArgs) => {
         try {
           const verifyRes = await verifyPaymentAndComplete({
             registrationId,

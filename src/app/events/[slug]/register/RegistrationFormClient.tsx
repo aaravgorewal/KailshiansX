@@ -6,12 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronLeft, ArrowRight, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle, ArrowRight, Check } from "lucide-react";
 
 import { registrationFormSchema, type RegistrationFormData } from "@/lib/validations/registration";
 import { initiateRegistration, verifyPaymentAndComplete } from "@/server/events/actions";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
 
 interface RazorpayResponse {
@@ -30,6 +30,13 @@ export interface TicketTypeOption {
   soldCount: number;
 }
 
+export interface PrefilledUser {
+  name: string;
+  email: string;
+  phone: string;
+  college: string;
+}
+
 export interface RegistrationFormClientProps {
   eventId: string;
   eventSlug: string;
@@ -39,23 +46,61 @@ export interface RegistrationFormClientProps {
   cityName?: string | null;
   ticketTypes: TicketTypeOption[];
   preselectedTierId?: string;
+  prefilledUser?: PrefilledUser;
+}
+
+/**
+ * Format Indian phone input to +91 XXXXX XXXXX or standard 10-digit format
+ */
+export function formatIndianPhoneInput(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 10) {
+    return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+  }
+  if (digits.length === 11 && digits.startsWith("0")) {
+    const trimmed = digits.slice(1);
+    return `+91 ${trimmed.slice(0, 5)} ${trimmed.slice(5)}`;
+  }
+  if (digits.length === 12 && digits.startsWith("91")) {
+    const trimmed = digits.slice(2);
+    return `+91 ${trimmed.slice(0, 5)} ${trimmed.slice(5)}`;
+  }
+  return raw.trim();
+}
+
+/**
+ * Validate Indian mobile phone number
+ */
+export function validateIndianPhone(raw: string): string | null {
+  const digits = raw.replace(/\D/g, "");
+  if (!digits) {
+    return "Phone number is required.";
+  }
+  let local10 = digits;
+  if (digits.length === 11 && digits.startsWith("0")) {
+    local10 = digits.slice(1);
+  } else if (digits.length === 12 && digits.startsWith("91")) {
+    local10 = digits.slice(2);
+  }
+  if (local10.length !== 10 || !/^[6-9]/.test(local10)) {
+    return "Please enter a valid 10-digit Indian phone number.";
+  }
+  return null;
 }
 
 export function RegistrationFormClient({
   eventId,
   eventSlug,
-  eventTitle,
-  eventDate,
-  venueName,
-  cityName,
   ticketTypes,
   preselectedTierId,
+  prefilledUser,
 }: RegistrationFormClientProps) {
   const router = useRouter();
-  const [, setScriptLoaded] = React.useState(false);
-  const [step, setStep] = React.useState<1 | 2 | 3 | 4>(1);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [serverError, setServerError] = React.useState<string | null>(null);
+  const [duplicateTicketUrl, setDuplicateTicketUrl] = React.useState<string | null>(null);
+
+  const storageKey = `kailshiansx_reg_${eventSlug}`;
 
   // Default preselected tier if valid
   const defaultTierId =
@@ -66,16 +111,18 @@ export function RegistrationFormClient({
     handleSubmit,
     control,
     setValue,
+    setError,
+    clearErrors,
     trigger,
     formState: { errors },
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationFormSchema),
     defaultValues: {
       ticketTypeId: defaultTierId,
-      name: "",
-      email: "",
-      phone: "",
-      college: "",
+      name: prefilledUser?.name || "",
+      email: prefilledUser?.email || "",
+      phone: prefilledUser?.phone ? formatIndianPhoneInput(prefilledUser.phone) : "",
+      college: prefilledUser?.college || "",
       city: "",
       tshirtSize: "M",
       dietaryPref: "VEG",
@@ -93,64 +140,121 @@ export function RegistrationFormClient({
   const watchedEmail = useWatch({ control, name: "email" });
   const watchedPhone = useWatch({ control, name: "phone" });
   const watchedCollege = useWatch({ control, name: "college" });
+
   const selectedTier = ticketTypes.find((t) => t.id === selectedTierId) || ticketTypes[0];
   const isFreeTier = selectedTier ? selectedTier.price === 0 : true;
 
-  // Multi-step validation triggers
-  const handleNextStep = async () => {
-    setServerError(null);
-
-    if (step === 1) {
-      if (selectedTierId) {
-        setStep(2);
-      } else {
-        const valid = await trigger(["ticketTypeId"]);
-        if (valid) setStep(2);
+  // Restore form state from sessionStorage
+  React.useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(storageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.ticketTypeId && ticketTypes.some((t) => t.id === parsed.ticketTypeId)) {
+          setValue("ticketTypeId", parsed.ticketTypeId);
+        }
+        if (parsed.name && !prefilledUser?.name) setValue("name", parsed.name);
+        if (parsed.email && !prefilledUser?.email) setValue("email", parsed.email);
+        if (parsed.phone && !prefilledUser?.phone) setValue("phone", parsed.phone);
+        if (parsed.college && !prefilledUser?.college) setValue("college", parsed.college);
       }
-    } else if (step === 2) {
-      const valid = await trigger(["name", "email", "phone"]);
-      if (valid) setStep(3);
-    } else if (step === 3) {
-      setStep(4);
+    } catch {
+      // sessionStorage unavailable
     }
-  };
+  }, [storageKey, setValue, ticketTypes, prefilledUser]);
 
-  const handlePrevStep = () => {
-    setServerError(null);
-    if (step > 1) {
-      setStep((prev) => (prev - 1) as 1 | 2 | 3 | 4);
+  // Persist form state to sessionStorage
+  React.useEffect(() => {
+    try {
+      const dataToSave = {
+        ticketTypeId: selectedTierId,
+        name: watchedName,
+        email: watchedEmail,
+        phone: watchedPhone,
+        college: watchedCollege,
+      };
+      sessionStorage.setItem(storageKey, JSON.stringify(dataToSave));
+    } catch {
+      // sessionStorage unavailable
+    }
+  }, [storageKey, selectedTierId, watchedName, watchedEmail, watchedPhone, watchedCollege]);
+
+  // Blur handler for phone formatting & validation
+  const handlePhoneBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (!raw.trim()) {
+      return;
+    }
+    const formatted = formatIndianPhoneInput(raw);
+    setValue("phone", formatted, { shouldValidate: false });
+
+    const phoneError = validateIndianPhone(formatted);
+    if (phoneError) {
+      setError("phone", { type: "manual", message: phoneError });
+    } else {
+      clearErrors("phone");
     }
   };
 
   const onSubmit = async (data: RegistrationFormData) => {
-    // Honeypot bot protection check
     if (data.website_url_hp) {
       return;
     }
 
+    // Explicit phone check
+    const phoneErr = validateIndianPhone(data.phone);
+    if (phoneErr) {
+      setError("phone", { type: "manual", message: phoneErr });
+      return;
+    }
+
+    if (isSubmitting) return;
+
     setIsSubmitting(true);
     setServerError(null);
+    setDuplicateTicketUrl(null);
 
     try {
       // 1. Initialize registration (atomic quota reservation)
       const initRes = await initiateRegistration(eventId, data);
 
       if (!initRes.success) {
-        setServerError(initRes.error || "Failed to initiate registration.");
+        if (initRes.errorCode === "DUPLICATE_REGISTRATION") {
+          const existingRef = initRes.existingRegistrationId || initRes.existingRegistrationCode;
+          if (existingRef) {
+            setDuplicateTicketUrl(`/registration/${existingRef}`);
+          }
+          setServerError(
+            initRes.error || "You are already registered for this event with this email."
+          );
+        } else {
+          setServerError(initRes.error || "Failed to initiate registration.");
+        }
         setIsSubmitting(false);
         return;
       }
 
-      // 2. Free Tier Flow: Confirmation is immediate
-      if (initRes.redirectUrl) {
-        router.push(initRes.redirectUrl);
+      // 2. Free Tier Flow: Immediate success
+      if (initRes.isFree || initRes.redirectUrl) {
+        try {
+          sessionStorage.removeItem(storageKey);
+        } catch {
+          // ignore
+        }
+        const targetUrl =
+          initRes.redirectUrl ||
+          `/registration/${initRes.registrationId || initRes.registrationCode}`;
+        router.push(targetUrl);
         return;
       }
 
       // 3. Paid Tier Flow: Launch Razorpay standard checkout
       if (initRes.razorpayOrder) {
         if (!window.Razorpay) {
-          router.push(`/events/${eventSlug}/register/pay?regId=${initRes.registrationId}`);
+          setServerError(
+            "Payment gateway could not be loaded. Please check your connection and retry."
+          );
+          setIsSubmitting(false);
           return;
         }
 
@@ -168,7 +272,7 @@ export function RegistrationFormClient({
           order_id: initRes.razorpayOrder.id,
           prefill: initRes.razorpayOrder.prefill,
           theme: {
-            color: primaryColor,
+            color: primaryColor || undefined,
           },
           handler: async (response: RazorpayResponse) => {
             try {
@@ -179,619 +283,280 @@ export function RegistrationFormClient({
                 razorpaySignature: response.razorpay_signature,
               });
 
-              if (verifyRes.success && verifyRes.redirectUrl) {
-                router.push(verifyRes.redirectUrl);
+              if (verifyRes.success) {
+                try {
+                  sessionStorage.removeItem(storageKey);
+                } catch {
+                  // ignore
+                }
+                const redirectId =
+                  verifyRes.registrationId || initRes.registrationId || verifyRes.registrationCode;
+                router.push(`/registration/${redirectId}`);
               } else {
                 setServerError(
                   verifyRes.error ||
-                    "Payment was processed, but signature verification encountered an issue. Please contact support."
+                    "Payment verification encountered an issue. Please contact support or try again."
                 );
                 setIsSubmitting(false);
               }
             } catch {
-              setServerError("Payment confirmation error. Please check your inbox or ticket link.");
+              setServerError("Payment confirmation error. Please try again.");
               setIsSubmitting(false);
             }
           },
           modal: {
             ondismiss: () => {
               setIsSubmitting(false);
-              router.push(`/events/${eventSlug}/register/pay?regId=${initRes.registrationId}`);
+              setServerError("Payment not completed — try again");
             },
           },
         };
 
-        const rzp = new window.Razorpay(options);
+        interface RazorpayFailedPayload {
+          error?: {
+            description?: string;
+            code?: string;
+          };
+        }
+
+        interface ExtendedRazorpayInstance {
+          open: () => void;
+          on?: (event: string, handler: (payload: RazorpayFailedPayload) => void) => void;
+        }
+
+        const rzp = new window.Razorpay(options) as unknown as ExtendedRazorpayInstance;
+        rzp.on?.("payment.failed", (res: RazorpayFailedPayload) => {
+          setIsSubmitting(false);
+          setServerError(
+            res?.error?.description ||
+              "Payment failed. Please try again or use another payment method."
+          );
+        });
         rzp.open();
       }
     } catch {
-      setServerError("An unexpected error occurred while processing your pass. Please try again.");
+      setServerError("An unexpected error occurred. Please try again.");
       setIsSubmitting(false);
     }
   };
 
-  const stepsMeta = [
-    { num: 1, label: "Pass Tier" },
-    { num: 2, label: "Your Info" },
-    { num: 3, label: "Details" },
-    { num: 4, label: "Review & Pay" },
-  ];
-
   return (
     <>
-      <Script
-        src="https://checkout.razorpay.com/v1/checkout.js"
-        onLoad={() => setScriptLoaded(true)}
-      />
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
 
-      <div className="border-border bg-card rounded-lg border p-5 sm:p-7">
-        {/* Step Progress Bar */}
-        <div className="border-border mb-6 border-b pb-5">
-          <div className="flex items-center justify-between">
-            {stepsMeta.map((s, idx) => {
-              const isActive = step === s.num;
-              const isDone = step > s.num;
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-left" noValidate>
+        {/* Hidden Honeypot */}
+        <input
+          type="text"
+          {...register("website_url_hp")}
+          className="hidden"
+          tabIndex={-1}
+          autoComplete="off"
+        />
 
-              return (
-                <React.Fragment key={s.num}>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={cn(
-                        "flex size-7 items-center justify-center rounded-full font-mono text-xs font-semibold transition-colors",
-                        isDone
-                          ? "bg-primary text-primary-foreground"
-                          : isActive
-                            ? "border-primary bg-background text-foreground border-2"
-                            : "border-border bg-muted text-muted-foreground border"
-                      )}
-                    >
-                      {isDone ? <Check className="size-3.5" aria-hidden="true" /> : s.num}
+        {/* 1. Ticket choice (Radio rows, only if >1 ticket type) */}
+        {ticketTypes.length > 1 && (
+          <fieldset className="space-y-3">
+            <legend className="text-foreground text-sm font-semibold">Select Ticket Tier</legend>
+            <div role="radiogroup" className="space-y-2">
+              {ticketTypes.map((tier) => {
+                const isSelected = selectedTierId === tier.id;
+                const isSoldOut = tier.quota > 0 && tier.soldCount >= tier.quota;
+
+                return (
+                  <label
+                    key={tier.id}
+                    htmlFor={`tier-${tier.id}`}
+                    className={cn(
+                      "flex cursor-pointer items-center justify-between rounded-xl border p-4 transition-colors select-none",
+                      isSelected
+                        ? "border-primary bg-card ring-primary ring-1"
+                        : "border-border bg-card hover:bg-muted/30",
+                      isSoldOut && "pointer-events-none opacity-50"
+                    )}
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <input
+                        type="radio"
+                        id={`tier-${tier.id}`}
+                        value={tier.id}
+                        {...register("ticketTypeId")}
+                        disabled={isSoldOut}
+                        className="sr-only"
+                      />
+                      <div
+                        className={cn(
+                          "flex size-4 items-center justify-center rounded-full border transition-colors",
+                          isSelected
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-muted-foreground/40 bg-background"
+                        )}
+                        aria-hidden="true"
+                      >
+                        {isSelected && <Check className="size-2.5 stroke-[3]" />}
+                      </div>
+                      <div className="space-y-0.5">
+                        <div className="text-foreground text-sm font-semibold">{tier.name}</div>
+                        {tier.description && (
+                          <div className="text-muted-foreground line-clamp-1 text-xs">
+                            {tier.description}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <span
-                      className={cn(
-                        "hidden text-xs font-medium sm:inline",
-                        isActive ? "text-foreground font-semibold" : "text-muted-foreground"
-                      )}
-                    >
-                      {s.label}
-                    </span>
-                  </div>
 
-                  {idx < stepsMeta.length - 1 && (
-                    <div
-                      className={cn(
-                        "mx-2 h-px flex-1 transition-colors",
-                        step > s.num ? "bg-primary" : "bg-border"
-                      )}
-                    />
-                  )}
-                </React.Fragment>
-              );
+                    <div className="text-right">
+                      <span className="text-foreground font-mono text-sm font-bold">
+                        {tier.price === 0 ? "Free" : `₹${tier.price}`}
+                      </span>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
+        )}
+
+        {/* 2. Four Fields: Full name, Email, Phone, College/Organisation */}
+        <div className="space-y-4">
+          <Input
+            id="reg-name"
+            label="Full name"
+            type="text"
+            autoComplete="name"
+            placeholder="Aarav Sharma"
+            error={errors.name?.message}
+            {...register("name", {
+              onBlur: () => trigger("name"),
             })}
+          />
+
+          <Input
+            id="reg-email"
+            label="Email address"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            placeholder="name@example.com"
+            error={errors.email?.message}
+            {...register("email", {
+              onBlur: () => trigger("email"),
+            })}
+          />
+
+          <Input
+            id="reg-phone"
+            label="Phone (WhatsApp)"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="+91 98765 43210"
+            error={errors.phone?.message}
+            {...register("phone")}
+            onBlur={handlePhoneBlur}
+          />
+
+          <Input
+            id="reg-college"
+            label="College / Organisation"
+            type="text"
+            autoComplete="organization"
+            placeholder="e.g. MNIT Jaipur or Razorpay"
+            error={errors.college?.message}
+            {...register("college", {
+              onBlur: () => trigger("college"),
+            })}
+          />
+        </div>
+
+        {/* 3. Order Summary in a quiet bordered block */}
+        <div className="border-border bg-card space-y-2.5 rounded-xl border p-4 text-sm">
+          <div className="text-muted-foreground flex items-center justify-between">
+            <span>Ticket</span>
+            <span className="text-foreground font-medium">
+              {selectedTier?.name || "General Pass"}
+            </span>
+          </div>
+          <div className="text-muted-foreground flex items-center justify-between">
+            <span>Price</span>
+            <span className="text-foreground font-mono">
+              {selectedTier?.price === 0 ? "Free" : `₹${selectedTier?.price}`}
+            </span>
+          </div>
+          <div className="text-muted-foreground flex items-center justify-between text-xs">
+            <span>Taxes &amp; platform fees</span>
+            <span className="font-mono">Included</span>
+          </div>
+          <div className="border-border flex items-center justify-between border-t pt-2.5">
+            <span className="text-foreground font-semibold">Total</span>
+            <span className="text-foreground font-mono text-base font-bold">
+              {selectedTier?.price === 0 ? "Free" : `₹${selectedTier?.price}`}
+            </span>
           </div>
         </div>
 
-        {/* Global Error Banner */}
-        {serverError && (
-          <div className="border-destructive/40 bg-destructive/10 text-destructive mb-6 flex items-start gap-2.5 rounded-md border p-3.5 text-xs">
-            <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            <div className="flex-1">
-              <span className="font-medium">{serverError}</span>
-              {serverError.includes("resume") && (
-                <div className="mt-1.5">
-                  <Link
-                    href={`/events/${eventSlug}/register/pay`}
-                    className="font-medium underline hover:opacity-80"
-                  >
-                    Resume pending payment here →
-                  </Link>
-                </div>
-              )}
+        {/* 4. Feedback Banners (Duplicate, Dismissed, Failure) */}
+        {duplicateTicketUrl ? (
+          <div
+            role="alert"
+            id="duplicate-registration-alert"
+            className="border-border bg-card text-foreground space-y-2 rounded-xl border p-4 text-sm"
+          >
+            <div className="flex items-center gap-2 font-medium">
+              <AlertCircle className="text-foreground size-4 shrink-0" aria-hidden="true" />
+              <span>You are already registered for this event.</span>
+            </div>
+            <p className="text-muted-foreground text-xs">
+              A registration pass was already issued for {watchedEmail || "this email"}.
+            </p>
+            <div>
+              <Link
+                href={duplicateTicketUrl}
+                className="text-primary inline-flex items-center gap-1.5 text-xs font-semibold underline underline-offset-4 hover:opacity-80"
+              >
+                <span>View your existing ticket</span>
+                <ArrowRight className="size-3" aria-hidden="true" />
+              </Link>
             </div>
           </div>
-        )}
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Hidden registered inputs */}
-          <input type="hidden" {...register("ticketTypeId")} />
-          <input
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            className="hidden"
-            {...register("website_url_hp")}
-          />
-
-          {/* ═══════════════════════════════════════════════════════════════════
-              STEP 1: PASS SELECTION
-          ═══════════════════════════════════════════════════════════════════════ */}
-          {step === 1 && (
-            <div className="space-y-5">
-              <div>
-                <h3 className="text-foreground text-lg font-bold">Select Your Pass Tier</h3>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Choose your pass. All tiers include full event admittance and verified digital
-                  certificates.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                {ticketTypes.map((tier) => {
-                  const isSelected = selectedTierId === tier.id;
-                  const isSoldOut = tier.quota > 0 && tier.soldCount >= tier.quota;
-                  const isFree = tier.price === 0;
-
-                  return (
-                    <div
-                      key={tier.id}
-                      onClick={() =>
-                        !isSoldOut &&
-                        setValue("ticketTypeId", tier.id, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
-                      }
-                      className={cn(
-                        "flex cursor-pointer flex-col justify-between gap-3 rounded-lg border p-4 transition-colors select-none sm:flex-row sm:items-center",
-                        isSelected
-                          ? "border-primary bg-primary/5 ring-primary ring-1"
-                          : "border-border bg-card hover:border-primary/50",
-                        isSoldOut && "pointer-events-none cursor-not-allowed opacity-50"
-                      )}
-                    >
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={cn(
-                              "flex size-4 items-center justify-center rounded-full border",
-                              isSelected ? "border-primary bg-primary" : "border-border"
-                            )}
-                          >
-                            {isSelected && (
-                              <span className="bg-primary-foreground size-1.5 rounded-full" />
-                            )}
-                          </span>
-                          <h4 className="text-foreground text-base font-bold">{tier.name}</h4>
-                          <Badge variant="neutral" size="sm">
-                            {isFree ? "Free" : "Paid"}
-                          </Badge>
-                          {isSoldOut && (
-                            <Badge variant="destructive" size="sm">
-                              Sold Out
-                            </Badge>
-                          )}
-                        </div>
-
-                        {tier.description && (
-                          <p className="text-muted-foreground pl-6 text-xs">{tier.description}</p>
-                        )}
-
-                        <div className="text-muted-foreground pl-6 font-mono text-xs">
-                          {isSoldOut ? "Quota full" : `${tier.quota} total capacity`}
-                        </div>
-                      </div>
-
-                      <div className="pl-6 text-left sm:pl-0 sm:text-right">
-                        <div className="text-foreground text-xl font-bold">
-                          {isFree ? "Free" : `₹${tier.price}`}
-                        </div>
-                        <span className="text-muted-foreground font-mono text-xs">
-                          {isFree ? "Sponsored RSVP" : "Inclusive of taxes"}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {errors.ticketTypeId && (
-                <p className="text-destructive text-xs">{errors.ticketTypeId.message}</p>
-              )}
-
-              <div className="flex justify-end pt-3">
-                <Button
-                  type="button"
-                  onClick={handleNextStep}
-                  variant="primary"
-                  size="default"
-                  className="gap-1.5"
-                >
-                  <span>Continue</span>
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Button>
-              </div>
+        ) : serverError ? (
+          <div
+            role="alert"
+            id="registration-server-error"
+            className={cn(
+              "flex items-start gap-2.5 rounded-xl border p-4 text-sm",
+              serverError.includes("Payment not completed")
+                ? "border-border bg-muted/40 text-foreground"
+                : "border-destructive/40 bg-destructive/10 text-destructive"
+            )}
+          >
+            <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <div className="flex-1 space-y-0.5">
+              <p className="font-medium">{serverError}</p>
+              <p className="text-xs opacity-85">
+                {serverError.includes("Payment not completed")
+                  ? "Your form data is saved. You can try again whenever ready."
+                  : "Please check your inputs and try again."}
+              </p>
             </div>
-          )}
+          </div>
+        ) : null}
 
-          {/* ═══════════════════════════════════════════════════════════════════
-              STEP 2: BUILDER PROFILE
-          ═══════════════════════════════════════════════════════════════════════ */}
-          {step === 2 && (
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-foreground text-lg font-bold">Attendee Information</h3>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Used for entrance check-in and verifiable digital credentials.
-                </p>
-              </div>
-
-              {/* Full Name */}
-              <div>
-                <label
-                  htmlFor="reg-name"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  Full Name (as on ID) <span className="text-destructive">*</span>
-                </label>
-                <input
-                  id="reg-name"
-                  type="text"
-                  placeholder="e.g. Aarav Sharma"
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("name")}
-                />
-                {errors.name && (
-                  <p className="text-destructive mt-1 text-xs">{errors.name.message}</p>
-                )}
-              </div>
-
-              {/* Email Address */}
-              <div>
-                <label
-                  htmlFor="reg-email"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  Email Address <span className="text-destructive">*</span>
-                </label>
-                <input
-                  id="reg-email"
-                  type="email"
-                  placeholder="aarav@example.com"
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-destructive mt-1 text-xs">{errors.email.message}</p>
-                )}
-              </div>
-
-              {/* Phone Number */}
-              <div>
-                <label
-                  htmlFor="reg-phone"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  Phone / WhatsApp <span className="text-destructive">*</span>
-                </label>
-                <input
-                  id="reg-phone"
-                  type="tel"
-                  placeholder="+91 98765 43210"
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("phone")}
-                />
-                {errors.phone && (
-                  <p className="text-destructive mt-1 text-xs">{errors.phone.message}</p>
-                )}
-              </div>
-
-              {/* College / Organization */}
-              <div>
-                <label
-                  htmlFor="reg-college"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  College or Organization
-                </label>
-                <input
-                  id="reg-college"
-                  type="text"
-                  placeholder="e.g. MNIT Jaipur or Startup Inc."
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("college")}
-                />
-              </div>
-
-              {/* City */}
-              <div>
-                <label
-                  htmlFor="reg-city"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  City
-                </label>
-                <input
-                  id="reg-city"
-                  type="text"
-                  placeholder="e.g. Jaipur, Delhi, Bengaluru"
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("city")}
-                />
-              </div>
-
-              <div className="border-border flex items-center justify-between border-t pt-4">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="default"
-                  onClick={handlePrevStep}
-                  className="gap-1.5"
-                >
-                  <ChevronLeft className="size-4" aria-hidden="true" />
-                  <span>Back</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="primary"
-                  size="default"
-                  onClick={handleNextStep}
-                  className="gap-1.5"
-                >
-                  <span>Next</span>
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* ═══════════════════════════════════════════════════════════════════
-              STEP 3: PREFERENCES
-          ═══════════════════════════════════════════════════════════════════════ */}
-          {step === 3 && (
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-foreground text-lg font-bold">Preferences</h3>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Help organizers plan logistics, allocate swag, and organize discussions.
-                </p>
-              </div>
-
-              {/* T-Shirt Size */}
-              <div>
-                <label
-                  htmlFor="reg-tshirt"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  T-Shirt Size
-                </label>
-                <select
-                  id="reg-tshirt"
-                  className="border-input bg-background text-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("tshirtSize")}
-                >
-                  <option value="S">S (Small)</option>
-                  <option value="M">M (Medium)</option>
-                  <option value="L">L (Large)</option>
-                  <option value="XL">XL (Extra Large)</option>
-                  <option value="2XL">2XL (Double Large)</option>
-                </select>
-              </div>
-
-              {/* Dietary Preference */}
-              <div>
-                <label
-                  htmlFor="reg-diet"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  Dietary Preference
-                </label>
-                <select
-                  id="reg-diet"
-                  className="border-input bg-background text-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("dietaryPref")}
-                >
-                  <option value="VEG">Vegetarian</option>
-                  <option value="NON_VEG">Non-Vegetarian</option>
-                  <option value="VEGAN">Vegan</option>
-                  <option value="JAIN">Jain</option>
-                </select>
-              </div>
-
-              {/* GitHub Handle */}
-              <div>
-                <label
-                  htmlFor="reg-github"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  GitHub Profile
-                </label>
-                <input
-                  id="reg-github"
-                  type="text"
-                  placeholder="github.com/username"
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("github")}
-                />
-              </div>
-
-              {/* LinkedIn Profile */}
-              <div>
-                <label
-                  htmlFor="reg-linkedin"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  LinkedIn Profile
-                </label>
-                <input
-                  id="reg-linkedin"
-                  type="text"
-                  placeholder="linkedin.com/in/username"
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("linkedin")}
-                />
-              </div>
-
-              {/* Team Name */}
-              <div>
-                <label
-                  htmlFor="reg-team"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  Team Name (optional)
-                </label>
-                <input
-                  id="reg-team"
-                  type="text"
-                  placeholder="e.g. ByteCraft Labs"
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring h-10 w-full rounded-md border px-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("teamName")}
-                />
-              </div>
-
-              {/* Project Idea / Interest */}
-              <div>
-                <label
-                  htmlFor="reg-idea"
-                  className="text-foreground mb-1.5 block text-xs font-semibold"
-                >
-                  What are you looking to build or learn?
-                </label>
-                <textarea
-                  id="reg-idea"
-                  rows={3}
-                  placeholder="e.g. Distributed database systems, autonomous agent tool loops, networking with builders..."
-                  className="border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring w-full rounded-md border p-3 text-sm focus:ring-1 focus:outline-none"
-                  {...register("projectIdea")}
-                />
-              </div>
-
-              <div className="border-border flex items-center justify-between border-t pt-4">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="default"
-                  onClick={handlePrevStep}
-                  className="gap-1.5"
-                >
-                  <ChevronLeft className="size-4" aria-hidden="true" />
-                  <span>Back</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="primary"
-                  size="default"
-                  onClick={handleNextStep}
-                  className="gap-1.5"
-                >
-                  <span>Review Summary</span>
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* ═══════════════════════════════════════════════════════════════════
-              STEP 4: REVIEW & CONFIRM / PAY
-          ═══════════════════════════════════════════════════════════════════════ */}
-          {step === 4 && (
-            <div className="space-y-5">
-              <div>
-                <h3 className="text-foreground text-lg font-bold">Review &amp; Confirm</h3>
-                <p className="text-muted-foreground mt-1 text-xs">
-                  Review your pass and registration summary before securing your seat.
-                </p>
-              </div>
-
-              {/* Clear Price Summary Box */}
-              <div className="border-border bg-muted/40 space-y-3 rounded-lg border p-5">
-                <div className="border-border flex items-center justify-between border-b pb-3">
-                  <div>
-                    <div className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
-                      Event
-                    </div>
-                    <div className="text-foreground text-base font-bold">{eventTitle}</div>
-                    <div className="text-muted-foreground text-xs">
-                      {eventDate} · {venueName || "Venue"}
-                      {cityName ? `, ${cityName}` : ""}
-                    </div>
-                  </div>
-                  <Badge variant="neutral" size="sm">
-                    {selectedTier.name}
-                  </Badge>
-                </div>
-
-                <div className="text-muted-foreground grid grid-cols-1 gap-2 py-1 text-xs sm:grid-cols-2">
-                  <div>
-                    <span>Attendee:</span>{" "}
-                    <span className="text-foreground font-medium">{watchedName}</span>
-                  </div>
-                  <div>
-                    <span>Email:</span>{" "}
-                    <span className="text-foreground font-medium">{watchedEmail}</span>
-                  </div>
-                  <div>
-                    <span>Phone:</span>{" "}
-                    <span className="text-foreground font-medium">{watchedPhone}</span>
-                  </div>
-                  <div>
-                    <span>College/Org:</span>{" "}
-                    <span className="text-foreground font-medium">{watchedCollege || "—"}</span>
-                  </div>
-                </div>
-
-                <div className="border-border flex items-center justify-between border-t pt-3">
-                  <span className="text-foreground text-sm font-bold">Total Payable:</span>
-                  <div className="text-right">
-                    <span className="text-foreground text-2xl font-bold">
-                      {isFreeTier ? "Free" : `₹${selectedTier.price}`}
-                    </span>
-                    {isFreeTier && (
-                      <div className="text-muted-foreground font-mono text-xs">Free RSVP</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Security notice */}
-              <div className="border-border bg-muted/30 text-muted-foreground flex items-center gap-2 rounded-md border p-3 text-xs">
-                <ShieldCheck className="text-foreground size-4 shrink-0" aria-hidden="true" />
-                <span>
-                  Seat is held atomically in real time. Digital pass is generated instantly upon
-                  confirmation.
-                </span>
-              </div>
-
-              <div className="border-border flex items-center justify-between border-t pt-4">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="default"
-                  onClick={handlePrevStep}
-                  disabled={isSubmitting}
-                  className="gap-1.5"
-                >
-                  <ChevronLeft className="size-4" aria-hidden="true" />
-                  <span>Edit details</span>
-                </Button>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  variant="primary"
-                  size="default"
-                  className="gap-1.5"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <RefreshCw className="size-4 animate-spin" aria-hidden="true" />
-                      <span>Processing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>
-                        {isFreeTier
-                          ? "Complete Registration"
-                          : `Pay ₹${selectedTier.price} & Register`}
-                      </span>
-                      <ArrowRight className="size-4" aria-hidden="true" />
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          )}
-        </form>
-      </div>
+        {/* 5. Primary Action Button */}
+        <Button
+          type="submit"
+          size="lg"
+          variant="primary"
+          disabled={isSubmitting}
+          className="w-full text-base font-medium"
+        >
+          {isSubmitting
+            ? "Processing..."
+            : isFreeTier
+              ? "Register — Free"
+              : `Pay ₹${selectedTier?.price}`}
+        </Button>
+      </form>
     </>
   );
 }

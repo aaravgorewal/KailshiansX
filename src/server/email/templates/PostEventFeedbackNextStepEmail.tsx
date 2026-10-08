@@ -23,10 +23,10 @@ export function PostEventFeedbackNextStepEmail({
   eventSlug,
   certificateUrl,
   feedbackUrl,
-  volunteerUrl = "https://kailshiansx.com/collaborations",
-  campusLeadUrl = "https://kailshiansx.com/campus-leads",
-  stateLeadUrl = "https://kailshiansx.com/state-leads",
-  speakerUrl = "https://kailshiansx.com/collaborations",
+  volunteerUrl = "https://kailshiansx.com/partner",
+  campusLeadUrl = "https://kailshiansx.com/community#lead",
+  stateLeadUrl = "https://kailshiansx.com/community#lead",
+  speakerUrl = "https://kailshiansx.com/partner",
 }: PostEventFeedbackNextStepEmailProps) {
   const resolvedFeedbackUrl =
     feedbackUrl || `https://kailshiansx.com/events/${eventSlug}?feedback=1`;

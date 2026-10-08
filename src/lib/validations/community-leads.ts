@@ -20,6 +20,35 @@ export const STATE_LEAD_STATUSES = [
   "INACTIVE",
 ] as const;
 
+// ─── Unified Community Lead Application Form Schema ─────────────────────────
+export const leadApplicationFormSchema = z.object({
+  applyingFor: z.enum(["campus", "state"], {
+    message: "Please choose whether you are applying for Campus Lead or State Lead",
+  }),
+  name: z.string().min(2, "Full name must be at least 2 characters").max(100),
+  email: z.string().email("Please provide a valid email address").max(120),
+  phone: z
+    .string()
+    .min(10, "Please provide a valid 10-digit phone number")
+    .max(20)
+    .regex(/^[+0-9\s-]+$/, "Invalid phone format"),
+  college: z.string().min(3, "College or Organisation name must be at least 3 characters").max(200),
+  city: z.string().min(2, "City is required").max(100),
+  courseYear: z
+    .string()
+    .min(2, "Please provide your course and year (e.g. 3rd Year, B.Tech)")
+    .max(100),
+  linkedin: z.string().min(3, "LinkedIn profile link or handle is required").max(200),
+  whyLead: z.string().min(20, "Please share why you want to lead (min 20 characters)").max(3000),
+  availability: z
+    .string()
+    .min(2, "Please indicate your weekly time commitment (e.g. 5-10 hours/week)")
+    .max(100),
+  honeypot: z.string().max(0, "Bot submission rejected").optional().or(z.literal("")),
+});
+
+export type LeadApplicationFormInput = z.infer<typeof leadApplicationFormSchema>;
+
 // ─── Campus Lead Application Schema ──────────────────────────────────────────
 export const campusLeadApplicationSchema = z.object({
   name: z.string().min(2, "Full name must be at least 2 characters").max(100),
@@ -36,17 +65,8 @@ export const campusLeadApplicationSchema = z.object({
     .min(2, "Please provide your course and year (e.g. B.Tech CSE - 3rd Year)")
     .max(100),
   linkedin: z.string().min(3, "LinkedIn profile link or handle is required").max(200),
-  experience: z
-    .string()
-    .min(
-      20,
-      "Please share at least a few sentences about your technical/project experience (min 20 characters)"
-    )
-    .max(3000),
-  communityInvolvement: z
-    .string()
-    .min(20, "Please detail your previous campus club or community involvement (min 20 characters)")
-    .max(3000),
+  experience: z.string().max(3000).optional().or(z.literal("")),
+  communityInvolvement: z.string().max(3000).optional().or(z.literal("")),
   whyKailshiansX: z
     .string()
     .min(20, "Tell us why you want to lead KailshiansX at your campus (min 20 characters)")
@@ -68,40 +88,16 @@ export const stateLeadApplicationSchema = z.object({
   phone: z
     .string()
     .min(10, "Please provide a valid 10-digit phone number")
-    .max(15)
+    .max(20)
     .regex(/^[+0-9\s-]+$/, "Invalid phone format"),
-  state: z.string().min(2, "State / Region is required").max(100),
+  state: z.string().max(100).optional().or(z.literal("")),
   city: z.string().min(2, "Base city is required").max(100),
-  citiesCovered: z
-    .string()
-    .min(2, "Please list key cities you can coordinate across (e.g. Jaipur, Jodhpur, Udaipur)")
-    .max(300),
-  currentRole: z
-    .string()
-    .min(
-      2,
-      "Please share your current role or affiliation (e.g. Senior Student Lead, SDE-1, Tech Founder)"
-    )
-    .max(150),
+  citiesCovered: z.string().max(300).optional().or(z.literal("")),
+  currentRole: z.string().max(150).optional().or(z.literal("")),
   linkedin: z.string().min(3, "LinkedIn or professional portfolio profile is required").max(200),
-  experience: z
-    .string()
-    .min(30, "Please outline your engineering and professional background (min 30 characters)")
-    .max(4000),
-  leadershipEvidence: z
-    .string()
-    .min(
-      30,
-      "Please detail proven evidence of organizing tech events, leading teams, or running communities (min 30 characters)"
-    )
-    .max(4000),
-  communityVision: z
-    .string()
-    .min(
-      30,
-      "What is your strategic vision to expand KailshiansX across campuses and cities in your state? (min 30 characters)"
-    )
-    .max(4000),
+  experience: z.string().max(4000).optional().or(z.literal("")),
+  leadershipEvidence: z.string().max(4000).optional().or(z.literal("")),
+  communityVision: z.string().max(4000).optional().or(z.literal("")),
   whyKailshiansX: z
     .string()
     .min(20, "Why KailshiansX over other developer networks? (min 20 characters)")

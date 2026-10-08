@@ -284,7 +284,7 @@ export async function getPersonalizedRecommendations(
       commitment: "5-8 hrs/week",
       matchScore: Math.min(98, campusScore),
       matchReasons: campusReasons,
-      ctaLink: "/campus-leads",
+      ctaLink: "/community#lead",
       ctaText: "Apply as Campus Lead",
       badgeText: "High Student Impact",
     });
@@ -317,7 +317,7 @@ export async function getPersonalizedRecommendations(
       commitment: "8-12 hrs/week",
       matchScore: Math.min(96, stateScore),
       matchReasons: stateReasons,
-      ctaLink: "/state-leads",
+      ctaLink: "/community#lead",
       ctaText: "Apply as State Lead",
       badgeText: "Regional Leadership",
     });
@@ -393,7 +393,7 @@ export async function getPersonalizedRecommendations(
       "Work directly with founder & senior architects",
       "Official contributor credentials & letter of recommendation",
     ],
-    ctaLink: "/join-team",
+    ctaLink: "/about",
     ctaText: "View Open Squad Roles",
     badgeText: "High Ownership",
   });
